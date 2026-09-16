@@ -29,10 +29,27 @@
   <script src="firebase-service.js"></script>
   <script>
     const $=s=>document.querySelector(s), status=$('#status');
+    const STUDENT_HOME='https://lms-katlearn.netlify.app';
+    const TEACHER_HOME='https://teacher-katlearn.netlify.app';
+
     async function init(){try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG)}catch(e){status.textContent='❌ '+(e?.message||'Không thể kết nối Firebase.')}}
-    async function provider(type){try{status.textContent='⏳ Đang đăng nhập...';await window.studyStore.signIn(type);location.href='index.html'}catch(e){status.textContent='❌ '+(e?.message||'Không thể đăng nhập.')}}
-    $('#google').onclick=()=>provider('google');$('#apple').onclick=()=>provider('apple');
-    $('#emailLogin').onclick=async()=>{const email=$('#email').value.trim().toLowerCase(),password=$('#password').value;if(!email||!password){status.textContent='❌ Nhập email và mật khẩu nhé.';return}try{status.textContent='⏳ Đang đăng nhập...';await window.studyStore.signInEmail(email,password,false);location.href='index.html'}catch(e){status.textContent='❌ '+(e?.message||'Email hoặc mật khẩu không đúng.')}};
+
+    async function redirectAfterLogin(){
+      const profile=await window.studyStore.loadProfile();
+      const role=(profile?.role||'student').toLowerCase();
+      status.textContent='✓ Đăng nhập thành công!';
+      setTimeout(()=>{location.href=role==='teacher'?TEACHER_HOME:STUDENT_HOME},300);
+    }
+
+    async function provider(type){try{status.textContent='⏳ Đang đăng nhập...';await window.studyStore.signIn(type);await redirectAfterLogin()}catch(e){status.textContent='❌ '+(e?.message||'Không thể đăng nhập.')}}
+    $('#google').onclick=()=>provider('google');
+    $('#apple').onclick=()=>provider('apple');
+    $('#emailLogin').onclick=async()=>{
+      const email=$('#email').value.trim().toLowerCase(),password=$('#password').value;
+      if(!email||!password){status.textContent='❌ Nhập email và mật khẩu nhé.';return}
+      try{status.textContent='⏳ Đang đăng nhập...';await window.studyStore.signInEmail(email,password,false);await redirectAfterLogin()}
+      catch(e){status.textContent='❌ '+(e?.message||'Email hoặc mật khẩu không đúng.')}
+    };
     init();
   </script>
 </body>
