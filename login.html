@@ -1,56 +1,26 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KatLearn Account - Login</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fff8fb">
+<title>KatLearn — Đăng nhập</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#f8f7ff,#fff7f8);font-family:'Be Vietnam Pro',sans-serif;color:#344054;padding:20px;overflow:hidden}.dream-layer{position:fixed;inset:0;pointer-events:none;opacity:.5}.dream-layer span{position:absolute;width:220px;height:220px;border-radius:50%;filter:blur(8px);background:#dcd7ff33}.dream-layer span:nth-child(1){top:-80px;left:-60px}.dream-layer span:nth-child(2){right:-80px;top:10%;background:#ffc9d833}.dream-layer span:nth-child(3){left:18%;bottom:-120px;background:#cdeeff33}.dream-layer span:nth-child(4){right:20%;bottom:-150px;background:#e8d5ff33}.dream-layer span:nth-child(5){left:45%;top:-160px;background:#ffdce833}.auth-screen{position:relative;z-index:1;width:min(980px,100%);min-height:620px;display:grid;grid-template-columns:1fr 430px;gap:42px;align-items:center}.auth-hero-panel{padding:28px 12px 28px 20px}.back-link{display:inline-block;color:#8792a5;text-decoration:none;font-size:11px;font-weight:600;margin-bottom:42px}.kicker{font-size:13px;font-weight:800;color:#dc6b80;margin:0 0 10px}.auth-hero-panel h1{font:800 clamp(38px,5vw,64px)/1.02 Fredoka;margin:0 0 18px;color:#302b3d;letter-spacing:-1px}.tagline{max-width:520px;color:#697386;font-size:16px;line-height:1.7;margin:0 0 26px}.mini-capybara{display:inline-flex;align-items:center;gap:10px;padding:11px 15px;border:1px solid #eee7f1;background:#ffffff99;border-radius:16px;color:#6d6170;font-size:12px;box-shadow:0 10px 30px #4c42630b}.mini-capybara span{font-size:25px}.auth-page-card{background:#fff;border:1px solid #ececf3;border-radius:24px;padding:30px;box-shadow:0 22px 60px #4c42631a}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#f7f5f8;padding:4px;border-radius:12px;margin-bottom:22px}.auth-tab{border:0;background:transparent;border-radius:9px;padding:10px;font:700 12px 'Be Vietnam Pro';color:#8a8f9d;cursor:pointer}.auth-tab.active{background:#fff;color:#dc6b80;box-shadow:0 3px 12px #4c42630e}.provider-login{display:grid;gap:10px}.provider-button{width:100%;border:1px solid #e3e6ed;background:#fff;border-radius:11px;padding:12px 14px;font:600 12px 'Be Vietnam Pro';cursor:pointer}.provider-button:hover{border-color:#aaa0ff;background:#faf9ff}.provider-button span{display:inline-grid;place-items:center;width:20px;margin-right:7px;font-weight:900;font-size:16px}.google span{color:#4285f4}.apple{background:#1d1e24;color:#fff;border-color:#1d1e24}.auth-divider{display:flex;align-items:center;gap:10px;color:#a5adba;font-size:10px;margin:17px 0}.auth-divider:before,.auth-divider:after{content:'';height:1px;background:#e8ebf0;flex:1}form{display:grid;gap:8px}label{font-size:11px;font-weight:700;color:#697386}input{width:100%;padding:12px;border:1px solid #e3e6ed;border-radius:10px;background:#fbfcff;outline:0;font:500 12px 'Be Vietnam Pro';margin-top:5px}.primary{width:100%;border:1px solid #f47c93;background:#f47c93;color:#fff;border-radius:11px;padding:12px 14px;font:700 12px 'Be Vietnam Pro';cursor:pointer;margin-top:4px}.primary:disabled{opacity:.65;cursor:wait}.switch{text-align:center;margin:15px 0 0;font-size:11px;color:#8792a5}.switch a{color:#dc6b80;font-weight:700;text-decoration:none}.status{text-align:center;min-height:18px;color:#d76576;font-size:10px;margin-top:10px}.status.ok{color:#4e9a73}.status.error{color:#d76576}.admin-note{font-size:9px;color:#a0a7b4;text-align:center;margin:12px 0 0;line-height:1.5}.footer-back{display:none}@media(max-width:760px){body{overflow:auto}.auth-screen{grid-template-columns:1fr;gap:12px;max-width:460px}.auth-hero-panel{padding:4px 4px 0;text-align:center}.auth-hero-panel h1{font-size:42px}.tagline{font-size:13px;margin:0 auto 18px}.mini-capybara{margin-bottom:10px}.auth-page-card{padding:24px}.footer-back{display:block;text-align:center;margin-top:14px;color:#8792a5;text-decoration:none;font-size:10px}}
-</style>
-</head>
-<body>
-<div class="dream-layer" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-<main class="auth-screen">
-<section class="auth-hero-panel" aria-labelledby="auth-page-title">
-<a class="back-link" href="index.html">← Quay lại KatLearn</a>
-<p class="kicker">🐹 KatLearn Account</p>
-<h1 id="auth-page-title">Học thông minh hơn.</h1>
-<p class="tagline">Đăng nhập để tiếp tục học, khôi phục KatCoin, tên tài khoản và toàn bộ tiến trình học tập của bạn. 📚✨</p>
-<div class="mini-capybara" aria-hidden="true"><span>🐹</span><strong>KatLearn Study Zone</strong></div>
-</section>
-<section class="auth-page-card" aria-label="Login form">
-<div class="auth-tabs"><button class="auth-tab active" type="button">Login</button><button class="auth-tab" type="button" onclick="location.href='signup.html'">Sign Up</button></div>
-<div class="provider-login">
-<button class="provider-button google" type="button" id="google"><span>G</span>Đăng nhập bằng Google</button>
-<button class="provider-button apple" type="button" id="apple"><span>●</span>Đăng nhập bằng Apple</button>
-</div>
-<div class="auth-divider"><span>hoặc dùng email</span></div>
-<form id="emailForm">
-<label>Email<input id="email" type="email" placeholder="you@example.com" autocomplete="email" required></label>
-<label>Mật khẩu<input id="password" type="password" placeholder="Mật khẩu" autocomplete="current-password" required></label>
-<button class="primary" id="emailLogin" type="submit">Đăng nhập →</button>
-</form>
-<p class="switch">Chưa có tài khoản? <a href="signup.html">Đăng ký ngay</a></p>
-<p class="status" id="status" aria-live="polite"></p>
-<p class="admin-note">Firebase Authentication là bước đăng nhập duy nhất. Đăng nhập thành công là vào KatLearn ngay.</p>
-<a class="footer-back" href="index.html">← Quay lại KatLearn</a>
-</section>
-</main>
-<script src="firebase-service.js"></script>
-<script>
-const $=s=>document.querySelector(s),status=$('#status');
-const STUDENT_HOME='https://lms-katlearn.netlify.app';
-let redirecting=false;
-function go(){if(redirecting)return;redirecting=true;location.replace(STUDENT_HOME)}
-async function init(){try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG)}catch(e){status.textContent='❌ '+(e?.message||'Không thể kết nối Firebase.')}}
-async function provider(type){try{status.textContent='⏳ Đang đăng nhập...';await window.studyStore.signIn(type);go()}catch(e){status.textContent='❌ '+(e?.message||'Không thể đăng nhập.')}}
-$('#google').onclick=()=>provider('google');
-$('#apple').onclick=()=>provider('apple');
-$('#emailForm').onsubmit=async e=>{e.preventDefault();const email=$('#email').value.trim().toLowerCase(),password=$('#password').value;if(!email||!password)return;try{status.textContent='⏳ Đang đăng nhập...';await window.studyStore.signInEmail(email,password,false);go()}catch(e){status.textContent='❌ '+(e?.message||'Email hoặc mật khẩu không đúng.')}};
-init();
-</script>
-</body>
-</html>
+:root{--p:#f47c93;--pd:#dc6b80;--ink:#302b3d;--muted:#727989}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:22px;overflow-x:hidden;font-family:'Be Vietnam Pro',sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 8%,#e8e4ff 0 10%,transparent 30%),radial-gradient(circle at 92% 88%,#ffe0e7 0 10%,transparent 30%),linear-gradient(135deg,#fbfaff,#fff8fa)}.blob{position:fixed;border-radius:50%;filter:blur(2px);opacity:.55;pointer-events:none}.b1{width:250px;height:250px;left:-110px;top:-100px;background:#ddd7ff}.b2{width:210px;height:210px;right:-80px;top:8%;background:#ffd0db}.b3{width:260px;height:260px;left:30%;bottom:-190px;background:#d9f1ff}.shell{position:relative;width:min(1040px,100%);display:grid;grid-template-columns:1fr 420px;gap:70px;align-items:center}.hero{padding:18px}.back{display:inline-block;margin-bottom:58px;text-decoration:none;color:#969baa;font-size:11px;font-weight:700}.eyebrow{margin:0 0 10px;color:var(--pd);font-size:13px;font-weight:800}.hero h1{margin:0 0 19px;font:700 clamp(44px,6vw,72px)/.98 Fredoka;letter-spacing:-1.5px}.hero p{max-width:540px;margin:0;color:#687080;font-size:15px;line-height:1.75}.badge{display:inline-flex;align-items:center;gap:10px;margin-top:28px;padding:11px 15px;border:1px solid #eee8f0;border-radius:16px;background:#ffffff99;color:#716878;font-size:11px;font-weight:700;box-shadow:0 12px 35px #4c42630b}.badge b{font-size:24px}.card{background:#ffffffee;backdrop-filter:blur(16px);border:1px solid #eeeaf1;border-radius:28px;padding:30px;box-shadow:0 28px 80px #4c42631a}.brand{display:flex;align-items:center;gap:10px;margin-bottom:22px}.logo{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#ff9caf,#ef6f89);color:#fff;font:700 23px Fredoka;box-shadow:0 9px 20px #f47c9340}.brand strong{font-size:13px}.brand small{display:block;margin-top:2px;color:#a0a5b1;font-size:9px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#f6f4f7;border-radius:13px;margin-bottom:22px}.tab{border:0;border-radius:9px;padding:10px;background:transparent;color:#9297a3;font:700 11px 'Be Vietnam Pro';cursor:pointer}.tab.active{background:#fff;color:var(--pd);box-shadow:0 3px 13px #4c42630d}.providers{display:grid;gap:9px}.provider{height:44px;border:1px solid #e4e5eb;border-radius:12px;background:#fff;font:600 11px 'Be Vietnam Pro';cursor:pointer}.provider:hover{border-color:#cfc8ff}.provider span{display:inline-grid;place-items:center;width:22px;margin-right:7px;font-weight:900;font-size:15px}.apple{background:#202126;color:#fff;border-color:#202126}.divider{display:flex;align-items:center;gap:10px;margin:17px 0;color:#a6abb5;font-size:9px}.divider:before,.divider:after{content:'';height:1px;background:#e8e8ed;flex:1}form{display:grid;gap:11px}label{font-size:10px;font-weight:800;color:#687080}input{display:block;width:100%;height:44px;margin-top:6px;padding:0 13px;border:1px solid #e2e4ea;border-radius:11px;background:#fbfcff;outline:0;font:500 11px 'Be Vietnam Pro';color:var(--ink)}input:focus{border-color:#b9afff;box-shadow:0 0 0 4px #8d7dff12}.submit{height:45px;border:0;border-radius:12px;background:var(--p);color:#fff;font:800 11px 'Be Vietnam Pro';cursor:pointer;margin-top:2px;box-shadow:0 8px 20px #f47c9330}.submit:disabled{opacity:.65;cursor:wait}.status{min-height:18px;margin-top:10px;text-align:center;font-size:9px;color:#d76576}.foot{text-align:center;margin:15px 0 0;color:#9197a4;font-size:10px}.foot a{color:var(--pd);font-weight:800;text-decoration:none}.note{margin:13px 0 0;text-align:center;color:#a4a9b3;font-size:8px;line-height:1.5}@media(max-width:780px){body{padding:16px}.shell{grid-template-columns:1fr;gap:15px;max-width:460px}.hero{text-align:center;padding:4px}.back{margin-bottom:24px}.hero h1{font-size:44px}.hero p{font-size:12px}.badge{margin-top:18px}.card{padding:24px;border-radius:23px}}
+</style></head>
+<body><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<main class="shell"><section class="hero"><a class="back" href="index.html">← Quay lại KatLearn</a><p class="eyebrow">🐹 KATLEARN ACCOUNT</p><h1>Học thông minh hơn.</h1><p>Một tài khoản cho KatLearn. Firebase Authentication xử lý đăng nhập trực tiếp, không kiểm tra Firestore trước khi cho bạn vào.</p><div class="badge"><b>🐹</b><span>Study • Practice • Grow</span></div></section>
+<section class="card"><div class="brand"><div class="logo">K</div><div><strong>KatLearn</strong><small>YOUR STUDY ZONE</small></div></div><div class="tabs"><button class="tab active" type="button">Đăng nhập</button><button class="tab" type="button" onclick="location.href='signup.html'">Tạo tài khoản</button></div>
+<div class="providers"><button class="provider" id="google" type="button"><span>G</span>Tiếp tục với Google</button><button class="provider apple" id="apple" type="button"><span>●</span>Tiếp tục với Apple</button></div><div class="divider"><span>hoặc email & mật khẩu</span></div>
+<form id="loginForm"><label>Email<input id="email" type="email" autocomplete="email" placeholder="you@example.com" required></label><label>Mật khẩu<input id="password" type="password" autocomplete="current-password" placeholder="Mật khẩu" required></label><button class="submit" id="submit" type="submit">Đăng nhập →</button></form><div class="status" id="status" aria-live="polite"></div><p class="foot">Chưa có tài khoản? <a href="signup.html">Đăng ký ngay</a></p><p class="note">Firebase Auth thành công → chuyển thẳng vào KatLearn.</p></section></main>
+<script type="module">
+import{initializeApp,getApps}from'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,signInWithEmailAndPassword,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+const config={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDomain:'elp---katlearn.firebaseapp.com',projectId:'elp---katlearn',storageBucket:'elp---katlearn.firebasestorage.app',messagingSenderId:'344478447672',appId:'1:344478447672:web:4ed109a40303d0b41b0ecd',measurementId:'G-KTW11GD97T'};
+const app=getApps().length?getApps()[0]:initializeApp(config),auth=getAuth(app),$=s=>document.querySelector(s),status=$('#status'),submit=$('#submit');const HOME='https://lms-katlearn.netlify.app';let busy=false;
+function go(){if(busy&&location.href.includes('lms-katlearn'))return;busy=true;location.replace(HOME)}function error(e){return e?.code==='auth/invalid-credential'?'Email hoặc mật khẩu không đúng.':e?.code==='auth/popup-closed-by-user'?'Bạn đã đóng cửa sổ đăng nhập.':e?.message||'Không thể đăng nhập.'}
+async function provider(kind){if(busy)return;try{busy=true;status.textContent='⏳ Đang đăng nhập...';const p=kind==='apple'?new OAuthProvider('apple.com'):new GoogleAuthProvider();if(kind==='apple')p.addScope('email');await signInWithPopup(auth,p);location.replace(HOME)}catch(e){busy=false;status.textContent='❌ '+error(e)}}
+$('#google').onclick=()=>provider('google');$('#apple').onclick=()=>provider('apple');$('#loginForm').onsubmit=async e=>{e.preventDefault();if(busy)return;try{busy=true;submit.disabled=true;status.textContent='⏳ Đang đăng nhập...';await signInWithEmailAndPassword(auth,$('#email').value.trim().toLowerCase(),$('#password').value);location.replace(HOME)}catch(e){busy=false;submit.disabled=false;status.textContent='❌ '+error(e)}};
+// Firebase Auth only. No Firestore/profile/role lookup on this page.
+onAuthStateChanged(auth,u=>{if(u&&!busy)location.replace(HOME)});
+</script></body></html>
