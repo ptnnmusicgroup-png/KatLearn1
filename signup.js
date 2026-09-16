@@ -19,10 +19,26 @@
       login.parentNode.insertBefore(btn,login.nextSibling);
       btn.addEventListener('click',openSignup);
     }
-    $('#logoutBtn')?.addEventListener('click',async()=>{try{await window.studyStore?.signOut();$('#accountPanel')?.setAttribute('hidden','')}catch(e){console.warn(e)}});
-    window.addEventListener('8b1-auth-change',e=>renderAuth(e.detail));
+    const logout=$('#logoutBtn');
+    if(logout&&!logout.dataset.katlearnBound){
+      logout.dataset.katlearnBound='1';
+      logout.addEventListener('click',async()=>{try{await window.studyStore?.signOut();$('#accountPanel')?.setAttribute('hidden','')}catch(e){console.warn(e)}});
+    }
+    if(!window.__KATLEARN_AUTH_CHANGE_BOUND){
+      window.__KATLEARN_AUTH_CHANGE_BOUND=true;
+      window.addEventListener('8b1-auth-change',e=>renderAuth(e.detail));
+    }
     if(window.studyStore?.user) renderAuth(window.studyStore.user);
   }
+
+  window.openKatLearnLogin=openLogin;
+
+  // Delegated fallback: even if another script replaces/rebuilds the header,
+  // clicking the login button still opens the auth dialog.
+  document.addEventListener('click',function(e){
+    const btn=e.target?.closest?.('#loginBtn');
+    if(btn){e.preventDefault();e.stopPropagation();openLogin();}
+  },true);
 
   function openLogin(){
     let modal=$('#loginModal');
