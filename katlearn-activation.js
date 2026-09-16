@@ -31,16 +31,40 @@
     const btn=document.createElement('button');
     btn.type='button'; btn.id='generateWordAI'; btn.className='primary-btn'; btn.style.marginBottom='10px'; btn.textContent='✨ AI tự điền nghĩa & phiên âm';
     word.parentNode.insertBefore(btn,meaning);
-    btn.addEventListener('click',async()=>{
-      const value=word.value.trim(); if(!value) return toast('Nhập từ tiếng Anh trước nhé.');
-      btn.disabled=true; btn.textContent='⏳ Kat AI đang tra...';
+
+    let timer=null, requestId=0, lastWord='';
+    const fillFromAI=async(value, silent=false)=>{
+      const clean=value.trim();
+      if(!clean || clean.length<2 || clean===lastWord) return;
+      lastWord=clean;
+      const id=++requestId;
+      if(!silent){ btn.disabled=true; btn.textContent='⏳ Kat AI đang tra...'; }
       try{
-        const res=await fetch('/api/vocab-assist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({word:value})});
+        const res=await fetch('/api/vocab-assist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({word:clean})});
         const data=await res.json(); if(!res.ok) throw new Error(data.error||'AI chưa sẵn sàng');
-        meaning.value=data.meaning||meaning.value; pron.value=data.pronunciation||pron.value;
-        toast(`✓ AI đã điền thông tin cho “${value}”.`);
-      }catch(err){toast(`❌ ${err.message}`)}finally{btn.disabled=false;btn.textContent='✨ AI tự điền nghĩa & phiên âm'}
+        if(id!==requestId || word.value.trim()!==clean) return;
+        meaning.value=data.meaning||meaning.value;
+        pron.value=data.pronunciation||pron.value;
+        meaning.dispatchEvent(new Event('input',{bubbles:true}));
+        pron.dispatchEvent(new Event('input',{bubbles:true}));
+        if(!silent) toast(`✓ AI đã điền thông tin cho “${clean}”.`);
+      }catch(err){
+        if(!silent) toast(`❌ ${err.message}`);
+      }finally{
+        if(!silent){ btn.disabled=false; btn.textContent='✨ AI tự điền nghĩa & phiên âm'; }
+      }
+    };
+
+    // Automatic mode: wait briefly after the user stops typing, then fill both fields.
+    word.addEventListener('input',()=>{
+      clearTimeout(timer);
+      const value=word.value.trim();
+      if(value.length<2){ lastWord=''; return; }
+      timer=setTimeout(()=>fillFromAI(value,true),700);
     });
+
+    // Keep the button as a manual fallback.
+    btn.addEventListener('click',()=>fillFromAI(word.value,false));
   }
   function wirePackSave(){
     window.addEventListener('pack-ready-to-save',async e=>{
