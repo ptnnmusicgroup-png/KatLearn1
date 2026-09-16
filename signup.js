@@ -24,20 +24,24 @@
 
   function openLogin(){
     styles();const m=overlay('loginModal',`<div class="login-box"><button class="kat-close" type="button">×</button><div class="login-logo">K</div><h2>Chào mừng trở lại!</h2><p>Đăng nhập để đồng bộ tiến độ học tập, KatCoin và bộ từ vựng.</p><button class="oauth-btn google" id="katGoogle"><b>G</b> Đăng nhập bằng Google</button><button class="oauth-btn apple" id="katApple"><b>●</b> Đăng nhập bằng Apple</button><div class="or-divider">hoặc</div><div class="email-login"><input id="katEmail" type="email" placeholder="Email" autocomplete="email"><input id="katPass" type="password" placeholder="Mật khẩu" autocomplete="current-password"><button class="oauth-btn email" id="katEmailLogin">Đăng nhập bằng Email</button></div><button class="text-auth-btn" id="katGoSignup">Chưa có tài khoản? Đăng ký ngay</button><div class="kat-status" id="katLoginStatus"></div></div>`);
-    m.querySelector('.kat-close').onclick=()=>m.remove();m.querySelector('#katGoSignup').onclick=()=>{m.remove();openSignup()};
+    m.querySelector('.kat-close').onclick=()=>m.remove();m.querySelector('#katGoSignup').onclick=()=>location.href='signup.html';
     const status=m.querySelector('#katLoginStatus');
     m.querySelector('#katGoogle').onclick=()=>doProvider('google',status,m);m.querySelector('#katApple').onclick=()=>doProvider('apple',status,m);m.querySelector('#katEmailLogin').onclick=()=>doEmail(status,m);
   }
   async function doProvider(provider,status,m){try{status.textContent='⏳ Đang đăng nhập...';await ensureFirebase();await window.studyStore.signIn(provider);m.remove()}catch(e){status.textContent='❌ '+(e?.message||'Không thể đăng nhập.')}}
   async function doEmail(status,m){const email=$('#katEmail').value.trim().toLowerCase(),pass=$('#katPass').value;if(!email||!pass){status.textContent='❌ Nhập email và mật khẩu nhé.';return}try{status.textContent='⏳ Đang đăng nhập...';await ensureFirebase();await window.studyStore.signInEmail(email,pass,false);m.remove()}catch(e){status.textContent='❌ '+(e?.message||'Email hoặc mật khẩu không đúng.')}}
 
-  function openSignup(){
-    styles();const m=overlay('signupModal',`<div class="login-box"><button class="kat-close" type="button">×</button><div class="login-logo">K</div><h2>Tạo tài khoản KatLearn</h2><p>Chọn vai trò để sử dụng đúng hệ thống.</p><div class="email-login"><input id="katName" placeholder="Họ và tên" maxlength="80"><input id="katSignupEmail" type="email" placeholder="Email" autocomplete="email"><input id="katSignupPass" type="password" placeholder="Mật khẩu (ít nhất 6 ký tự)" autocomplete="new-password"></div><div class="kat-role"><label><input type="radio" name="katRole" value="student" checked> 🎒 Học sinh</label><label><input type="radio" name="katRole" value="teacher"> 🧑‍🏫 Giáo viên</label></div><button class="oauth-btn email" id="katSignupSubmit">Tạo tài khoản →</button><button class="text-auth-btn" id="katGoLogin">Đã có tài khoản? Đăng nhập</button><div class="kat-status" id="katSignupStatus"></div></div>`);
-    m.querySelector('.kat-close').onclick=()=>m.remove();m.querySelector('#katGoLogin').onclick=()=>{m.remove();openLogin()};m.querySelector('#katSignupSubmit').onclick=()=>doSignup(m);
-  }
-  async function doSignup(m){const name=$('#katName').value.trim(),email=$('#katSignupEmail').value.trim().toLowerCase(),pass=$('#katSignupPass').value,role=m.querySelector('input[name="katRole"]:checked')?.value||'student',status=$('#katSignupStatus'),btn=$('#katSignupSubmit');if(!name||!email||pass.length<6){status.textContent='❌ Vui lòng nhập đủ thông tin.';return}btn.disabled=true;status.textContent='⏳ Đang tạo tài khoản...';try{await ensureFirebase();await window.studyStore.signInEmail(email,pass,true);await window.studyStore.saveProfile({displayName:name,role,email});status.textContent='✓ Tạo tài khoản thành công!';setTimeout(()=>{if(role==='teacher')location.href=TEACHER_URL;else location.reload()},500)}catch(e){status.textContent='❌ '+(e?.message||'Không thể tạo tài khoản.');btn.disabled=false}}
+  function openSignup(){location.href='signup.html'}
 
   function renderAuth(user){const login=$('#loginBtn'),trigger=$('#accountTrigger');if(!login)return;if(user){login.hidden=true;if(trigger){trigger.hidden=false;const name=user.displayName||user.email?.split('@')[0]||'Tài khoản';['#accountName','#panelName'].forEach(s=>$(s)&&($(s).textContent=name));if($('#panelEmail'))$('#panelEmail').textContent=user.email||'';const initial=name.trim().charAt(0).toUpperCase()||'K';['#accountAvatar','#panelAvatar'].forEach(s=>$(s)&&($(s).textContent=initial));if(!trigger.dataset.bound){trigger.dataset.bound='1';trigger.onclick=()=>$('#accountPanel')&&($('#accountPanel').hidden=!$('#accountPanel').hidden)}}}else{login.hidden=false;if(trigger)trigger.hidden=true}}
-  function boot(){const login=$('#loginBtn');if(!login)return;login.onclick=e=>{e.preventDefault();openLogin()};if(!$('#signupBtn')){const b=document.createElement('button');b.type='button';b.id='signupBtn';b.className=login.className;b.textContent='Đăng ký';login.parentNode.insertBefore(b,login.nextSibling);b.onclick=e=>{e.preventDefault();openSignup()}}const logout=$('#logoutBtn');if(logout&&!logout.dataset.katlearnBound){logout.dataset.katlearnBound='1';logout.onclick=async()=>{try{await window.studyStore?.signOut()}catch(e){console.warn(e)}}}window.addEventListener('8b1-auth-change',e=>renderAuth(e.detail));if(window.studyStore?.user)renderAuth(window.studyStore.user)}
+  function boot(){
+    const login=$('#loginBtn');
+    if(!login)return;
+    login.onclick=e=>{e.preventDefault();location.href='login.html'};
+    if(!$('#signupBtn')){const b=document.createElement('button');b.type='button';b.id='signupBtn';b.className=login.className;b.textContent='Đăng ký';login.parentNode.insertBefore(b,login.nextSibling);b.onclick=e=>{e.preventDefault();location.href='signup.html'}}
+    const logout=$('#logoutBtn');if(logout&&!logout.dataset.katlearnBound){logout.dataset.katlearnBound='1';logout.onclick=async()=>{try{await window.studyStore?.signOut()}catch(e){console.warn(e)}}}
+    window.addEventListener('8b1-auth-change',e=>renderAuth(e.detail));
+    if(window.studyStore?.user)renderAuth(window.studyStore.user)
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
