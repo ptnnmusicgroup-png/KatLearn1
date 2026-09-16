@@ -1,114 +1,43 @@
-// KatLearn account auth: login + signup, with Student/Teacher role routing.
+// KatLearn account UI: classic popup login + signup.
 (function(){
-  if(window.__KATLEARN_SIGNUP_LOADED)return;
-  window.__KATLEARN_SIGNUP_LOADED=true;
+  if(window.__KATLEARN_AUTH_UI_LOADED)return;
+  window.__KATLEARN_AUTH_UI_LOADED=true;
   const TEACHER_URL='https://teacher-katlearn.netlify.app';
   const $=s=>document.querySelector(s);
 
-  function boot(){
-    const login=$('#loginBtn');
-    if(!login) return;
-    if(!login.dataset.katlearnAuthBound){
-      login.dataset.katlearnAuthBound='1';
-      login.addEventListener('click',openLogin);
-    }
-    if(!$('#signupBtn')){
-      const btn=document.createElement('button');
-      btn.type='button'; btn.id='signupBtn'; btn.className=login.className;
-      btn.textContent='Đăng ký';
-      login.parentNode.insertBefore(btn,login.nextSibling);
-      btn.addEventListener('click',openSignup);
-    }
-    const logout=$('#logoutBtn');
-    if(logout&&!logout.dataset.katlearnBound){
-      logout.dataset.katlearnBound='1';
-      logout.addEventListener('click',async()=>{try{await window.studyStore?.signOut();$('#accountPanel')?.setAttribute('hidden','')}catch(e){console.warn(e)}});
-    }
-    if(!window.__KATLEARN_AUTH_CHANGE_BOUND){
-      window.__KATLEARN_AUTH_CHANGE_BOUND=true;
-      window.addEventListener('8b1-auth-change',e=>renderAuth(e.detail));
-    }
-    if(window.studyStore?.user) renderAuth(window.studyStore.user);
+  function styles(){
+    if($('#katlearnAuthStyles'))return;
+    const s=document.createElement('style');s.id='katlearnAuthStyles';s.textContent=`
+      .kat-auth-overlay{position:fixed;inset:0;background:#1f233055;display:flex;align-items:center;justify-content:center;padding:16px;z-index:10000;backdrop-filter:blur(3px)}
+      .login-box{background:#fff;border-radius:20px;padding:31px;width:min(360px,calc(100vw - 32px));box-shadow:0 20px 50px #1f233055;text-align:center;position:relative;box-sizing:border-box}
+      .login-logo{width:42px;height:42px;background:linear-gradient(135deg,#8d7dff,#5d4fea);border-radius:13px;display:grid;place-items:center;color:#fff;font:700 24px Fredoka;margin:0 auto 12px}
+      .login-box h2{font:700 23px Fredoka;margin:0 0 7px}.login-box p{font-size:11px;line-height:1.5;color:#8290a3;margin-bottom:19px}
+      .oauth-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:9px;padding:11px;margin:9px 0;border:1px solid #e3e6ed;background:#fff;color:#38455a;font:600 12px 'Be Vietnam Pro';cursor:pointer;box-sizing:border-box}
+      .oauth-btn:hover{background:#f9f9ff;border-color:#a69cff}.oauth-btn.google b{font:700 18px Arial;color:#4285f4}.oauth-btn.apple{background:#1c1d23;border-color:#1c1d23;color:#fff}.oauth-btn.apple b{font-size:18px}
+      .email-login input{width:100%;border:1px solid #e3e6ed;border-radius:8px;background:#fbfcff;padding:10px;margin:5px 0;font:500 11px 'Be Vietnam Pro';outline:0;box-sizing:border-box}.email-login input:focus{border-color:#f08a9b;box-shadow:0 0 0 3px #fff0f3}
+      .oauth-btn.email{background:#f47c93;color:#fff;border-color:#f47c93}.text-auth-btn{border:0;background:none;color:#dc6b80;font:600 10px 'Be Vietnam Pro';cursor:pointer;padding:4px}.or-divider{display:flex;align-items:center;gap:8px;color:#a6aebb;font-size:9px;margin:11px 0}.or-divider:before,.or-divider:after{content:'';height:1px;background:#e8ebf0;flex:1}
+      .kat-close{position:absolute;right:12px;top:10px;border:0;background:none;font-size:24px;color:#a1aaba;cursor:pointer}.kat-status{min-height:18px;font-size:10px;color:#e06b79;margin:8px 0 0}.kat-role{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.kat-role label{border:1px solid #e3e6ed;border-radius:9px;padding:10px;font-size:10px;cursor:pointer}.kat-role label:has(input:checked){border-color:#f47c93;background:#fff4f6}
+    `;document.head.appendChild(s);
   }
-
-  window.openKatLearnLogin=openLogin;
-
-  // Delegated fallback: even if another script replaces/rebuilds the header,
-  // clicking the login button still opens the auth dialog.
-  document.addEventListener('click',function(e){
-    const btn=e.target?.closest?.('#loginBtn');
-    if(btn){e.preventDefault();e.stopPropagation();openLogin();}
-  },true);
+  function overlay(id,html){let m=$('#'+id);if(m){m.style.display='flex';return m}m=document.createElement('div');m.id=id;m.className='kat-auth-overlay';m.innerHTML=html;document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m)m.remove()});return m}
+  async function ensureFirebase(){if(window.studyStore?.connected())return;if(!window.studyStore?.connect)throw new Error('Firebase chưa được tải.');await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG)}
 
   function openLogin(){
-    let modal=$('#loginModal');
-    if(modal){modal.classList.add('show');return;}
-    modal=document.createElement('div');
-    modal.id='loginModal'; modal.className='modal-overlay show';
-    modal.innerHTML=`<div class="modal-card" style="max-width:520px">
-      <button type="button" class="modal-close login-close">×</button>
-      <p class="eyebrow">KATLEARN ACCOUNT</p><h2>Đăng nhập</h2>
-      <p class="subtext">Đăng nhập để đồng bộ tiến độ, KatCoin và bộ từ vựng.</p>
-      <button id="googleLogin" type="button" class="primary-btn" style="width:100%;margin:12px 0">🔵 Đăng nhập bằng Google</button>
-      <div style="display:flex;align-items:center;gap:10px;margin:14px 0;color:#888"><span style="height:1px;background:#ddd;flex:1"></span>hoặc<span style="height:1px;background:#ddd;flex:1"></span></div>
-      <form id="loginForm">
-        <label style="display:block;margin:10px 0 6px;font-weight:700">Email</label>
-        <input id="loginEmail" type="email" required autocomplete="email" placeholder="you@example.com" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd">
-        <label style="display:block;margin:14px 0 6px;font-weight:700">Mật khẩu</label>
-        <input id="loginPassword" type="password" required autocomplete="current-password" placeholder="Mật khẩu" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd">
-        <button id="loginSubmit" type="submit" class="primary-btn" style="width:100%;margin-top:18px">Đăng nhập →</button>
-        <p id="loginStatus" style="min-height:24px;margin:10px 0 0"></p>
-      </form>
-    </div>`;
-    document.body.appendChild(modal);
-    modal.querySelector('.login-close').onclick=()=>modal.classList.remove('show');
-    modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
-    modal.querySelector('#googleLogin').onclick=async()=>{
-      const status=modal.querySelector('#loginStatus');
-      try{await ensureFirebase();await window.studyStore.signIn('google');modal.classList.remove('show')}
-      catch(err){status.textContent='❌ '+(err?.message||'Không thể đăng nhập Google.')}
-    };
-    modal.querySelector('#loginForm').onsubmit=submitLogin;
+    styles();const m=overlay('loginModal',`<div class="login-box"><button class="kat-close" type="button">×</button><div class="login-logo">K</div><h2>Chào mừng trở lại!</h2><p>Đăng nhập để đồng bộ tiến độ học tập, KatCoin và bộ từ vựng.</p><button class="oauth-btn google" id="katGoogle"><b>G</b> Đăng nhập bằng Google</button><button class="oauth-btn apple" id="katApple"><b>●</b> Đăng nhập bằng Apple</button><div class="or-divider">hoặc</div><div class="email-login"><input id="katEmail" type="email" placeholder="Email" autocomplete="email"><input id="katPass" type="password" placeholder="Mật khẩu" autocomplete="current-password"><button class="oauth-btn email" id="katEmailLogin">Đăng nhập bằng Email</button></div><button class="text-auth-btn" id="katGoSignup">Chưa có tài khoản? Đăng ký ngay</button><div class="kat-status" id="katLoginStatus"></div></div>`);
+    m.querySelector('.kat-close').onclick=()=>m.remove();m.querySelector('#katGoSignup').onclick=()=>{m.remove();openSignup()};
+    const status=m.querySelector('#katLoginStatus');
+    m.querySelector('#katGoogle').onclick=()=>doProvider('google',status,m);m.querySelector('#katApple').onclick=()=>doProvider('apple',status,m);m.querySelector('#katEmailLogin').onclick=()=>doEmail(status,m);
   }
+  async function doProvider(provider,status,m){try{status.textContent='⏳ Đang đăng nhập...';await ensureFirebase();await window.studyStore.signIn(provider);m.remove()}catch(e){status.textContent='❌ '+(e?.message||'Không thể đăng nhập.')}}
+  async function doEmail(status,m){const email=$('#katEmail').value.trim().toLowerCase(),pass=$('#katPass').value;if(!email||!pass){status.textContent='❌ Nhập email và mật khẩu nhé.';return}try{status.textContent='⏳ Đang đăng nhập...';await ensureFirebase();await window.studyStore.signInEmail(email,pass,false);m.remove()}catch(e){status.textContent='❌ '+(e?.message||'Email hoặc mật khẩu không đúng.')}}
 
   function openSignup(){
-    let modal=$('#signupModal');
-    if(modal){modal.classList.add('show');return;}
-    modal=document.createElement('div'); modal.id='signupModal'; modal.className='modal-overlay show';
-    modal.innerHTML=`<div class="modal-card" style="max-width:520px"><button type="button" class="modal-close signup-close">×</button><p class="eyebrow">KATLEARN ACCOUNT</p><h2>Đăng ký tài khoản</h2><p class="subtext">Chọn đúng vai trò để KatLearn đưa bạn đến đúng nơi.</p><form id="signupForm"><label style="display:block;margin:14px 0 6px;font-weight:700">Họ và tên</label><input id="signupName" required maxlength="80" placeholder="Nguyễn Văn A" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd"><label style="display:block;margin:14px 0 6px;font-weight:700">Email</label><input id="signupEmail" type="email" required autocomplete="email" placeholder="you@example.com" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd"><label style="display:block;margin:14px 0 6px;font-weight:700">Mật khẩu</label><input id="signupPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="Ít nhất 6 ký tự" style="width:100%;padding:12px;border-radius:12px;border:1px solid #ddd"><label style="display:block;margin:14px 0 8px;font-weight:700">Bạn là</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label style="cursor:pointer;border:1px solid #ddd;border-radius:14px;padding:14px"><input type="radio" name="signupRole" value="student" checked> 🎒 Học sinh</label><label style="cursor:pointer;border:1px solid #ddd;border-radius:14px;padding:14px"><input type="radio" name="signupRole" value="teacher"> 🧑‍🏫 Giáo viên</label></div><button id="signupSubmit" type="submit" class="primary-btn" style="width:100%;margin-top:18px">Tạo tài khoản →</button><p id="signupStatus" style="min-height:24px;margin:10px 0 0"></p></form></div>`;
-    document.body.appendChild(modal);
-    modal.querySelector('.signup-close').onclick=()=>modal.classList.remove('show');
-    modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
-    modal.querySelector('#signupForm').onsubmit=submitSignup;
+    styles();const m=overlay('signupModal',`<div class="login-box"><button class="kat-close" type="button">×</button><div class="login-logo">K</div><h2>Tạo tài khoản KatLearn</h2><p>Chọn vai trò để sử dụng đúng hệ thống.</p><div class="email-login"><input id="katName" placeholder="Họ và tên" maxlength="80"><input id="katSignupEmail" type="email" placeholder="Email" autocomplete="email"><input id="katSignupPass" type="password" placeholder="Mật khẩu (ít nhất 6 ký tự)" autocomplete="new-password"></div><div class="kat-role"><label><input type="radio" name="katRole" value="student" checked> 🎒 Học sinh</label><label><input type="radio" name="katRole" value="teacher"> 🧑‍🏫 Giáo viên</label></div><button class="oauth-btn email" id="katSignupSubmit">Tạo tài khoản →</button><button class="text-auth-btn" id="katGoLogin">Đã có tài khoản? Đăng nhập</button><div class="kat-status" id="katSignupStatus"></div></div>`);
+    m.querySelector('.kat-close').onclick=()=>m.remove();m.querySelector('#katGoLogin').onclick=()=>{m.remove();openLogin()};m.querySelector('#katSignupSubmit').onclick=()=>doSignup(m);
   }
+  async function doSignup(m){const name=$('#katName').value.trim(),email=$('#katSignupEmail').value.trim().toLowerCase(),pass=$('#katSignupPass').value,role=m.querySelector('input[name="katRole"]:checked')?.value||'student',status=$('#katSignupStatus'),btn=$('#katSignupSubmit');if(!name||!email||pass.length<6){status.textContent='❌ Vui lòng nhập đủ thông tin.';return}btn.disabled=true;status.textContent='⏳ Đang tạo tài khoản...';try{await ensureFirebase();await window.studyStore.signInEmail(email,pass,true);await window.studyStore.saveProfile({displayName:name,role,email});status.textContent='✓ Tạo tài khoản thành công!';setTimeout(()=>{if(role==='teacher')location.href=TEACHER_URL;else location.reload()},500)}catch(e){status.textContent='❌ '+(e?.message||'Không thể tạo tài khoản.');btn.disabled=false}}
 
-  async function ensureFirebase(){
-    if(window.studyStore?.connected())return;
-    if(!window.studyStore?.connect)throw new Error('Firebase chưa được tải.');
-    await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG);
-  }
-
-  async function submitLogin(e){
-    e.preventDefault(); const form=e.currentTarget;
-    const email=form.querySelector('#loginEmail').value.trim().toLowerCase(),password=form.querySelector('#loginPassword').value,status=form.querySelector('#loginStatus'),submit=form.querySelector('#loginSubmit');
-    submit.disabled=true;status.textContent='⏳ Đang đăng nhập...';
-    try{await ensureFirebase();await window.studyStore.signInEmail(email,password,false);status.textContent='✓ Đăng nhập thành công!';setTimeout(()=>$('#loginModal')?.classList.remove('show'),400)}
-    catch(err){status.textContent='❌ '+(err?.message||'Email hoặc mật khẩu không đúng.');submit.disabled=false}
-  }
-
-  async function submitSignup(e){
-    e.preventDefault(); const form=e.currentTarget;
-    const name=form.querySelector('#signupName').value.trim(),email=form.querySelector('#signupEmail').value.trim().toLowerCase(),password=form.querySelector('#signupPassword').value,role=form.querySelector('input[name="signupRole"]:checked')?.value||'student',status=form.querySelector('#signupStatus'),submit=form.querySelector('#signupSubmit');
-    submit.disabled=true;status.textContent='⏳ Đang tạo tài khoản...';
-    try{await ensureFirebase();await window.studyStore.signInEmail(email,password,true);await window.studyStore.saveProfile({displayName:name,role,email});status.textContent=role==='teacher'?'✓ Tài khoản giáo viên đã được tạo. Đang chuyển...':'✓ Tạo tài khoản thành công!';setTimeout(()=>{if(role==='teacher')location.href=TEACHER_URL;else location.reload()},500)}
-    catch(err){status.textContent='❌ '+(err?.message||'Không thể tạo tài khoản.');submit.disabled=false}
-  }
-
-  function renderAuth(user){
-    const login=$('#loginBtn'),trigger=$('#accountTrigger'); if(!login||!trigger)return;
-    if(user){login.hidden=true;trigger.hidden=false;const name=user.displayName||user.email?.split('@')[0]||'Tài khoản';['#accountName','#panelName'].forEach(s=>$(s)&&($(s).textContent=name));if($('#panelEmail'))$('#panelEmail').textContent=user.email||'';const initial=name.trim().charAt(0).toUpperCase()||'K';['#accountAvatar','#panelAvatar'].forEach(s=>$(s)&&($(s).textContent=initial));if(!trigger.dataset.bound){trigger.dataset.bound='1';trigger.onclick=()=>$('#accountPanel').hidden=!$('#accountPanel').hidden}}
-    else{login.hidden=false;trigger.hidden=true;if($('#accountPanel'))$('#accountPanel').hidden=true}
-  }
-
+  function renderAuth(user){const login=$('#loginBtn'),trigger=$('#accountTrigger');if(!login)return;if(user){login.hidden=true;if(trigger){trigger.hidden=false;const name=user.displayName||user.email?.split('@')[0]||'Tài khoản';['#accountName','#panelName'].forEach(s=>$(s)&&($(s).textContent=name));if($('#panelEmail'))$('#panelEmail').textContent=user.email||'';const initial=name.trim().charAt(0).toUpperCase()||'K';['#accountAvatar','#panelAvatar'].forEach(s=>$(s)&&($(s).textContent=initial));if(!trigger.dataset.bound){trigger.dataset.bound='1';trigger.onclick=()=>$('#accountPanel')&&($('#accountPanel').hidden=!$('#accountPanel').hidden)}}}else{login.hidden=false;if(trigger)trigger.hidden=true}}
+  function boot(){const login=$('#loginBtn');if(!login)return;login.onclick=e=>{e.preventDefault();openLogin()};if(!$('#signupBtn')){const b=document.createElement('button');b.type='button';b.id='signupBtn';b.className=login.className;b.textContent='Đăng ký';login.parentNode.insertBefore(b,login.nextSibling);b.onclick=e=>{e.preventDefault();openSignup()}}const logout=$('#logoutBtn');if(logout&&!logout.dataset.katlearnBound){logout.dataset.katlearnBound='1';logout.onclick=async()=>{try{await window.studyStore?.signOut()}catch(e){console.warn(e)}}}window.addEventListener('8b1-auth-change',e=>renderAuth(e.detail));if(window.studyStore?.user)renderAuth(window.studyStore.user)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
