@@ -1,6 +1,8 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KatLearn SSO</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;font:600 14px system-ui;background:#faf9ff;color:#4b465c}.box{padding:28px 32px;border:1px solid #eee;border-radius:18px;background:#fff;box-shadow:0 15px 45px #0001;text-align:center}small{display:block;margin-top:8px;color:#8d879b}</style></head><body><div class="box">🔐 Đang đồng bộ tài khoản KatLearn…<small>Vui lòng chờ một chút.</small></div><script src="firebase-service.js"></script><script>
 const TEACHER='https://teacher-katlearn.netlify.app';
-const qs=new URLSearchParams(location.search);const target=qs.get('return')||'teacher';const back=target==='teacher'?TEACHER:'https://lms-katlearn.netlify.app';
+const LMS='https://lms-katlearn.netlify.app';
+const LOGIN=LMS+'/login.html';
+const qs=new URLSearchParams(location.search);const target=qs.get('return')||'teacher';const back=target==='teacher'?TEACHER:LMS;
 function go(path){location.replace(back+path)}
-(async()=>{try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG);const u=window.studyStore.user;if(!u)return go('/?sso=none');const token=await u.getIdToken(true);location.replace(back+'/#katlearn_id_token='+encodeURIComponent(token)+'&from=lms')}catch(e){console.error(e);go('/?sso=error')}})();
+(async()=>{try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG);const u=window.studyStore.user;if(!u){location.replace(LOGIN+'?sso=none');return}const token=await u.getIdToken(true);location.replace(back+'/#katlearn_id_token='+encodeURIComponent(token)+'&from=lms')}catch(e){console.error(e);location.replace(LOGIN+'?sso=error')}})();
 </script></body></html>
