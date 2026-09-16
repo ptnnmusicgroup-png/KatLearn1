@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KatLearn | English Learning Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="extras.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#"><span class="brand-mark">🐱</span><span>Kat<span>Learn</span></span></a>
+      <p class="class-label">English learning platform</p>
+      <nav>
+        <button class="nav-item active" data-page="home"><span>⌂</span> Trang chủ</button>
+        <button class="nav-item" data-page="packs"><span>▣</span> Bộ từ vựng</button>
+        <button class="nav-item" data-page="words"><span>☷</span> Từ vựng</button>
+        <button class="nav-item" data-page="practice"><span>✦</span> Game phản xạ</button>
+        <button class="nav-item" data-page="shop"><span>◈</span> Cửa hàng</button>
+        <button class="nav-item" data-page="ranking"><span>♛</span> Xếp hạng</button>
+        <button class="nav-item" data-page="progress"><span>◔</span> Tiến độ</button>
+        <button class="nav-item admin-nav" data-page="admin" hidden><span>⚙</span> Quản trị</button>
+      </nav>
+      <div class="teacher-card">
+        <span class="teacher-icon">🐾</span>
+        <strong>Khu vực giáo viên</strong>
+        <small>Tạo lớp học & theo dõi học sinh</small>
+        <button>Khám phá →</button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <button class="menu-toggle">☰</button>
+        <div class="search">⌕ <span>Tìm chủ đề, từ vựng...</span></div>
+        <div class="top-actions"><button class="login-btn" id="loginBtn">Đăng nhập</button><button class="account-trigger" id="accountTrigger" hidden><span class="account-avatar" id="accountAvatar">K</span><span id="accountName">Tài khoản</span><i>⌄</i></button><button class="settings-btn" id="settingsBtn" title="Cấu hình Firebase & AI">⚙</button><button class="notification">♧<i></i></button><button class="coin-pill">🪙 <b id="coinCount">0</b></button><div class="account-panel" id="accountPanel" hidden><div class="account-panel-head"><span class="account-avatar large" id="panelAvatar">K</span><div><b id="panelName">Tài khoản KatLearn</b><small id="panelEmail"></small></div></div><div class="account-stats"><div><span>🪙</span><b id="panelCoins">0</b><small>Xu</small></div><div><span>⚡</span><b id="panelEnergy">0</b><small>Năng lượng</small></div><div><span>📚</span><b id="panelWords">0</b><small>Từ vựng</small></div></div><button class="account-menu-btn" id="openProgress">◔ Tiến độ học tập</button><button class="account-menu-btn danger" id="logoutBtn">↪ Đăng xuất</button></div></div>
+      </header>
+
+      <section id="home" class="page active-page">
+        <div class="greeting-row">
+          <div><p class="eyebrow">THỨ HAI, 15 THÁNG 9</p><h1>Chào buổi sáng! <span>☀️</span></h1><p class="subtext">Mỗi từ mới là một bước gần hơn đến mục tiêu của bạn.</p></div>
+          <div class="streak-card"><span class="fire">🔥</span><div><b>7 ngày</b><small>Chuỗi học tập</small></div><div class="streak-days"><i>✓</i><i>✓</i><i>✓</i><i>✓</i><i>✓</i><i>✓</i><i class="today">H</i></div></div>
+        </div>
+        <section class="hero-card">
+          <div class="hero-content"><span class="tag">BẮT ĐẦU HÔM NAY · 🐾</span><h2>Tạo <em>bộ từ của bạn</em></h2><p>Thêm những từ vựng đầu tiên để Kat đồng hành cùng bạn trong mỗi bài học.</p><div class="hero-meta"><span>▣ Từ vựng cá nhân</span><span>◷ Học theo tốc độ riêng</span></div><button class="primary-btn start-lesson">Thêm từ đầu tiên <span>→</span></button></div>
+          <div class="hero-art"><div class="blob"></div><div class="cat-hero">🐱<span>📖</span><i>✦</i></div><div class="floating-card f1">meow-velous! <b>🐾</b></div><div class="floating-card f2">A+ <b>🐟</b></div></div>
+        </section>
+        <section class="section-heading"><div><h2>Hôm nay bạn muốn làm gì?</h2><p>Chọn một hoạt động để bắt đầu hành trình.</p></div></section>
+        <div class="activity-grid">
+          <button class="activity-card coral" data-go="learn"><span class="activity-icon">🗂️</span><span><b>Flashcard</b><small>Lật thẻ, nhớ từ thật nhanh</small></span><i>→</i></button>
+          <button class="activity-card blue" data-go="practice"><span class="activity-icon">✓</span><span><b>Chọn đáp án</b><small>Thử thách kiến thức của bạn</small></span><i>→</i></button>
+          <button class="activity-card purple" data-go="practice"><span class="activity-icon">⌁</span><span><b>Nối từ vựng</b><small>Ghép đúng, học vui hơn</small></span><i>→</i></button>
+          <button class="activity-card yellow" data-go="practice"><span class="activity-icon">☷</span><span><b>Học theo ngữ cảnh</b><small>Hiểu sâu, nhớ lâu hơn</small></span><i>→</i></button>
+        </div>
+        <div class="bottom-grid"><section class="daily-goal"><div class="goal-icon">🎯</div><div><p>Mục tiêu hôm nay</p><h3>Hoàn thành 10 câu hỏi</h3><div class="progress-line"><span id="dailyProgress"></span></div><small><b id="dailyCount">0 / 10</b> câu đã hoàn thành</small></div><strong id="dailyPercent">0%</strong></section><section class="mini-ranking"><div class="card-title"><h3>Top bảng xếp hạng</h3><button data-go="ranking">Xem tất cả →</button></div><div id="miniRanking" class="empty-state">Đăng nhập và học để xuất hiện trên bảng xếp hạng. 🐾</div></section></div>
+      </section>
+
+      <section id="packs" class="page"><div class="page-intro"><div><p class="eyebrow">KHO TỪ VỰNG CỦA KATLEARN</p><h1>Bộ từ vựng</h1><p class="subtext">Chọn một pack công khai hoặc tạo bộ từ của riêng bạn để bắt đầu.</p></div><button class="add-word-btn" id="createPersonalPack">＋ Tạo bộ từ</button></div><div class="pack-tabs"><button class="active">Bộ từ của tôi</button><button>Cộng đồng</button></div><div class="pack-summary"><div><span>📚</span><b id="personalPackCount">0</b><small>Bộ từ đã chọn</small></div><div><span>🔤</span><b id="personalWordCount">0</b><small>Tổng từ vựng</small></div><div><span>✓</span><b id="personalKnownCount">0</b><small>Đã thuộc</small></div></div><div class="pack-library" id="packLibrary"><div class="empty-state">Đăng nhập để xem các pack từ vựng công khai. 🐾</div></div></section>
+
+      <section id="words" class="page"><div class="page-intro"><div><p class="eyebrow">TỪ VỰNG CỦA BẠN</p><h1>Kho từ vựng</h1><p class="subtext">Quản lý toàn bộ từ trong pack bạn đang học.</p></div><button class="add-word-btn" id="addWordFromList">＋ Thêm từ</button></div><div class="word-summary"><div><small>Tổng</small><b id="wordTotalStat">0</b></div><div><small>Thuộc</small><b id="wordKnownStat">0</b></div><div><small>Chưa thuộc</small><b id="wordUnknownStat">0</b></div><div><small>Tiến độ</small><b id="wordProgressStat">0%</b></div></div><div class="word-table-card"><div class="word-table-tools"><div class="word-search">⌕ <input id="wordSearch" placeholder="Tìm từ..." autocomplete="off"></div><button id="openFlashcards">Học flashcard →</button></div><div class="word-table-head"><span>Từ vựng</span><span>Nghĩa</span><span>Phiên âm</span><span>Trạng thái</span></div><div id="wordTable"><div class="empty-state">Chưa có từ vựng. Hãy tạo hoặc chọn một bộ từ. 🐱</div></div></div></section>
+
+      <section id="learn" class="page">
+        <div class="page-intro"><div><p class="eyebrow">BỘ TỪ CỦA BẠN</p><h1>Flashcard từ vựng</h1><p class="subtext">Thêm từ mới để bắt đầu lật thẻ và ghi nhớ.</p></div><div class="learn-actions"><button class="add-word-btn" id="addWordBtn">＋ Thêm từ vựng</button><div class="learning-score">Đã thuộc <b id="knownCount">0</b>/<span id="totalWords">0</span> từ</div></div></div>
+        <div id="publishedPacks" class="published-packs empty-state">Đăng nhập để xem các pack từ vựng công khai.</div><div class="flash-layout"><aside class="word-list"><h3>Danh sách từ <span id="wordListCount">0</span></h3><div id="wordList"></div></aside><div class="flash-stage"><div class="card-progress"><span id="cardStep">00</span> / <span id="cardTotal">0</span> <div><i></i><i></i><i></i><i></i></div></div><div class="flashcard" id="flashcard"><div class="card-face card-front"><span class="sound">🐾</span><span class="word-type">KATLEARN</span><h2 id="cardWord">Chưa có từ vựng</h2><p id="cardPronounce">Hãy thêm từ đầu tiên của bạn</p><div class="card-visual">🐱</div><small>Nhấn “Thêm từ vựng” để bắt đầu</small></div><div class="card-face card-back"><span class="word-type">SẴN SÀNG HỌC</span><h2 id="cardMeaning">Kat đang<br>chờ bạn!</h2><p>Hãy tạo bộ từ cá nhân để luyện tập.</p><div class="card-visual">✨</div><small>Nhấn để xem lại</small></div></div><div class="flash-controls"><button id="prevCard">←</button><button class="know-btn" id="knowBtn">✓ Đã thuộc</button><button id="nextCard">→</button></div></div></div>
+      </section>
+
+      <section id="practice" class="page">
+        <div class="page-intro"><div><p class="eyebrow">LUYỆN TẬP THÔNG MINH</p><h1>Chọn chế độ học</h1><p class="subtext">Mỗi câu trả lời đúng giúp bạn nhận 10 xu.</p></div><div class="coin-earned">🪙 +10 xu / câu đúng</div></div>
+        <div class="mode-grid"><button class="mode-card active-mode" data-mode="engvi"><span>🇬🇧 → 🇻🇳</span><h3>English → Vietnamese</h3><p>Nhìn từ tiếng Anh, chọn nghĩa đúng.</p><b>Bắt đầu →</b></button><button class="mode-card" data-mode="vieng"><span>🇻🇳 → 🇬🇧</span><h3>Vietnamese → English</h3><p>Nhìn nghĩa tiếng Việt, chọn từ đúng.</p><b>Bắt đầu →</b></button><button class="mode-card" data-mode="context"><span>✦ AI</span><h3>Học theo ngữ cảnh</h3><p>Đoán nghĩa từ câu nói đời thường.</p><b>Bắt đầu →</b></button></div>
+        <div class="quiz-panel"><div class="quiz-top"><span class="quiz-badge">CÂU <b id="questionNumber">0</b> / 10</span><div class="quiz-progress"><i id="quizProgress"></i></div><span class="quiz-coins">🪙 <b id="sessionCoins">0</b></span></div><div class="question-wrap"><p id="questionHint">Bạn cần thêm từ vựng trước khi luyện tập.</p><h2 id="questionWord">Chưa có bộ từ</h2><p class="pronounce" id="questionPronounce"></p></div><div class="answers" id="answers"></div><div class="feedback" id="feedback"></div></div>
+      </section>
+
+      <section id="progress" class="page"><div class="page-intro"><div><p class="eyebrow">HÀNH TRÌNH CỦA BẠN</p><h1>Tiến độ học tập</h1><p class="subtext">Tiến độ sẽ được tạo từ những lần học thực tế của bạn.</p></div></div><div class="stat-grid"><div><span>📚</span><p>Từ đã học</p><h2>0</h2><small>Hãy thêm từ vựng đầu tiên</small></div><div><span>🎯</span><p>Tỷ lệ chính xác</p><h2>—</h2><small>Chưa có dữ liệu</small></div><div><span>🔥</span><p>Chuỗi dài nhất</p><h2>0 ngày</h2><small>Bắt đầu học hôm nay</small></div><div><span>⏱️</span><p>Thời gian học</p><h2>0h</h2><small>Chưa có dữ liệu</small></div></div><div class="progress-content"><section class="chart-card"><h3>Hoạt động 7 ngày qua</h3><div class="empty-state">Chưa có hoạt động để hiển thị. 🐾</div></section><section class="weak-card"><h3>Cần ôn lại <span>✦</span></h3><p>Các từ thường trả lời sai sẽ tự động xuất hiện tại đây.</p><div class="empty-state">Chưa có từ cần ôn lại.</div></section></div></section>
+
+      <section id="ranking" class="page"><div class="page-intro"><div><p class="eyebrow">THI ĐUA CÙNG BẠN BÈ</p><h1>Bảng xếp hạng</h1><p class="subtext">Chỉ hiển thị thành tích từ người dùng KatLearn đã đăng nhập.</p></div><div class="rank-tabs"><button class="active">⚡ Năng lượng</button><button>🔥 Chuỗi ngày</button></div></div><div id="rankingContent" class="ranking-list empty-state">Đăng nhập để xem bảng xếp hạng thực tế. 🐱</div></section>
+
+      <section id="shop" class="page"><div class="page-intro"><div><p class="eyebrow">DÙNG XU CỦA BẠN</p><h1>Cửa hàng phần thưởng</h1><p class="subtext">Cá tính hoá góc học tập của riêng bạn.</p></div><div class="wallet">Ví của bạn: <b>🪙 <span id="shopCoins">0</span></b></div></div><div class="shop-grid"><article><div class="shop-image lavender">🌌</div><h3>Nền vũ trụ tím</h3><p>Trang trí không gian học tập</p><button data-price="350">🪙 350</button></article><article><div class="shop-image peach">🐼</div><h3>Avatar gấu trúc</h3><p>Đáng yêu & độc đáo</p><button data-price="500">🪙 500</button></article><article><div class="shop-image mint">⚡</div><h3>Gói năng lượng</h3><p>+100 năng lượng BXH</p><button data-price="200">🪙 200</button></article><article><div class="shop-image sky">🏆</div><h3>Khung hồ sơ vàng</h3><p>Phiên bản giới hạn</p><button data-price="800">🪙 800</button></article></div></section>
+      <section id="admin" class="page"><div class="page-intro"><div><p class="eyebrow">KATLEARN CONTROL CENTER</p><h1>Quản trị hệ thống 🐱</h1><p class="subtext">Tạo nội dung học tập công khai và quản lý AI cho toàn bộ học sinh.</p></div><div class="admin-chip">● ADMIN</div></div><div class="admin-grid"><section class="admin-card"><h3>📚 Pack từ vựng công khai</h3><p>Mỗi pack gồm nhiều từ vựng. Học sinh có thể chọn một pack để học.</p><button class="create-pack-btn" id="openPackModal">＋ Tạo pack mới</button></section><section class="admin-card"><h3>✦ AI Ngữ cảnh</h3><p id="aiStatus">Sẵn sàng kết nối Firebase Cloud Function.</p><div class="admin-ai-note"><b>🔐 API key không hiển thị trên web</b><span>Để kích hoạt, admin nhập key qua Firebase CLI với lệnh secret. Học sinh chỉ gọi AI qua Cloud Function sau khi deploy.</span></div><code>firebase functions:secrets:set OPENAI_API_KEY</code><button class="admin-outline" id="copySecretCommand">Sao chép lệnh</button></section><section class="admin-card wide"><h3>Pack đã xuất bản</h3><div id="publicPackList" class="empty-state">Chưa có pack công khai.</div></section></div></section>
+    </main>
+  </div>
+  <div id="toast"></div>
+  <div id="resultModal" class="modal"><div class="modal-box"><span>🎉</span><h2>Tuyệt vời!</h2><p>Bạn đã hoàn thành phần luyện tập.</p><div>Nhận được <b id="reward">+0 🪙</b></div><button class="primary-btn close-modal">Tiếp tục học</button></div></div>
+  <div id="wordModal" class="modal"><form class="word-modal-box" id="wordForm"><button type="button" class="modal-close" id="closeWordModal">×</button><span class="form-icon">📚</span><p class="eyebrow">TẠO BỘ TỪ CỦA BẠN</p><h2>Thêm từ vựng mới</h2><p>Từ này sẽ được thêm vào flashcard và các bài luyện tập.</p><label>Từ tiếng Anh <b>*</b><input id="newWord" required maxlength="40" placeholder="Ví dụ: environment" autocomplete="off"></label><label>Nghĩa tiếng Việt <b>*</b><input id="newMeaning" required maxlength="80" placeholder="Ví dụ: môi trường" autocomplete="off"></label><label>Phiên âm <small>(không bắt buộc)</small><input id="newPronounce" maxlength="40" placeholder="Ví dụ: /ɪnˈvaɪrənmənt/" autocomplete="off"></label><label>Biểu tượng minh hoạ <select id="newEmoji"><option>📖</option><option>🌟</option><option>🌱</option><option>💬</option><option>🎨</option><option>🚀</option></select></label><button class="primary-btn" type="submit">Lưu từ vựng <span>→</span></button></form></div>
+  <div id="packModal" class="modal"><form class="pack-modal-box" id="publicPackForm"><button type="button" class="modal-close" id="closePackModal">×</button><span class="form-icon">📚</span><p class="eyebrow">PACK VỰNG CÔNG KHAI</p><h2>Tạo pack mới</h2><p>Nhập từ tiếng Anh. Kat AI sẽ tự gợi ý nghĩa tiếng Việt và phiên âm.</p><label>Tên pack <b>*</b><input id="publicPackName" required maxlength="60" placeholder="Ví dụ: Unit 1 – Local Community"></label><div class="pack-column-head"><span>Tiếng Anh</span><span>Tiếng Việt</span><span>Phiên âm</span><i></i></div><div id="packWordRows"></div><button class="add-row-btn" type="button" id="addPackRow">＋ Thêm từ vựng</button><button class="primary-btn" type="submit">Xuất bản pack <span>→</span></button></form></div>
+  <div id="settingsModal" class="modal"><form class="word-modal-box" id="settingsForm"><button type="button" class="modal-close" id="closeSettingsModal">×</button><span class="form-icon">🔐</span><p class="eyebrow">KẾT NỐI DỮ LIỆU & AI</p><h2>Cấu hình dự án</h2><p>Dán Firebase Web App config để đồng bộ học tập, vật phẩm và bảng xếp hạng.</p><label>Firebase Web App config (JSON)<textarea id="firebaseConfig" rows="7" placeholder='{"apiKey":"...", "projectId":"..."}'></textarea></label><div class="secure-note">🔒 OpenAI API key đặt trong tệp <code>.env</code> của máy chủ, không dán vào đây.</div><button class="primary-btn" type="submit">Lưu và kết nối <span>→</span></button></form></div>
+  <div id="loginModal" class="modal"><div class="login-box"><button type="button" class="modal-close" id="closeLoginModal">×</button><div class="login-logo">🐱</div><h2>Kat đang chờ bạn!</h2><p>Đăng nhập để lưu tiến độ, vật phẩm và xếp hạng của bạn.</p><form id="emailLoginForm" class="email-login"><input id="authEmail" type="email" required placeholder="Email"><input id="authPassword" type="password" required minlength="6" placeholder="Mật khẩu (ít nhất 6 ký tự)"><button class="oauth-btn email" type="submit">Đăng nhập bằng Email</button><button class="text-auth-btn" id="emailRegister" type="button">Tạo tài khoản Email mới</button></form><div class="or-divider"><span>hoặc</span></div><button id="googleLogin" class="oauth-btn google"><b>G</b> Tiếp tục với Google</button><button id="appleLogin" class="oauth-btn apple"><b>●</b> Tiếp tục với Apple</button><small>Việc đăng nhập được bảo mật bởi Firebase Authentication.</small></div></div>
+  <footer class="site-footer"><p>Made by Nguyễn Đặng Phương from 8B1 - Chu Van An Secondary School</p><p>Copyright by Nguyễn Đặng Phương, All rights reserved.</p><p><em>*this website's protected by DMCA Protection</em></p><a href="//www.dmca.com/Protection/Status.aspx?ID=16ee7e41-e822-4151-bdcf-183b3b154598" title="DMCA.com Protection Status" class="dmca-badge"><img src="https://images.dmca.com/Badges/dmca_protected_16_120.png?ID=16ee7e41-e822-4151-bdcf-183b3b154598" alt="DMCA.com Protection Status" /></a></footer>
+  <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"></script>
+  <script src="admin-config.js"></script>
+  <script src="firebase-service.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
