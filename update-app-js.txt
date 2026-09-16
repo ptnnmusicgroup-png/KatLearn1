@@ -1,0 +1,45 @@
+// Add these lines to app.js
+
+// Initialize AI Vocabulary UI
+window.addEventListener('DOMContentLoaded', () => {
+  if (window.aiVocabularyUI) {
+    window.aiVocabularyUI.init();
+  }
+});
+
+// Listen for AI-generated vocabulary
+window.addEventListener('ai-vocab-saved', async (e) => {
+  const vocabulary = e.detail;
+  
+  if (vocabulary && vocabulary.length > 0) {
+    // Add to current pack
+    vocab = vocab.concat(vocabulary);
+    localStorage.setItem('katlearn-vocab', JSON.stringify(vocab));
+    
+    // Save to Firebase if connected
+    if (window.studyStore?.connected() && window.studyStore.user) {
+      await window.aiVocabStorage.saveGeneratedVocabToPack('current-pack', vocabulary);
+    }
+    
+    // Refresh UI
+    renderCard();
+    renderQuiz();
+    
+    toast(`✓ Đã thêm ${vocabulary.length} từ vựng`);
+  }
+});
+
+// Add button to home page or pack creation
+document.addEventListener('DOMContentLoaded', () => {
+  const createPackBtn = document.getElementById('createPackBtn');
+  if (createPackBtn) {
+    const aiBtn = document.createElement('button');
+    aiBtn.id = 'createPackWithAiBtn';
+    aiBtn.className = 'btn-primary';
+    aiBtn.textContent = '🤖 Tạo với AI';
+    aiBtn.addEventListener('click', () => {
+      window.aiVocabularyUI.open();
+    });
+    createPackBtn.parentNode.appendChild(aiBtn);
+  }
+});
