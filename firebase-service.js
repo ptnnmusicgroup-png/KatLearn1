@@ -14,12 +14,26 @@
       const app=getApps().length?getApps()[0]:initializeApp(config); db=getFirestore(app); api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit};
       auth=getAuth(app); api.auth={GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword};
       authReady=new Promise(resolve=>api.auth.onAuthStateChanged(auth,user=>{currentUser=user;window.dispatchEvent(new CustomEvent('8b1-auth-change',{detail:user}));resolve(user)})); await authReady;
-      if(currentUser){const profile=await this.loadProfile();if(!profile)await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true})} return true;
+      if(currentUser){try{const profile=await this.loadProfile();if(!profile)await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true})}catch(e){console.warn('[KatLearn] Firestore profile sync skipped:',e?.message||e)}}
+      return true;
     },
     connected(){return !!db},
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
-    async signIn(providerName){if(!auth)throw new Error('Hãy kết nối Firebase trước.');const provider=providerName==='apple'?new api.auth.OAuthProvider('apple.com'):new api.auth.GoogleAuthProvider();if(providerName==='apple')provider.addScope('email');const result=await api.auth.signInWithPopup(auth,provider);currentUser=result.user;const profile=await this.loadProfile();if(!profile)await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});await this.saveProfile({displayName:currentUser.displayName||'KatLearn Student',email:currentUser.email||'',photoURL:currentUser.photoURL||'',provider:providerName});return currentUser},
-    async signInEmail(email,password,create=false){if(!auth)throw new Error('Hãy kết nối Firebase trước.');const action=create?api.auth.createUserWithEmailAndPassword:api.auth.signInWithEmailAndPassword;const result=await action(auth,email,password);currentUser=result.user;const profile=await this.loadProfile();if(!profile)await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});await this.saveProfile({displayName:currentUser.email?.split('@')[0]||'KatLearn Student',email:currentUser.email||'',provider:'password'});return currentUser},
+    async signIn(providerName){
+      if(!auth)throw new Error('Hãy kết nối Firebase trước.');
+      const provider=providerName==='apple'?new api.auth.OAuthProvider('apple.com'):new api.auth.GoogleAuthProvider();
+      if(providerName==='apple')provider.addScope('email');
+      const result=await api.auth.signInWithPopup(auth,provider); currentUser=result.user;
+      try{const profile=await this.loadProfile();if(!profile)await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});await this.saveProfile({displayName:currentUser.displayName||'KatLearn Student',email:currentUser.email||'',photoURL:currentUser.photoURL||'',provider:providerName})}catch(e){console.warn('[KatLearn] Firestore sync skipped after sign-in:',e?.message||e)}
+      return currentUser;
+    },
+    async signInEmail(email,password,create=false){
+      if(!auth)throw new Error('Hãy kết nối Firebase trước.');
+      const action=create?api.auth.createUserWithEmailAndPassword:api.auth.signInWithEmailAndPassword;
+      const result=await action(auth,email,password); currentUser=result.user;
+      try{const profile=await this.loadProfile();if(!profile)await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});await this.saveProfile({displayName:currentUser.email?.split('@')[0]||'KatLearn Student',email:currentUser.email||'',provider:'password'})}catch(e){console.warn('[KatLearn] Firestore sync skipped after email auth:',e?.message||e)}
+      return currentUser;
+    },
     async signOut(){if(auth)await api.auth.signOut(auth)},
     async saveProfile(data){
       if(!db||!currentUser)return;
