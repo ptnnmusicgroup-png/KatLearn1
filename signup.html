@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký | KatLearn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#f8f7ff,#fff7f8);font-family:'Be Vietnam Pro',sans-serif;color:#344054;padding:20px}.auth{width:min(430px,100%);background:#fff;border:1px solid #ececf3;border-radius:24px;padding:32px;box-shadow:0 22px 60px #4c42631a}.logo{width:52px;height:52px;margin:0 auto 16px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#8d7dff,#5d4fea);color:#fff;font:700 28px Fredoka}.auth h1{text-align:center;font:700 28px Fredoka;margin:0 0 7px}.sub{text-align:center;color:#8792a5;font-size:12px;line-height:1.55;margin:0 0 24px}input{width:100%;padding:12px;border:1px solid #e3e6ed;border-radius:10px;background:#fbfcff;outline:0;font:500 12px 'Be Vietnam Pro';margin-bottom:9px}input:focus{border-color:#8d7dff;box-shadow:0 0 0 3px #8d7dff18}.roles{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:4px 0 12px}.role{border:1px solid #e3e6ed;border-radius:11px;padding:13px 8px;text-align:center;font-size:11px;cursor:pointer}.role:has(input:checked){border-color:#f47c93;background:#fff4f6}.role input{width:auto;margin:0 5px 0 0;padding:0;vertical-align:middle}.btn{width:100%;border:0;border-radius:11px;padding:12px 14px;background:#f47c93;color:#fff;font:700 12px 'Be Vietnam Pro';cursor:pointer}.btn:disabled{opacity:.6;cursor:wait}.switch{text-align:center;margin:15px 0 0;font-size:11px;color:#8792a5}.switch a{color:#dc6b80;font-weight:700;text-decoration:none}.status{text-align:center;min-height:18px;color:#d76576;font-size:10px;margin-top:10px}.back{display:block;text-align:center;margin-top:18px;color:#8792a5;text-decoration:none;font-size:10px}
+  </style>
+</head>
+<body>
+  <main class="auth">
+    <div class="logo">K</div>
+    <h1>Tạo tài khoản KatLearn</h1>
+    <p class="sub">Chọn vai trò để sử dụng đúng hệ thống KatLearn.</p>
+    <input id="name" placeholder="Họ và tên" maxlength="80" autocomplete="name">
+    <input id="email" type="email" placeholder="Email" autocomplete="email">
+    <input id="password" type="password" placeholder="Mật khẩu (ít nhất 6 ký tự)" autocomplete="new-password">
+    <div class="roles">
+      <label class="role"><input type="radio" name="role" value="student" checked> 🎒 Học sinh</label>
+      <label class="role"><input type="radio" name="role" value="teacher"> 🧑‍🏫 Giáo viên</label>
+    </div>
+    <button class="btn" id="signup">Tạo tài khoản →</button>
+    <p class="switch">Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
+    <div class="status" id="status"></div>
+    <a class="back" href="index.html">← Quay lại KatLearn</a>
+  </main>
+  <script src="firebase-service.js"></script>
+  <script>
+    const $=s=>document.querySelector(s), status=$('#status'), btn=$('#signup');
+    async function init(){try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG)}catch(e){status.textContent='❌ '+(e?.message||'Không thể kết nối Firebase.')}}
+    btn.onclick=async()=>{const name=$('#name').value.trim(),email=$('#email').value.trim().toLowerCase(),password=$('#password').value,role=$('input[name="role"]:checked')?.value||'student';if(!name||!email||password.length<6){status.textContent='❌ Vui lòng nhập đủ thông tin.';return}btn.disabled=true;status.textContent='⏳ Đang tạo tài khoản...';try{await window.studyStore.signInEmail(email,password,true);await window.studyStore.saveProfile({displayName:name,role,email});status.textContent='✓ Tạo tài khoản thành công!';setTimeout(()=>{location.href=role==='teacher'?'https://teacher-katlearn.netlify.app':'index.html'},500)}catch(e){status.textContent='❌ '+(e?.message||'Không thể tạo tài khoản.');btn.disabled=false}};
+    init();
+  </script>
+</body>
+</html>
