@@ -31,8 +31,20 @@
   <script src="firebase-service.js"></script>
   <script>
     const $=s=>document.querySelector(s), status=$('#status'), btn=$('#signup');
+    const STUDENT_HOME='https://lms-katlearn.netlify.app';
+    const TEACHER_HOME='https://teacher-katlearn.netlify.app';
     async function init(){try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG)}catch(e){status.textContent='❌ '+(e?.message||'Không thể kết nối Firebase.')}}
-    btn.onclick=async()=>{const name=$('#name').value.trim(),email=$('#email').value.trim().toLowerCase(),password=$('#password').value,role=$('input[name="role"]:checked')?.value||'student';if(!name||!email||password.length<6){status.textContent='❌ Vui lòng nhập đủ thông tin.';return}btn.disabled=true;status.textContent='⏳ Đang tạo tài khoản...';try{await window.studyStore.signInEmail(email,password,true);await window.studyStore.saveProfile({displayName:name,role,email});status.textContent='✓ Tạo tài khoản thành công!';setTimeout(()=>{location.href=role==='teacher'?'https://teacher-katlearn.netlify.app':'index.html'},500)}catch(e){status.textContent='❌ '+(e?.message||'Không thể tạo tài khoản.');btn.disabled=false}};
+    btn.onclick=async()=>{
+      const name=$('#name').value.trim(),email=$('#email').value.trim().toLowerCase(),password=$('#password').value,role=$('input[name="role"]:checked')?.value||'student';
+      if(!name||!email||password.length<6){status.textContent='❌ Vui lòng nhập đủ thông tin.';return}
+      btn.disabled=true;status.textContent='⏳ Đang tạo tài khoản...';
+      try{
+        await window.studyStore.signInEmail(email,password,true);
+        await window.studyStore.saveProfile({displayName:name,role,email});
+        status.textContent='✓ Tạo tài khoản thành công!';
+        setTimeout(()=>{location.href=role==='teacher'?TEACHER_HOME:STUDENT_HOME},300);
+      }catch(e){status.textContent='❌ '+(e?.message||'Không thể tạo tài khoản.');btn.disabled=false}
+    };
     init();
   </script>
 </body>
