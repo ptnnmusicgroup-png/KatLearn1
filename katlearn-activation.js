@@ -7,6 +7,7 @@
       installManualAI();
       addAiButton();
       wirePackSave();
+      addCuteShopItems();
     };
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',ready,{once:true}); else ready();
   }
@@ -54,16 +55,12 @@
         if(!silent){ btn.disabled=false; btn.textContent='✨ AI tự điền nghĩa & phiên âm'; }
       }
     };
-
-    // Automatic mode: wait briefly after the user stops typing, then fill both fields.
     word.addEventListener('input',()=>{
       clearTimeout(timer);
       const value=word.value.trim();
       if(value.length<2){ lastWord=''; return; }
       timer=setTimeout(()=>fillFromAI(value,true),700);
     });
-
-    // Keep the button as a manual fallback.
     btn.addEventListener('click',()=>fillFromAI(word.value,false));
   }
   function wirePackSave(){
@@ -84,6 +81,33 @@
         catch(err){toast(`✓ Đã lưu pack AI vào bộ học cá nhân. ${err.message}`);}
       }else toast(`✓ Đã lưu “${title}” vào bộ từ đang học.`);
       setTimeout(()=>location.reload(),450);
+    });
+  }
+  function addCuteShopItems(){
+    const shop=document.getElementById('shop');
+    if(!shop||shop.dataset.katlearnShopReady==='1')return;
+    shop.dataset.katlearnShopReady='1';
+    let grid=shop.querySelector('.shop-grid');
+    if(!grid){
+      grid=document.createElement('div');
+      grid.className='shop-grid';
+      shop.appendChild(grid);
+    }
+    const items=[
+      ['cat-nap','Cat Nap','Một góc ngủ mềm mềm cho Kat.','https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&q=82'],
+      ['tabby-cozy','Cozy Tabby','Một chiếc mood chill đúng nghĩa.','https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=900&q=82'],
+      ['sleepy-cat','Sleepy Kitty','Nhìn thôi cũng muốn đi ngủ.','https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=900&q=82'],
+      ['window-cat','Window Chill','Mèo + ánh sáng = bình yên.','https://images.unsplash.com/photo-1489084917528-a57e68a79a1e?auto=format&fit=crop&w=900&q=82'],
+      ['soft-cat','Soft Paws','Một chút cute cho bộ sưu tập.','https://images.unsplash.com/photo-1548546738-8509cb246ed3?auto=format&fit=crop&w=900&q=82'],
+      ['pastel-cat','Pastel Kitty','Một chiếc ảnh pastel siêu chill.','https://images.unsplash.com/photo-1595752776689-aebef37b5d32?auto=format&fit=crop&w=900&q=82']
+    ];
+    const existing=new Set([...grid.querySelectorAll('[data-katlearn-item]')].map(x=>x.dataset.katlearnItem));
+    items.forEach(([id,name,desc,img])=>{
+      if(existing.has(id))return;
+      const card=document.createElement('article');
+      card.className='shop-item'; card.dataset.katlearnItem=id;
+      card.innerHTML=`<img src="${img}" alt="${name}" loading="lazy" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:18px 18px 0 0;display:block"><div style="padding:16px"><span style="font-size:.78rem;font-weight:800;letter-spacing:.06em">KAT'S CUTIE DROP</span><h3 style="margin:.35rem 0">${name}</h3><p style="margin:.35rem 0 1rem">${desc}</p><button type="button" data-price="3000" style="width:100%">🪙 3,000 xu</button></div>`;
+      grid.appendChild(card);
     });
   }
   function toast(msg){
