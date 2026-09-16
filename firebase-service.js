@@ -34,25 +34,15 @@
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'users'),api.orderBy('energy','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
   };
-
-  const TEACHER_HOME='https://teacher-katlearn.netlify.app';
-  const SSO_EXCHANGE=TEACHER_HOME+'/.netlify/functions/auth-exchange';
-  const isMainLms=()=>{const p=location.pathname;return (p==='/'||p.endsWith('/index.html'))&&!/login\.html|signup\.html|sso-bridge\.html/.test(p)};
+  const TEACHER_HOME='https://teacher-katlearn.netlify.app',SSO_EXCHANGE=TEACHER_HOME+'/.netlify/functions/auth-exchange';
+  const isMainLms=()=>{const p=location.pathname;return(p==='/'||p.endsWith('/index.html'))&&!/login\.html|signup\.html|sso-bridge\.html/.test(p)};
   let guardStarted=false;
   async function handleLmsSso(){
     if(!isMainLms()||guardStarted)return;guardStarted=true;
-    const params=new URLSearchParams(location.search);const hash=new URLSearchParams(location.hash.replace(/^#/,'')||'');
-    const incoming=hash.get('katlearn_id_token');
-    if(incoming){
-      history.replaceState(null,document.title,location.pathname+location.search);
-      try{const r=await fetch(SSO_EXCHANGE,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({idToken:incoming,target:'lms'})});const d=await r.json();if(r.ok&&d.customToken){await window.studyStore.signInCustomToken(d.customToken);if(d.role==='teacher')location.replace(TEACHER_HOME);return}}catch(e){console.warn('[KatLearn SSO] incoming session failed:',e)}
-    }
-    const role=window.studyStore.user?await window.studyStore.getRole().catch(()=>null):null;
-    if(role==='teacher'){location.replace(TEACHER_HOME);return}
-    if(window.studyStore.user||params.has('sso'))return;
-    if(sessionStorage.getItem('katlearn-sso-lms-attempt')==='1')return;
-    sessionStorage.setItem('katlearn-sso-lms-attempt','1');location.replace(TEACHER_HOME+'/sso-bridge.html?return=lms');
+    const params=new URLSearchParams(location.search),hash=new URLSearchParams(location.hash.replace(/^#/,'')||''),incoming=hash.get('katlearn_id_token');
+    if(incoming){history.replaceState(null,document.title,location.pathname+location.search);try{const r=await fetch(SSO_EXCHANGE,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({idToken:incoming,target:'lms'})}),d=await r.json();if(r.ok&&d.customToken){await window.studyStore.signInCustomToken(d.customToken);if(d.role==='teacher')location.replace(TEACHER_HOME);return}}catch(e){console.warn('[KatLearn SSO] incoming session failed:',e)}}
+    const role=window.studyStore.user?await window.studyStore.getRole().catch(()=>null):null;if(role==='teacher'){location.replace(TEACHER_HOME);return}if(window.studyStore.user||params.has('sso'))return;
+    if(sessionStorage.getItem('katlearn-sso-lms-attempt')==='1')return;sessionStorage.setItem('katlearn-sso-lms-attempt','1');location.replace(TEACHER_HOME+'/sso-bridge.html');
   }
-  window.addEventListener('8b1-auth-change',()=>{setTimeout(()=>handleLmsSso(),0)});
-  setTimeout(()=>handleLmsSso(),0);
+  window.addEventListener('8b1-auth-change',()=>setTimeout(()=>handleLmsSso(),0));setTimeout(()=>handleLmsSso(),0);
 })();
