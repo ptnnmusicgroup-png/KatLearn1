@@ -32,7 +32,31 @@ function accountUi(profile={}){
     trigger.addEventListener('click',()=>{if(panel)panel.hidden=!panel.hidden});
   }
   const logout=document.querySelector('#logoutBtn');
-  if(logout&&logout.dataset.accountBound!=='1'){logout.dataset.accountBound='1';logout.onclick=async()=>{await window.studyStore.signOut();location.reload()}}
+  if(logout&&logout.dataset.accountBound!=='1'){
+    logout.dataset.accountBound='1';
+    logout.onclick=async event=>{
+      event.preventDefault();
+      if(logout.disabled)return;
+      logout.disabled=true;
+      const oldText=logout.textContent;
+      logout.textContent='⏳ Đang đăng xuất...';
+      try{
+        if(window.studyStore?.signOut)await window.studyStore.signOut();
+        localStorage.removeItem('katlearn-pending-profile');
+        sessionStorage.removeItem('katlearn-login-toast');
+        if(panel)panel.hidden=true;
+        if(login)login.hidden=false;
+        if(trigger)trigger.hidden=true;
+        location.replace('/login.html');
+      }catch(error){
+        console.error('[KatLearn] Logout failed:',error);
+        logout.disabled=false;
+        logout.textContent=oldText;
+        const t=document.querySelector('#toast');
+        if(t){t.textContent='❌ Đăng xuất thất bại. Hãy thử lại nhé.';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+      }
+    };
+  }
 }
 function patch(){
   if(!window.studyStore||window.studyStore.__guarded)return;
