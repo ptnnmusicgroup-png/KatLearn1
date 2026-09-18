@@ -17,6 +17,8 @@ async function jsonAI(instructions,input){
     model:process.env.OPENAI_MODEL||'gpt-5.6-luna',
     reasoning:{effort:'none'},
     max_output_tokens:12000,
+    prompt_cache_key:"katlearn-ai-pack-v1",
+    prompt_cache_options:{mode:"implicit",ttl:"30m"},
     instructions,
     input,
     text:{format:{type:'json_object'}}
