@@ -15,6 +15,8 @@ async function jsonAI(instructions,input){
   const client=aiClient();
   const response=await client.responses.create({
     model:process.env.OPENAI_MODEL||'gpt-5.6-luna',
+    reasoning:{effort:'none'},
+    max_output_tokens:12000,
     instructions,
     input,
     text:{format:{type:'json_object'}}
@@ -29,6 +31,8 @@ app.post('/api/context-example',async(req,res)=>{
     const client=aiClient();
     const response=await client.responses.create({
       model:process.env.OPENAI_MODEL||'gpt-5.6-luna',
+      reasoning:{effort:'none'},
+      max_output_tokens:120,
       instructions:'Bạn là giáo viên tiếng Anh lớp 8 Việt Nam. Trả lời thật ngắn, chỉ một câu tiếng Anh tự nhiên có dùng đúng từ được yêu cầu, sau đó xuống dòng ghi "Nghĩa: " và một bản dịch tiếng Việt.',
       input:`Tạo ví dụ cho từ "${word}" (nghĩa: ${meaning}).`
     });
