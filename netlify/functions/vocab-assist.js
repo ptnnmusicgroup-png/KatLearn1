@@ -36,6 +36,8 @@ exports.handler = async (event) => {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const response = await client.responses.create({
       model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
+      reasoning: { effort: "none" },
+      max_output_tokens: 220,
       instructions:
         "Bạn là từ điển Anh–Việt dành cho học sinh lớp 8. Chỉ trả lời json hợp lệ có đúng hai khóa: meaning (nghĩa tiếng Việt ngắn gọn) và pronunciation (phiên âm IPA Anh-Anh đặt giữa dấu /). Không thêm markdown hay giải thích.",
       input: `Tra từ tiếng Anh: ${word}. Hãy trả về kết quả dưới dạng json.`,
