@@ -8,14 +8,36 @@
     el.className='student-pack-row';
     el.innerHTML=`
       <span class="student-pack-num"># 1</span>
-      <input class="sp-word" value="${esc(data.word||'')}" placeholder="TỪ VỰNG" maxlength="80" required>
+      <div class="sp-word-wrap"><input class="sp-word" value="${esc(data.word||'')}" placeholder="TỪ VỰNG" maxlength="80" required></div>
       <input class="sp-pron" value="${esc(data.pron||'')}" placeholder="PHIÊN ÂM">
       <input class="sp-mean" value="${esc(data.mean||'')}" placeholder="NGHĨA*" maxlength="160" required>
       <select class="sp-type"><option value="">LOẠI TỪ</option><option>noun</option><option>verb</option><option>adjective</option><option>adverb</option><option>phrase</option><option>other</option></select>
       <input class="sp-example" value="${esc(data.example||'')}" placeholder="VÍ DỤ">
       <input class="sp-note" value="${esc(data.note||'')}" placeholder="GHI CHÚ">
+      <button type="button" class="sp-ai" title="AI tự điền nghĩa + phiên âm">✨</button>
       <button type="button" class="sp-remove" title="Xóa dòng">×</button>`;
     el.querySelector('.sp-type').value=data.type||'';
+    const wordInput=el.querySelector('.sp-word');
+    const aiBtn=el.querySelector('.sp-ai');
+    async function aiAssist(force=false){
+      const word=wordInput.value.trim();
+      if(!word)return toast('Nhập từ tiếng Anh trước nhé! ✨');
+      if(!force && el.dataset.aiWord===word && (el.querySelector('.sp-mean').value||el.querySelector('.sp-pron').value))return;
+      const old=aiBtn.textContent; aiBtn.disabled=true; aiBtn.textContent='…';
+      try{
+        const res=await fetch('/api/vocab-assist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({word})});
+        const data=await res.json();
+        if(!res.ok)throw new Error(data.error||'Kat AI chưa sẵn sàng.');
+        const mean=el.querySelector('.sp-mean'),pron=el.querySelector('.sp-pron');
+        if(!mean.value.trim()||force)mean.value=String(data.meaning||'').trim();
+        if(!pron.value.trim()||force)pron.value=String(data.pronunciation||'').trim();
+        el.dataset.aiWord=word;
+      }catch(e){toast('AI chưa điền được: '+(e.message||'Lỗi không xác định'))}
+      finally{aiBtn.disabled=false;aiBtn.textContent=old}
+    }
+    aiBtn.onclick=()=>aiAssist(true);
+    wordInput.addEventListener('blur',()=>{void aiAssist(false)});
+    wordInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();void aiAssist(true)}});
     el.querySelector('.sp-remove').onclick=()=>{if($$('.student-pack-row').length<=1)return toast('Bộ từ cần ít nhất một từ nhé!');el.remove();renumber()};
     return el;
   }
@@ -34,7 +56,7 @@
           <div><p class="eyebrow">BỘ TỪ CÁ NHÂN</p><h2>Tạo bộ từ của bạn</h2><p>Chỉ bạn có thể quản lý bộ từ này.</p></div>
         </div>
         <label class="student-pack-name">Tên bộ từ<input id="studentPackName" maxlength="80" placeholder="Ví dụ: IELTS Unit 7"></label>
-        <div class="student-pack-columns"><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span></div>
+        <div class="student-pack-columns"><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span>AI</span></div>
         <div id="studentPackRows"></div>
         <button type="button" id="studentPackAddRow" class="add-word-btn">＋ Thêm dòng</button>
         <div class="student-pack-footer"><span><b id="studentPackCount">3</b> từ</span><div><button type="button" class="secondary-btn" id="studentPackCancel">Hủy</button><button type="button" class="primary-btn" id="studentPackSave">Tạo bộ từ</button></div></div>
