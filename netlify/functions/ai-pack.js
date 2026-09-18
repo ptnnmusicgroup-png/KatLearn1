@@ -46,6 +46,8 @@ exports.handler = async (event) => {
     const client = aiClient();
     const response = await client.responses.create({
       model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
+      reasoning: { effort: "none" },
+      max_output_tokens: 12000,
       instructions: PACK_INSTRUCTIONS,
       input: `Yêu cầu của người dùng: ${prompt}
 Số lượng từ cần tạo: ${wordCount}
