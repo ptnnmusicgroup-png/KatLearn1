@@ -1,5 +1,6 @@
 (function(){
   const $=s=>document.querySelector(s);
+  const aiEndpoint=name=>(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'/api/'+name:'/.netlify/functions/'+name;
   const $$=s=>document.querySelectorAll(s);
   const esc=t=>String(t??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   
@@ -30,7 +31,7 @@
       aiBtn.textContent='…';
 
       try{
-        const res=await fetch('/.netlify/functions/vocab-assist',{
+        const res=await fetch(aiEndpoint('vocab-assist'),{
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({word})
@@ -98,7 +99,7 @@
     if(status)status.textContent=`Kat AI đang xử lý ${wordCount} từ trong 1 lần gọi...`;
 
     try{
-      const res=await fetch('/.netlify/functions/ai-pack',{
+      const res=await fetch(aiEndpoint('ai-pack'),{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({prompt,wordCount,difficulty,purpose:'personal vocabulary pack',wordTypes:'mixed'})
