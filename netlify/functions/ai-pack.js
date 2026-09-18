@@ -48,6 +48,8 @@ exports.handler = async (event) => {
       model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
       reasoning: { effort: "none" },
       max_output_tokens: 12000,
+      prompt_cache_key: "katlearn-ai-pack-v1",
+      prompt_cache_options: { mode: "implicit", ttl: "30m" },
       instructions: PACK_INSTRUCTIONS,
       input: `Yêu cầu của người dùng: ${prompt}
 Số lượng từ cần tạo: ${wordCount}
