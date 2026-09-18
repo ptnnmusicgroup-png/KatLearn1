@@ -80,6 +80,8 @@
     async recordAnswer(data){if(!db||!currentUser)return;await api.addDoc(api.collection(db,'users',this.userId,'attempts'),{...data,createdAt:api.serverTimestamp()});await this.saveProfile({lastStudyAt:api.serverTimestamp()})},
     async purchase(item){if(!db||!currentUser)return;return api.setDoc(api.doc(db,'users',this.userId,'items',item.id),{...item,boughtAt:api.serverTimestamp()})},
     async createPublicPack(pack){if(!db||!currentUser||!this.isAdmin())throw new Error('Bạn không có quyền quản trị.');return api.addDoc(api.collection(db,'publicPacks'),{...pack,createdBy:currentUser.uid,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()})},
+    async createPersonalPack(pack){if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');return api.addDoc(api.collection(db,'users',this.userId,'personalPacks'),{...pack,createdByUid:currentUser.uid,createdByEmail:currentUser.email||'',createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()})},
+    async personalPacks(){if(!db||!currentUser)return[];const snap=await api.getDocs(api.query(api.collection(db,'users',this.userId,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'users'),api.orderBy('energy','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
   };
