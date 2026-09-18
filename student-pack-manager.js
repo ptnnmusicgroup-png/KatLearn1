@@ -71,10 +71,7 @@
       await window.studyStore.createPersonalPack({name,words});
       close();
       await renderMine();
-      window.vocab=words;
-      localStorage.setItem('katlearn-vocab',JSON.stringify(words));
-      if(typeof renderCard==='function')renderCard();
-      if(typeof renderQuiz==='function')renderQuiz();
+      window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words}}));
       toast(`Đã tạo “${name}” gồm ${words.length} từ! 🐱`);
     }catch(e){toast('Không thể tạo bộ từ: '+(e.message||'Lỗi không xác định'))}
     finally{btn.disabled=false;btn.textContent='Tạo bộ từ'}
@@ -91,8 +88,7 @@
       box.innerHTML=packs.length?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>Những bộ từ bạn tự tạo — riêng cho tài khoản của bạn.</p></div></div><div class="personal-pack-grid">${packs.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng</p></div><button data-my-pack="${esc(p.id)}">Học ngay →</button></article>`).join('')}</div>`:'<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. Bấm <b>＋ Tạo bộ từ</b> để tạo bộ đầu tiên nhé! 🐾</div>';
       $$('[data-my-pack]').forEach(b=>b.onclick=async()=>{
         const p=packs.find(x=>x.id===b.dataset.myPack);if(!p)return;
-        const words=Array.isArray(p.words)?p.words:[];window.vocab=words;localStorage.setItem('katlearn-vocab',JSON.stringify(words));
-        if(typeof renderCard==='function')renderCard();if(typeof renderQuiz==='function')renderQuiz();
+        const words=Array.isArray(p.words)?p.words:[];window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words}}));
         if(typeof showPage==='function')showPage('learn');toast(`Đã mở “${p.name}”.`);
       });
     }catch(e){box.innerHTML='<div class="personal-pack-empty">Chưa thể tải bộ từ riêng lúc này.</div>'}
