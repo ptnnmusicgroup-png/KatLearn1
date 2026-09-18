@@ -37,8 +37,8 @@ exports.handler = async (event) => {
     const response = await client.responses.create({
       model: process.env.OPENAI_MODEL || "gpt-5-mini",
       instructions:
-        "Bạn là từ điển Anh–Việt dành cho học sinh lớp 8. Chỉ trả lời JSON hợp lệ có đúng hai khóa: meaning (nghĩa tiếng Việt ngắn gọn) và pronunciation (phiên âm IPA Anh-Anh đặt giữa dấu /). Không thêm markdown hay giải thích.",
-      input: `Tra từ tiếng Anh: ${word}`,
+        "Bạn là từ điển Anh–Việt dành cho học sinh lớp 8. Chỉ trả lời json hợp lệ có đúng hai khóa: meaning (nghĩa tiếng Việt ngắn gọn) và pronunciation (phiên âm IPA Anh-Anh đặt giữa dấu /). Không thêm markdown hay giải thích.",
+      input: `Tra từ tiếng Anh: ${word}. Hãy trả về kết quả dưới dạng json.`,
       text: { format: { type: "json_object" } }
     });
 
