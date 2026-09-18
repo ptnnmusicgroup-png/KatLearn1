@@ -16,7 +16,7 @@
       <input class="sp-note" value="${esc(data.note||'')}" placeholder="GHI CHÚ">
       <button type="button" class="sp-ai" title="AI tự điền nghĩa + phiên âm">✨</button>
       <button type="button" class="sp-remove" title="Xóa dòng">×</button>`;
-    el.querySelector('.sp-type').value=data.type||'';
+    el.querySelector('.sp-type').value=normalizeType(data.type);
     const wordInput=el.querySelector('.sp-word');
     const aiBtn=el.querySelector('.sp-ai');
 
@@ -68,10 +68,72 @@
   }
 
   function renumber(){
-    $$('.student-pack-row').forEach((r,i)=>r.querySelector('.student-pack-num').textContent='# '+(i+1));
-    const c=$$('.student-pack-row').length;
+    $('.student-pack-row').forEach((r,i)=>r.querySelector('.student-pack-num').textContent='# '+(i+1));
+    const c=$('.student-pack-row').length;
     const b=$('#studentPackCount');
     if(b)b.textContent=c;
+  }
+
+  function normalizeType(value){
+    const v=String(value||'').toLowerCase();
+    if(v.includes('noun')||v.includes('danh từ'))return 'noun';
+    if(v.includes('verb')||v.includes('động từ'))return 'verb';
+    if(v.includes('adjective')||v.includes('tính từ'))return 'adjective';
+    if(v.includes('adverb')||v.includes('trạng từ'))return 'adverb';
+    if(v.includes('phrase')||v.includes('cụm'))return 'phrase';
+    return 'other';
+  }
+
+  async function generateWithAI(){
+    const prompt=$('#studentPackAiPrompt')?.value.trim();
+    const wordCount=Math.min(100,Math.max(5,Number($('#studentPackAiCount')?.value)||50));
+    const difficulty=$('#studentPackAiDifficulty')?.value||'intermediate';
+    const btn=$('#studentPackAiBtn');
+    const status=$('#studentPackAiStatus');
+
+    if(!prompt)return toast('Nhập chủ đề hoặc yêu cầu cho Kat AI trước nhé! ✨');
+
+    btn.disabled=true;
+    btn.textContent='🤖 Đang tạo...';
+    if(status)status.textContent=`Kat AI đang xử lý ${wordCount} từ trong 1 lần gọi...`;
+
+    try{
+      const res=await fetch('/.netlify/functions/ai-pack',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({prompt,wordCount,difficulty,purpose:'personal vocabulary pack',wordTypes:'mixed'})
+      });
+      const data=await res.json();
+      if(!res.ok)throw new Error(data.error||'Kat AI chưa sẵn sàng.');
+
+      const words=Array.isArray(data.words)?data.words:[];
+      if(!words.length)throw new Error('Kat AI không trả về từ vựng.');
+
+      const rows=$('#studentPackRows');
+      rows.innerHTML='';
+      words.forEach(w=>rows.append(row({
+        word:w.word,
+        pron:w.ipa,
+        mean:w.meaning_vi,
+        type:w.part_of_speech,
+        example:w.example,
+        note:w.notes
+      })));
+      renumber();
+
+      const suggested=String(data.pack?.suggested_title||'').trim();
+      const name=$('#studentPackName');
+      if(name && !name.value.trim())name.value=suggested||prompt.slice(0,80);
+
+      if(status)status.textContent=`✓ Đã tạo ${words.length} từ bằng 1 request. Kiểm tra lại rồi bấm “Tạo bộ từ”.`;
+      toast(`✨ Kat AI đã tạo ${words.length} từ trong 1 lần gọi!`);
+    }catch(e){
+      if(status)status.textContent='Kat AI chưa tạo được bộ từ.';
+      toast('Không tạo được bộ từ bằng AI: '+(e.message||'Lỗi không xác định'));
+    }finally{
+      btn.disabled=false;
+      btn.textContent='✨ Tạo cả bộ bằng Kat AI';
+    }
   }
 
   function open(){
@@ -91,6 +153,26 @@
         <div class="student-pack-head">
           <div><p class="eyebrow">BỘ TỪ CÁ NHÂN</p><h2>Tạo bộ từ của bạn</h2><p>Chỉ bạn có thể quản lý bộ từ này.</p></div>
         </div>
+        <div class="student-pack-ai-box" style="margin-bottom:16px;padding:14px;border:1px solid rgba(99,102,241,.18);border-radius:16px;">
+          <label class="student-pack-name">✨ Yêu cầu cho Kat AI
+            <textarea id="studentPackAiPrompt" rows="2" maxlength="600" placeholder="Ví dụ: Tạo 50 từ vựng về môi trường, phù hợp học sinh lớp 8, ưu tiên từ thường gặp trong IELTS."></textarea>
+          </label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+            <label>Số từ <input id="studentPackAiCount" type="number" min="5" max="100" value="50" style="width:90px;"></label>
+            <label>Trình độ
+              <select id="studentPackAiDifficulty">
+                <option value="beginner">beginner</option>
+                <option value="elementary">elementary</option>
+                <option value="intermediate" selected>intermediate</option>
+                <option value="upper-intermediate">upper-intermediate</option>
+                <option value="advanced">advanced</option>
+              </select>
+            </label>
+            <button type="button" id="studentPackAiBtn" class="primary-btn">✨ Tạo cả bộ bằng Kat AI</button>
+          </div>
+          <small id="studentPackAiStatus" style="display:block;margin-top:8px;opacity:.7;">Một lần gọi AI sẽ trả về toàn bộ dữ liệu của bộ từ.</small>
+        </div>
+
         <label class="student-pack-name">Tên bộ từ<input id="studentPackName" maxlength="80" placeholder="Ví dụ: IELTS Unit 7"></label>
         <div class="student-pack-columns"><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span>AI</span></div>
         <div id="studentPackRows"></div>
@@ -105,6 +187,7 @@
       $('#studentPackRows').append(row());
       renumber();
     };
+    $('#studentPackAiBtn').onclick=generateWithAI;
     $('#studentPackSave').onclick=save;
     loadRows();
   }
@@ -116,6 +199,8 @@
     rows.append(row(),row(),row());
     renumber();
     $('#studentPackName').value='';
+    if($('#studentPackAiPrompt'))$('#studentPackAiPrompt').value='';
+    if($('#studentPackAiStatus'))$('#studentPackAiStatus').textContent='Một lần gọi AI sẽ trả về toàn bộ dữ liệu của bộ từ.';
   }
 
   async function save(){
