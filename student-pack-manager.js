@@ -94,6 +94,8 @@
     }catch(e){box.innerHTML='<div class="personal-pack-empty">Chưa thể tải bộ từ riêng lúc này.</div>'}
   }
 
+  window.renderStudentPersonalPacks=renderMine;
+
   function init(){
     const btn=$('#createPersonalPack');if(!btn)return;
     btn.onclick=open;
