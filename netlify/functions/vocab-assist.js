@@ -1,14 +1,7 @@
-const { GoogleGenAI } = require("@google/genai");
+const OpenAI = require("openai");
 
 function clean(value, max = 500) {
   return String(value ?? "").trim().slice(0, max);
-}
-
-function aiClient() {
-  if (!process.env.GEMINI_API_KEY) {
-    throw Object.assign(new Error("Kat AI chưa được cấu hình trên Netlify"), { status: 503 });
-  }
-  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 }
 
 exports.handler = async (event) => {
@@ -32,26 +25,24 @@ exports.handler = async (event) => {
       };
     }
 
-    const ai = aiClient();
-    const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || "gemini-3.8-flash",
-      contents: `Tra từ tiếng Anh: ${word}. Hãy trả về nghĩa tiếng Việt ngắn gọn và phiên âm IPA Anh-Anh.`,
-      config: {
-        systemInstruction:
-          "Bạn là từ điển Anh–Việt dành cho học sinh lớp 8. Trả về dữ liệu chính xác, ngắn gọn. pronunciation phải là IPA Anh-Anh đặt giữa dấu /.",
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "object",
-          properties: {
-            meaning: { type: "string" },
-            pronunciation: { type: "string" }
-          },
-          required: ["meaning", "pronunciation"]
-        }
-      }
+    if (!process.env.OPENAI_API_KEY) {
+      return {
+        statusCode: 503,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Kat AI chưa được cấu hình trên Netlify" })
+      };
+    }
+
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const response = await client.responses.create({
+      model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
+      instructions:
+        "Bạn là từ điển Anh–Việt dành cho học sinh lớp 8. Chỉ trả lời json hợp lệ có đúng hai khóa: meaning (nghĩa tiếng Việt ngắn gọn) và pronunciation (phiên âm IPA Anh-Anh đặt giữa dấu /). Không thêm markdown hay giải thích.",
+      input: `Tra từ tiếng Anh: ${word}. Hãy trả về kết quả dưới dạng json.`,
+      text: { format: { type: "json_object" } }
     });
 
-    const result = JSON.parse(response.text || "{}");
+    const result = JSON.parse(response.output_text || "{}");
 
     return {
       statusCode: 200,
@@ -63,14 +54,11 @@ exports.handler = async (event) => {
     };
   } catch (error) {
     console.error("vocab-assist:", error);
-    const message = String(error?.message || error);
-    const status = error?.status || (message.includes("429") ? 429 : 500);
-
     return {
-      statusCode: status,
+      statusCode: error.status || 500,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        error: "Kat AI không thể xử lý từ này: " + message
+        error: "Kat AI không thể xử lý từ này: " + String(error.message || error)
       })
     };
   }
