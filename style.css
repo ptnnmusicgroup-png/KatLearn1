@@ -3,7 +3,7 @@
 
 /* ===== Personal vocabulary pack modal ===== */
 .student-pack-modal{
-  width:min(1180px,calc(100vw - 36px));
+  width:min(1320px,calc(100vw - 28px));
   max-height:min(88vh,820px);
   overflow:auto;
   text-align:left;
