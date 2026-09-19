@@ -29,6 +29,12 @@ service cloud.firestore {
       allow create: if request.auth != null
         && request.auth.uid == userId
         && request.resource.data.get('role', 'student') == 'student'
+        && request.resource.data.get('coins', 0) == 0
+        && request.resource.data.get('energy', 0) == 0
+        && request.resource.data.get('streak', 0) == 0
+        && request.resource.data.get('knownWords', 0) == 0
+        && request.resource.data.get('questionsAnswered', 0) == 0
+        && request.resource.data.get('correctAnswers', 0) == 0
         ;
 
       // Leaderboard currently reads user summary fields; keep this read public to authenticated users until a dedicated leaderboard collection is introduced.
