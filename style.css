@@ -244,3 +244,15 @@
   .personal-pack-grid{grid-template-columns:1fr}
 }
 
+
+
+/* ===== KatLearn · subtle Vietnamese visual touch ===== */
+:root{--vn-terracotta:#b96f5b;--vn-gold:#c9a45c;--vn-cream:#fbf7ef}
+body{background:radial-gradient(circle at 88% 8%,rgba(201,164,92,.07),transparent 24%),radial-gradient(circle at 8% 92%,rgba(185,111,91,.055),transparent 25%),var(--bg)}
+body:before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;background-image:linear-gradient(45deg,transparent 46%,var(--vn-terracotta) 47%,var(--vn-terracotta) 53%,transparent 54%),linear-gradient(-45deg,transparent 46%,var(--vn-gold) 47%,var(--vn-gold) 53%,transparent 54%);background-size:34px 34px}
+.app-shell,main,.modal,#toast{position:relative}
+.brand-mark{background:linear-gradient(135deg,#8d7dff 70%,var(--vn-terracotta))}
+.eyebrow{color:#a46c5b}
+.hero-content .tag{border-left:2px solid rgba(255,216,128,.8)}
+.page-intro .learning-score{border-top:2px solid rgba(201,164,92,.55)}
+.sidebar:after{content:'';position:absolute;right:-1px;bottom:72px;width:3px;height:54px;border-radius:3px 0 0 3px;background:linear-gradient(var(--vn-terracotta),var(--vn-gold));opacity:.28}
