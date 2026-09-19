@@ -1,6 +1,7 @@
 (function(){
   const $=s=>document.querySelector(s);
   const aiEndpoint=name=>(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'/api/'+name:'/.netlify/functions/'+name;
+async function aiHeaders(){const h={'Content-Type':'application/json'};try{const t=await window.studyStore?.getIdToken?.();if(t)h.Authorization='Bearer '+t}catch(_){}return h}
   const $$=s=>document.querySelectorAll(s);
   const esc=t=>String(t??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   
@@ -33,7 +34,7 @@
       try{
         const res=await fetch(aiEndpoint('vocab-assist'),{
           method:'POST',
-          headers:{'Content-Type':'application/json'},
+          headers:await aiHeaders(),
           body:JSON.stringify({word})
         });
         const data=await res.json();
@@ -101,7 +102,7 @@
     try{
       const res=await fetch(aiEndpoint('ai-pack'),{
         method:'POST',
-        headers:{'Content-Type':'application/json'},
+        headers:await aiHeaders(),
         body:JSON.stringify({prompt,wordCount,difficulty,purpose:'personal vocabulary pack',wordTypes:'mixed'})
       });
       const data=await res.json();
