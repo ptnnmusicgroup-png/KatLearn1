@@ -1,5 +1,6 @@
 const crypto = require("crypto");
-const admin = require("firebase-admin");
+const { initializeApp, cert, getApps } = require("firebase-admin/app");
+const { getAuth } = require("firebase-admin/auth");
 
 let initialized = false;
 const buckets = new Map();
@@ -12,10 +13,10 @@ function firebaseAuth() {
     try { serviceAccount = JSON.parse(raw); } catch (_) {
       throw Object.assign(new Error("FIREBASE_SERVICE_ACCOUNT_JSON không hợp lệ"), { status: 503 });
     }
-    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+    initializeApp({ credential: cert(serviceAccount) });
     initialized = true;
   }
-  return admin.auth();
+  return getAuth();
 }
 
 async function requireUser(event) {
