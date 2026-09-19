@@ -31,13 +31,13 @@ service cloud.firestore {
         && request.resource.data.get('role', 'student') == 'student'
         ;
 
-      // Users can read their own profile only.
+      // Leaderboard currently reads user summary fields; keep this read public to authenticated users until a dedicated leaderboard collection is introduced.
       allow read: if request.auth != null;
 
       // Keep server-controlled privilege/gamification fields immutable from the client.
       allow update: if request.auth != null
         && request.auth.uid == userId
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role','coins','energy','streak','knownWords','questionsAnswered','correctAnswers','ownedThemes']);
 
       allow delete: if false;
 
