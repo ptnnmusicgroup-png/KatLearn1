@@ -43,7 +43,7 @@ service cloud.firestore {
       // Keep server-controlled privilege/gamification fields immutable from the client.
       allow update: if request.auth != null
         && request.auth.uid == userId
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role','coins','energy','streak','knownWords','questionsAnswered','correctAnswers','ownedThemes']);
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role','coins','energy','streak','questionsAnswered','correctAnswers','ownedThemes']);
 
       allow delete: if false;
 
