@@ -9,7 +9,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "firebase-admin": "^14.4.0",
-    "openai": "^7.19.0"
+    "openai": "^7.18.0"
   },
   "engines": {
     "node": ">=22"
