@@ -49,7 +49,7 @@ exports.handler=async event=>{
       const d=snap.data()||{},coins=Number(d.coins||0),itemsRef=db.doc("users/"+token.uid+"/items/"+itemId);
       const itemSnap=await t.get(itemsRef);if(itemSnap.exists)throw Object.assign(new Error("Vật phẩm này đã được mua."),{status:409});
       if(coins<price)throw Object.assign(new Error("Không đủ KatCoin."),{status:400});
-      t.update(ref,{coins:coins-price});t.set(itemsRef,{id:itemId,name,price,boughtAt:FieldValue.serverTimestamp()});
+      t.update(ref,{coins:coins-price,ownedThemes:FieldValue.arrayUnion(itemId)});t.set(itemsRef,{id:itemId,name,price,boughtAt:FieldValue.serverTimestamp()});
       return{coins:coins-price};
     });
     return{statusCode:200,headers:headers(),body:JSON.stringify({ok:true,...result})};
