@@ -1,8 +1,9 @@
 // KatLearn AI Pack Generator core - server-side OpenAI only
 (function(){
   const endpoint=name=>'/api/'+name;
+  const authHeaders=async()=>{const h={'Content-Type':'application/json'};try{const t=await window.studyStore?.getIdToken?.();if(t)h.Authorization='Bearer '+t}catch(_){}return h};
   const post=async(path,body)=>{
-    const res=await fetch(endpoint(path),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const res=await fetch(endpoint(path),{method:'POST',headers:await authHeaders(),body:JSON.stringify(body)});
     let data={}; try{data=await res.json()}catch(e){}
     if(!res.ok) throw new Error(data.error||'Kat AI chưa sẵn sàng.');
     return data;
