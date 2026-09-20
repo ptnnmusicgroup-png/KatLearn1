@@ -1,7 +1,6 @@
 // KatLearn AI Pack Generator core - server-side OpenAI only
 (function(){
-  const local=location.hostname==='localhost'||location.hostname==='127.0.0.1';
-  const endpoint=name=>local?'/api/'+name:'/.netlify/functions/'+name;
+  const endpoint=name=>'/api/'+name;
   const post=async(path,body)=>{
     const res=await fetch(endpoint(path),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     let data={}; try{data=await res.json()}catch(e){}
