@@ -1,6 +1,6 @@
 (function(){
   const $=s=>document.querySelector(s);
-  const aiEndpoint=name=>(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'/api/'+name:'/.netlify/functions/'+name;
+  const aiEndpoint=name=>(location.hostname==='localhost'||location.hostname==='127.0.0.1'?'/api/':'/api/';
 async function aiHeaders(){const h={'Content-Type':'application/json'};try{const t=await window.studyStore?.getIdToken?.();if(t)h.Authorization='Bearer '+t}catch(_){}return h}
   const $$=s=>document.querySelectorAll(s);
   const esc=t=>String(t??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
