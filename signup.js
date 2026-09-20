@@ -2,7 +2,7 @@
 (function(){
   if(window.__KATLEARN_AUTH_UI_LOADED)return;
   window.__KATLEARN_AUTH_UI_LOADED=true;
-  const TEACHER_URL='https://teacher-katlearn.netlify.app';
+  const TEACHER_URL='https://teacher-katlearn.vercel.app';
   const $=s=>document.querySelector(s);
 
   function styles(){
