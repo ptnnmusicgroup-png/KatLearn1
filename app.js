@@ -1,7 +1,7 @@
 let vocab=[];
 try{const savedVocab=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(Array.isArray(savedVocab))vocab=savedVocab}catch(e){}
 let coins=0,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,mode='engvi',answered=false;
-const $=s=>document.querySelector(s),$=s=>document.querySelectorAll(s);
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const aiEndpoint=name=>(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'/api/'+name:'/.netlify/functions/'+name;
 const gameEndpoint=()=> (location.hostname==='localhost'||location.hostname==='127.0.0.1')?'/api/game-action':'/.netlify/functions/game-action';
 async function aiHeaders(){const h={'Content-Type':'application/json'};try{const t=await window.studyStore?.getIdToken?.();if(t)h.Authorization='Bearer '+t}catch(_){}return h}
