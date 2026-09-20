@@ -54,9 +54,10 @@
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
     async getRole(){const p=await this.loadProfile();return String(p?.role||'student').toLowerCase()},
     async getIdToken(forceRefresh=true){return currentUser?currentUser.getIdToken(forceRefresh):null},
-    async signInCustomToken(token){if(!auth)throw new Error('Hãy kết nối Firebase trước.');const {signInWithCustomToken}=await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js');const result=await signInWithCustomToken(auth,token);currentUser=result.user;notifyAuth(currentUser);return currentUser},
+    async signInCustomToken(token){if(!auth)throw new Error('Hãy kết nối Firebase trước.');sessionStorage.removeItem('katlearn-logged-out');const {signInWithCustomToken}=await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js');const result=await signInWithCustomToken(auth,token);currentUser=result.user;notifyAuth(currentUser);return currentUser},
     async signIn(providerName){
       if(!auth)throw new Error('Hãy kết nối Firebase trước.');
+      sessionStorage.removeItem('katlearn-logged-out');
       const provider=providerName==='apple'?new api.auth.OAuthProvider('apple.com'):new api.auth.GoogleAuthProvider();
       if(providerName==='apple')provider.addScope('email');
       const result=await api.auth.signInWithPopup(auth,provider);
@@ -66,6 +67,7 @@
     },
     async signInEmail(email,password,create=false){
       if(!auth)throw new Error('Hãy kết nối Firebase trước.');
+      sessionStorage.removeItem('katlearn-logged-out');
       const action=create?api.auth.createUserWithEmailAndPassword:api.auth.signInWithEmailAndPassword;
       const result=await action(auth,email,password);
       currentUser=result.user;notifyAuth(currentUser);
@@ -73,6 +75,8 @@
       return currentUser;
     },
     async signOut(){
+      sessionStorage.setItem('katlearn-logged-out','1');
+      sessionStorage.removeItem('katlearn-sso-lms-attempt');
       if(auth)await api.auth.signOut(auth);
       currentUser=null;notifyAuth(null);
     },
@@ -92,6 +96,7 @@
     if(!isMainLms()||guardStarted)return;guardStarted=true;
     const params=new URLSearchParams(location.search),hash=new URLSearchParams(location.hash.replace(/^#/,'')||''),incoming=hash.get('katlearn_id_token');
     if(incoming){history.replaceState(null,document.title,location.pathname+location.search);try{const r=await fetch(SSO_EXCHANGE,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({idToken:incoming,target:'lms'})}),d=await r.json();if(r.ok&&d.customToken){await window.studyStore.signInCustomToken(d.customToken);if(d.role==='teacher')location.replace(TEACHER_HOME);return}}catch(e){console.warn('[KatLearn SSO] incoming session failed:',e)}}
+    if(sessionStorage.getItem('katlearn-logged-out')==='1')return;
     const role=window.studyStore.user?await window.studyStore.getRole().catch(()=>null):null;if(role==='teacher'){location.replace(TEACHER_HOME);return}if(window.studyStore.user||params.has('sso'))return;if(sessionStorage.getItem('katlearn-sso-lms-attempt')==='1')return;sessionStorage.setItem('katlearn-sso-lms-attempt','1');location.replace(TEACHER_HOME+'/sso-bridge.html');
   }
   window.addEventListener('8b1-auth-change',()=>setTimeout(()=>handleLmsSso(),0));setTimeout(()=>handleLmsSso(),0);
