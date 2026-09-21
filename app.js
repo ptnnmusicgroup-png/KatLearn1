@@ -40,9 +40,9 @@ async function renderLeaderboard(){
       mini.textContent='Chưa có điểm công khai.';
       return;
     }
-    const rows=scores.map((score,index)=>`<div class="rank-list-row"><b>${String(index+1).padStart(2,'0')}</b><small>⚡ ${Number(score.xp||0).toLocaleString('en-US')} XP</small><i>🪙 ${Number(score.coins||0).toLocaleString('en-US')} KatCoin</i></div>`).join('');
+    const rows=scores.map((score,index)=>`<div class="rank-list-row"><b>${String(index+1).padStart(2,'0')}</b><strong>${esc(score.displayName||'KatLearner')}</strong><small>⚡ ${Number(score.xp||0).toLocaleString('en-US')} XP</small><i>🪙 ${Number(score.coins||0).toLocaleString('en-US')} KatCoin</i></div>`).join('');
     target.innerHTML=rows;
-    mini.innerHTML=scores.slice(0,3).map((score,index)=>`<div class="rank-row"><b>${String(index+1).padStart(2,'0')}</b><span>⚡ ${Number(score.xp||0).toLocaleString('en-US')} XP</span><span>🪙 ${Number(score.coins||0).toLocaleString('en-US')}</span></div>`).join('');
+    mini.innerHTML=scores.slice(0,3).map((score,index)=>`<div class="rank-row"><b>${String(index+1).padStart(2,'0')}</b><strong>${esc(score.displayName||'KatLearner')}</strong><span>⚡ ${Number(score.xp||0).toLocaleString('en-US')} XP · 🪙 ${Number(score.coins||0).toLocaleString('en-US')}</span></div>`).join('');
   }catch(error){
     target.textContent='Chưa thể tải bảng xếp hạng.';
     mini.textContent='Chưa thể tải bảng xếp hạng.';
