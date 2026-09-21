@@ -18,3 +18,5 @@ function bindPersonalPack(){const btn=$('#createPersonalPack');if(!btn||btn.data
 async function boot(){if(!window.studyStore?.user)return;const uid=window.studyStore.userId,key='katlearn-restored-'+uid;const ok=await restore();if(ok&&!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');location.reload();return}draw()}
 window.addEventListener('8b1-auth-change',boot);document.addEventListener('DOMContentLoaded',async()=>{bindPersonalPack();await boot();draw();setBg(localStorage.getItem('katlearn-theme')||'default',false)},{once:true});setTimeout(bindPersonalPack,250);setTimeout(bindPersonalPack,1000);
 })();
+
+})();
