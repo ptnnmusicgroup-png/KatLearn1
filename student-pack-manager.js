@@ -4,6 +4,7 @@
 async function aiHeaders(){const h={'Content-Type':'application/json'};try{const t=await window.studyStore?.getIdToken?.();if(t)h.Authorization='Bearer '+t}catch(_){}return h}
   const $$=s=>document.querySelectorAll(s);
   const esc=t=>String(t??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  let editingPack=null;
   
   function row(data={}){
     const el=document.createElement('div');
@@ -138,13 +139,15 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     }
   }
 
-  function open(){
+  function open(pack=null){
     if(!window.studyStore?.user)return $('#loginModal')?.classList.add('show'),toast('Hãy đăng nhập để tạo bộ từ riêng nhé! 🐱');
     if($('#studentPackModal')){
+      editingPack=pack;
       $('#studentPackModal').classList.add('show');
-      loadRows();
+      loadRows(pack);
       return;
     }
+    editingPack=pack;
 
     const modal=document.createElement('div');
     modal.id='studentPackModal';
@@ -179,7 +182,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         <div class="student-pack-columns"><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span>AI</span></div>
         <div id="studentPackRows"></div>
         <button type="button" id="studentPackAddRow" class="add-word-btn">＋ Thêm dòng</button>
-        <div class="student-pack-footer"><span><b id="studentPackCount">3</b> từ</span><div><button type="button" class="secondary-btn" id="studentPackCancel">Hủy</button><button type="button" class="primary-btn" id="studentPackSave">Tạo bộ từ</button></div></div>
+        <div class="student-pack-footer"><span><b id="studentPackCount">3</b> từ</span><div><button type="button" class="secondary-btn" id="studentPackCancel">Hủy</button><button type="button" class="secondary-btn" id="studentPackDelete" hidden>Xóa bộ từ</button><button type="button" class="primary-btn" id="studentPackSave">Tạo bộ từ</button></div></div>
       </div>`;
     document.body.appendChild(modal);
     $('#studentPackClose').onclick=close;
@@ -191,18 +194,23 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     };
     $('#studentPackAiBtn').onclick=generateWithAI;
     $('#studentPackSave').onclick=save;
-    loadRows();
+    $('#studentPackDelete').onclick=deletePack;
+    loadRows(pack);
   }
 
-  function loadRows(){
+  function loadRows(pack=editingPack){
     const rows=$('#studentPackRows');
     if(!rows)return;
     rows.innerHTML='';
-    rows.append(row(),row(),row());
+    const words=Array.isArray(pack?.words)&&pack.words.length?pack.words:[{}, {}, {}];
+    words.forEach(word=>rows.append(row(word)));
     renumber();
-    $('#studentPackName').value='';
+    $('#studentPackName').value=pack?.name||'';
+    const saveBtn=$('#studentPackSave'),deleteBtn=$('#studentPackDelete');
+    if(saveBtn)saveBtn.textContent=pack?'Lưu thay đổi':'Tạo bộ từ';
+    if(deleteBtn)deleteBtn.hidden=!pack;
     if($('#studentPackAiPrompt'))$('#studentPackAiPrompt').value='';
-    if($('#studentPackAiStatus'))$('#studentPackAiStatus').textContent='Một lần gọi AI sẽ trả về toàn bộ dữ liệu của bộ từ.';
+    if($('#studentPackAiStatus'))$('#studentPackAiStatus').textContent=pack?'Bạn có thể thêm dòng, chỉnh sửa hoặc xóa từ rồi bấm “Lưu thay đổi”.':'Một lần gọi AI sẽ trả về toàn bộ dữ liệu của bộ từ.';
   }
 
   async function save(){
@@ -226,20 +234,43 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     btn.textContent='Đang tạo...';
 
     try{
-      await window.studyStore.createPersonalPack({name,words});
+      if(editingPack){
+        await window.studyStore.updatePersonalPack(editingPack.id,{name,words});
+        toast(`Đã cập nhật “${name}” với ${words.length} từ! 🐱`);
+      }else{
+        await window.studyStore.createPersonalPack({name,words});
+        toast(`Đã tạo “${name}” gồm ${words.length} từ! 🐱`);
+      }
       close();
       await renderMine();
       window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words}}));
-      toast(`Đã tạo “${name}” gồm ${words.length} từ! 🐱`);
     }catch(e){
       toast('Không thể tạo bộ từ: '+(e.message||'Lỗi không xác định'));
     }finally{
       btn.disabled=false;
-      btn.textContent='Tạo bộ từ';
+      btn.textContent=editingPack?'Lưu thay đổi':'Tạo bộ từ';
+    }
+  }
+
+  async function deletePack(){
+    if(!editingPack)return;
+    if(!confirm(`Xóa bộ từ “${editingPack.name||'này'}”? Thao tác này không thể hoàn tác.`))return;
+    const btn=$('#studentPackDelete');
+    if(btn){btn.disabled=true;btn.textContent='Đang xóa...'}
+    try{
+      await window.studyStore.deletePersonalPack(editingPack.id);
+      close();
+      await renderMine();
+      toast('Đã xóa bộ từ.');
+    }catch(e){
+      toast('Không thể xóa bộ từ: '+(e.message||'Lỗi không xác định'));
+    }finally{
+      if(btn){btn.disabled=false;btn.textContent='Xóa bộ từ'}
     }
   }
 
   function close(){
+    editingPack=null;
     const m=$('#studentPackModal');
     if(m)m.classList.remove('show');
   }
@@ -256,9 +287,10 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       const packs=await window.studyStore.personalPacks();
       $('#personalPackCount').textContent=packs.length;
       box.innerHTML=packs.length
-        ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>Những bộ từ bạn tự tạo — riêng cho tài khoản của bạn.</p></div></div><div class="personal-pack-grid">${packs.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng</p></div><button data-my-pack="${esc(p.id)}">Học ngay →</button></article>`).join('')}</div>`
+        ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>Những bộ từ bạn tự tạo — riêng cho tài khoản của bạn.</p></div></div><div class="personal-pack-grid">${packs.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng</p></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button data-edit-pack="${esc(p.id)}">Quản lý</button></div></article>`).join('')}</div>`
         : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. Bấm <b>＋ Tạo bộ từ</b> để tạo bộ đầu tiên nhé! 🐾';
 
+      $$('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
       $$('[data-my-pack]').forEach(b=>b.onclick=async()=>{
         const p=packs.find(x=>x.id===b.dataset.myPack);
         if(!p)return;
