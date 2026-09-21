@@ -290,7 +290,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>Những bộ từ bạn tự tạo — riêng cho tài khoản của bạn.</p></div></div><div class="personal-pack-grid">${packs.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng</p></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button data-edit-pack="${esc(p.id)}">Quản lý</button></div></article>`).join('')}</div>`
         : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. Bấm <b>＋ Tạo bộ từ</b> để tạo bộ đầu tiên nhé! 🐾';
 
-      $('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
+      $$('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
       $('[data-my-pack]').forEach(b=>b.onclick=async()=>{
         const p=packs.find(x=>x.id===b.dataset.myPack);
         if(!p)return;
