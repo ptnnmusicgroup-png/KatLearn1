@@ -52,23 +52,30 @@ if(settingsModal)settingsModal.onclick=e=>{if(e.target===settingsModal)settingsM
 if(settingsForm)settingsForm.onsubmit=async e=>{e.preventDefault();try{const config=JSON.parse($('#firebaseConfig').value);await window.studyStore.connect(config);localStorage.setItem('8b1-firebase-config',JSON.stringify(config));await syncProfile();$('#settingsModal').classList.remove('show');toast('Đã kết nối Firebase và bắt đầu đồng bộ dữ liệu!')}catch(err){toast('Firebase config không hợp lệ: '+err.message)}};
 function renderAuth(user){const login=$('#loginBtn'),trigger=$('#accountTrigger'),panel=$('#accountPanel');login.hidden=!!user;trigger.hidden=!user;if(!user){panel.hidden=true;login.onclick=()=>$('#loginModal').classList.add('show');return}const name=user.displayName||user.email?.split('@')[0]||'KatLearn Student',initial=name.trim()[0].toUpperCase();['#accountAvatar','#panelAvatar'].forEach(s=>{const avatar=$(s);avatar.textContent=initial;if(user.photoURL){avatar.style.backgroundImage=`url("${user.photoURL}")`;avatar.style.backgroundSize='cover';avatar.style.color='transparent'}else{avatar.style.backgroundImage='';avatar.style.color='#fff'}});$('#accountName').textContent=name;$('#panelName').textContent=name;$('#panelEmail').textContent=user.email||'';updateCoins();trigger.onclick=()=>panel.hidden=!panel.hidden;panel.hidden=false}
 async function refreshAuthDependentViews(user){
+  // Auth is the fast source of truth. Never block section access on Firestore.
   renderAuth(user);renderAdmin(user);
+  // Render all account-gated sections immediately from Firebase Auth state.
+  await Promise.allSettled([
+    renderLeaderboard(),
+    renderPublicPacks(),
+    window.renderStudentPersonalPacks?.(),
+    window.renderProgressDashboard?.()
+  ]);
   if(user){
-    await syncProfile();
-    await Promise.allSettled([
-      renderLeaderboard(),
-      renderPublicPacks(),
-      window.renderStudentPersonalPacks?.(),
-      window.renderProgressDashboard?.()
-    ]);
-  }else{
-    renderLeaderboard();
-    renderPublicPacks();
-    window.renderStudentPersonalPacks?.();
-    window.renderProgressDashboard?.();
+    // Full profile hydration happens in the background.
+    void syncProfile().then(async()=>{
+      await Promise.allSettled([
+        renderLeaderboard(),
+        renderPublicPacks(),
+        window.renderStudentPersonalPacks?.(),
+        window.renderProgressDashboard?.()
+      ]);
+    });
   }
 }
-window.addEventListener('8b1-auth-change',e=>{void refreshAuthDependentViews(e.detail)});renderAuth(null);renderAdmin(null);const loginModal=$('#loginModal');if(loginModal)loginModal.querySelector('.modal-close')?.addEventListener('click',()=>loginModal.classList.remove('show'));if(loginModal)loginModal.onclick=e=>{if(e.target===loginModal)loginModal.classList.remove('show')};function authError(err){if(err.code==='auth/unauthorized-domain')return `Firebase chưa cho phép domain “${location.hostname}”. Vào Authentication → Settings → Authorized domains để thêm domain này.`;const messages={'auth/operation-not-allowed':'Hãy bật Email/Password trong Firebase Authentication trước.','auth/email-already-in-use':'Email này đã có tài khoản. Hãy đăng nhập.','auth/invalid-credential':'Email hoặc mật khẩu không đúng.','auth/weak-password':'Mật khẩu cần ít nhất 6 ký tự.'};return messages[err.code]||'Không thể thực hiện: '+err.message}async function providerLogin(provider){try{const user=await window.studyStore.signIn(provider);$('#loginModal').classList.remove('show');renderAuth(user);toast(`Chào mừng ${user.displayName||'bạn'}! Dữ liệu đang được đồng bộ.`)}catch(err){toast(authError(err))}}async function emailLogin(create){const email=$('#authEmail').value.trim(),password=$('#authPassword').value;if(!email||!password)return;try{const user=await window.studyStore.signInEmail(email,password,create);$('#loginModal').classList.remove('show');renderAuth(user);toast(create?'Đã tạo tài khoản thành công!':'Đăng nhập thành công!')}catch(err){toast(authError(err))}}const emailLoginForm=$('#emailLoginForm'),emailRegister=$('#emailRegister'),googleLogin=$('#googleLogin'),appleLogin=$('#appleLogin'),logoutBtn=$('#logoutBtn'),openProgress=$('#openProgress');if(emailLoginForm)emailLoginForm.onsubmit=e=>{e.preventDefault();emailLogin(false)};if(emailRegister)emailRegister.onclick=()=>emailLogin(true);if(googleLogin)googleLogin.onclick=()=>providerLogin('google');if(appleLogin)appleLogin.onclick=()=>providerLogin('apple');if(logoutBtn)logoutBtn.onclick=async()=>{await window.studyStore.signOut();toast('Đã đăng xuất.')};if(openProgress)openProgress.onclick=()=>{showPage('progress');$('#accountPanel').hidden=true};document.addEventListener('click',e=>{if(!$('.top-actions').contains(e.target))$('#accountPanel').hidden=true});
+window.addEventListener('8b1-auth-change',e=>{void refreshAuthDependentViews(e.detail)});
+window.addEventListener('katlearn-account-fast',e=>{if(e.detail?.account)void refreshAuthDependentViews(e.detail.user)});
+window.addEventListener('katlearn-account-ready',e=>{void refreshAuthDependentViews(e.detail?.account?e.detail.user:null)});renderAuth(null);renderAdmin(null);const loginModal=$('#loginModal');if(loginModal)loginModal.querySelector('.modal-close')?.addEventListener('click',()=>loginModal.classList.remove('show'));if(loginModal)loginModal.onclick=e=>{if(e.target===loginModal)loginModal.classList.remove('show')};function authError(err){if(err.code==='auth/unauthorized-domain')return `Firebase chưa cho phép domain “${location.hostname}”. Vào Authentication → Settings → Authorized domains để thêm domain này.`;const messages={'auth/operation-not-allowed':'Hãy bật Email/Password trong Firebase Authentication trước.','auth/email-already-in-use':'Email này đã có tài khoản. Hãy đăng nhập.','auth/invalid-credential':'Email hoặc mật khẩu không đúng.','auth/weak-password':'Mật khẩu cần ít nhất 6 ký tự.'};return messages[err.code]||'Không thể thực hiện: '+err.message}async function providerLogin(provider){try{const user=await window.studyStore.signIn(provider);$('#loginModal').classList.remove('show');renderAuth(user);toast(`Chào mừng ${user.displayName||'bạn'}! Dữ liệu đang được đồng bộ.`)}catch(err){toast(authError(err))}}async function emailLogin(create){const email=$('#authEmail').value.trim(),password=$('#authPassword').value;if(!email||!password)return;try{const user=await window.studyStore.signInEmail(email,password,create);$('#loginModal').classList.remove('show');renderAuth(user);toast(create?'Đã tạo tài khoản thành công!':'Đăng nhập thành công!')}catch(err){toast(authError(err))}}const emailLoginForm=$('#emailLoginForm'),emailRegister=$('#emailRegister'),googleLogin=$('#googleLogin'),appleLogin=$('#appleLogin'),logoutBtn=$('#logoutBtn'),openProgress=$('#openProgress');if(emailLoginForm)emailLoginForm.onsubmit=e=>{e.preventDefault();emailLogin(false)};if(emailRegister)emailRegister.onclick=()=>emailLogin(true);if(googleLogin)googleLogin.onclick=()=>providerLogin('google');if(appleLogin)appleLogin.onclick=()=>providerLogin('apple');if(logoutBtn)logoutBtn.onclick=async()=>{await window.studyStore.signOut();toast('Đã đăng xuất.')};if(openProgress)openProgress.onclick=()=>{showPage('progress');$('#accountPanel').hidden=true};document.addEventListener('click',e=>{if(!$('.top-actions').contains(e.target))$('#accountPanel').hidden=true});
 renderCard();renderQuiz();updateCoins();openInitialPage();
 
 window.addEventListener('katlearn-personal-pack-open',e=>{const words=Array.isArray(e.detail?.words)?e.detail.words:[];vocab=words;known=0;cardIndex=0;localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));renderCard();renderQuiz();});
