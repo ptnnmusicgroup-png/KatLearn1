@@ -70,7 +70,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   }
 
   function renumber(){
-    $('.student-pack-row').forEach((r,i)=>r.querySelector('.student-pack-num').textContent='# '+(i+1));
+    $$('.student-pack-row').forEach((r,i)=>r.querySelector('.student-pack-num').textContent='# '+(i+1));
     const c=$('.student-pack-row').length;
     const b=$('#studentPackCount');
     if(b)b.textContent=c;
