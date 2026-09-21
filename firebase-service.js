@@ -136,7 +136,7 @@
     async deletePersonalPack(packId){if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');if(!packId)throw new Error('Không tìm thấy bộ từ cần xóa.');return api.deleteDoc(api.doc(db,'users',this.userId,'personalPacks',packId))},
     async personalPacks(){if(!db||!currentUser)return[];const snap=await api.getDocs(api.query(api.collection(db,'users',this.userId,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
-    async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'users'),api.orderBy('energy','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
+    async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
   };
   const TEACHER_HOME='https://teacher-katlearn.vercel.app',SSO_EXCHANGE=TEACHER_HOME+'/api/auth-exchange';
   const isMainLms=()=>{const p=location.pathname;return(p==='/'||p.endsWith('/index.html'))&&!/login\.html|signup\.html|sso-bridge\.html/.test(p)};
