@@ -291,7 +291,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. Bấm <b>＋ Tạo bộ từ</b> để tạo bộ đầu tiên nhé! 🐾';
 
       $$('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
-      $('[data-my-pack]').forEach(b=>b.onclick=async()=>{
+      $$('[data-my-pack]').forEach(b=>b.onclick=async()=>{
         const p=packs.find(x=>x.id===b.dataset.myPack);
         if(!p)return;
         const words=Array.isArray(p.words)?p.words:[];
