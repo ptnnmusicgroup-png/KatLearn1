@@ -59,6 +59,12 @@ service cloud.firestore {
       allow update, delete: if isAdmin() || (isTeacher() && resource.data.createdByUid == request.auth.uid);
     }
 
+    // Public leaderboard exposes scores only; it contains no identity or study data.
+    match /leaderboard/{entryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     match /users/{userId} {
       allow read: if signedIn() && (
         request.auth.uid == userId || isAdmin()
