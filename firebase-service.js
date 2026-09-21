@@ -3,6 +3,8 @@
   let db=null,auth=null,api={},currentUser=null,authReady=null,connectPromise=null;
   window.KATLEARN_FIREBASE_CONFIG={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDomain:'elp---katlearn.firebaseapp.com',projectId:'elp---katlearn',storageBucket:'elp---katlearn.firebasestorage.app',messagingSenderId:'344478447672',appId:'1:344478447672:web:4ed109a40303d0b41b0ecd',measurementId:'G-KTW11GD97T'};
   const guestId=localStorage.getItem('8b1-guest-id')||crypto.randomUUID();localStorage.setItem('8b1-guest-id',guestId);
+  function accountPart(value,fallback){const clean=String(value||'').trim().replace(/[^a-zA-Z0-9.@-]+/g,'').replace(/@/g,'@');return clean||fallback}
+  function createAccountCode(user){const email=accountPart(user?.email,'katlearn');const name=accountPart((user?.displayName||user?.email?.split('@')[0]||'student').toUpperCase(),'STUDENT');const number=String(Math.floor(1000000+Math.random()*9000000));return email+'_'+name+'_'+number}
   function renderAccountUi(user){
     const loginBtn=document.querySelector('#loginBtn'),trigger=document.querySelector('#accountTrigger'),panel=document.querySelector('#accountPanel');
     if(!loginBtn||!trigger)return false;
@@ -96,6 +98,7 @@
     },
     connected(){return !!db},
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
+    async ensureAccountCode(){if(!currentUser)throw new Error('Hãy đăng nhập trước.');const profile=await this.loadProfile();if(profile?.accountCode)return profile.accountCode;const accountCode=createAccountCode(currentUser);await this.saveProfile({accountCode});return accountCode},
     async getRole(){const p=await this.loadProfile();return String(p?.role||'student').toLowerCase()},
     async getIdToken(forceRefresh=true){return currentUser?currentUser.getIdToken(forceRefresh):null},
     async signInCustomToken(token){if(!auth)throw new Error('Hãy kết nối Firebase trước.');sessionStorage.removeItem('katlearn-logged-out');const {signInWithCustomToken}=await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js');const result=await signInWithCustomToken(auth,token);currentUser=result.user;notifyAuth(currentUser);return currentUser},
@@ -128,8 +131,8 @@
     async recordAnswer(data){if(!db||!currentUser)return;await api.addDoc(api.collection(db,'users',this.userId,'attempts'),{...data,createdAt:api.serverTimestamp()});await this.saveProfile({lastStudyAt:api.serverTimestamp()})},
     async purchase(item){if(!db||!currentUser)return;return api.setDoc(api.doc(db,'users',this.userId,'items',item.id),{...item,boughtAt:api.serverTimestamp()})},
     async createPublicPack(pack){if(!db||!currentUser||!this.isAdmin())throw new Error('Bạn không có quyền quản trị.');return api.addDoc(api.collection(db,'publicPacks'),{...pack,createdBy:currentUser.uid,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()})},
-    async createPersonalPack(pack){if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');return api.addDoc(api.collection(db,'users',this.userId,'personalPacks'),{...pack,createdByUid:currentUser.uid,createdByEmail:currentUser.email||'',createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()})},
-    async updatePersonalPack(packId,pack){if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');return api.updateDoc(api.doc(db,'users',this.userId,'personalPacks',packId),{...pack,updatedAt:api.serverTimestamp()})},
+    async createPersonalPack(pack){if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');const ownerAccountCode=await this.ensureAccountCode();return api.addDoc(api.collection(db,'users',this.userId,'personalPacks'),{...pack,ownerUid:currentUser.uid,ownerEmail:currentUser.email||'',ownerDisplayName:currentUser.displayName||currentUser.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()})},
+    async updatePersonalPack(packId,pack){if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');const ownerAccountCode=await this.ensureAccountCode();return api.updateDoc(api.doc(db,'users',this.userId,'personalPacks',packId),{...pack,ownerUid:currentUser.uid,ownerEmail:currentUser.email||'',ownerDisplayName:currentUser.displayName||currentUser.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,updatedAt:api.serverTimestamp()})},
     async deletePersonalPack(packId){if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');if(!packId)throw new Error('Không tìm thấy bộ từ cần xóa.');return api.deleteDoc(api.doc(db,'users',this.userId,'personalPacks',packId))},
     async personalPacks(){if(!db||!currentUser)return[];const snap=await api.getDocs(api.query(api.collection(db,'users',this.userId,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
