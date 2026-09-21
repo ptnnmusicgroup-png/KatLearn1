@@ -1,6 +1,6 @@
 /* Firebase browser data layer. */
 (function(){
-  let db=null,auth=null,api={},currentUser=null,authReady=null;
+  let db=null,auth=null,api={},currentUser=null,authReady=null,connectPromise=null;
   window.KATLEARN_FIREBASE_CONFIG={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDomain:'elp---katlearn.firebaseapp.com',projectId:'elp---katlearn',storageBucket:'elp---katlearn.firebasestorage.app',messagingSenderId:'344478447672',appId:'1:344478447672:web:4ed109a40303d0b41b0ecd',measurementId:'G-KTW11GD97T'};
   const guestId=localStorage.getItem('8b1-guest-id')||crypto.randomUUID();localStorage.setItem('8b1-guest-id',guestId);
   function renderAccountUi(user){
@@ -42,13 +42,57 @@
     get userId(){return currentUser?.uid||guestId},get user(){return currentUser},
     isAdmin(){return !!currentUser&&window.KATLEARN_ADMIN_EMAILS.includes((currentUser.email||'').toLowerCase())},
     async connect(config){
+      if(db&&auth)return true;
+      if(connectPromise)return connectPromise;
       if(!config?.apiKey||!config?.projectId)throw new Error('Firebase config chưa đầy đủ');
-      const [{initializeApp,getApps},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword}]=await Promise.all([import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'),import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js')]);
-      const app=getApps().length?getApps()[0]:initializeApp(config);db=getFirestore(app);api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc};auth=getAuth(app);api.auth={GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword};
-      authReady=new Promise(resolve=>api.auth.onAuthStateChanged(auth,user=>{currentUser=user;notifyAuth(user);resolve(user)}));
-      await authReady;
-      if(currentUser){try{const profile=await this.loadProfile();let pending=null;try{pending=JSON.parse(localStorage.getItem('katlearn-pending-profile')||'null')}catch(_){}if(pending&&pending.email&&currentUser.email&&pending.email.toLowerCase()===currentUser.email.toLowerCase()){await this.saveProfile({displayName:pending.displayName||currentUser.displayName||currentUser.email.split('@')[0],email:currentUser.email,role:pending.role||'student',provider:pending.provider||'password'});localStorage.removeItem('katlearn-pending-profile')}else if(!profile){await this.saveProfile({displayName:currentUser.displayName||currentUser.email?.split('@')[0]||'KatLearn Student',email:currentUser.email||'',provider:'password',coins:0,energy:0,streak:0,__coinsAuthoritative:true})}notifyAuth(currentUser)}catch(e){console.warn('[KatLearn] Firestore profile sync skipped:',e?.message||e)}}
-      return true;
+
+      connectPromise=(async()=>{
+        const [{initializeApp,getApps},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword}]=await Promise.all([
+          import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
+          import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'),
+          import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js')
+        ]);
+        const app=getApps().length?getApps()[0]:initializeApp(config);
+        db=getFirestore(app);
+        api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc};
+        auth=getAuth(app);
+        api.auth={GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword};
+
+        authReady=new Promise(resolve=>api.auth.onAuthStateChanged(auth,user=>{
+          currentUser=user;
+          notifyAuth(user);
+          resolve(user);
+        }));
+
+        // IMPORTANT: never wait for Auth/Firestore hydration here.
+        // The UI can enter immediately; profile sync runs from auth events.
+        void authReady.then(async user=>{
+          if(!user)return;
+          try{
+            const profile=await this.loadProfile();
+            let pending=null;
+            try{pending=JSON.parse(localStorage.getItem('katlearn-pending-profile')||'null')}catch(_){}
+            if(pending&&pending.email&&user.email&&pending.email.toLowerCase()===user.email.toLowerCase()){
+              await this.saveProfile({
+                displayName:pending.displayName||user.displayName||user.email.split('@')[0],
+                email:user.email,role:pending.role||'student',provider:pending.provider||'password'
+              });
+              localStorage.removeItem('katlearn-pending-profile');
+            }else if(!profile){
+              await this.saveProfile({
+                displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
+                email:user.email||'',provider:'password',coins:0,energy:0,streak:0,__coinsAuthoritative:true
+              });
+            }
+            notifyAuth(user);
+          }catch(e){
+            console.warn('[KatLearn] Firestore profile sync skipped:',e?.message||e);
+          }
+        });
+        return true;
+      })().finally(()=>{connectPromise=null});
+
+      return connectPromise;
     },
     connected(){return !!db},
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
