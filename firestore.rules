@@ -82,7 +82,7 @@ service cloud.firestore {
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['joinedClassIds', 'updatedAt']));
       allow delete: if false;
 
-      match /items/{itemId} { allow read, write: if signedIn() && request.auth.uid == userId && get(/databases/$(database)/documents/users/$(userId)).data.get('studentAccountType', 'free') != 'class'; }
+      match /items/{itemId} { allow read, write: if signedIn() && request.auth.uid == userId; }
       match /attempts/{attemptId} { allow read, write: if signedIn() && request.auth.uid == userId; }
       match /personalPacks/{packId} { allow read, write: if signedIn() && request.auth.uid == userId && get(/databases/$(database)/documents/users/$(userId)).data.get('studentAccountType', 'free') != 'class'; }
     }
