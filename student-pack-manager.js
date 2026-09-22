@@ -139,8 +139,18 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     }
   }
 
+  async function isManagedStudent(){return !!window.studyStore?.user&&await window.studyStore.isClassStudent?.()}
+
   function open(pack=null){
     if(!window.studyStore?.user)return $('#loginModal')?.classList.add('show'),toast('Hãy đăng nhập để tạo bộ từ riêng nhé! 🐱');
+    if(window.studyStore?.isClassStudent){
+      window.studyStore.isClassStudent().then(blocked=>{if(blocked)toast('🔒 Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');else openPackModal(pack)});
+      return;
+    }
+    openPackModal(pack);
+  }
+
+  function openPackModal(pack=null){
     if($('#studentPackModal')){
       editingPack=pack;
       $('#studentPackModal').classList.add('show');
@@ -214,6 +224,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   }
 
   async function save(){
+    if(await isManagedStudent())return toast('🔒 Tài khoản lớp học không thể tạo hoặc sửa bộ từ cá nhân.');
     const name=$('#studentPackName').value.trim();
     if(!name)return toast('Hãy đặt tên cho bộ từ nhé!');
 
@@ -253,6 +264,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   }
 
   async function deletePack(){
+    if(await isManagedStudent())return toast('🔒 Tài khoản lớp học không thể quản lý bộ từ cá nhân.');
     if(!editingPack)return;
     if(!confirm(`Xóa bộ từ “${editingPack.name||'này'}”? Thao tác này không thể hoàn tác.`))return;
     const btn=$('#studentPackDelete');
@@ -284,6 +296,11 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     }
 
     try{
+      if(await isManagedStudent()){
+        $('#personalPackCount').textContent='0';
+        box.innerHTML='<div class="personal-pack-empty">🔒 Bộ từ cá nhân bị khóa vì tài khoản này đang thuộc lớp do giáo viên quản lý.</div>';
+        return;
+      }
       const packs=await window.studyStore.personalPacks();
       $('#personalPackCount').textContent=packs.length;
       box.innerHTML=packs.length

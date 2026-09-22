@@ -100,6 +100,8 @@
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
     async ensureAccountCode(){if(!currentUser)throw new Error('Hãy đăng nhập trước.');const profile=await this.loadProfile();if(profile?.accountCode)return profile.accountCode;const accountCode=createAccountCode(currentUser);await this.saveProfile({accountCode});return accountCode},
     async getRole(){const p=await this.loadProfile();return String(p?.role||'student').toLowerCase()},
+    async getAccountType(){const p=await this.loadProfile();return String(p?.studentAccountType||'free').toLowerCase()==='class'?'class':'free'},
+    async isClassStudent(){return !!this.user&&await this.getAccountType()==='class'},
     async getIdToken(forceRefresh=true){return currentUser?currentUser.getIdToken(forceRefresh):null},
     async signInCustomToken(token){if(!auth)throw new Error('Hãy kết nối Firebase trước.');sessionStorage.removeItem('katlearn-logged-out');const {signInWithCustomToken}=await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js');const result=await signInWithCustomToken(auth,token);currentUser=result.user;notifyAuth(currentUser);return currentUser},
     async signIn(providerName){
