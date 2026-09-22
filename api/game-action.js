@@ -61,7 +61,7 @@ module.exports=async(req,res)=>{
       const result=await db.runTransaction(async transaction=>{
         const snap=await transaction.get(userRef);
         if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
-        const profile=snap.data()||{};if(String(profile.studentAccountType||'free').toLowerCase()==='class')throw Object.assign(new Error('Tài khoản học sinh thuộc lớp không thể sử dụng tính năng cửa hàng.'),{status:403});const coins=Number(profile.coins||0),xp=Number(profile.energy||0),itemRef=db.doc("users/"+token.uid+"/items/"+itemId);
+        const profile=snap.data()||{},coins=Number(profile.coins||0),xp=Number(profile.energy||0),itemRef=db.doc("users/"+token.uid+"/items/"+itemId);
         const itemSnap=await transaction.get(itemRef);
         if(itemSnap.exists)throw Object.assign(new Error("Vật phẩm này đã được mua."),{status:409});
         if(coins<price)throw Object.assign(new Error("Không đủ KatCoin."),{status:400});
