@@ -32,7 +32,7 @@
       const [{initializeApp,getApps},{getFirestore,doc,getDoc}]=await Promise.all([import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js')]);
       const app=getApps().length?getApps()[0]:initializeApp(window.KATLEARN_FIREBASE_CONFIG),db=getFirestore(app);
       const rows=(await Promise.all(ids.slice(0,20).map(async id=>{const snap=await getDoc(doc(db,'classes',id));return snap.exists()?{id:snap.id,...snap.data()}:null}))).filter(Boolean);
-      box.innerHTML=rows.map(c=>'<article class="student-class-card"><h3>'+esc(c.name)+'</h3><p>Khối '+esc(c.grade||'—')+' · Giáo viên: '+esc(c.teacherEmail||'KatLearn Teacher')+'</p><span class="class-waiting">✓ Đã được GV quản trị</span></article>').join('')||'<div class="student-class-empty"><b>⏳ Chờ GV quản trị thêm vào lớp</b>Chưa có lớp nào được gán cho tài khoản này.</div>';
+      box.innerHTML=rows.map(c=>'<article class="student-class-card"><h3>'+esc(c.name)+'</h3><p>Khối '+esc(c.grade||'—')+' · Trường: '+esc(c.schoolName||'KatLearn')+' · Giáo viên: '+esc(c.teacherEmail||'KatLearn Teacher')+'</p><span class="class-waiting">✓ Đã được GV quản trị</span></article>').join('')||'<div class="student-class-empty"><b>⏳ Chờ GV quản trị thêm vào lớp</b>Chưa có lớp nào được gán cho tài khoản này.</div>';
     }catch(e){box.innerHTML='<div class="student-class-empty"><b>Không tải được lớp</b>'+esc(e.message||'Đã xảy ra lỗi')+'</div>'}
   }
   window.addEventListener('8b1-auth-change',()=>setTimeout(render,0));
