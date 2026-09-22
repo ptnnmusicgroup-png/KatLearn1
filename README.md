@@ -2,9 +2,9 @@
 
 ## Chạy ứng dụng
 
-1. Cài Node.js 18+.
+1. Cài Node.js 22+.
 2. Chạy `npm install` và sao chép `.env.example` thành `.env`.
-3. Dán OpenAI API key vào `OPENAI_API_KEY` trong `.env`.
+3. Dán Gemini API key vào `GEMINI_API_KEY` trong `.env`.
 4. Chạy `npm start`, rồi mở `http://localhost:3000`.
 
 Nếu máy chưa có `npm` nhưng có lệnh `node`, chạy `node dev-server.js` để kiểm tra Firebase Authentication tại `http://localhost:3000`. Server tối giản này không có tính năng AI ngữ cảnh.
@@ -21,7 +21,7 @@ Trong Firebase Console, bật **Authentication → Sign-in method → Google** v
 - `users/{userId}/items/{itemId}`: vật phẩm đã mua.
 - `users/{userId}/attempts/*`: từng câu làm, đúng/sai, dạng bài, từ vựng và thời điểm làm — đây là nền tảng cho đề review sau 30 ngày.
 
-Không dán OpenAI API key vào Firebase config hoặc JavaScript chạy trên trình duyệt. Theo [hướng dẫn OpenAI](https://platform.openai.com/docs/quickstart/make-your-first-api-request), khóa phải được giữ ở biến môi trường phía máy chủ.
+Không dán Gemini API key vào Firebase config hoặc JavaScript chạy trên trình duyệt. Khóa phải được giữ ở biến môi trường phía máy chủ. Gemini API hiện có Free Tier cho một số model, nhưng vẫn có giới hạn lưu lượng và chính sách dữ liệu riêng của Google.
 
 ## Kích hoạt tài khoản Admin
 
