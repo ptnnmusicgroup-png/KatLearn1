@@ -391,10 +391,11 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       const packs=await window.studyStore.personalPacks();
       $('#personalPackCount').textContent=packs.length;
       box.innerHTML=packs.length
-        ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>Những bộ từ bạn tự tạo — riêng cho tài khoản của bạn.</p></div></div><div class="personal-pack-grid">${packs.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng</p></div><div style="display:flex;gap:7px;flex-wrap:wrap"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button data-edit-pack="${esc(p.id)}">Quản lý</button></div></article>`).join('')}</div>`
+        ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>Những bộ từ bạn tự tạo — riêng cho tài khoản của bạn.</p></div></div><div class="personal-pack-grid">${packs.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng</p></div><div style="display:flex;gap:7px;align-items:center"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn">⋮</button></div></article>`).join('')}</div>`
         : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. Bấm <b>＋ Tạo bộ từ</b> để tạo bộ đầu tiên nhé! 🐾';
 
-      $$('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
+      $('[data-my-pack-menu]').forEach(b=>b.onclick=e=>{e.stopPropagation();openPersonalPackMenu(b,packs.find(x=>x.id===b.dataset.myPackMenu))});
+      $('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
       $$('[data-my-pack]').forEach(b=>b.onclick=async()=>{
         const p=packs.find(x=>x.id===b.dataset.myPack);
         if(!p)return;
@@ -409,6 +410,31 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   }
 
   window.renderStudentPersonalPacks=renderMine;
+
+  function closePersonalPackMenu(){document.querySelector('.personal-pack-action-menu')?.remove()}
+  function openPersonalPackMenu(anchor,p){
+    closePersonalPackMenu();if(!p)return;
+    const menu=document.createElement('div');menu.className='personal-pack-action-menu';
+    menu.innerHTML='<button data-personal-pack-action="rename">✏️ Đổi tên bộ từ</button><button class="danger" data-personal-pack-action="delete">🗑️ Xóa</button>';
+    document.body.appendChild(menu);
+    const r=anchor.getBoundingClientRect();
+    menu.style.position='fixed';menu.style.top=Math.min(window.innerHeight-menu.offsetHeight-8,r.bottom+6)+'px';menu.style.left=Math.min(window.innerWidth-menu.offsetWidth-8,Math.max(8,r.right-menu.offsetWidth))+'px';
+    menu.onclick=async e=>{
+      const action=e.target.closest('[data-personal-pack-action]')?.dataset.personalPackAction;if(!action)return;
+      closePersonalPackMenu();
+      if(action==='rename')return renamePersonalPack(p);
+      if(action==='delete'){editingPack=p;return deletePack()}
+    };
+  }
+  document.addEventListener('click',e=>{if(!e.target.closest('.personal-pack-action-menu')&&!e.target.closest('[data-my-pack-menu]'))closePersonalPackMenu()});
+  async function renamePersonalPack(p){
+    if(await isManagedStudent())return toast('🔒 Tài khoản lớp học không thể quản lý bộ từ cá nhân.');
+    const name=prompt('Tên mới cho bộ từ:',p.name||'');if(name===null)return;
+    const cleanName=name.trim();if(!cleanName)return toast('Tên bộ từ không được để trống.');
+    if(cleanName===p.name)return;
+    try{await window.studyStore.updatePersonalPack(p.id,{name:cleanName});toast('✓ Đã đổi tên bộ từ');await renderMine()}
+    catch(e){toast('Không thể đổi tên: '+(e.message||'Lỗi không xác định'))}
+  }
 
   function init(){
     const btn=$('#createPersonalPack');
