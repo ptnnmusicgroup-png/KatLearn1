@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed:public-vocab": "node scripts/seed-public-vocabulary.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
