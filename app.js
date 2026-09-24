@@ -59,7 +59,7 @@ async function loadAssignedPacks(){
     return Array.isArray(data.packs)?data.packs:[];
   }catch(e){console.warn('[KatLearn] assigned packs:',e);return[]}
 }
-function setVocabSource(source){activeVocabSource=source||{kind:'legacy'};localStorage.setItem('katlearn-vocab-source',JSON.stringify(activeVocabSource))}
+function setVocabSource(source){activeVocabSource=source||{kind:'legacy'};if(activeVocabSource.kind==='personal'&&!activeVocabSource.uid)activeVocabSource.uid=window.studyStore?.userId||'';localStorage.setItem('katlearn-vocab-source',JSON.stringify(activeVocabSource))}
 function openVocabularyPack(pack){
   if(!pack)return;
   vocab=Array.isArray(pack.words)?pack.words:[];
