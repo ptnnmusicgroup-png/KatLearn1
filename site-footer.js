@@ -27,9 +27,9 @@
         <p class="dmca">*protected by DMCA*</p>
       </div>
       <div class="footer-right">
-        <p>Được lưu trữ bởi GitHub</p>
+        <p>Mã nguồn được lưu trữ bởi GitHub</p>
         <p>Dữ liệu người dùng, hệ thống đăng nhập bởi Google Firebase</p>
-        <p>Deploy bởi Netlify</p>
+        <p>Deploy bởi Vercel</p>
         <p>Được bảo vệ bởi DMCA</p>
       </div>`;
     main.appendChild(footer);
