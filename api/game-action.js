@@ -70,11 +70,13 @@ module.exports=async(req,res)=>{
     if(action==="answer"){
       const word=String(body.word||"").trim().slice(0,100),meaning=String(body.meaning||"").trim().slice(0,200),correct=body.correct===true,mode=String(body.mode||"").trim().slice(0,40)||"engvi",source=body.source||{};
       if(!word||!meaning)return send(res,400,{error:"Thiếu dữ liệu câu trả lời."});
+      const profileSnap=await userRef.get();
+      if(!profileSnap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
+      const sourceKind=await validateQuizSource(db,token.uid,source,word,meaning,profileSnap.data()||{});
       const result=await db.runTransaction(async transaction=>{
         const snap=await transaction.get(userRef);
         if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
         const profile=snap.data()||{};
-        const sourceKind=await validateQuizSource(db,token.uid,source,word,meaning,profile);
         const now=Date.now();
         const attemptRef=db.collection("users").doc(token.uid).collection("attempts").doc();
         const updates={questionsAnswered:FieldValue.increment(1),lastStudyAt:FieldValue.serverTimestamp()};
