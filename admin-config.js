@@ -1,15 +1,2 @@
 // KatLearn administrator configuration.
-window.KATLEARN_ADMIN_EMAILS = ['katlearn.admin@gmail.com'];
-
-// Load optional feature modules without changing the existing app boot order.
-(function(){
-  const files=['katcoin-labels.js','signup.js','site-footer.js','dmca-badge.js'];
-  let chain=Promise.resolve();
-  files.forEach(src=>{
-    chain=chain.then(()=>new Promise((resolve,reject)=>{
-      const s=document.createElement('script');
-      s.src=src; s.async=false; s.onload=resolve; s.onerror=()=>reject(new Error('Không tải được '+src));
-      document.head.appendChild(s);
-    })).catch(err=>console.warn('[KatLearn]',err.message));
-  });
-})();
+window.KATLEARN_ADMIN_EMAILS=['katlearn.admin@gmail.com'];
