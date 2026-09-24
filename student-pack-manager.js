@@ -343,7 +343,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       }
       close();
       await renderMine();
-      window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:savedPackId}}));
+      window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:savedPackId,name}}));
     }catch(e){
       toast('Không thể tạo bộ từ: '+(e.message||'Lỗi không xác định'));
     }finally{
@@ -402,7 +402,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         const p=packs.find(x=>x.id===b.dataset.myPack);
         if(!p)return;
         const words=Array.isArray(p.words)?p.words:[];
-        window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:p.id}}));
+        window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:p.id,name:p.name||''}}));
         if(typeof showPage==='function')showPage('learn');
         toast(`Đã mở “${p.name}”.`);
       });
