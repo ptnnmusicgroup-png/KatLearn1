@@ -74,11 +74,6 @@ function patch(){
     const preserveVocab=preservesRemoteVocab();
     let payload={...data,ownedThemes:owned};
     if(!preserveVocab)Object.assign(payload,{vocab,totalWords:vocab.length});
-    if(window.KATLEARN_PRESERVE_REMOTE_STATE){
-      delete payload.coins;delete payload.energy;delete payload.knownWords;
-      delete payload.totalWords;delete payload.vocab;
-      window.KATLEARN_PRESERVE_REMOTE_STATE=false;
-    }
     const result=await old(payload);
     accountUi(payload);
     return result;
@@ -98,7 +93,6 @@ async function load(){
   window.KATLEARN_HYDRATION=(async()=>{
     const p=await window.studyStore.loadProfile();
     if(p){
-      window.KATLEARN_PRESERVE_REMOTE_STATE=true;
       if(!preservesRemoteVocab())localStorage.setItem('katlearn-vocab',JSON.stringify(Array.isArray(p.vocab)?p.vocab:[]));
       localStorage.setItem('katlearn-owned-themes',JSON.stringify(Array.isArray(p.ownedThemes)?p.ownedThemes:[]));
       if(p.themeId)localStorage.setItem('katlearn-theme',p.themeId);else localStorage.removeItem('katlearn-theme');
