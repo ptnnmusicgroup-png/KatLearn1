@@ -58,14 +58,27 @@ function accountUi(profile={}){
     };
   }
 }
+function currentVocabSource(){
+  try{return JSON.parse(localStorage.getItem('katlearn-vocab-source')||'null')||{kind:'legacy'}}
+  catch(_){return{kind:'legacy'}}
+}
+function preservesRemoteVocab(){
+  return ['core','public','assigned'].includes(String(currentVocabSource().kind||''));
+}
 function patch(){
   if(!window.studyStore||window.studyStore.__guarded)return;
   const old=window.studyStore.saveProfile.bind(window.studyStore);
   window.studyStore.saveProfile=async data=>{
     if(window.KATLEARN_HYDRATION)await window.KATLEARN_HYDRATION.catch(()=>{});
     const vocab=readJson('katlearn-vocab',[]),owned=readJson('katlearn-owned-themes',[]);
-    let payload={...data,vocab,totalWords:vocab.length,ownedThemes:owned};
-    if(window.KATLEARN_PRESERVE_REMOTE_STATE){delete payload.coins;delete payload.energy;delete payload.knownWords;delete payload.totalWords;window.KATLEARN_PRESERVE_REMOTE_STATE=false}
+    const preserveVocab=preservesRemoteVocab();
+    let payload={...data,ownedThemes:owned};
+    if(!preserveVocab)Object.assign(payload,{vocab,totalWords:vocab.length});
+    if(window.KATLEARN_PRESERVE_REMOTE_STATE){
+      delete payload.coins;delete payload.energy;delete payload.knownWords;
+      delete payload.totalWords;delete payload.vocab;
+      window.KATLEARN_PRESERVE_REMOTE_STATE=false;
+    }
     const result=await old(payload);
     accountUi(payload);
     return result;
@@ -86,7 +99,7 @@ async function load(){
     const p=await window.studyStore.loadProfile();
     if(p){
       window.KATLEARN_PRESERVE_REMOTE_STATE=true;
-      localStorage.setItem('katlearn-vocab',JSON.stringify(Array.isArray(p.vocab)?p.vocab:[]));
+      if(!preservesRemoteVocab())localStorage.setItem('katlearn-vocab',JSON.stringify(Array.isArray(p.vocab)?p.vocab:[]));
       localStorage.setItem('katlearn-owned-themes',JSON.stringify(Array.isArray(p.ownedThemes)?p.ownedThemes:[]));
       if(p.themeId)localStorage.setItem('katlearn-theme',p.themeId);else localStorage.removeItem('katlearn-theme');
       accountUi(p);successToast();setTimeout(()=>accountUi(p),100)
