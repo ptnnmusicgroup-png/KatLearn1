@@ -53,6 +53,11 @@ async function validateQuizSource(db,uid,source,word,meaning,profile){
   if(kind==="assigned"||kind==="public"){
     const packId=String(source?.id||"").trim().slice(0,160);
     if(!packId)throw Object.assign(new Error("Thiếu bộ từ."),{status:400});
+    if(kind==="assigned"){
+      const assignments=await db.collection("packAssignments").where("packId","==",packId).limit(50).get();
+      const assigned=assignments.docs.some(d=>Array.isArray(d.data()?.studentUids)&&d.data().studentUids.includes(uid));
+      if(!assigned)throw Object.assign(new Error("Bộ từ này chưa được giao cho bạn."),{status:403});
+    }
     const snap=await db.collection("publicPacks").doc(packId).get();
     if(snap.exists&&findWord(snap.data()?.words,word,meaning))return kind;
     throw Object.assign(new Error("Câu hỏi không khớp bộ từ."),{status:400});
