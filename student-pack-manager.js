@@ -332,16 +332,18 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     btn.textContent='Đang tạo...';
 
     try{
+      let savedPackId=editingPack?.id||'';
       if(editingPack){
         await window.studyStore.updatePersonalPack(editingPack.id,{name,words});
         toast(`Đã cập nhật “${name}” với ${words.length} từ! 🐱`);
       }else{
-        await window.studyStore.createPersonalPack({name,words});
+        const ref=await window.studyStore.createPersonalPack({name,words});
+        savedPackId=ref?.id||'';
         toast(`Đã tạo “${name}” gồm ${words.length} từ! 🐱`);
       }
       close();
       await renderMine();
-      window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words}}));
+      window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:savedPackId}}));
     }catch(e){
       toast('Không thể tạo bộ từ: '+(e.message||'Lỗi không xác định'));
     }finally{
@@ -400,7 +402,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         const p=packs.find(x=>x.id===b.dataset.myPack);
         if(!p)return;
         const words=Array.isArray(p.words)?p.words:[];
-        window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words}}));
+        window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:p.id}}));
         if(typeof showPage==='function')showPage('learn');
         toast(`Đã mở “${p.name}”.`);
       });
