@@ -78,11 +78,13 @@ module.exports=async(req,res)=>{
     const userRef=db.doc("users/"+token.uid),leaderboardRef=db.doc("leaderboard/"+leaderboardId(token.uid));
 
     if(action==="answer"){
-      const word=String(body.word||"").trim().slice(0,100),meaning=String(body.meaning||"").trim().slice(0,200),correct=body.correct===true,mode=String(body.mode||"").trim().slice(0,40)||"engvi",source=body.source||{};
-      if(!word||!meaning)return send(res,400,{error:"Thiếu dữ liệu câu trả lời."});
+      const word=String(body.word||"").trim().slice(0,100),meaning=String(body.meaning||"").trim().slice(0,200),submittedAnswer=String(body.answer||"").trim().slice(0,200),mode=String(body.mode||"").trim().slice(0,40)||"engvi",source=body.source||{};
+      if(!word||!meaning||!submittedAnswer)return send(res,400,{error:"Thiếu dữ liệu câu trả lời."});
       const profileSnap=await userRef.get();
       if(!profileSnap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
       const sourceKind=await validateQuizSource(db,token.uid,source,word,meaning,profileSnap.data()||{});
+      const expectedAnswer=mode==="vieng"?word:meaning;
+      const correct=submittedAnswer===expectedAnswer;
       const result=await db.runTransaction(async transaction=>{
         const snap=await transaction.get(userRef);
         if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
@@ -98,7 +100,7 @@ module.exports=async(req,res)=>{
         transaction.set(userRef,updates,{merge:true});
         transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
         transaction.set(leaderboardRef,publicScore(profile.displayName,coins,xp),{merge:true});
-        return{ok:true,coins,xp};
+        return{ok:true,correct,coins,xp};
       });
       return send(res,200,result);
     }
