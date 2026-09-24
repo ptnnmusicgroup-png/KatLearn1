@@ -11,7 +11,10 @@ const routes={
   '/api/ai-regenerate-word':require('./api/ai-regenerate-word'),
   '/api/context-example':require('./api/context-example')
 };
-for(const [path,handler] of Object.entries(routes))app.post(path,(req,res)=>handler(req,res));
+for(const [path,handler] of Object.entries(routes)){
+  const route=path==='/api/student-assigned-packs'?'get':'post';
+  app[route](path,(req,res)=>handler(req,res));
+}
 app.get('/api/student-assigned-packs',(req,res)=>require('./api/student-assigned-packs')(req,res));
 
 app.get('/api/health',(req,res)=>res.json({ok:true,ai:!!String(process.env.GEMINI_API_KEY||'').trim()}));
