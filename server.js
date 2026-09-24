@@ -9,10 +9,10 @@ const routes={
   '/api/vocab-assist':require('./api/vocab-assist'),
   '/api/ai-pack':require('./api/ai-pack'),
   '/api/ai-regenerate-word':require('./api/ai-regenerate-word'),
-  '/api/context-example':require('./api/context-example'),
-  '/api/student-assigned-packs':require('./api/student-assigned-packs')
+  '/api/context-example':require('./api/context-example')
 };
 for(const [path,handler] of Object.entries(routes))app.post(path,(req,res)=>handler(req,res));
+app.get('/api/student-assigned-packs',(req,res)=>require('./api/student-assigned-packs')(req,res));
 
 app.get('/api/health',(req,res)=>res.json({ok:true,ai:!!String(process.env.GEMINI_API_KEY||'').trim()}));
 app.listen(process.env.PORT||3000,()=>console.log('KatLearn: http://localhost:'+String(process.env.PORT||3000)));
