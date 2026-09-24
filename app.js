@@ -6,6 +6,7 @@ function vocabKey(v){return String(v?.word||'').trim().toLowerCase()+'::'+String
 function knownStateKey(){return 'katlearn-known:'+String(activeVocabSource?.kind||'legacy')+':'+String(activeVocabSource?.id||activeVocabSource?.uid||'legacy')}
 function loadKnownState(){try{const raw=localStorage.getItem(knownStateKey());const arr=JSON.parse(raw||'[]');knownWordKeys=new Set(Array.isArray(arr)?arr.filter(Boolean):[])}catch(_){knownWordKeys=new Set()}known=knownWordKeys.size}
 function saveKnownState(){localStorage.setItem(knownStateKey(),JSON.stringify([...knownWordKeys]));known=knownWordKeys.size}
+loadKnownState();
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const aiEndpoint=name=>'/api/'+String(name||'').replace(/^\/+/, '');
 const gameEndpoint=()=>'/api/game-action';
