@@ -48,8 +48,61 @@ async function renderLeaderboard(){
     mini.textContent='Chưa thể tải bảng xếp hạng.';
   }
 }
-function renderPackLibrary(packs=[]){const library=$('#packLibrary');if(!window.studyStore?.user){library.innerHTML='<div class="empty-state">Đăng nhập để xem các pack từ vựng công khai. 🐾</div>';return}const current=vocab.length?[{id:'current',name:'Bộ từ đang học',words:vocab,current:true},...packs]:packs;library.innerHTML=current.length?current.map(pack=>`<article class="pack-tile"><div class="tile-icon">${pack.current?'🐱':'📚'}</div><h3>${esc(pack.name)}</h3><p>${pack.words.length} từ vựng · ${pack.current?'Bộ từ cá nhân':'Cộng đồng KatLearn'}</p><button data-pack="${pack.id}">${pack.current?'Tiếp tục học':'Mở pack'} →</button></article>`).join(''):'<div class="empty-state">Chưa có pack. Hãy tạo bộ từ đầu tiên của bạn. 🐱</div>';$$('[data-pack]').forEach(btn=>btn.onclick=()=>{const pack=current.find(p=>p.id===btn.dataset.pack);if(!pack)return;if(!pack.current){vocab=pack.words;known=0;cardIndex=0;localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));renderCard();renderQuiz()}showPage('learn');toast(`Đã mở “${pack.name}”.`)})}
-async function renderPublicPacks(){const target=$('#publishedPacks'),adminList=$('#publicPackList');if(!window.studyStore?.user){target.textContent='Đăng nhập để xem các pack từ vựng công khai.';renderPackLibrary();return}try{const packs=await window.studyStore.publicPacks();const body=packs.length?packs.map(pack=>`<div class="published-pack"><span>📚</span><div><b>${esc(pack.name)}</b><small>${pack.words.length} từ vựng</small></div><button data-public-pack="${pack.id}">Học pack</button></div>`).join(''):'<div class="empty-state">Chưa có pack công khai.</div>';target.innerHTML=`<b>Pack từ vựng công khai</b>${body}`;if(adminList)adminList.innerHTML=body;renderPackLibrary(packs);$$('[data-public-pack]').forEach(btn=>btn.onclick=()=>{const pack=packs.find(p=>p.id===btn.dataset.publicPack);vocab=pack.words;known=0;cardIndex=0;localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));renderCard();renderQuiz();showPage('learn');toast(`Đã tải pack “${pack.name}”.`)});}catch(e){target.textContent='Chưa thể tải pack công khai.';renderPackLibrary();if(adminList)adminList.textContent='Chưa thể tải danh sách pack.'}}
+async function loadCoreTopic(topicId){const data=await window.katlearnCoreVocabulary.load(topicId);return{id:'core:'+data.id,name:data.name,words:data.words,core:true,topicId:data.id}}
+async function loadAssignedPacks(){
+  if(!window.studyStore?.user)return[];
+  try{
+    const res=await fetch('/api/student-assigned-packs',{headers:await aiHeaders(),cache:'no-store'});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(data.error||'Không tải được bài được giao.');
+    return Array.isArray(data.packs)?data.packs:[];
+  }catch(e){console.warn('[KatLearn] assigned packs:',e);return[]}
+}
+function openVocabularyPack(pack){
+  if(!pack)return;
+  vocab=Array.isArray(pack.words)?pack.words:[];
+  known=0;cardIndex=0;
+  localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
+  renderCard();renderQuiz();showPage('learn');
+  toast(`Đã mở “${pack.name}”.`);
+}
+async function openCoreTopic(topicId){
+  try{openVocabularyPack(await loadCoreTopic(topicId))}
+  catch(e){toast('Không tải được kho từ KatLearn: '+(e.message||'Lỗi không xác định'))}
+}
+function renderPackLibrary(packs=[],assigned=[]){
+  const library=$('#packLibrary');
+  if(!window.studyStore?.user){library.innerHTML='<div class="empty-state">Đăng nhập để xem kho từ vựng KatLearn. 🐾</div>';return}
+  const core=window.katlearnCoreVocabulary?.topics||[];
+  const coreCards=core.map(t=>({id:'core:'+t.id,name:t.name,words:[],core:true,topicId:t.id}));
+  const current=vocab.length?[{id:'current',name:'Bộ từ đang học',words:vocab,current:true},...assigned,...packs]:[...assigned,...packs];
+  const seen=new Set();const all=[...coreCards,...current].filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true});
+  library.innerHTML=all.length?all.map(pack=>{
+    const count=pack.core?500:(Array.isArray(pack.words)?pack.words.length:0);
+    const label=pack.core?'Kho từ KatLearn':pack.assigned?'Bài được giao':'Cộng đồng KatLearn';
+    const action=pack.core?`data-core-topic="${esc(pack.topicId)}"`:`data-pack="${esc(pack.id)}"`;
+    return `<article class="pack-tile"><div class="tile-icon">${pack.current?'🐱':pack.core?'🧠':pack.assigned?'📩':'📚'}</div><h3>${esc(pack.name)}</h3><p>${count} từ vựng · ${label}</p><button ${action}>${pack.current?'Tiếp tục học':pack.core?'Học topic':'Mở pack'} →</button></article>`;
+  }).join(''):'<div class="empty-state">Chưa có pack. 🐱</div>';
+  $$('[data-pack]').forEach(btn=>btn.onclick=()=>{const pack=all.find(p=>p.id===btn.dataset.pack);if(pack)openVocabularyPack(pack)});
+  $$('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
+}
+async function renderPublicPacks(){
+  const target=$('#publishedPacks'),adminList=$('#publicPackList');
+  if(!window.studyStore?.user){target.textContent='Đăng nhập để xem các pack từ vựng công khai.';renderPackLibrary();return}
+  try{
+    const [packs,assigned]=await Promise.all([window.studyStore.publicPacks(),loadAssignedPacks()]);
+    const core=window.katlearnCoreVocabulary?.topics||[];
+    const assignedBody=assigned.length?assigned.map(pack=>`<div class="published-pack"><span>📩</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ · Bài được giao</small></div><button data-assigned-pack="${esc(pack.id)}">Học</button></div>`).join(''):'';
+    const publicBody=packs.length?packs.map(pack=>`<div class="published-pack"><span>📚</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ vựng</small></div><button data-public-pack="${esc(pack.id)}">Học pack</button></div>`).join(''):'<div class="empty-state">Chưa có pack công khai.</div>';
+    const coreBody=core.length?core.map(topic=>`<div class="published-pack"><span>🧠</span><div><b>${esc(topic.name)}</b><small>500 từ · Kho từ KatLearn</small></div><button data-core-topic="${esc(topic.id)}">Học topic</button></div>`).join(''):'';
+    target.innerHTML=`<b>Kho từ vựng KatLearn</b>${coreBody}${assignedBody}<b style="display:block;margin-top:16px">Pack từ vựng công khai</b>${publicBody}`;
+    if(adminList)adminList.innerHTML=publicBody;
+    renderPackLibrary(packs,assigned);
+    $$('[data-public-pack]').forEach(btn=>btn.onclick=()=>{const pack=packs.find(p=>p.id===btn.dataset.publicPack);openVocabularyPack(pack)});
+    $$('[data-assigned-pack]').forEach(btn=>btn.onclick=()=>{const pack=assigned.find(p=>p.id===btn.dataset.assignedPack);openVocabularyPack(pack)});
+    $$('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
+  }catch(e){target.textContent='Chưa thể tải kho từ vựng.';renderPackLibrary();if(adminList)adminList.textContent='Chưa thể tải danh sách pack.'}
+}
 function renderAdmin(user){const canAdmin=!!user&&window.studyStore.isAdmin();const adminNav=$('.admin-nav');if(adminNav)adminNav.hidden=!canAdmin;const adminPage=$('#admin');if(!canAdmin&&adminPage?.classList.contains('active-page'))showPage('home')}
 function packRow(data={}){const row=document.createElement('div');row.className='pack-word-row';row.innerHTML=`<input class="pack-english" value="${esc(data.word)}" maxlength="60" placeholder="Tiếng Anh" required><input class="pack-vietnamese" value="${esc(data.mean)}" maxlength="100" placeholder="AI tự điền nghĩa" required><input class="pack-pronunciation" value="${esc(data.pron)}" maxlength="70" placeholder="AI tự điền phiên âm"><button class="remove-row-btn" type="button" title="Xóa từ">×</button>`;row.querySelector('.remove-row-btn').onclick=()=>{if($$('.pack-word-row').length===1)return toast('Pack cần ít nhất một từ vựng.');row.remove()};const english=row.querySelector('.pack-english');english.addEventListener('input',()=>{clearTimeout(row.aiTimer);row.aiTimer=setTimeout(()=>fillPackWord(row),700)});return row}
 async function fillPackWord(row){const word=row.querySelector('.pack-english').value.trim(),mean=row.querySelector('.pack-vietnamese'),pron=row.querySelector('.pack-pronunciation');if(!word)return;row.dataset.word=word;[mean,pron].forEach(x=>{x.classList.add('ai-filling');x.placeholder='Kat AI đang xử lý…'});try{const res=await fetch(aiEndpoint('vocab-assist'),{method:'POST',headers:await aiHeaders(),body:JSON.stringify({word})}),data=await res.json();if(!res.ok)throw new Error(data.error||'AI chưa sẵn sàng');if(row.dataset.word!==word)return;mean.value=data.meaning||mean.value;pron.value=data.pronunciation||pron.value;toast(`Kat AI đã điền nghĩa và phiên âm cho “${word}”.`)}catch(error){mean.placeholder='Tự nhập nghĩa tiếng Việt';pron.placeholder='Tự nhập phiên âm';toast('Kat AI chưa được kích hoạt — bạn vẫn có thể tự điền hai ô.')}finally{[mean,pron].forEach(x=>x.classList.remove('ai-filling'))}}
