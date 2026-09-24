@@ -1,6 +1,6 @@
 /* Firebase browser data layer. */
 (function(){
-  let db=null,auth=null,api={},currentUser=null,authReady=null,connectPromise=null;
+  let db=null,auth=null,api={},currentUser=null,authReady=null,connectPromise=null,lastAuthUid=undefined;
   window.KATLEARN_FIREBASE_CONFIG={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDomain:'elp---katlearn.firebaseapp.com',projectId:'elp---katlearn',storageBucket:'elp---katlearn.firebasestorage.app',messagingSenderId:'344478447672',appId:'1:344478447672:web:4ed109a40303d0b41b0ecd',measurementId:'G-KTW11GD97T'};
   const guestId=localStorage.getItem('8b1-guest-id')||crypto.randomUUID();localStorage.setItem('8b1-guest-id',guestId);
   function accountPart(value,fallback){const clean=String(value||'').trim().replace(/[^a-zA-Z0-9.@-]+/g,'').replace(/@/g,'@');return clean||fallback}
@@ -38,6 +38,9 @@
   }
   function notifyAuth(user){
     renderAccountUi(user);
+    const uid=user?.uid||null;
+    if(uid===lastAuthUid)return;
+    lastAuthUid=uid;
     window.dispatchEvent(new CustomEvent('8b1-auth-change',{detail:user||null}));
   }
   window.studyStore={
