@@ -68,8 +68,9 @@ function setVocabSource(source){activeVocabSource=source||{kind:'legacy'};if(act
 function openVocabularyPack(pack){
   if(!pack)return;
   vocab=Array.isArray(pack.words)?pack.words:[];
-  setVocabSource(pack.core?{kind:'core',id:pack.topicId}:pack.assigned?{kind:'assigned',id:pack.id}:{kind:'public',id:pack.id});
-  known=0;cardIndex=0;
+  if(!pack.current)setVocabSource(pack.core?{kind:'core',id:pack.topicId}:pack.assigned?{kind:'assigned',id:pack.id}:{kind:'public',id:pack.id});
+  else loadKnownState();
+  cardIndex=0;
   localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
   renderCard();renderQuiz();showPage('learn');
   toast(`Đã mở “${pack.name}”.`);
