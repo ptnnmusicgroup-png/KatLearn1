@@ -57,7 +57,17 @@ async function validateQuizSource(db,uid,source,word,meaning,profile){
     if(snap.exists&&findWord(snap.data()?.words,word,meaning))return kind;
     throw Object.assign(new Error("Câu hỏi không khớp bộ từ."),{status:400});
   }
-  if(findWord(profile.vocab,word,meaning))return "personal";
+  if(kind==="personal"){
+    const packId=String(source?.id||"").trim().slice(0,160);
+    if(packId){
+      const snap=await db.collection("users").doc(uid).collection("personalPacks").doc(packId).get();
+      if(snap.exists&&findWord(snap.data()?.words,word,meaning))return "personal";
+    }
+    if(findWord(profile.vocab,word,meaning))return "personal";
+    throw Object.assign(new Error("Câu hỏi không khớp bộ từ cá nhân."),{status:400});
+  }
+  if(findWord(profile.vocab,word,meaning))return "legacy";
+
   throw Object.assign(new Error("Câu hỏi không khớp bộ từ của bạn."),{status:400});
 }
 module.exports=async(req,res)=>{
