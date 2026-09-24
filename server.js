@@ -9,7 +9,8 @@ const routes={
   '/api/vocab-assist':require('./api/vocab-assist'),
   '/api/ai-pack':require('./api/ai-pack'),
   '/api/ai-regenerate-word':require('./api/ai-regenerate-word'),
-  '/api/context-example':require('./api/context-example')
+  '/api/context-example':require('./api/context-example'),
+  '/api/student-assigned-packs':require('./api/student-assigned-packs')
 };
 for(const [path,handler] of Object.entries(routes))app.post(path,(req,res)=>handler(req,res));
 
