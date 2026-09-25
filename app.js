@@ -116,10 +116,10 @@ function renderPackLibrary(packs=[],assigned=[]){
   const current=vocab.length?[{id:'current',name:'Bộ từ đang học',words:vocab,current:true},...assigned,...packs]:[...assigned,...packs];
   const seen=new Set();const all=[...coreCards,...current].filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true});
   library.innerHTML=all.length?all.map(pack=>{
-    const count=pack.core?500:(Array.isArray(pack.words)?pack.words.length:0);
+    const count=pack.core?'':(Array.isArray(pack.words)?pack.words.length:0);
     const label=pack.current?'Đang học':pack.core?'Kho từ KatLearn':pack.assigned?'Bài được giao':'Cộng đồng KatLearn';
     const action=pack.core?`data-core-topic="${esc(pack.topicId)}"`:`data-pack="${esc(pack.id)}"`;
-    return `<article class="pack-tile"><div class="tile-icon">${pack.current?'🐱':pack.core?'🧠':pack.assigned?'📩':'📚'}</div><h3>${esc(pack.name)}</h3><p>${count} từ vựng · ${label}</p><button ${action}>${pack.current?'Tiếp tục học':pack.core?'Học topic':'Mở pack'} →</button></article>`;
+    return `<article class="pack-tile"><div class="tile-icon">${pack.current?'🐱':pack.core?'🧠':pack.assigned?'📩':'📚'}</div><h3>${esc(pack.name)}</h3><p>${count?count+' từ vựng · ':''}${label}</p><button ${action}>${pack.current?'Tiếp tục học':pack.core?'Học topic':'Mở pack'} →</button></article>`;
   }).join(''):'<div class="empty-state">Chưa có pack. 🐱</div>';
   $$('[data-pack]').forEach(btn=>btn.onclick=()=>{const pack=all.find(p=>p.id===btn.dataset.pack);if(pack)openVocabularyPack(pack)});
   $$('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
@@ -141,7 +141,7 @@ async function renderPublicPacks(){
       if(String(window.studyStore?.user?.uid||'')!==uid)return;
       const core=window.katlearnCoreVocabulary?.topics||[];
       const publicBody=packs.length?packs.map(pack=>`<div class="published-pack"><span>📚</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ vựng</small></div><button data-public-pack="${esc(pack.id)}">Học pack</button></div>`).join(''):'<div class="empty-state">Chưa có pack công khai.</div>';
-      const coreBody=core.length?core.map(topic=>`<div class="published-pack"><span>🧠</span><div><b>${esc(topic.name)}</b><small>500 từ · Kho từ KatLearn</small></div><button data-core-topic="${esc(topic.id)}">Học topic</button></div>`).join(''):'';
+      const coreBody=core.length?core.map(topic=>`<div class="published-pack"><span>🧠</span><div><b>${esc(topic.name)}</b><small>Từ cốt lõi · Kho từ KatLearn</small></div><button data-core-topic="${esc(topic.id)}">Học topic</button></div>`).join(''):'';
       target.innerHTML=`<b>Kho từ vựng KatLearn</b>${coreBody}<b style="display:block;margin-top:16px">Pack từ vựng công khai</b>${publicBody}`;
       if(adminList)adminList.innerHTML=publicBody;
       renderPackLibrary(packs,[]);
