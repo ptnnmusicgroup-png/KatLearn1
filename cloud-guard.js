@@ -69,13 +69,17 @@ function patch(){
   if(!window.studyStore||window.studyStore.__guarded)return;
   const old=window.studyStore.saveProfile.bind(window.studyStore);
   window.studyStore.saveProfile=async data=>{
+    const uid=String(window.studyStore?.user?.uid||'');
+    if(!uid)return null;
     if(window.KATLEARN_HYDRATION)await window.KATLEARN_HYDRATION.catch(()=>{});
+    if(String(window.studyStore?.user?.uid||'')!==uid)return null;
     const vocab=readJson('katlearn-vocab',[]),owned=readJson('katlearn-owned-themes',[]);
     const preserveVocab=preservesRemoteVocab();
     let payload={...data,ownedThemes:owned};
     if(!preserveVocab)Object.assign(payload,{vocab,totalWords:vocab.length});
+    if(String(window.studyStore?.user?.uid||'')!==uid)return null;
     const result=await old(payload);
-    accountUi(payload);
+    if(String(window.studyStore?.user?.uid||'')===uid)accountUi(payload);
     return result;
   };
   window.studyStore.__guarded=true;
