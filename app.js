@@ -124,24 +124,54 @@ function renderPackLibrary(packs=[],assigned=[]){
   $$('[data-pack]').forEach(btn=>btn.onclick=()=>{const pack=all.find(p=>p.id===btn.dataset.pack);if(pack)openVocabularyPack(pack)});
   $$('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
 }
+let publicPackRenderPromise=null;
+let publicPackRenderUid='';
 async function renderPublicPacks(){
   const target=$('#publishedPacks'),adminList=$('#publicPackList');
   const uid=String(window.studyStore?.user?.uid||'');
-  if(!uid){target.textContent='Đăng nhập để xem các pack từ vựng công khai.';renderPackLibrary();return}
-  try{
-    const [packs,assigned]=await Promise.all([window.studyStore.publicPacks(),loadAssignedPacks()]);
-    if(String(window.studyStore?.user?.uid||'')!==uid)return;
-    const core=window.katlearnCoreVocabulary?.topics||[];
-    const assignedBody=assigned.length?assigned.map(pack=>`<div class="published-pack"><span>📩</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ · Bài được giao</small></div><button data-assigned-pack="${esc(pack.id)}">Học</button></div>`).join(''):'';
-    const publicBody=packs.length?packs.map(pack=>`<div class="published-pack"><span>📚</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ vựng</small></div><button data-public-pack="${esc(pack.id)}">Học pack</button></div>`).join(''):'<div class="empty-state">Chưa có pack công khai.</div>';
-    const coreBody=core.length?core.map(topic=>`<div class="published-pack"><span>🧠</span><div><b>${esc(topic.name)}</b><small>500 từ · Kho từ KatLearn</small></div><button data-core-topic="${esc(topic.id)}">Học topic</button></div>`).join(''):'';
-    target.innerHTML=`<b>Kho từ vựng KatLearn</b>${coreBody}${assignedBody}<b style="display:block;margin-top:16px">Pack từ vựng công khai</b>${publicBody}`;
-    if(adminList)adminList.innerHTML=publicBody;
-    renderPackLibrary(packs,assigned);
-    $$('[data-public-pack]').forEach(btn=>btn.onclick=()=>{const pack=packs.find(p=>p.id===btn.dataset.publicPack);openVocabularyPack(pack)});
-    $$('[data-assigned-pack]').forEach(btn=>btn.onclick=()=>{const pack=assigned.find(p=>p.id===btn.dataset.assignedPack);openVocabularyPack(pack)});
-    $$('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
-  }catch(e){target.textContent='Chưa thể tải kho từ vựng.';renderPackLibrary();if(adminList)adminList.textContent='Chưa thể tải danh sách pack.'}
+  if(!uid){publicPackRenderPromise=null;publicPackRenderUid='';target.textContent='Đăng nhập để xem các pack từ vựng công khai.';renderPackLibrary();return}
+  if(publicPackRenderPromise&&publicPackRenderUid===uid)return publicPackRenderPromise;
+
+  publicPackRenderUid=uid;
+  publicPackRenderPromise=(async()=>{
+    let packs=[];
+    try{
+      // Public packs are shared data: render them as soon as Firestore returns.
+      packs=await window.studyStore.publicPacks();
+      if(String(window.studyStore?.user?.uid||'')!==uid)return;
+      const core=window.katlearnCoreVocabulary?.topics||[];
+      const publicBody=packs.length?packs.map(pack=>`<div class="published-pack"><span>📚</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ vựng</small></div><button data-public-pack="${esc(pack.id)}">Học pack</button></div>`).join(''):'<div class="empty-state">Chưa có pack công khai.</div>';
+      const coreBody=core.length?core.map(topic=>`<div class="published-pack"><span>🧠</span><div><b>${esc(topic.name)}</b><small>500 từ · Kho từ KatLearn</small></div><button data-core-topic="${esc(topic.id)}">Học topic</button></div>`).join(''):'';
+      target.innerHTML=`<b>Kho từ vựng KatLearn</b>${coreBody}<b style="display:block;margin-top:16px">Pack từ vựng công khai</b>${publicBody}`;
+      if(adminList)adminList.innerHTML=publicBody;
+      renderPackLibrary(packs,[]);
+      $('[data-public-pack]').forEach(btn=>btn.onclick=()=>{const pack=packs.find(p=>p.id===btn.dataset.publicPack);openVocabularyPack(pack)});
+      $('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
+
+      // Assigned packs can come from the teacher API and may be slower.
+      // Add them after the public catalog is already visible.
+      try{
+        const assigned=await loadAssignedPacks();
+        if(String(window.studyStore?.user?.uid||'')!==uid)return;
+        const assignedBody=assigned.length?assigned.map(pack=>`<div class="published-pack"><span>📩</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ · Bài được giao</small></div><button data-assigned-pack="${esc(pack.id)}">Học</button></div>`).join(''):'';
+        target.innerHTML=`<b>Kho từ vựng KatLearn</b>${coreBody}${assignedBody}<b style="display:block;margin-top:16px">Pack từ vựng công khai</b>${publicBody}`;
+        renderPackLibrary(packs,assigned);
+        $('[data-public-pack]').forEach(btn=>btn.onclick=()=>{const pack=packs.find(p=>p.id===btn.dataset.publicPack);openVocabularyPack(pack)});
+        $('[data-assigned-pack]').forEach(btn=>btn.onclick=()=>{const pack=assigned.find(p=>p.id===btn.dataset.assignedPack);openVocabularyPack(pack)});
+        $('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
+      }catch(e){console.warn('[KatLearn] assigned packs:',e);renderPackLibrary(packs,[]);}
+    }catch(e){
+      if(String(window.studyStore?.user?.uid||'')===uid){
+        target.textContent='Chưa thể tải kho từ vựng.';
+        renderPackLibrary();
+        if(adminList)adminList.textContent='Chưa thể tải danh sách pack.';
+      }
+    }finally{
+      publicPackRenderPromise=null;
+    }
+  })();
+
+  return publicPackRenderPromise;
 }
 function renderAdmin(user){const canAdmin=!!user&&window.studyStore.isAdmin();const adminNav=$('.admin-nav');if(adminNav)adminNav.hidden=!canAdmin;const adminPage=$('#admin');if(!canAdmin&&adminPage?.classList.contains('active-page'))showPage('home')}
 function packRow(data={}){const row=document.createElement('div');row.className='pack-word-row';row.innerHTML=`<input class="pack-english" value="${esc(data.word)}" maxlength="60" placeholder="Tiếng Anh" required><input class="pack-vietnamese" value="${esc(data.mean)}" maxlength="100" placeholder="AI tự điền nghĩa" required><input class="pack-pronunciation" value="${esc(data.pron)}" maxlength="70" placeholder="AI tự điền phiên âm"><button class="remove-row-btn" type="button" title="Xóa từ">×</button>`;row.querySelector('.remove-row-btn').onclick=()=>{if($$('.pack-word-row').length===1)return toast('Pack cần ít nhất một từ vựng.');row.remove()};const english=row.querySelector('.pack-english');english.addEventListener('input',()=>{clearTimeout(row.aiTimer);row.aiTimer=setTimeout(()=>fillPackWord(row),700)});return row}
@@ -173,11 +203,13 @@ function renderAuth(user){const login=$('#loginBtn'),trigger=$('#accountTrigger'
 async function refreshAuthDependentViews(user){
   // Auth is the fast source of truth. Never block section access on Firestore.
   renderAuth(user);renderAdmin(user);
-  // Render immediately. Profile hydration owns cloud state and will trigger
-  // another render through katlearn-account-ready without an early profile write.
+  // Render the public catalog only once per authenticated session. The
+  // account-ready event may arrive shortly after auth-change and should not
+  // start a duplicate Firestore/API sync for the same UID.
+  if(user)void renderPublicPacks();
+  else{publicPackRenderPromise=null;publicPackRenderUid='';}
   await Promise.allSettled([
     renderLeaderboard(),
-    renderPublicPacks(),
     window.renderStudentPersonalPacks?.(),
     window.renderProgressDashboard?.()
   ]);
