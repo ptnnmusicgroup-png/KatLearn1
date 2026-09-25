@@ -197,17 +197,48 @@
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');
       const user=currentUser,uid=user.uid,ownerAccountCode=await this.ensureAccountCode();
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      return api.addDoc(api.collection(db,'users',uid,'personalPacks'),{...pack,ownerUid:uid,ownerEmail:user.email||'',ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()});
+      return api.addDoc(api.collection(db,'accounts',ownerAccountCode,'memory'),{
+        ...pack,kind:'personalPack',ownerUid:uid,ownerEmail:user.email||'',
+        ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
+        ownerAccountCode,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()
+      });
     },
     async updatePersonalPack(packId,pack){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');
       const user=currentUser,uid=user.uid,ownerAccountCode=await this.ensureAccountCode();
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      return api.updateDoc(api.doc(db,'users',uid,'personalPacks',packId),{...pack,ownerUid:uid,ownerEmail:user.email||'',ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,updatedAt:api.serverTimestamp()});
+      const newRef=api.doc(db,'accounts',ownerAccountCode,'memory',packId);
+      const newSnap=await api.getDoc(newRef);
+      const ref=newSnap.exists()?newRef:api.doc(db,'users',uid,'personalPacks',packId);
+      return api.updateDoc(ref,{...pack,kind:'personalPack',ownerUid:uid,ownerEmail:user.email||'',ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,updatedAt:api.serverTimestamp()});
     },
-    async deletePersonalPack(packId){if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');if(!packId)throw new Error('Không tìm thấy bộ từ cần xóa.');return api.deleteDoc(api.doc(db,'users',this.userId,'personalPacks',packId))},
-    async personalPacks(){if(!db||!currentUser)return[];const snap=await api.getDocs(api.query(api.collection(db,'users',this.userId,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
+    async deletePersonalPack(packId){
+      if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');
+      if(!packId)throw new Error('Không tìm thấy bộ từ cần xóa.');
+      const uid=currentUser.uid,code=await this.ensureAccountCode();
+      const newRef=api.doc(db,'accounts',code,'memory',packId),newSnap=await api.getDoc(newRef);
+      return api.deleteDoc(newSnap.exists()?newRef:api.doc(db,'users',uid,'personalPacks',packId));
+    },
+    async personalPacks(){
+      if(!db||!currentUser)return[];
+      const uid=currentUser.uid,code=await this.ensureAccountCode();
+      const [newSnap,oldSnap]=await Promise.all([
+        api.getDocs(api.query(api.collection(db,'accounts',code,'memory'),api.orderBy('createdAt','desc'),api.limit(100))),
+        api.getDocs(api.query(api.collection(db,'users',uid,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)))
+      ]);
+      const merged=[];const seen=new Set();
+      for(const snap of [newSnap,oldSnap])for(const d of snap.docs){
+        if(seen.has(d.id))continue;
+        const data=d.data()||{};
+        if(data.kind&&data.kind!=='personalPack')continue;
+        seen.add(d.id);merged.push({id:d.id,...data});
+      }
+      return merged.sort((a,b)=>{
+        const ta=a.createdAt?.seconds||a.createdAt||0,tb=b.createdAt?.seconds||b.createdAt||0;
+        return Number(tb)-Number(ta);
+      }).slice(0,100);
+    },
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
   };
