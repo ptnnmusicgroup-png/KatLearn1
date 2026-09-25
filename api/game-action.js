@@ -50,6 +50,7 @@ function findWord(words,word,meaning){
   const w=norm(word),m=norm(meaning);
   return (Array.isArray(words)?words:[]).some(item=>norm(item?.word)===w&&norm(item?.mean??item?.meaning_vi)===m);
 }
+function rewardClaimId(sourceKind,sourceId,word,meaning,mode,day){return crypto.createHash("sha256").update([sourceKind,sourceId,word,meaning,mode,day].map(norm).join("\0")).digest("hex").slice(0,64)}
 function loadCoreWords(topicId){
   if(!CORE_TOPICS.has(topicId))throw Object.assign(new Error("Topic KatLearn không hợp lệ."),{status:400});
   const file=path.join(__dirname,"..","data","vocabulary",topicId+".json");
@@ -99,12 +100,14 @@ module.exports=async(req,res)=>{
       const rewardable=sourceKind!=="legacy";
       const expectedAnswer=mode==="vieng"?word:meaning;
       const correct=submittedAnswer===expectedAnswer;
+      const currentStudyDay=studyDay();
+      const rewardRef=rewardable?userRef.collection("rewardClaims").doc(rewardClaimId(sourceKind,String(source?.id||""),word,meaning,mode,currentStudyDay)):null;
       const result=await db.runTransaction(async transaction=>{
         const snap=await transaction.get(userRef);
+        const rewardSnap=rewardRef?await transaction.get(rewardRef):null;
         if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
         const profile=snap.data()||{};
         const now=Date.now();
-        const currentStudyDay=studyDay();
         const attemptRef=db.collection("users").doc(token.uid).collection("attempts").doc();
         const sameStudyDay=String(profile.lastStudyDay||"")===currentStudyDay;
         const currentStreak=Math.max(0,Number(profile.streak||0));
@@ -120,17 +123,19 @@ module.exports=async(req,res)=>{
           dailyCorrect
         };
         let coins=Number(profile.coins||0),xp=Number(profile.energy||0);
+        const grantReward=correct&&rewardable&&!rewardSnap?.exists;
         if(correct){
           updates.correctAnswers=FieldValue.increment(1);
-          if(rewardable){
+          if(grantReward){
             updates.coins=FieldValue.increment(10);updates.energy=FieldValue.increment(10);
             coins+=10;xp+=10;
+            transaction.create(rewardRef,{sourceKind,sourceId:String(source?.id||"").slice(0,160),word,meaning,mode,studyDay:currentStudyDay,createdAt:FieldValue.serverTimestamp()});
           }
         }
         transaction.set(userRef,updates,{merge:true});
-        transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,rewarded:correct&&rewardable,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
+        transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,rewarded:grantReward,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
         transaction.set(leaderboardRef,publicScore(profile.displayName,coins,xp),{merge:true});
-        return{ok:true,correct,rewarded:correct&&rewardable,coins,xp,dailyQuestions,dailyCorrect,streak};
+        return{ok:true,correct,rewarded:grantReward,coins,xp,dailyQuestions,dailyCorrect,streak};
       });
       return send(res,200,result);
     }
