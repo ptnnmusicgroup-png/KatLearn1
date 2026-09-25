@@ -13,9 +13,9 @@
 
   async function sync(user){
     const uid=String(user?.uid||'');
-    const run=++generation;
 
     if(!user){
+      ++generation;
       profile=null;
       ready=true;
       syncing=null;
@@ -24,15 +24,17 @@
       return null;
     }
 
-    // A new account starts a fresh sync state; never expose the previous profile.
-    if(syncingUid!==uid){profile=null;ready=false;}
-
     // UI can react immediately; do not block login on Firestore.
     emit('katlearn-account-fast',{account:true,user,profile:null});
 
-    // Reuse only a sync for the same account. A different account must
-    // never receive the previous account's profile result.
+    // Reuse only a sync for the same account. A duplicate event must not
+    // invalidate the in-flight sync by advancing its generation.
     if(syncing&&syncingUid===uid)return syncing;
+
+    const run=++generation;
+
+    // A new account starts a fresh sync state; never expose the previous profile.
+    if(syncingUid!==uid){profile=null;ready=false;}
 
     syncingUid=uid;
     const isCurrent=()=>run===generation&&String(window.studyStore?.user?.uid||'')===uid;
