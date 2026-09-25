@@ -35,12 +35,25 @@ const TOPICS = [
 const MODEL=process.env.GEMINI_MODEL||'gemini-2.5-flash';
 const BATCH=100;
 const TARGET=500;
+const MECHANICAL_PREFIXES=new Set(['daily','common','basic','simple','important','useful','new','old','good','bad']);
 
 function cleanWord(value){
   return String(value||'').trim().replace(/\\s+/g,' ');
 }
 function key(value){
   return cleanWord(value).toLowerCase().replace(/[’']/g,"'").replace(/[^a-z0-9' -]/g,'');
+}
+function isMechanicalEntry(raw, existing){
+  const word=cleanWord(raw.word), mean=cleanWord(raw.meaning_vi);
+  const m=word.match(/^([a-z]+)\s+(.+)$/i);
+  if(!m||!MECHANICAL_PREFIXES.has(m[1].toLowerCase()))return false;
+  const base=m[2].trim().toLowerCase();
+  const existingKeys=new Set(existing.map(x=>key(x)));
+  if(!existingKeys.has(key(base)))return false;
+  // Reject machine-built entries where the Vietnamese meaning preserves
+  // the English base word instead of actually translating the entry.
+  const meanLower=mean.toLowerCase();
+  return meanLower.includes(base) || meanLower.startsWith(m[1].toLowerCase()+' ');
 }
 function setup(){
   if(!process.env.GEMINI_API_KEY)throw new Error('Thiếu GEMINI_API_KEY');
@@ -88,13 +101,14 @@ async function generateBatch(ai, topic, scope, existing){
 
 async function buildTopic(ai, topic, scope){
   const words=[], seen=new Set();
-  let guard=0;
+  let guard=0,stalled=0;
   while(words.length<TARGET && guard<10){
     guard++;
+    const before=words.length;
     const batch=await generateBatch(ai,topic,scope,words.map(x=>x.word));
     for(const raw of batch){
       const word=cleanWord(raw.word), k=key(word);
-      if(!word||seen.has(k))continue;
+      if(!word||seen.has(k)||isMechanicalEntry(raw,words.map(x=>x.word)))continue;
       const mean=cleanWord(raw.meaning_vi);
       if(!mean)continue;
       seen.add(k);
@@ -109,9 +123,11 @@ async function buildTopic(ai, topic, scope){
       });
       if(words.length===TARGET)break;
     }
+    stalled=words.length===before?stalled+1:0;
     console.log(`  ${words.length}/${TARGET}`);
+    if(stalled>=2)break;
   }
-  if(words.length<TARGET)throw new Error(`Không đủ 500 mục từ cho ${topic}: chỉ có ${words.length}`);
+  if(words.length<TARGET)console.log(`  ✓ Dừng ở ${words.length} mục từ tự nhiên cho ${topic}; không nhồi thêm cho đủ 500.`);
   return words;
 }
 
