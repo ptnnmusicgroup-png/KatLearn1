@@ -134,7 +134,7 @@
       if(auth)await api.auth.signOut(auth);
       currentUser=null;notifyAuth(null);
     },
-    async saveProfile(data){if(!db||!currentUser)return;const user=currentUser,payload={...data};['__coinsAuthoritative','coins','energy','streak','questionsAnswered','correctAnswers','ownedThemes'].forEach(k=>delete payload[k]);return api.setDoc(api.doc(db,'users',this.userId),{displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',email:user.email||'',photoURL:user.photoURL||'',updatedAt:api.serverTimestamp(),...payload},{merge:true})},
+    async saveProfile(data){if(!db||!currentUser)return;const user=currentUser,payload={...data};['__coinsAuthoritative','coins','energy','streak','lastStudyDay','questionsAnswered','correctAnswers','ownedThemes'].forEach(k=>delete payload[k]);return api.setDoc(api.doc(db,'users',this.userId),{displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',email:user.email||'',photoURL:user.photoURL||'',updatedAt:api.serverTimestamp(),...payload},{merge:true})},
     async recordAnswer(data){if(!db||!currentUser)return;await api.addDoc(api.collection(db,'users',this.userId,'attempts'),{...data,createdAt:api.serverTimestamp()});await this.saveProfile({lastStudyAt:api.serverTimestamp()})},
     async purchase(item){if(!db||!currentUser)return;return api.setDoc(api.doc(db,'users',this.userId,'items',item.id),{...item,boughtAt:api.serverTimestamp()})},
     async createPublicPack(pack){if(!db||!currentUser||!this.isAdmin())throw new Error('Bạn không có quyền quản trị.');return api.addDoc(api.collection(db,'publicPacks'),{...pack,createdBy:currentUser.uid,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()})},
