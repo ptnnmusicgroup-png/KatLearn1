@@ -195,19 +195,29 @@
     async createPublicPack(pack){if(!db||!currentUser||!this.isAdmin())throw new Error('Bạn không có quyền quản trị.');return api.addDoc(api.collection(db,'publicPacks'),{...pack,createdBy:currentUser.uid,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()})},
     async createPersonalPack(pack){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');
-      const user=currentUser,uid=user.uid,ownerAccountCode=await this.ensureAccountCode();
+      const user=currentUser,uid=user.uid;
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      return api.addDoc(api.collection(db,'accounts',ownerAccountCode,'memory'),{
+      let ownerAccountCode='';
+      try{ownerAccountCode=await this.ensureAccountNamespace();}catch(namespaceError){console.warn('[KatLearn] Falling back to legacy personal pack storage:',namespaceError)}
+      const payload={
         ...pack,kind:'personalPack',ownerUid:uid,ownerEmail:user.email||'',
         ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
         ownerAccountCode,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()
-      });
+      };
+      if(ownerAccountCode){
+        try{return await api.addDoc(api.collection(db,'accounts',ownerAccountCode,'memory'),payload)}
+        catch(namespaceError){console.warn('[KatLearn] New account memory write failed; using legacy storage:',namespaceError)}
+      }
+      return api.addDoc(api.collection(db,'users',uid,'personalPacks'),payload);
     },
     async updatePersonalPack(packId,pack){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');
-      const user=currentUser,uid=user.uid,ownerAccountCode=await this.ensureAccountCode();
+      const user=currentUser,uid=user.uid;
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      let ownerAccountCode='';
+      try{ownerAccountCode=await this.ensureAccountNamespace();}catch(_){}
+      if(!ownerAccountCode)return api.updateDoc(api.doc(db,'users',uid,'personalPacks',packId),{...pack,ownerUid:uid,updatedAt:api.serverTimestamp()});
       const newRef=api.doc(db,'accounts',ownerAccountCode,'memory',packId);
       const newSnap=await api.getDoc(newRef);
       const ref=newSnap.exists()?newRef:api.doc(db,'users',uid,'personalPacks',packId);
@@ -216,13 +226,20 @@
     async deletePersonalPack(packId){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần xóa.');
-      const uid=currentUser.uid,code=await this.ensureAccountCode();
+      const uid=currentUser.uid;let code='';
+      try{code=await this.ensureAccountNamespace();}catch(_){}
+      if(!code)return api.deleteDoc(api.doc(db,'users',uid,'personalPacks',packId));
       const newRef=api.doc(db,'accounts',code,'memory',packId),newSnap=await api.getDoc(newRef);
       return api.deleteDoc(newSnap.exists()?newRef:api.doc(db,'users',uid,'personalPacks',packId));
     },
     async personalPacks(){
       if(!db||!currentUser)return[];
-      const uid=currentUser.uid,code=await this.ensureAccountCode();
+      const uid=currentUser.uid;let code='';
+      try{code=await this.ensureAccountNamespace();}catch(e){console.warn('[KatLearn] Account namespace unavailable; using legacy packs:',e)}
+      if(!code){
+        const oldSnap=await api.getDocs(api.query(api.collection(db,'users',uid,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)));
+        return oldSnap.docs.map(d=>({id:d.id,...d.data()}));
+      }
       const [newSnap,oldSnap]=await Promise.all([
         api.getDocs(api.query(api.collection(db,'accounts',code,'memory'),api.orderBy('createdAt','desc'),api.limit(100))),
         api.getDocs(api.query(api.collection(db,'users',uid,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)))
