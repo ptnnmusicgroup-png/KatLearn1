@@ -196,7 +196,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   async function isManagedStudent(){return !!window.studyStore?.user&&await window.studyStore.isClassStudent?.()}
 
   function open(pack=null){
-    if(!window.studyStore?.user)return $('#loginModal')?.classList.add('show'),toast('Hãy đăng nhập để tạo bộ từ riêng nhé! 🐱');
+    if(!window.studyStore?.user){toast('Hãy đăng nhập để tạo bộ từ riêng nhé! 🐱');location.href='/login.html';return;}
     if(window.studyStore?.isClassStudent){
       window.studyStore.isClassStudent().then(blocked=>{if(blocked)toast('🔒 Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');else openPackModal(pack)});
       return;
