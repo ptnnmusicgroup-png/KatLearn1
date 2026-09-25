@@ -1,0 +1,50 @@
+/* KatLearn AI modal polish — scoped so it cannot disturb the learning UI. */
+#aiPackModal,#packPreviewModal{background:rgba(26,22,36,.46)!important;backdrop-filter:blur(10px)!important}
+#aiPackModal .ai-pack-container,#packPreviewModal .pack-preview-container{
+  width:min(920px,calc(100vw - 28px))!important;max-height:min(88vh,880px)!important;overflow:auto!important;
+  border:1px solid rgba(255,255,255,.72)!important;border-radius:26px!important;
+  background:rgba(255,255,255,.98)!important;box-shadow:0 32px 100px rgba(25,20,38,.22)!important;
+  color:#25222c!important;
+}
+#aiPackModal .ai-pack-header,#packPreviewModal .preview-header{
+  position:sticky;top:0;z-index:2;padding:20px 22px!important;
+  background:rgba(255,255,255,.94)!important;border-bottom:1px solid #eceaf2!important;backdrop-filter:blur(16px)
+}
+#aiPackModal .ai-pack-header h2,#packPreviewModal .preview-title h2{font:700 24px Fredoka,sans-serif!important;letter-spacing:-.02em}
+#aiPackModal .modal-close,#packPreviewModal .modal-close{
+  width:38px!important;height:38px!important;border-radius:12px!important;border:1px solid #e9e7ef!important;
+  background:#faf9fd!important;color:#686272!important
+}
+#aiPackModal .creation-mode-selector,#aiPackModal .ai-gen-form,#packPreviewModal .preview-pack-info,#packPreviewModal .preview-vocabulary-list{
+  border-color:#eceaf2!important
+}
+#aiPackModal .mode-grid{gap:12px!important}
+#aiPackModal .mode-grid .mode-card{
+  border:1px solid #e7e4ef!important;border-radius:18px!important;background:#fff!important;
+  box-shadow:0 9px 28px rgba(45,38,74,.05)!important
+}
+#aiPackModal .mode-grid .mode-card:hover{border-color:#d5cdf8!important;transform:translateY(-2px)}
+#aiPackModal input,#aiPackModal select,#aiPackModal textarea,#packPreviewModal input,#packPreviewModal textarea{
+  border:1px solid #e1dfe9!important;border-radius:12px!important;background:#fff!important;color:#2a2630!important
+}
+#aiPackModal input:focus,#aiPackModal select:focus,#aiPackModal textarea:focus,#packPreviewModal input:focus,#packPreviewModal textarea:focus{
+  border-color:#bcb0ee!important;box-shadow:0 0 0 4px rgba(123,97,255,.09)!important;outline:0
+}
+#aiPackModal button,#packPreviewModal button{border-radius:12px!important}
+#aiPackModal .btn-primary,#aiPackModal .btn-primary-large,#packPreviewModal .btn-primary,#packPreviewModal .btn-large{
+  background:linear-gradient(135deg,#7b61ff,#9b7cff)!important;color:#fff!important;border:0!important;
+  box-shadow:0 10px 24px rgba(123,97,255,.18)!important
+}
+#aiPackModal .btn-secondary,#packPreviewModal .btn-secondary{
+  background:#f3f1f8!important;color:#625d6a!important;border:1px solid #e6e3ec!important
+}
+#packPreviewModal .preview-actions{border-top:1px solid #eceaf2!important;padding-top:16px!important}
+#packPreviewModal .words-list{display:grid;gap:9px!important}
+#packPreviewModal .word-item{
+  border:1px solid #eceaf2!important;border-radius:14px!important;background:#fbfbfe!important;
+  box-shadow:none!important
+}
+@media(max-width:620px){
+  #aiPackModal .ai-pack-container,#packPreviewModal .pack-preview-container{width:calc(100vw - 18px)!important;border-radius:20px!important}
+  #aiPackModal .ai-pack-header,#packPreviewModal .preview-header{padding:16px!important}
+}
