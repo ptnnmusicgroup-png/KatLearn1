@@ -161,24 +161,14 @@ function renderAuth(user){const login=$('#loginBtn'),trigger=$('#accountTrigger'
 async function refreshAuthDependentViews(user){
   // Auth is the fast source of truth. Never block section access on Firestore.
   renderAuth(user);renderAdmin(user);
-  // Render all account-gated sections immediately from Firebase Auth state.
+  // Render immediately. Profile hydration owns cloud state and will trigger
+  // another render through katlearn-account-ready without an early profile write.
   await Promise.allSettled([
     renderLeaderboard(),
     renderPublicPacks(),
     window.renderStudentPersonalPacks?.(),
     window.renderProgressDashboard?.()
   ]);
-  if(user){
-    // Full profile hydration happens in the background.
-    void syncProfile().then(async()=>{
-      await Promise.allSettled([
-        renderLeaderboard(),
-        renderPublicPacks(),
-        window.renderStudentPersonalPacks?.(),
-        window.renderProgressDashboard?.()
-      ]);
-    });
-  }
 }
 window.addEventListener('8b1-auth-change',e=>{loadKnownState();void refreshAuthDependentViews(e.detail)});
 window.addEventListener('katlearn-account-fast',e=>{if(e.detail?.account){renderAuth(e.detail.user);renderAdmin(e.detail.user)}});
