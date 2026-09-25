@@ -189,7 +189,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       toast('Không thêm được từ vựng bằng AI: '+(e.message||'Lỗi không xác định'));
     }finally{
       btn.disabled=false;
-      btn.textContent='✨ Thêm từ vựng của bạnn';
+      btn.textContent='✨ Thêm từ vựng của bạn';
     }
   }
 
@@ -215,7 +215,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
 
     const modal=document.createElement('div');
     modal.id='studentPackModal';
-    modal.className='modal show';
+    modal.className='modal show student-pack-enter';
     modal.innerHTML=`
       <div class="modal-card student-pack-modal">
         <button class="modal-close" id="studentPackClose">×</button>
@@ -267,7 +267,9 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     $('#studentPackCancel').onclick=close;
     modal.onclick=e=>{if(e.target===modal)close()};
     $('#studentPackAddRow').onclick=()=>{
-      $('#studentPackRows').append(row());
+      const next=row();
+      next.classList.add('student-pack-row-enter');
+      $('#studentPackRows').append(next);
       renumber();
     };
     $('#studentPackAiBtn').onclick=generateWithAI;
@@ -316,7 +318,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     const name=$('#studentPackName').value.trim();
     if(!name)return toast('Hãy đặt tên cho bộ từ nhé!');
 
-    const words=[...$$('.student-pack-row')].map(r=>({
+    const rawWords=[...$('.student-pack-row')].map(r=>({
       word:r.querySelector('.sp-word').value.trim(),
       pron:r.querySelector('.sp-pron').value.trim(),
       mean:r.querySelector('.sp-mean').value.trim(),
@@ -326,7 +328,16 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       emoji:'📚'
     })).filter(w=>w.word&&w.mean);
 
-    if(!words.length)return toast('Hãy nhập ít nhất một từ có nghĩa!');
+    if(!rawWords.length)return toast('Hãy nhập ít nhất một từ có nghĩa!');
+    const seenWords=new Set();
+    const words=rawWords.filter(w=>{
+      const key=w.word.toLowerCase().replace(/\s+/g,' ').trim();
+      if(seenWords.has(key))return false;
+      seenWords.add(key);
+      return true;
+    });
+    if(words.length<rawWords.length)toast(`Đã tự bỏ ${rawWords.length-words.length} từ bị trùng.`);
+
 
     const btn=$('#studentPackSave');
     btn.disabled=true;
@@ -376,7 +387,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   function close(){
     editingPack=null;
     const m=$('#studentPackModal');
-    if(m)m.classList.remove('show');
+    if(m){m.classList.remove('show');m.classList.add('student-pack-closing');window.setTimeout(()=>m.classList.remove('student-pack-closing'),220);}
   }
 
   async function renderMine(){
