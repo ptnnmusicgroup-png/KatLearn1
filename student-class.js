@@ -21,8 +21,10 @@
   async function render(){
     const box=document.getElementById('studentClassContent');if(!box)return;
     const u=window.studyStore?.user;if(!u){box.innerHTML='<div class="student-class-empty"><b>Đăng nhập để xem lớp</b>Hãy đăng nhập tài khoản học sinh trước nhé.</div>';return}
+    const uid=u.uid;
     try{
       const profile=await window.studyStore.loadProfile();
+      if(String(window.studyStore?.user?.uid||'')!==uid)return;
       if(profile?.studentAccountType==='free'){box.innerHTML='<div class="student-class-empty"><b>🐾 Tài khoản tự do</b>Tha hồ quậy phá các pack từ vựng. Tài khoản này không cần tham gia lớp.</div>';return}
       const ids=Array.isArray(profile?.joinedClassIds)?profile.joinedClassIds:[];
       if(!ids.length){
@@ -32,6 +34,7 @@
       const [{initializeApp,getApps},{getFirestore,doc,getDoc}]=await Promise.all([import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js')]);
       const app=getApps().length?getApps()[0]:initializeApp(window.KATLEARN_FIREBASE_CONFIG),db=getFirestore(app);
       const rows=(await Promise.all(ids.slice(0,20).map(async id=>{try{const snap=await getDoc(doc(db,'classes',id));return snap.exists()?{id:snap.id,...snap.data()}:null}catch(_){return null}}))).filter(Boolean);
+      if(String(window.studyStore?.user?.uid||'')!==uid)return;
       box.innerHTML=rows.map(c=>'<article class="student-class-card"><h3>'+esc(c.name||profile.className||'Lớp học')+'</h3><p>Khối '+esc(c.grade||'—')+' · Trường: '+esc(c.schoolName||profile.schoolName||'KatLearn')+' · Giáo viên: '+esc(c.teacherEmail||'KatLearn Teacher')+'</p><span class="class-waiting">✓ Đã được GV quản trị</span></article>').join('')||'<div class="student-class-empty"><b>⏳ Chờ GV quản trị thêm vào lớp</b>Chưa có lớp nào được gán cho tài khoản này.</div>';
     }catch(e){box.innerHTML='<div class="student-class-empty"><b>Không tải được lớp</b>'+esc(e.message||'Đã xảy ra lỗi')+'</div>'}
   }
