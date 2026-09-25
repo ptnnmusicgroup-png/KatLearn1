@@ -4,5 +4,6 @@
     "api/game-action.js": {
       "includeFiles": "data/vocabulary/*.json"
     }
-  }
+  },
+  "framework": null
 }
