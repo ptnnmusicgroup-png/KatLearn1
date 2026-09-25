@@ -20,7 +20,7 @@ function updateDailyGoal(count){
   if(label)label.textContent=done+' / 10';
   if(percent)percent.textContent=(done*10)+'%';
 }
-function updateCoins(){['#coinCount','#shopCoins','#panelCoins'].forEach(s=>$(s).textContent=format(coins));$('#panelEnergy').textContent=format(energy);$('#panelWords').textContent=vocab.length}
+function updateCoins(){['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=format(coins)});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
 async function syncProfile(extra={}){if(window.studyStore?.connected()&&window.studyStore.user)try{const data={...extra};if(!['core','public','assigned'].includes(String(activeVocabSource?.kind||'')))Object.assign(data,{knownWords:known,totalWords:vocab.length,vocab});await window.studyStore.saveProfile(data)}catch(e){console.warn('Firebase sync:',e)}}
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
 function updateHomeHeader(profile=null){
