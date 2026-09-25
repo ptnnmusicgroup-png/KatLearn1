@@ -96,6 +96,7 @@ module.exports=async(req,res)=>{
       const profileSnap=await userRef.get();
       if(!profileSnap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
       const sourceKind=await validateQuizSource(db,token.uid,source,word,meaning,profileSnap.data()||{});
+      const rewardable=sourceKind!=="legacy";
       const expectedAnswer=mode==="vieng"?word:meaning;
       const correct=submittedAnswer===expectedAnswer;
       const result=await db.runTransaction(async transaction=>{
@@ -120,13 +121,16 @@ module.exports=async(req,res)=>{
         };
         let coins=Number(profile.coins||0),xp=Number(profile.energy||0);
         if(correct){
-          updates.coins=FieldValue.increment(10);updates.energy=FieldValue.increment(10);updates.correctAnswers=FieldValue.increment(1);
-          coins+=10;xp+=10;
+          updates.correctAnswers=FieldValue.increment(1);
+          if(rewardable){
+            updates.coins=FieldValue.increment(10);updates.energy=FieldValue.increment(10);
+            coins+=10;xp+=10;
+          }
         }
         transaction.set(userRef,updates,{merge:true});
-        transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
+        transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,rewarded:correct&&rewardable,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
         transaction.set(leaderboardRef,publicScore(profile.displayName,coins,xp),{merge:true});
-        return{ok:true,correct,coins,xp,dailyQuestions,dailyCorrect,streak};
+        return{ok:true,correct,rewarded:correct&&rewardable,coins,xp,dailyQuestions,dailyCorrect,streak};
       });
       return send(res,200,result);
     }
