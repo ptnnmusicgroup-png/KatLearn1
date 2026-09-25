@@ -90,7 +90,7 @@
       if(providerName==='apple')provider.addScope('email');
       const result=await api.auth.signInWithPopup(auth,provider);
       currentUser=result.user;notifyAuth(currentUser);
-      void (async()=>{try{const signedInUser=result.user;if(currentUser?.uid!==signedInUser.uid)return;const profile=await this.loadProfile();if(currentUser?.uid!==signedInUser.uid)return;if(!profile){await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});if(currentUser?.uid!==signedInUser.uid)return}await this.saveProfile({displayName:signedInUser.displayName||signedInUser.email?.split('@')[0]||'KatLearn Student',email:signedInUser.email||'',photoURL:signedInUser.photoURL||'',provider:providerName})}catch(e){console.warn('[KatLearn] Background Firestore sync skipped after sign-in:',e?.message||e)}})();
+      // auth-sync.js owns profile hydration after the auth event.
       return currentUser;
     },
     async signInEmail(email,password,create=false){
@@ -99,7 +99,7 @@
       const action=create?api.auth.createUserWithEmailAndPassword:api.auth.signInWithEmailAndPassword;
       const result=await action(auth,email,password);
       currentUser=result.user;notifyAuth(currentUser);
-      void (async()=>{try{const signedInUser=result.user;if(currentUser?.uid!==signedInUser.uid)return;const profile=await this.loadProfile();if(currentUser?.uid!==signedInUser.uid)return;if(!profile){await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});if(currentUser?.uid!==signedInUser.uid)return}if(!create)await this.saveProfile({displayName:signedInUser.displayName||signedInUser.email?.split('@')[0]||'KatLearn Student',email:signedInUser.email||'',provider:'password'});else await this.saveProfile({displayName:signedInUser.email?.split('@')[0]||'KatLearn Student',email:signedInUser.email||'',provider:'password'})}catch(e){console.warn('[KatLearn] Background Firestore sync skipped after email auth:',e?.message||e)}})();
+      // auth-sync.js owns profile hydration after the auth event.
       return currentUser;
     },
     async signOut(){
