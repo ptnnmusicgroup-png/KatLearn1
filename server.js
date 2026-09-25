@@ -2,8 +2,9 @@
 require('dotenv').config();
 const express=require('express');
 const app=express();
+app.disable('x-powered-by');
 app.use(express.json({limit:'1mb'}));
-app.use(express.static(__dirname));
+app.use(express.static(__dirname,{dotfiles:'ignore'}));
 
 const routes={
   '/api/vocab-assist':require('./api/vocab-assist'),
@@ -19,4 +20,5 @@ for(const [path,handler] of Object.entries(routes)){
 }
 
 app.get('/api/health',(req,res)=>res.json({ok:true,ai:!!String(process.env.GEMINI_API_KEY||'').trim()}));
-app.listen(process.env.PORT||3000,()=>console.log('KatLearn: http://localhost:'+String(process.env.PORT||3000)));
+const port=Number(process.env.PORT||3000),host=process.env.HOST||'127.0.0.1';
+app.listen(port,host,()=>console.log('KatLearn: http://'+host+':'+String(port)));
