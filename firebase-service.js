@@ -106,6 +106,7 @@
       return connectPromise;
     },
     connected(){return !!db},
+    async waitForAuth(){return authReady?await authReady:null},
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
     async ensureAccountCode(){if(!currentUser)throw new Error('Hãy đăng nhập trước.');const profile=await this.loadProfile();if(profile?.accountCode)return profile.accountCode;const accountCode=createAccountCode(currentUser);await this.saveProfile({accountCode});return accountCode},
     async getRole(){const p=await this.loadProfile();return String(p?.role||'student').toLowerCase()},
