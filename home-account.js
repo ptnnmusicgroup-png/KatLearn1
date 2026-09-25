@@ -36,7 +36,7 @@
     render();
     try{const p=await window.studyStore.loadProfile();if(p){const c=document.getElementById('haCoins'),en=document.getElementById('haEnergy'),w=document.getElementById('haWords'),ci=document.getElementById('haClassInfo');if(ci){const isClass=String(p.studentAccountType||'').toLowerCase()==='class';if(isClass){const cn=String(p.className||'').trim(),sn=String(p.schoolName||'').trim();ci.textContent='Học sinh'+(cn?' lớp '+cn:'')+(sn?' - Trường '+sn:'');ci.hidden=false}else{ci.textContent='';ci.hidden=true}}if(c)c.textContent=Number(p.coins||0).toLocaleString('en-US');if(en)en.textContent=Number(p.energy||0).toLocaleString('en-US');if(w)w.textContent=Number(p.totalWords||0).toLocaleString('en-US')}}catch(e){}
   }
-  window.addEventListener('8b1-auth-change',()=>{setTimeout(render,0)});
+  window.addEventListener('8b1-auth-change',()=>{void hydrate()});
   document.addEventListener('click',e=>{const root=document.getElementById('homeAccount');if(root&&!root.contains(e.target)){root.querySelector('.ha-panel')?.setAttribute('hidden','')}});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hydrate,{once:true});else hydrate();
 })();
