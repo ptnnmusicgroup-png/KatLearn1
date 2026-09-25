@@ -312,6 +312,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
 
   async function save(){
     if(await isManagedStudent())return toast('🔒 Tài khoản lớp học không thể tạo hoặc sửa bộ từ cá nhân.');
+    const wasEditing=!!editingPack;
     const name=$('#studentPackName').value.trim();
     if(!name)return toast('Hãy đặt tên cho bộ từ nhé!');
 
@@ -348,7 +349,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       toast('Không thể tạo bộ từ: '+(e.message||'Lỗi không xác định'));
     }finally{
       btn.disabled=false;
-      btn.textContent=editingPack?'Lưu thay đổi':'Tạo bộ từ';
+      btn.textContent=wasEditing?'Lưu thay đổi':'Tạo bộ từ';
     }
   }
 
@@ -359,9 +360,11 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     const btn=$('#studentPackDelete');
     if(btn){btn.disabled=true;btn.textContent='Đang xóa...'}
     try{
-      await window.studyStore.deletePersonalPack(editingPack.id);
+      const deletedId=editingPack.id;
+      await window.studyStore.deletePersonalPack(deletedId);
       close();
       await renderMine();
+      window.dispatchEvent(new CustomEvent('katlearn-personal-pack-deleted',{detail:{id:String(deletedId)}}));
       toast('Đã xóa bộ từ.');
     }catch(e){
       toast('Không thể xóa bộ từ: '+(e.message||'Lỗi không xác định'));
