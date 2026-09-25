@@ -77,7 +77,16 @@
     connected(){return !!db},
     async waitForAuth(){return authReady?await authReady:null},
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
-    async ensureAccountCode(){if(!currentUser)throw new Error('Hãy đăng nhập trước.');const profile=await this.loadProfile();if(profile?.accountCode)return profile.accountCode;const accountCode=createAccountCode(currentUser);await this.saveProfile({accountCode});return accountCode},
+    async ensureAccountCode(){
+      const user=currentUser;if(!user)throw new Error('Hãy đăng nhập trước.');
+      const uid=user.uid,profile=await this.loadProfile();
+      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      if(profile?.accountCode)return profile.accountCode;
+      const accountCode=createAccountCode(user);
+      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      await this.saveProfile({accountCode},uid);
+      return currentUser?.uid===uid?accountCode:null;
+    },
     async getRole(){const p=await this.loadProfile();return String(p?.role||'student').toLowerCase()},
     async getAccountType(){const p=await this.loadProfile();return String(p?.studentAccountType||'free').toLowerCase()==='class'?'class':'free'},
     async isClassStudent(){return !!this.user&&await this.getAccountType()==='class'},
@@ -110,12 +119,31 @@
       if(auth)await api.auth.signOut(auth);
       currentUser=null;notifyAuth(null);
     },
-    async saveProfile(data){if(!db||!currentUser)return;const user=currentUser,payload={...data};['__coinsAuthoritative','coins','energy','streak','lastStudyDay','dailyQuestions','dailyCorrect','questionsAnswered','correctAnswers','ownedThemes','teacherUid','teacherUids','studentAccountType','classId','className','catalogClassId','schoolId','schoolName','province','ward','teacherName','teacherEmail'].forEach(k=>delete payload[k]);return api.setDoc(api.doc(db,'users',this.userId),{displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',email:user.email||'',photoURL:user.photoURL||'',updatedAt:api.serverTimestamp(),...payload},{merge:true})},
+    async saveProfile(data,expectedUid=''){
+      if(!db||!currentUser)return;
+      const user=currentUser,uid=user.uid;
+      if(expectedUid&&String(expectedUid)!==uid)return;
+      const payload={...data};
+      ['__coinsAuthoritative','coins','energy','streak','lastStudyDay','dailyQuestions','dailyCorrect','questionsAnswered','correctAnswers','ownedThemes','teacherUid','teacherUids','studentAccountType','classId','className','catalogClassId','schoolId','schoolName','province','ward','teacherName','teacherEmail'].forEach(k=>delete payload[k]);
+      if(currentUser?.uid!==uid)return;
+      return api.setDoc(api.doc(db,'users',uid),{displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',email:user.email||'',photoURL:user.photoURL||'',updatedAt:api.serverTimestamp(),...payload},{merge:true});
+    },
     async recordAnswer(data){if(!db||!currentUser)return;await api.addDoc(api.collection(db,'users',this.userId,'attempts'),{...data,createdAt:api.serverTimestamp()});await this.saveProfile({lastStudyAt:api.serverTimestamp()})},
     async purchase(item){if(!db||!currentUser)return;return api.setDoc(api.doc(db,'users',this.userId,'items',item.id),{...item,boughtAt:api.serverTimestamp()})},
     async createPublicPack(pack){if(!db||!currentUser||!this.isAdmin())throw new Error('Bạn không có quyền quản trị.');return api.addDoc(api.collection(db,'publicPacks'),{...pack,createdBy:currentUser.uid,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()})},
-    async createPersonalPack(pack){if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');const ownerAccountCode=await this.ensureAccountCode();return api.addDoc(api.collection(db,'users',this.userId,'personalPacks'),{...pack,ownerUid:currentUser.uid,ownerEmail:currentUser.email||'',ownerDisplayName:currentUser.displayName||currentUser.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()})},
-    async updatePersonalPack(packId,pack){if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');const ownerAccountCode=await this.ensureAccountCode();return api.updateDoc(api.doc(db,'users',this.userId,'personalPacks',packId),{...pack,ownerUid:currentUser.uid,ownerEmail:currentUser.email||'',ownerDisplayName:currentUser.displayName||currentUser.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,updatedAt:api.serverTimestamp()})},
+    async createPersonalPack(pack){
+      if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');
+      const user=currentUser,uid=user.uid,ownerAccountCode=await this.ensureAccountCode();
+      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      return api.addDoc(api.collection(db,'users',uid,'personalPacks'),{...pack,ownerUid:uid,ownerEmail:user.email||'',ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()});
+    },
+    async updatePersonalPack(packId,pack){
+      if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');
+      if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');
+      const user=currentUser,uid=user.uid,ownerAccountCode=await this.ensureAccountCode();
+      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      return api.updateDoc(api.doc(db,'users',uid,'personalPacks',packId),{...pack,ownerUid:uid,ownerEmail:user.email||'',ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,updatedAt:api.serverTimestamp()});
+    },
     async deletePersonalPack(packId){if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');if(!packId)throw new Error('Không tìm thấy bộ từ cần xóa.');return api.deleteDoc(api.doc(db,'users',this.userId,'personalPacks',packId))},
     async personalPacks(){if(!db||!currentUser)return[];const snap=await api.getDocs(api.query(api.collection(db,'users',this.userId,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
