@@ -38,6 +38,14 @@ function limit(uid,key,count=60){
 function leaderboardId(uid){return crypto.createHash("sha256").update(String(uid)).digest("hex").slice(0,32)}
 function publicScore(displayName,coins,xp){return{displayName:String(displayName||"KatLearner").trim().slice(0,80)||"KatLearner",coins:Math.max(0,Number(coins)||0),xp:Math.max(0,Number(xp)||0),updatedAt:FieldValue.serverTimestamp()}}
 function norm(v){return String(v??"").trim().toLowerCase()}
+function studyDay(date=new Date()){
+  return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Ho_Chi_Minh",year:"numeric",month:"2-digit",day:"2-digit"}).format(date);
+}
+function previousStudyDay(day){
+  const d=new Date(day+"T00:00:00Z");
+  d.setUTCDate(d.getUTCDate()-1);
+  return d.toISOString().slice(0,10);
+}
 function findWord(words,word,meaning){
   const w=norm(word),m=norm(meaning);
   return (Array.isArray(words)?words:[]).some(item=>norm(item?.word)===w&&norm(item?.mean??item?.meaning_vi)===m);
@@ -95,8 +103,14 @@ module.exports=async(req,res)=>{
         if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
         const profile=snap.data()||{};
         const now=Date.now();
+        const currentStudyDay=studyDay();
         const attemptRef=db.collection("users").doc(token.uid).collection("attempts").doc();
         const updates={questionsAnswered:FieldValue.increment(1),lastStudyAt:FieldValue.serverTimestamp()};
+        if(String(profile.lastStudyDay||"")!==currentStudyDay){
+          const currentStreak=Math.max(0,Number(profile.streak||0));
+          updates.streak=String(profile.lastStudyDay||"")===previousStudyDay(currentStudyDay)?currentStreak+1:1;
+          updates.lastStudyDay=currentStudyDay;
+        }
         let coins=Number(profile.coins||0),xp=Number(profile.energy||0);
         if(correct){
           updates.coins=FieldValue.increment(10);updates.energy=FieldValue.increment(10);updates.correctAnswers=FieldValue.increment(1);
