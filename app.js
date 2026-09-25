@@ -75,13 +75,15 @@ async function renderLeaderboard(){
 }
 async function loadCoreTopic(topicId){const data=await window.katlearnCoreVocabulary.load(topicId);return{id:'core:'+data.id,name:data.name,words:data.words,core:true,topicId:data.id}}
 async function loadAssignedPacks(){
-  if(!window.studyStore?.user)return[];
+  const uid=String(window.studyStore?.user?.uid||'');
+  if(!uid)return[];
   try{
     const res=await fetch('/api/student-assigned-packs',{headers:await aiHeaders(),cache:'no-store'});
     const data=await res.json().catch(()=>({}));
+    if(String(window.studyStore?.user?.uid||'')!==uid)return[];
     if(!res.ok)throw new Error(data.error||'Không tải được bài được giao.');
     return Array.isArray(data.packs)?data.packs:[];
-  }catch(e){console.warn('[KatLearn] assigned packs:',e);return[]}
+  }catch(e){if(String(window.studyStore?.user?.uid||'')===uid)console.warn('[KatLearn] assigned packs:',e);return[]}
 }
 function setVocabSource(source){activeVocabSource=source||{kind:'legacy'};if(activeVocabSource.kind==='personal'&&!activeVocabSource.uid)activeVocabSource.uid=window.studyStore?.userId||'';localStorage.setItem('katlearn-vocab-source',JSON.stringify(activeVocabSource));loadKnownState()}
 function openVocabularyPack(pack){
@@ -116,9 +118,11 @@ function renderPackLibrary(packs=[],assigned=[]){
 }
 async function renderPublicPacks(){
   const target=$('#publishedPacks'),adminList=$('#publicPackList');
-  if(!window.studyStore?.user){target.textContent='Đăng nhập để xem các pack từ vựng công khai.';renderPackLibrary();return}
+  const uid=String(window.studyStore?.user?.uid||'');
+  if(!uid){target.textContent='Đăng nhập để xem các pack từ vựng công khai.';renderPackLibrary();return}
   try{
     const [packs,assigned]=await Promise.all([window.studyStore.publicPacks(),loadAssignedPacks()]);
+    if(String(window.studyStore?.user?.uid||'')!==uid)return;
     const core=window.katlearnCoreVocabulary?.topics||[];
     const assignedBody=assigned.length?assigned.map(pack=>`<div class="published-pack"><span>📩</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ · Bài được giao</small></div><button data-assigned-pack="${esc(pack.id)}">Học</button></div>`).join(''):'';
     const publicBody=packs.length?packs.map(pack=>`<div class="published-pack"><span>📚</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ vựng</small></div><button data-public-pack="${esc(pack.id)}">Học pack</button></div>`).join(''):'<div class="empty-state">Chưa có pack công khai.</div>';
