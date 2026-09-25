@@ -74,21 +74,27 @@
         void authReady.then(async user=>{
           if(!user)return;
           try{
+            if(currentUser?.uid!==user.uid)return;
             const profile=await this.loadProfile();
+            if(currentUser?.uid!==user.uid)return;
             let pending=null;
             try{pending=JSON.parse(localStorage.getItem('katlearn-pending-profile')||'null')}catch(_){}
             if(pending&&pending.email&&user.email&&pending.email.toLowerCase()===user.email.toLowerCase()){
+              if(currentUser?.uid!==user.uid)return;
               await this.saveProfile({
                 displayName:pending.displayName||user.displayName||user.email.split('@')[0],
                 email:user.email,role:pending.role||'student',provider:pending.provider||'password'
               });
+              if(currentUser?.uid!==user.uid)return;
               localStorage.removeItem('katlearn-pending-profile');
             }else if(!profile){
+              if(currentUser?.uid!==user.uid)return;
               await this.saveProfile({
                 displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
                 email:user.email||'',provider:'password',coins:0,energy:0,streak:0,__coinsAuthoritative:true
               });
             }
+            if(currentUser?.uid!==user.uid)return;
             notifyAuth(user);
           }catch(e){
             console.warn('[KatLearn] Firestore profile sync skipped:',e?.message||e);
@@ -114,7 +120,7 @@
       if(providerName==='apple')provider.addScope('email');
       const result=await api.auth.signInWithPopup(auth,provider);
       currentUser=result.user;notifyAuth(currentUser);
-      void (async()=>{try{const profile=await this.loadProfile();if(!profile)await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});await this.saveProfile({displayName:currentUser.displayName||currentUser.email?.split('@')[0]||'KatLearn Student',email:currentUser.email||'',photoURL:currentUser.photoURL||'',provider:providerName})}catch(e){console.warn('[KatLearn] Background Firestore sync skipped after sign-in:',e?.message||e)}})();
+      void (async()=>{try{const signedInUser=result.user;if(currentUser?.uid!==signedInUser.uid)return;const profile=await this.loadProfile();if(currentUser?.uid!==signedInUser.uid)return;if(!profile){await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});if(currentUser?.uid!==signedInUser.uid)return}await this.saveProfile({displayName:signedInUser.displayName||signedInUser.email?.split('@')[0]||'KatLearn Student',email:signedInUser.email||'',photoURL:signedInUser.photoURL||'',provider:providerName})}catch(e){console.warn('[KatLearn] Background Firestore sync skipped after sign-in:',e?.message||e)}})();
       return currentUser;
     },
     async signInEmail(email,password,create=false){
@@ -123,7 +129,7 @@
       const action=create?api.auth.createUserWithEmailAndPassword:api.auth.signInWithEmailAndPassword;
       const result=await action(auth,email,password);
       currentUser=result.user;notifyAuth(currentUser);
-      void (async()=>{try{const profile=await this.loadProfile();if(!profile)await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});if(!create)await this.saveProfile({displayName:currentUser.displayName||currentUser.email?.split('@')[0]||'KatLearn Student',email:currentUser.email||'',provider:'password'});else await this.saveProfile({displayName:currentUser.email?.split('@')[0]||'KatLearn Student',email:currentUser.email||'',provider:'password'})}catch(e){console.warn('[KatLearn] Background Firestore sync skipped after email auth:',e?.message||e)}})();
+      void (async()=>{try{const signedInUser=result.user;if(currentUser?.uid!==signedInUser.uid)return;const profile=await this.loadProfile();if(currentUser?.uid!==signedInUser.uid)return;if(!profile){await this.saveProfile({coins:0,energy:0,streak:0,__coinsAuthoritative:true});if(currentUser?.uid!==signedInUser.uid)return}if(!create)await this.saveProfile({displayName:signedInUser.displayName||signedInUser.email?.split('@')[0]||'KatLearn Student',email:signedInUser.email||'',provider:'password'});else await this.saveProfile({displayName:signedInUser.email?.split('@')[0]||'KatLearn Student',email:signedInUser.email||'',provider:'password'})}catch(e){console.warn('[KatLearn] Background Firestore sync skipped after email auth:',e?.message||e)}})();
       return currentUser;
     },
     async signOut(){
