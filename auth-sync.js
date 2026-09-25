@@ -60,6 +60,19 @@
           nextProfile=await window.studyStore.loadProfile?.()||null;
         }
 
+        // Provision the per-account Firestore memory namespace.
+        // This is intentionally best-effort so a rules deployment delay
+        // never blocks an otherwise valid Firebase login.
+        if(isCurrent()&&window.studyStore?.ensureAccountNamespace){
+          try{
+            await window.studyStore.ensureAccountNamespace();
+            if(!isCurrent())return null;
+            nextProfile=await window.studyStore.loadProfile?.()||nextProfile;
+          }catch(namespaceError){
+            if(isCurrent())console.warn('[KatLearn] Account namespace provisioning:',namespaceError);
+          }
+        }
+
         // Ignore stale work if Firebase has already switched accounts.
         if(!isCurrent())return null;
 
