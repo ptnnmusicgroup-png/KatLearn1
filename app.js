@@ -116,10 +116,11 @@ async function openCoreTopic(topicId){
 }
 function renderPackLibrary(packs=[],assigned=[]){
   const library=$('#packLibrary');
-  if(!window.studyStore?.user){library.innerHTML='<div class="empty-state">Đăng nhập để xem kho từ vựng KatLearn. 🐾</div>';return}
+  if(!library)return;
+  const signedIn=!!window.studyStore?.user;
   const core=window.katlearnCoreVocabulary?.topics||[];
   const coreCards=core.map(t=>({id:'core:'+t.id,name:t.name,words:[],core:true,topicId:t.id}));
-  const current=vocab.length?[{id:'current',name:'Bộ từ đang học',words:vocab,current:true},...assigned,...packs]:[...assigned,...packs];
+  const current=signedIn&&vocab.length?[{id:'current',name:'Bộ từ đang học',words:vocab,current:true},...assigned,...packs]:[...assigned,...packs];
   const seen=new Set();const all=[...coreCards,...current].filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true});
   library.innerHTML=all.length?all.map(pack=>{
     const count=pack.core?'':(Array.isArray(pack.words)?pack.words.length:0);
@@ -143,7 +144,7 @@ async function renderPublicPacks(){
     try{
       // Public packs are shared data: render them as soon as Firestore returns.
       packs=await window.studyStore.publicPacks();
-      if(String(window.studyStore?.user?.uid||'')!==uid)return;
+      if(String(window.studyStore?.user?.uid||'guest')!==uid)return;
       const core=window.katlearnCoreVocabulary?.topics||[];
       const publicBody=packs.length?packs.map(pack=>`<div class="published-pack"><span>📚</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ vựng</small></div><button data-public-pack="${esc(pack.id)}">Học pack</button></div>`).join(''):'<div class="empty-state">Chưa có pack công khai.</div>';
       const coreBody=core.length?core.map(topic=>`<div class="published-pack"><span>🧠</span><div><b>${esc(topic.name)}</b><small>Từ cốt lõi · Kho từ KatLearn</small></div><button data-core-topic="${esc(topic.id)}">Học topic</button></div>`).join(''):'';
