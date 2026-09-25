@@ -3,8 +3,17 @@
   let db=null,auth=null,api={},currentUser=null,authReady=null,connectPromise=null,lastAuthUid=undefined;
   window.KATLEARN_FIREBASE_CONFIG={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDomain:'elp---katlearn.firebaseapp.com',projectId:'elp---katlearn',storageBucket:'elp---katlearn.firebasestorage.app',messagingSenderId:'344478447672',appId:'1:344478447672:web:4ed109a40303d0b41b0ecd',measurementId:'G-KTW11GD97T'};
   const guestId=localStorage.getItem('8b1-guest-id')||crypto.randomUUID();localStorage.setItem('8b1-guest-id',guestId);
-  function accountPart(value,fallback){const clean=String(value||'').trim().replace(/[^a-zA-Z0-9.@-]+/g,'').replace(/@/g,'@');return clean||fallback}
-  function createAccountCode(user){const email=accountPart(user?.email,'katlearn');const name=accountPart((user?.displayName||user?.email?.split('@')[0]||'student').toUpperCase(),'STUDENT');const number=String(Math.floor(1000000+Math.random()*9000000));return email+'_'+name+'_'+number}
+  function stripVietnamese(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+  function accountPart(value,fallback){const clean=stripVietnamese(value).trim().replace(/[^a-zA-Z0-9.@_-]+/g,'');return clean||fallback}
+  function displayAccountPart(value,fallback){const clean=stripVietnamese(value).trim().replace(/[^a-zA-Z0-9]+/g,'');return clean||fallback}
+  function createAccountPrefix(user){
+    const login=String(user?.email||'').split('@')[0]||'katlearn';
+    const display=user?.displayName||login||'student';
+    return {login:accountPart(login,'katlearn'),display:displayAccountPart(display,'Student')};
+  }
+  function formatAccountCode(prefix,number){
+    return prefix.login+'_'+prefix.display+'_'+String(number).padStart(3,'0');
+  }
   function renderAccountUi(user){
     const loginBtn=document.querySelector('#loginBtn'),trigger=document.querySelector('#accountTrigger'),panel=document.querySelector('#accountPanel');
     if(!loginBtn||!trigger)return false;
@@ -56,7 +65,7 @@
       if(connectPromise)return connectPromise;
 
       connectPromise=(async()=>{
-        const [{initializeApp,getApps,deleteApp},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword}]=await Promise.all([
+        const [{initializeApp,getApps,deleteApp},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword}]=await Promise.all([
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js')
@@ -68,7 +77,7 @@
         }
         const app=initializeApp(config);
         db=getFirestore(app);
-        api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc};
+        api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction};
         auth=getAuth(app);
         api.auth={GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword};
 
@@ -86,16 +95,60 @@
     connected(){return !!db},
     async waitForAuth(){return authReady?await authReady:null},
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
-    async ensureAccountCode(){
-      const user=currentUser;if(!user)throw new Error('Hãy đăng nhập trước.');
-      const uid=user.uid,profile=await this.loadProfile();
+    async ensureAccountNamespace(){
+      const user=currentUser;if(!user||!db)throw new Error('Hãy đăng nhập trước.');
+      const uid=user.uid;
+      const profile=await this.loadProfile();
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      if(profile?.accountCode)return profile.accountCode;
-      const accountCode=createAccountCode(user);
+
+      if(profile?.accountCode){
+        const code=String(profile.accountCode);
+        const accountRef=api.doc(db,'accounts',code);
+        const memoryRef=api.doc(db,'accounts',code,'memory','meta');
+        const snap=await api.getDoc(accountRef);
+        if(!snap.exists()){
+          await api.setDoc(accountRef,{
+            accountCode:code,uid,email:user.email||'',displayName:user.displayName||'',
+            loginName:String(user.email||'').split('@')[0]||'katlearn',
+            createdAt:profile.createdAt||api.serverTimestamp(),updatedAt:api.serverTimestamp()
+          },{merge:false});
+          await api.setDoc(memoryRef,{accountCode:code,uid,updatedAt:api.serverTimestamp()},{merge:true});
+        }else{
+          await api.setDoc(accountRef,{uid,email:user.email||'',displayName:user.displayName||'',updatedAt:api.serverTimestamp()},{merge:true});
+          await api.setDoc(memoryRef,{accountCode:code,uid,updatedAt:api.serverTimestamp()},{merge:true});
+        }
+        return code;
+      }
+
+      const prefix=createAccountPrefix(user);
+      const sequenceRef=api.doc(db,'system','accountSequence');
+      const result=await api.runTransaction(db,async tx=>{
+        const seqSnap=await tx.get(sequenceRef);
+        let next=Number(seqSnap.exists()?seqSnap.data()?.lastIssued:0)+1;
+        let code=formatAccountCode(prefix,next);
+        let accountRef=api.doc(db,'accounts',code);
+        let accountSnap=await tx.get(accountRef);
+        while(accountSnap.exists()){
+          next++;
+          code=formatAccountCode(prefix,next);
+          accountRef=api.doc(db,'accounts',code);
+          accountSnap=await tx.get(accountRef);
+        }
+        const memoryRef=api.doc(db,'accounts',code,'memory','meta');
+        tx.set(sequenceRef,{lastIssued:next,updatedAt:api.serverTimestamp()},{merge:true});
+        tx.set(accountRef,{
+          accountCode:code,uid,email:user.email||'',displayName:user.displayName||'',
+          loginName:prefix.login,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()
+        },{merge:false});
+        tx.set(memoryRef,{accountCode:code,uid,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()},{merge:true});
+        return code;
+      });
+
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      await this.saveProfile({accountCode},uid);
-      return currentUser?.uid===uid?accountCode:null;
+      await this.saveProfile({accountCode:result},uid);
+      return currentUser?.uid===uid?result:null;
     },
+    async ensureAccountCode(){return this.ensureAccountNamespace();},
     async getRole(){const p=await this.loadProfile();return String(p?.role||'student').toLowerCase()},
     async getAccountType(){const p=await this.loadProfile();return String(p?.studentAccountType||'free').toLowerCase()==='class'?'class':'free'},
     async isClassStudent(){return !!this.user&&await this.getAccountType()==='class'},
