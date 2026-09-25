@@ -74,8 +74,14 @@ async function validateQuizSource(db,uid,source,word,meaning,profile){
   if(kind==="personal"){
     const packId=String(source?.id||"").trim().slice(0,160);
     if(packId){
-      const snap=await db.collection("users").doc(uid).collection("personalPacks").doc(packId).get();
-      if(snap.exists&&findWord(snap.data()?.words,word,meaning))return "personal";
+      const legacySnap=await db.collection("users").doc(uid).collection("personalPacks").doc(packId).get();
+      if(legacySnap.exists&&findWord(legacySnap.data()?.words,word,meaning))return "personal";
+      const accountCode=String(profile?.accountCode||"").trim();
+      if(accountCode){
+        const memorySnap=await db.collection("accounts").doc(accountCode).collection("memory").doc(packId).get();
+        const memoryData=memorySnap.exists?memorySnap.data()||{}:{};
+        if(memorySnap.exists&&(!memoryData.ownerUid||String(memoryData.ownerUid)===uid)&&findWord(memoryData.words,word,meaning))return "personal";
+      }
     }
     if(findWord(profile.vocab,word,meaning))return "personal";
     throw Object.assign(new Error("Câu hỏi không khớp bộ từ cá nhân."),{status:400});
