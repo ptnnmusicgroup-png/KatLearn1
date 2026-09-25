@@ -35,12 +35,15 @@
     if(syncing&&syncingUid===uid)return syncing;
 
     syncingUid=uid;
+    const isCurrent=()=>run===generation&&String(window.studyStore?.user?.uid||'')===uid;
     const promise=(async()=>{
       let nextProfile=null;
       try{
+        if(!isCurrent())return null;
         nextProfile=await window.studyStore?.loadProfile?.()||null;
 
         if(!nextProfile && window.studyStore?.saveProfile){
+          if(!isCurrent())return null;
           await window.studyStore.saveProfile({
             displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
             email:user.email||'',
@@ -51,11 +54,12 @@
             streak:0,
             totalWords:0
           });
+          if(!isCurrent())return null;
           nextProfile=await window.studyStore.loadProfile?.()||null;
         }
 
         // Ignore stale work if Firebase has already switched accounts.
-        if(run!==generation||String(window.studyStore?.user?.uid||'')!==uid)return null;
+        if(!isCurrent())return null;
 
         profile=nextProfile;
         ready=true;
