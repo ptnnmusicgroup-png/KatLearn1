@@ -67,3 +67,43 @@ h1,h2,h3{letter-spacing:-.025em}.page-intro h1{font:700 clamp(30px,3.5vw,42px)/1
 @media(max-width:820px){.sidebar{position:fixed!important;left:0;transform:translateX(-105%);transition:transform .22s ease;box-shadow:22px 0 55px rgba(26,21,39,.16)!important}.sidebar.open{transform:translateX(0)}.topbar{min-height:66px!important}.search{min-width:0}.hero-card{grid-template-columns:1fr!important}.hero-art{min-height:220px}}
 @media(max-width:620px){.topbar{padding:10px 12px!important}.search span{font-size:10px}.top-actions .notification,.top-actions .settings-btn{display:none}.account-trigger{max-width:132px}.page{padding:22px 12px 36px!important}.page-intro h1{font-size:30px!important}.hero-content{padding:24px!important}.hero-content h2{font-size:37px!important}.activity-grid{grid-template-columns:1fr!important}.bottom-grid{grid-template-columns:1fr!important}.pack-summary,.word-summary,.stat-grid{grid-template-columns:1fr 1fr!important}.flash-layout{grid-template-columns:1fr!important}.word-list{max-height:240px}.mode-grid{grid-template-columns:1fr!important}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Public vocabulary motion polish */
+.published-packs{overflow:hidden}
+.published-packs .published-pack{
+  animation:katPackReveal .42s cubic-bezier(.22,1,.36,1) both;
+}
+.published-packs .published-pack:nth-child(2){animation-delay:.025s}
+.published-packs .published-pack:nth-child(3){animation-delay:.05s}
+.published-packs .published-pack:nth-child(4){animation-delay:.075s}
+.published-packs .published-pack:nth-child(5){animation-delay:.1s}
+.published-packs .published-pack:nth-child(6){animation-delay:.125s}
+.published-packs .published-pack:nth-child(7){animation-delay:.15s}
+.published-packs .published-pack:nth-child(8){animation-delay:.175s}
+.pack-tile{
+  animation:katTileReveal .48s cubic-bezier(.22,1,.36,1) both;
+  will-change:transform,box-shadow;
+}
+.pack-tile:hover{
+  transform:translateY(-4px) scale(1.008)!important;
+  box-shadow:0 18px 38px rgba(79,62,145,.13)!important;
+}
+.pack-tile button:active,.published-pack button:active{transform:translateY(1px) scale(.98)!important}
+body.pack-auth-gate .published-packs{
+  animation:katGatePulse .22s ease-out;
+}
+@keyframes katPackReveal{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes katTileReveal{
+  from{opacity:0;transform:translateY(10px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes katGatePulse{
+  50%{transform:scale(.998)}
+}
+@media(prefers-reduced-motion:reduce){
+  .published-packs .published-pack,.pack-tile{animation:none!important}
+  body.pack-auth-gate .published-packs{animation:none!important}
+}
