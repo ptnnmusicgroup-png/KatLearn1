@@ -5,14 +5,21 @@
 (function(){
   let ready=false;
   let syncing=null;
+  let syncingUid=null;
+  let generation=0;
   let profile=null;
 
   const emit=(name,detail={})=>window.dispatchEvent(new CustomEvent(name,{detail}));
 
   async function sync(user){
+    const uid=String(user?.uid||'');
+    const run=++generation;
+
     if(!user){
       profile=null;
       ready=true;
+      syncing=null;
+      syncingUid=null;
       emit('katlearn-account-ready',{account:false,user:null,profile:null});
       return null;
     }
@@ -20,13 +27,17 @@
     // UI can react immediately; do not block login on Firestore.
     emit('katlearn-account-fast',{account:true,user,profile:null});
 
-    if(syncing)return syncing;
-    syncing=(async()=>{
-      try{
-        profile=await window.studyStore?.loadProfile?.()||null;
+    // Reuse only a sync for the same account. A different account must
+    // never receive the previous account's profile result.
+    if(syncing&&syncingUid===uid)return syncing;
 
-        // Create/fill the profile without blocking the login screen.
-        if(!profile && window.studyStore?.saveProfile){
+    syncingUid=uid;
+    const promise=(async()=>{
+      let nextProfile=null;
+      try{
+        nextProfile=await window.studyStore?.loadProfile?.()||null;
+
+        if(!nextProfile && window.studyStore?.saveProfile){
           await window.studyStore.saveProfile({
             displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
             email:user.email||'',
@@ -37,23 +48,33 @@
             streak:0,
             totalWords:0
           });
-          profile=await window.studyStore.loadProfile?.()||null;
+          nextProfile=await window.studyStore.loadProfile?.()||null;
         }
 
+        // Ignore stale work if Firebase has already switched accounts.
+        if(run!==generation||String(window.studyStore?.user?.uid||'')!==uid)return null;
+
+        profile=nextProfile;
         ready=true;
         emit('katlearn-account-ready',{account:true,user,profile});
         return profile;
       }catch(error){
+        if(run!==generation||String(window.studyStore?.user?.uid||'')!==uid)return null;
         console.warn('[KatLearn] Background account sync failed:',error);
         ready=true;
+        profile=null;
         emit('katlearn-account-ready',{account:true,user,profile:null,error});
         return null;
       }finally{
-        syncing=null;
+        if(run===generation){
+          syncing=null;
+          syncingUid=null;
+        }
       }
     })();
 
-    return syncing;
+    syncing=promise;
+    return promise;
   }
 
   window.katlearnAccount={
