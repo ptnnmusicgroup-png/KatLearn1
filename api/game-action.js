@@ -94,6 +94,7 @@ module.exports=async(req,res)=>{
     if(action==="answer"){
       const word=String(body.word||"").trim().slice(0,100),meaning=String(body.meaning||"").trim().slice(0,200),submittedAnswer=String(body.answer||"").trim().slice(0,200),mode=String(body.mode||"").trim().slice(0,40)||"engvi",source=body.source||{};
       if(!word||!meaning||!submittedAnswer)return send(res,400,{error:"Thiếu dữ liệu câu trả lời."});
+      if(!["engvi","vieng","context"].includes(mode))return send(res,400,{error:"Chế độ luyện tập không hợp lệ."});
       const profileSnap=await userRef.get();
       if(!profileSnap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
       const sourceKind=await validateQuizSource(db,token.uid,source,word,meaning,profileSnap.data()||{});
