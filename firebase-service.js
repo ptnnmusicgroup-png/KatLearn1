@@ -47,17 +47,26 @@
     get userId(){return currentUser?.uid||guestId},get user(){return currentUser},
     isAdmin(){return !!currentUser&&window.KATLEARN_ADMIN_EMAILS.includes((currentUser.email||'').toLowerCase())},
     async connect(config){
-      if(db&&auth)return true;
-      if(connectPromise)return connectPromise;
       if(!config?.apiKey||!config?.projectId)throw new Error('Firebase config chưa đầy đủ');
+      if(db&&auth){
+        const currentApp=auth.app;
+        if(currentApp?.options?.apiKey===config.apiKey&&currentApp?.options?.projectId===config.projectId)return true;
+        if(connectPromise)return connectPromise;
+      }
+      if(connectPromise)return connectPromise;
 
       connectPromise=(async()=>{
-        const [{initializeApp,getApps},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword}]=await Promise.all([
+        const [{initializeApp,getApps,deleteApp},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword}]=await Promise.all([
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js')
         ]);
-        const app=getApps().length?getApps()[0]:initializeApp(config);
+        const existing=getApps()[0];
+        if(existing){
+          await deleteApp(existing);
+          db=null;auth=null;api=null;authReady=null;currentUser=null;notifyAuth(null);
+        }
+        const app=initializeApp(config);
         db=getFirestore(app);
         api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc};
         auth=getAuth(app);
