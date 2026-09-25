@@ -7,8 +7,7 @@ function knownStateKey(){const uid=String(window.studyStore?.user?.uid||window.s
 function loadKnownState(){try{const raw=localStorage.getItem(knownStateKey());const arr=JSON.parse(raw||'[]');knownWordKeys=new Set(Array.isArray(arr)?arr.filter(Boolean):[])}catch(_){knownWordKeys=new Set()}known=knownWordKeys.size}
 function saveKnownState(){localStorage.setItem(knownStateKey(),JSON.stringify([...knownWordKeys]));known=knownWordKeys.size}
 loadKnownState();
-updateHomeHeader();
-const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const $=s=>document.querySelector(s),$=s=>document.querySelectorAll(s);
 const aiEndpoint=name=>'/api/'+String(name||'').replace(/^\/+/, '');
 const gameEndpoint=()=>'/api/game-action';
 async function aiHeaders(){const h={'Content-Type':'application/json'};try{const t=await window.studyStore?.getIdToken?.();if(t)h.Authorization='Bearer '+t}catch(_){}return h}
@@ -26,6 +25,7 @@ function updateHomeHeader(profile=null){
   }
   if(streak&&profile&&Number.isFinite(Number(profile.streak)))streak.textContent=Number(profile.streak).toLocaleString('vi-VN')+' ngày';
 }
+updateHomeHeader();
 const PAGE_ALIASES={vocabulary:'words',words:'words',home:'home',packs:'packs',learn:'learn',practice:'practice',shop:'shop',ranking:'ranking',progress:'progress',studentClasses:'studentClasses'};
 function showPage(rawId,updateHash=true){const id=PAGE_ALIASES[rawId]||rawId;const page=$('#'+id);if(!page)return;$$('.page').forEach(p=>p.classList.remove('active-page'));page.classList.add('active-page');$$('.nav-item').forEach(b=>b.classList.toggle('active',(PAGE_ALIASES[b.dataset.page]||b.dataset.page)===id));$('.sidebar')?.classList.remove('open');if(updateHash){const hash=id==='words'?'vocabulary':id;history.replaceState(null,'','#'+hash)}if(id==='ranking')renderLeaderboard();if(id==='packs')renderPublicPacks();if(id==='words')renderVocabularyViews();if(id==='studentClasses')window.katlearnStudentClasses?.render();window.scrollTo({top:0,behavior:'smooth'})}
 function openInitialPage(){const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();showPage(hash&&PAGE_ALIASES[hash]?hash:'home',false)}
