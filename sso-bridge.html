@@ -4,5 +4,5 @@ const LMS='https://lms-katlearn.vercel.app';
 const LOGIN=LMS+'/login.html';
 const qs=new URLSearchParams(location.search);const target=qs.get('return')||'teacher';const back=target==='teacher'?TEACHER:LMS;
 function go(path){location.replace(back+path)}
-(async()=>{try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG);const u=window.studyStore.user;if(!u){location.replace(LOGIN+'?sso=none');return}const token=await u.getIdToken(true);location.replace(back+'/#katlearn_id_token='+encodeURIComponent(token)+'&from=lms')}catch(e){console.error(e);location.replace(LOGIN+'?sso=error')}})();
+(async()=>{try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG);await window.studyStore.waitForAuth();const u=window.studyStore.user;if(!u){location.replace(LOGIN+'?sso=none');return}const token=await u.getIdToken();location.replace(back+'/#katlearn_id_token='+encodeURIComponent(token)+'&from=lms')}catch(e){console.error(e);location.replace(LOGIN+'?sso=error')}})();
 </script></body></html>
