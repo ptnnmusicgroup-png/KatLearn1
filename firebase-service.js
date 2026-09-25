@@ -14,6 +14,13 @@
   function formatAccountCode(prefix,number){
     return prefix.login+'_'+prefix.display+'_'+String(number).padStart(3,'0');
   }
+  function packNamePart(value,fallback){
+    const clean=stripVietnamese(value).trim().replace(/[^a-zA-Z0-9]+/g,'');
+    return clean||fallback;
+  }
+  function formatPackDocumentId(packCode,packName,displayName){
+    return String(packCode).padStart(5,'0')+'_'+packNamePart(packName,'Pack')+'_'+displayAccountPart(displayName,'User');
+  }
   function renderAccountUi(user){
     const loginBtn=document.querySelector('#loginBtn'),trigger=document.querySelector('#accountTrigger'),panel=document.querySelector('#accountPanel');
     if(!loginBtn||!trigger)return false;
@@ -148,6 +155,28 @@
       await this.saveProfile({accountCode:result},uid);
       return currentUser?.uid===uid?result:null;
     },
+    async ensurePackIdentity(packName){
+      if(!db||!currentUser)throw new Error('Hãy đăng nhập trước.');
+      const code=await this.ensureAccountNamespace();
+      const user=currentUser,uid=user.uid,sequenceRef=api.doc(db,'system','packSequence');
+      const result=await api.runTransaction(db,async tx=>{
+        const seq=await tx.get(sequenceRef);
+        let next=Number(seq.exists()?seq.data()?.lastIssued:0)+1;
+        let docId=formatPackDocumentId(next,packName,user.displayName||user.email?.split('@')[0]||'KatLearn Student');
+        let ref=api.doc(db,'accounts',code,'memory',docId);
+        let snap=await tx.get(ref);
+        while(snap.exists()){
+          next++;
+          docId=formatPackDocumentId(next,packName,user.displayName||user.email?.split('@')[0]||'KatLearn Student');
+          ref=api.doc(db,'accounts',code,'memory',docId);
+          snap=await tx.get(ref);
+        }
+        tx.set(sequenceRef,{lastIssued:next,updatedAt:api.serverTimestamp()},{merge:true});
+        return {code:next,docId,refPath:ref.path};
+      });
+      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      return {accountCode:code,packCode:String(result.code).padStart(5,'0'),docId:result.docId};
+    },
     async ensureAccountCode(){return this.ensureAccountNamespace();},
     async getRole(){const p=await this.loadProfile();return String(p?.role||'student').toLowerCase()},
     async getAccountType(){const p=await this.loadProfile();return String(p?.studentAccountType||'free').toLowerCase()==='class'?'class':'free'},
@@ -197,16 +226,20 @@
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');
       const user=currentUser,uid=user.uid;
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      let ownerAccountCode='';
-      try{ownerAccountCode=await this.ensureAccountNamespace();}catch(namespaceError){console.warn('[KatLearn] Falling back to legacy personal pack storage:',namespaceError)}
+      let identity=null;
+      try{identity=await this.ensurePackIdentity(pack?.name||'Pack')}catch(namespaceError){console.warn('[KatLearn] Falling back to legacy personal pack storage:',namespaceError)}
       const payload={
         ...pack,kind:'personalPack',ownerUid:uid,ownerEmail:user.email||'',
         ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
-        ownerAccountCode,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()
+        ownerAccountCode:identity?.accountCode||'',packCode:identity?.packCode||'',
+        updatedAt:api.serverTimestamp(),createdAt:api.serverTimestamp()
       };
-      if(ownerAccountCode){
-        try{return await api.addDoc(api.collection(db,'accounts',ownerAccountCode,'memory'),payload)}
-        catch(namespaceError){console.warn('[KatLearn] New account memory write failed; using legacy storage:',namespaceError)}
+      if(identity?.accountCode){
+        try{
+          const ref=api.doc(db,'accounts',identity.accountCode,'memory',identity.docId);
+          await api.setDoc(ref,payload,{merge:false});
+          return {id:identity.docId,packCode:identity.packCode,...payload};
+        }catch(namespaceError){console.warn('[KatLearn] New account memory write failed; using legacy storage:',namespaceError)}
       }
       return api.addDoc(api.collection(db,'users',uid,'personalPacks'),payload);
     },
