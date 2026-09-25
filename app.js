@@ -187,3 +187,12 @@ window.addEventListener('katlearn-account-ready',e=>{const profile=e.detail?.pro
 renderCard();renderQuiz();updateCoins();openInitialPage();
 
 window.addEventListener('katlearn-personal-pack-open',e=>{const words=Array.isArray(e.detail?.words)?e.detail.words:[];vocab=words;setVocabSource({kind:'personal',id:String(e.detail?.id||''),uid:window.studyStore?.userId||''});cardIndex=0;localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));renderCard();renderQuiz();void syncProfile({personalPackName:String(e.detail?.name||'').trim(),knownWords:known,totalWords:vocab.length,vocab});});
+window.addEventListener('katlearn-personal-pack-deleted',e=>{
+  const id=String(e.detail?.id||'');
+  if(activeVocabSource?.kind!=='personal'||String(activeVocabSource?.id||'')!==id)return;
+  vocab=[];cardIndex=0;known=0;knownWordKeys.clear();
+  activeVocabSource={kind:'legacy'};
+  localStorage.removeItem('katlearn-vocab');localStorage.removeItem('katlearn-vocab-source');localStorage.removeItem('katlearn-known-'+id);
+  renderCard();renderQuiz();void syncProfile({personalPackName:'',knownWords:0,totalWords:0,vocab:[]});void renderPackLibrary();
+  toast('Bộ từ đang học đã được xóa.');
+});
