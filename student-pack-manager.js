@@ -248,6 +248,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
           <div id="studentPackQuick" class="student-pack-mode-panel" hidden>
             <label class="student-pack-field">Chủ đề bạn muốn học
             <textarea id="studentPackQuickPrompt" rows="3" maxlength="600" placeholder="Ví dụ: môi trường, biến đổi khí hậu, ô nhiễm không khí..."></textarea>
+            </label>
             <button type="button" id="studentPackQuickBtn" class="primary-btn student-pack-wide-btn">✨ Tạo từ theo chủ đề</button>
             <small id="studentPackQuickStatus" class="student-pack-status">Kat AI sẽ cố gắng tìm thật đầy đủ các từ vựng liên quan đến topic (tối đa 100 từ).</small>
           </div>
