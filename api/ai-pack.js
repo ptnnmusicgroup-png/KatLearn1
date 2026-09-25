@@ -5,13 +5,13 @@ Tạo toàn bộ bộ từ trong một lần. Không lặp từ, không bịa t�
 const SCHEMA={"type":"object","additionalProperties":false,"properties":{"pack":{"type":"object","additionalProperties":false,"properties":{"suggested_title":{"type":"string"},"description":{"type":"string"},"topic":{"type":"string"},"difficulty":{"type":"string"},"purpose":{"type":"string"}},"required":["suggested_title","description","topic","difficulty","purpose"]},"words":{"type":"array","items":{"type":"object","additionalProperties":false,"properties":{"word":{"type":"string"},"meaning_vi":{"type":"string"},"part_of_speech":{"type":"string"},"ipa":{"type":"string"},"example":{"type":"string"},"translation_vi":{"type":"string"},"synonyms":{"type":"array","items":{"type":"string"}},"antonyms":{"type":"array","items":{"type":"string"}},"notes":{"type":"string"},"difficulty":{"type":"string"},"topic":{"type":"string"}},"required":["word","meaning_vi","part_of_speech","ipa","example","translation_vi","synonyms","antonyms","notes","difficulty","topic"]}}},"required":["pack","words"]};
 module.exports=async(req,res)=>{if(!method(res))return;try{const user=await requireUser(req);rateLimit(user.uid,"pack",5);const body=req.body||{},prompt=clean(body.prompt,600),wordCount=Math.min(100,Math.max(5,Number(body.wordCount)||50)),difficulty=clean(body.difficulty,40)||"intermediate",purpose=clean(body.purpose,60)||"general",wordTypes=clean(body.wordTypes,80)||"mixed";if(!prompt)throw Object.assign(new Error("Hãy nhập chủ đề hoặc yêu cầu cho Kat AI."),{status:400});const contents=`Yêu cầu: ${prompt}\nSố lượng chính xác: ${wordCount}\nTrình độ: ${difficulty}\nMục đích: ${purpose}\nLoại từ: ${wordTypes}\nPhải trả về đúng ${wordCount} mục từ, không ít hơn.`;let response=await generateGemini({maxOutputTokens:14000,systemInstruction:PACK_INSTRUCTIONS,contents,responseSchema:SCHEMA});
 let result=JSON.parse(response.text||"{}");
-const normalizeWord=value=>String(value??"").trim().toLowerCase().replace(/\\s+/g," ");
+const normalizeWord=value=>String(value??"").trim().toLowerCase().replace(/\s+/g," ");
 const uniqueWords=input=>{const seen=new Set(),out=[];for(const item of Array.isArray(input)?input:[]){const key=normalizeWord(item?.word);if(!key||seen.has(key))continue;seen.add(key);out.push(item)}return out};
 let words=uniqueWords(result.words);
 if(words.length<wordCount){
  const missing=wordCount-words.length;
  const existing=words.map(w=>normalizeWord(w.word)).filter(Boolean).slice(0,100).join(", ");
- const retryContents=contents+"\\nĐã có các từ: "+existing+". Hãy CHỈ tạo thêm "+missing+" từ mới, không lặp bất kỳ từ nào trong danh sách đã có và không giải thích.";
+ const retryContents=contents+"\nĐã có các từ: "+existing+". Hãy CHỈ tạo thêm "+missing+" từ mới, không lặp bất kỳ từ nào trong danh sách đã có và không giải thích.";
  response=await generateGemini({maxOutputTokens:Math.min(16000,Math.max(2200,missing*150)),systemInstruction:PACK_INSTRUCTIONS,contents:retryContents,responseSchema:SCHEMA});
  const retryResult=JSON.parse(response.text||"{}");
  words=uniqueWords([...words,...(Array.isArray(retryResult.words)?retryResult.words:[])]);
