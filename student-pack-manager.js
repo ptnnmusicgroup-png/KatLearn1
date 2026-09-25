@@ -220,19 +220,16 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       <div class="modal-card student-pack-modal">
         <button class="modal-close" id="studentPackClose">×</button>
         <div class="student-pack-head">
-          <div><p class="eyebrow">BỘ TỪ CÁ NHÂN</p><h2>Tạo bộ từ của bạn</h2><p>Chỉ bạn có thể quản lý bộ từ này.</p></div>
+          <div class="student-pack-head-main"><div class="student-pack-title-icon">📚</div><div><p class="eyebrow">BỘ TỪ CÁ NHÂN</p><h2 id="studentPackTitle">Tạo bộ từ của bạn</h2><p id="studentPackSubtitle">Tự thêm từ, dùng Kat AI hoặc kết hợp cả hai cách.</p></div></div>
+          <div class="student-pack-flow"><span class="active"><b>1</b> Tên bộ</span><i>→</i><span><b>2</b> Từ vựng</span><i>→</i><span><b>3</b> Lưu</span></div>
         </div>
-        <div class="student-pack-ai-box" style="margin-bottom:16px;padding:14px;border:1px solid rgba(99,102,241,.18);border-radius:16px;">
-          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-            <button type="button" id="studentPackModeManual" class="secondary-btn" style="font-weight:700;">Thêm từ</button>
-            <button type="button" id="studentPackModeQuick" class="secondary-btn" style="font-weight:700;">Thêm nhanh</button>
-          </div>
+        <section class="student-pack-create-panel"><div class="student-pack-section-label"><span>⚡</span><div><b>Tạo từ nhanh</b><small>Chọn cách bạn muốn xây bộ từ này.</small></div></div>
+          <div class="student-pack-mode-switch"><button type="button" id="studentPackModeManual" class="primary-btn">✨ Kat AI</button><button type="button" id="studentPackModeQuick" class="secondary-btn">⚡ Theo chủ đề</button></div>
 
-          <div id="studentPackManualAi">
-            <label class="student-pack-name">✨ Yêu cầu cho Kat AI
-              <textarea id="studentPackAiPrompt" rows="2" maxlength="600" placeholder="Ví dụ: Tạo 50 từ vựng về môi trường, phù hợp học sinh lớp 8, ưu tiên từ thường gặp trong IELTS."></textarea>
+          <div id="studentPackManualAi" class="student-pack-mode-panel">
+            <label class="student-pack-field student-pack-ai-prompt">Yêu cầu cho Kat AI<textarea id="studentPackAiPrompt" rows="2" maxlength="600" placeholder="Ví dụ: Tạo 50 từ vựng về môi trường, phù hợp học sinh lớp 8, ưu tiên từ thường gặp trong IELTS."></textarea>
             </label>
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+            <div class="student-pack-ai-controls">
               <label>Số từ <input id="studentPackAiCount" type="number" min="5" max="100" value="50" style="width:90px;"></label>
               <label>Trình độ
                 <select id="studentPackAiDifficulty">
@@ -245,22 +242,22 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
               </label>
               <button type="button" id="studentPackAiBtn" class="primary-btn">✨ Tạo cả bộ bằng Kat AI</button>
             </div>
-            <small id="studentPackAiStatus" style="display:block;margin-top:8px;opacity:.7;">Một lần gọi AI sẽ trả về toàn bộ dữ liệu của bộ từ.</small>
+            <small id="studentPackAiStatus" class="student-pack-status">Một lần gọi AI sẽ trả về toàn bộ dữ liệu của bộ từ.</small>
           </div>
 
-          <div id="studentPackQuick" hidden>
-            <p style="margin:0 0 8px;font-weight:800;">Thêm topic từ vựng của bạn iu nhen</p>
+          <div id="studentPackQuick" class="student-pack-mode-panel" hidden>
+            <label class="student-pack-field">Chủ đề bạn muốn học
             <textarea id="studentPackQuickPrompt" rows="3" maxlength="600" placeholder="Ví dụ: môi trường, biến đổi khí hậu, ô nhiễm không khí..."></textarea>
-            <button type="button" id="studentPackQuickBtn" class="primary-btn" style="margin-top:10px;">✨ Thêm từ vựng của bạnn</button>
-            <small id="studentPackQuickStatus" style="display:block;margin-top:8px;opacity:.7;">Kat AI sẽ cố gắng tìm thật đầy đủ các từ vựng liên quan đến topic (tối đa 100 từ).</small>
+            <button type="button" id="studentPackQuickBtn" class="primary-btn student-pack-wide-btn">✨ Tạo từ theo chủ đề</button>
+            <small id="studentPackQuickStatus" class="student-pack-status">Kat AI sẽ cố gắng tìm thật đầy đủ các từ vựng liên quan đến topic (tối đa 100 từ).</small>
           </div>
-        </div>
+        </div></section>
 
-        <label class="student-pack-name">Tên bộ từ<input id="studentPackName" maxlength="80" placeholder="Ví dụ: IELTS Unit 7"></label>
-        <div class="student-pack-columns"><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span>AI</span></div>
+        <section class="student-pack-name-block"><div class="student-pack-step-kicker"><span>1</span><div><b>Đặt tên bộ từ</b><small>Tên này sẽ xuất hiện trong “Bộ từ của tôi”.</small></div></div><label class="student-pack-field"><span>Tên bộ từ</span><input id="studentPackName" maxlength="80" placeholder="Ví dụ: IELTS Unit 7"></label>
+        <section class="student-pack-words-section"><div class="student-pack-step-kicker"><span>2</span><div><b>Thêm và chỉnh sửa từ vựng</b><small>✨ = AI điền nghĩa + phiên âm · * = bắt buộc</small></div></div><div class="student-pack-columns"><span>#</span><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span>AI</span><span></span></div>
         <div id="studentPackRows"></div>
-        <button type="button" id="studentPackAddRow" class="add-word-btn">＋ Thêm dòng</button>
-        <div class="student-pack-footer"><span><b id="studentPackCount">3</b> từ</span><div><button type="button" class="secondary-btn" id="studentPackCancel">Hủy</button><button type="button" class="secondary-btn" id="studentPackDelete" hidden>Xóa bộ từ</button><button type="button" class="primary-btn" id="studentPackSave">Tạo bộ từ</button></div></div>
+        <button type="button" id="studentPackAddRow" class="add-word-btn">＋ Thêm một dòng</button></section>
+        <div class="student-pack-footer"><div class="student-pack-count"><b id="studentPackCount">3</b><span> từ vựng</span></div><div class="student-pack-actions"><button type="button" class="secondary-btn" id="studentPackCancel">Hủy</button><button type="button" class="secondary-btn danger-action" id="studentPackDelete" hidden>Xóa bộ từ</button><button type="button" class="primary-btn student-pack-save-btn" id="studentPackSave">Tạo bộ từ <span>→</span></button></div></div>
       </div>`;
     document.body.appendChild(modal);
     $('#studentPackClose').onclick=close;
@@ -306,7 +303,10 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     renumber();
     $('#studentPackName').value=pack?.name||'';
     const saveBtn=$('#studentPackSave'),deleteBtn=$('#studentPackDelete');
-    if(saveBtn)saveBtn.textContent=pack?'Lưu thay đổi':'Tạo bộ từ';
+    if(saveBtn)saveBtn.innerHTML=pack?'Lưu thay đổi <span>→</span>':'Tạo bộ từ <span>→</span>';
+    const title=$('#studentPackTitle'),subtitle=$('#studentPackSubtitle');
+    if(title)title.textContent=pack?'Chỉnh sửa bộ từ':'Tạo bộ từ của bạn';
+    if(subtitle)subtitle.textContent=pack?'Chỉnh sửa từ vựng rồi lưu lại vào bộ từ của bạn.':'Tự thêm từ, dùng Kat AI hoặc kết hợp cả hai cách.';
     if(deleteBtn)deleteBtn.hidden=!pack;
     if($('#studentPackAiPrompt'))$('#studentPackAiPrompt').value='';
     if($('#studentPackAiStatus'))$('#studentPackAiStatus').textContent=pack?'Bạn có thể thêm dòng, chỉnh sửa hoặc xóa từ rồi bấm “Lưu thay đổi”.':'Một lần gọi AI sẽ trả về toàn bộ dữ liệu của bộ từ.';
