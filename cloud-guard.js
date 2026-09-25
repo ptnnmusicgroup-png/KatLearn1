@@ -94,8 +94,10 @@ function successToast(){
 async function load(){
   if(!window.studyStore?.user){accountUi();return}
   patch();
+  const hydrationUid=String(window.studyStore?.user?.uid||'');
   window.KATLEARN_HYDRATION=(async()=>{
     const p=await window.studyStore.loadProfile();
+    if(String(window.studyStore?.user?.uid||'')!==hydrationUid)return null;
     if(p){
       if(!preservesRemoteVocab())localStorage.setItem('katlearn-vocab',JSON.stringify(Array.isArray(p.vocab)?p.vocab:[]));
       localStorage.setItem('katlearn-owned-themes',JSON.stringify(Array.isArray(p.ownedThemes)?p.ownedThemes:[]));
