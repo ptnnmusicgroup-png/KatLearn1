@@ -36,6 +36,6 @@
     }catch(e){box.innerHTML='<div class="student-class-empty"><b>Không tải được lớp</b>'+esc(e.message||'Đã xảy ra lỗi')+'</div>'}
   }
   window.addEventListener('8b1-auth-change',()=>setTimeout(render,0));
-  document.addEventListener('DOMContentLoaded',()=>{ensurePage();setTimeout(render,0)},{once:true});
+  document.addEventListener('DOMContentLoaded',()=>{ensurePage();const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();if(hash==='studentClasses')page('studentClasses',false);setTimeout(render,0)},{once:true});
   window.katlearnStudentClasses={open:()=>page('studentClasses'),render};
 })();
