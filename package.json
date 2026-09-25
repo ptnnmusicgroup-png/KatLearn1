@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node server.js",
+    "start": "node dev-server.js",
     "seed:public-vocab": "node scripts/seed-public-vocabulary.mjs"
   },
   "dependencies": {
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
     "firebase-admin": "14.5.0",
     "@google/genai": "^2.24.0"
   },
