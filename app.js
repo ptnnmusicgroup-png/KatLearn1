@@ -167,7 +167,7 @@ async function renderPublicPacks(){
         $('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
       }catch(e){console.warn('[KatLearn] assigned packs:',e);renderPackLibrary(packs,[]);}
     }catch(e){
-      if(String(window.studyStore?.user?.uid||'')===uid){
+      if(String(window.studyStore?.user?.uid||'guest')===uid){
         target.textContent='Chưa thể tải kho từ vựng.';
         renderPackLibrary();
         if(adminList)adminList.textContent='Chưa thể tải danh sách pack.';
