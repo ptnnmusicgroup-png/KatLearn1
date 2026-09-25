@@ -114,8 +114,19 @@ service cloud.firestore {
         allow write: if false;
       }
       match /personalPacks/{packId} {
-        allow read, write: if signedIn() && request.auth.uid == userId
-          && get(/databases/$(database)/documents/users/$(userId)).data.get('studentAccountType', 'free') != 'class';
+        function canUsePersonalPacks() {
+          return signedIn()
+            && request.auth.uid == userId
+            && get(/databases/$(database)/documents/users/$(userId)).data.get('studentAccountType', 'free') != 'class';
+        }
+        allow read: if canUsePersonalPacks();
+        allow create: if canUsePersonalPacks()
+          && request.resource.data.ownerUid == userId;
+        allow update: if canUsePersonalPacks()
+          && resource.data.ownerUid == userId
+          && request.resource.data.ownerUid == userId;
+        allow delete: if canUsePersonalPacks()
+          && resource.data.ownerUid == userId;
       }
     }
   }
