@@ -10,7 +10,7 @@
     const found=TOPICS.find(x=>x[0]===id||x[1]===id);
     if(!found)throw new Error('Không tìm thấy topic KatLearn: '+id);
     let data=await fetch('/data/vocabulary/'+found[0]+'.json',{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('Không tải được kho từ '+found[1]);return r.json()});
-    if(!Array.isArray(data.words)||data.words.length!==500)throw new Error(found[1]+' phải có đúng 500 từ.');
+    if(!Array.isArray(data.words)||data.words.length===0)throw new Error(found[1]+' không có dữ liệu từ vựng.');
     data={...data,name:found[1]};
     cache.set(found[0],data);
     return data;
