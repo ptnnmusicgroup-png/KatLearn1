@@ -105,12 +105,19 @@ module.exports=async(req,res)=>{
         const now=Date.now();
         const currentStudyDay=studyDay();
         const attemptRef=db.collection("users").doc(token.uid).collection("attempts").doc();
-        const updates={questionsAnswered:FieldValue.increment(1),lastStudyAt:FieldValue.serverTimestamp()};
-        if(String(profile.lastStudyDay||"")!==currentStudyDay){
-          const currentStreak=Math.max(0,Number(profile.streak||0));
-          updates.streak=String(profile.lastStudyDay||"")===previousStudyDay(currentStudyDay)?currentStreak+1:1;
-          updates.lastStudyDay=currentStudyDay;
-        }
+        const sameStudyDay=String(profile.lastStudyDay||"")===currentStudyDay;
+        const currentStreak=Math.max(0,Number(profile.streak||0));
+        const streak=sameStudyDay?currentStreak:(String(profile.lastStudyDay||"")===previousStudyDay(currentStudyDay)?currentStreak+1:1);
+        const dailyQuestions=sameStudyDay?Math.max(0,Number(profile.dailyQuestions||0))+1:1;
+        const dailyCorrect=sameStudyDay?Math.max(0,Number(profile.dailyCorrect||0))+(correct?1:0):(correct?1:0);
+        const updates={
+          questionsAnswered:FieldValue.increment(1),
+          lastStudyAt:FieldValue.serverTimestamp(),
+          streak,
+          lastStudyDay:currentStudyDay,
+          dailyQuestions,
+          dailyCorrect
+        };
         let coins=Number(profile.coins||0),xp=Number(profile.energy||0);
         if(correct){
           updates.coins=FieldValue.increment(10);updates.energy=FieldValue.increment(10);updates.correctAnswers=FieldValue.increment(1);
@@ -119,7 +126,7 @@ module.exports=async(req,res)=>{
         transaction.set(userRef,updates,{merge:true});
         transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
         transaction.set(leaderboardRef,publicScore(profile.displayName,coins,xp),{merge:true});
-        return{ok:true,correct,coins,xp};
+        return{ok:true,correct,coins,xp,dailyQuestions,dailyCorrect,streak};
       });
       return send(res,200,result);
     }
