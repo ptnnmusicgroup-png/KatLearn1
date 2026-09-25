@@ -230,7 +230,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
             <label class="student-pack-field student-pack-ai-prompt">Yêu cầu cho Kat AI<textarea id="studentPackAiPrompt" rows="2" maxlength="600" placeholder="Ví dụ: Tạo 50 từ vựng về môi trường, phù hợp học sinh lớp 8, ưu tiên từ thường gặp trong IELTS."></textarea>
             </label>
             <div class="student-pack-ai-controls">
-              <label>Số từ <input id="studentPackAiCount" type="number" min="5" max="100" value="50" style="width:90px;"></label>
+              <label>Số từ <input id="studentPackAiCount" type="number" min="5" max="100" value="50"></label>
               <label>Trình độ
                 <select id="studentPackAiDifficulty">
                   <option value="beginner">beginner</option>
@@ -254,7 +254,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
           </div>
         </div></section>
 
-        <section class="student-pack-name-block"><div class="student-pack-step-kicker"><span>1</span><div><b>Đặt tên bộ từ</b><small>Tên này sẽ xuất hiện trong “Bộ từ của tôi”.</small></div></div><label class="student-pack-field"><span>Tên bộ từ</span><input id="studentPackName" maxlength="80" placeholder="Ví dụ: IELTS Unit 7"></label>
+        <section class="student-pack-name-block"><div class="student-pack-step-kicker"><span>1</span><div><b>Đặt tên bộ từ</b><small>Tên này sẽ xuất hiện trong “Bộ từ của tôi”.</small></div></div><label class="student-pack-field"><span>Tên bộ từ</span><input id="studentPackName" maxlength="80" placeholder="Ví dụ: IELTS Unit 7"></label></section>
         <section class="student-pack-words-section"><div class="student-pack-step-kicker"><span>2</span><div><b>Thêm và chỉnh sửa từ vựng</b><small>✨ = AI điền nghĩa + phiên âm · * = bắt buộc</small></div></div><div class="student-pack-columns"><span>#</span><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span>AI</span><span></span></div>
         <div id="studentPackRows"></div>
         <button type="button" id="studentPackAddRow" class="add-word-btn">＋ Thêm một dòng</button></section>
