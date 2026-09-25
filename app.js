@@ -88,7 +88,7 @@ function renderPackLibrary(packs=[],assigned=[]){
   const seen=new Set();const all=[...coreCards,...current].filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true});
   library.innerHTML=all.length?all.map(pack=>{
     const count=pack.core?500:(Array.isArray(pack.words)?pack.words.length:0);
-    const label=pack.core?'Kho từ KatLearn':pack.assigned?'Bài được giao':'Cộng đồng KatLearn';
+    const label=pack.current?'Đang học':pack.core?'Kho từ KatLearn':pack.assigned?'Bài được giao':'Cộng đồng KatLearn';
     const action=pack.core?`data-core-topic="${esc(pack.topicId)}"`:`data-pack="${esc(pack.id)}"`;
     return `<article class="pack-tile"><div class="tile-icon">${pack.current?'🐱':pack.core?'🧠':pack.assigned?'📩':'📚'}</div><h3>${esc(pack.name)}</h3><p>${count} từ vựng · ${label}</p><button ${action}>${pack.current?'Tiếp tục học':pack.core?'Học topic':'Mở pack'} →</button></article>`;
   }).join(''):'<div class="empty-state">Chưa có pack. 🐱</div>';
