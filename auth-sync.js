@@ -24,6 +24,9 @@
       return null;
     }
 
+    // A new account starts a fresh sync state; never expose the previous profile.
+    if(syncingUid!==uid){profile=null;ready=false;}
+
     // UI can react immediately; do not block login on Firestore.
     emit('katlearn-account-fast',{account:true,user,profile:null});
 
