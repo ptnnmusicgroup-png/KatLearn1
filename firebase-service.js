@@ -69,38 +69,7 @@
           resolve(user);
         }));
 
-        // IMPORTANT: never wait for Auth/Firestore hydration here.
-        // The UI can enter immediately; profile sync runs from auth events.
-        void authReady.then(async user=>{
-          if(!user)return;
-          try{
-            if(currentUser?.uid!==user.uid)return;
-            const profile=await this.loadProfile();
-            if(currentUser?.uid!==user.uid)return;
-            let pending=null;
-            try{pending=JSON.parse(localStorage.getItem('katlearn-pending-profile')||'null')}catch(_){}
-            if(pending&&pending.email&&user.email&&pending.email.toLowerCase()===user.email.toLowerCase()){
-              if(currentUser?.uid!==user.uid)return;
-              await this.saveProfile({
-                displayName:pending.displayName||user.displayName||user.email.split('@')[0],
-                email:user.email,role:pending.role||'student',provider:pending.provider||'password'
-              });
-              if(currentUser?.uid!==user.uid)return;
-              localStorage.removeItem('katlearn-pending-profile');
-            }else if(!profile){
-              if(currentUser?.uid!==user.uid)return;
-              await this.saveProfile({
-                displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
-                email:user.email||'',provider:'password',coins:0,energy:0,streak:0,__coinsAuthoritative:true
-              });
-            }
-            if(currentUser?.uid!==user.uid)return;
-            notifyAuth(user);
-          }catch(e){
-            console.warn('[KatLearn] Firestore profile sync skipped:',e?.message||e);
-          }
-        });
-        return true;
+        // Profile hydration is owned by auth-sync.js so each auth event has one sync owner.\n        return true;
       })().finally(()=>{connectPromise=null});
 
       return connectPromise;
