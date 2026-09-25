@@ -319,7 +319,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     const name=$('#studentPackName').value.trim();
     if(!name)return toast('Hãy đặt tên cho bộ từ nhé!');
 
-    const rawWords=[...$('.student-pack-row')].map(r=>({
+    const rawWords=[...$$('.student-pack-row')].map(r=>({
       word:r.querySelector('.sp-word').value.trim(),
       pron:r.querySelector('.sp-pron').value.trim(),
       mean:r.querySelector('.sp-mean').value.trim(),
@@ -415,9 +415,9 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>Những bộ từ bạn tự tạo — riêng cho tài khoản của bạn.</p></div></div><div class="personal-pack-grid">${packs.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng</p></div><div style="display:flex;gap:7px;align-items:center"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn">⋮</button></div></article>`).join('')}</div>`
         : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. Bấm <b>＋ Tạo bộ từ</b> để tạo bộ đầu tiên nhé! 🐾</div>';
 
-      $$('[data-my-pack-menu]').forEach(b=>b.onclick=e=>{e.stopPropagation();openPersonalPackMenu(b,packs.find(x=>x.id===b.dataset.myPackMenu))});
-      $$('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
-      $$('[data-my-pack]').forEach(b=>b.onclick=async()=>{
+      $$$('[data-my-pack-menu]').forEach(b=>b.onclick=e=>{e.stopPropagation();openPersonalPackMenu(b,packs.find(x=>x.id===b.dataset.myPackMenu))});
+      $$$('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
+      $$$('[data-my-pack]').forEach(b=>b.onclick=async()=>{
         const p=packs.find(x=>x.id===b.dataset.myPack);
         if(!p)return;
         const words=Array.isArray(p.words)?p.words:[];
