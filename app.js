@@ -98,7 +98,8 @@ function openVocabularyPack(pack){
   if(!pack)return;
   if(!window.studyStore?.user){
     toast('🔒 Hãy đăng nhập để học bộ từ này nhé!');
-    location.href='/login.html';
+    document.body.classList.add('pack-auth-gate');
+    window.setTimeout(()=>location.href='/login.html',220);
     return;
   }
   vocab=Array.isArray(pack.words)?pack.words:[];
