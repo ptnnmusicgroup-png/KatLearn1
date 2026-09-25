@@ -18,8 +18,12 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/classes/$(classId)).data.teacherUid == request.auth.uid);
     }
     match /schools/{schoolId} {
-      allow read: if true;
-      allow create: if isAdmin() || ((isTeacher() || isPendingTeacher()) && request.resource.data.createdBy == request.auth.uid);
+      allow read: if resource.data.get('catalogStatus', 'active') != 'pending'
+        || (signedIn() && resource.data.createdBy == request.auth.uid)
+        || isAdmin();
+      allow create: if isAdmin()
+        || (isTeacher() && request.resource.data.createdBy == request.auth.uid)
+        || (isPendingTeacher() && request.resource.data.createdBy == request.auth.uid && request.resource.data.catalogStatus == 'pending');
       allow update, delete: if isAdmin();
       match /classes/{catalogClassId} {
         allow read: if true;
