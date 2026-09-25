@@ -96,6 +96,11 @@ async function loadAssignedPacks(){
 function setVocabSource(source){activeVocabSource=source||{kind:'legacy'};if(activeVocabSource.kind==='personal'&&!activeVocabSource.uid)activeVocabSource.uid=window.studyStore?.userId||'';localStorage.setItem('katlearn-vocab-source',JSON.stringify(activeVocabSource));loadKnownState()}
 function openVocabularyPack(pack){
   if(!pack)return;
+  if(!window.studyStore?.user){
+    toast('🔒 Hãy đăng nhập để học bộ từ này nhé!');
+    location.href='/login.html';
+    return;
+  }
   vocab=Array.isArray(pack.words)?pack.words:[];
   if(!pack.current)setVocabSource(pack.core?{kind:'core',id:pack.topicId}:pack.assigned?{kind:'assigned',id:pack.id}:{kind:'public',id:pack.id});
   else loadKnownState();
@@ -128,8 +133,7 @@ let publicPackRenderPromise=null;
 let publicPackRenderUid='';
 async function renderPublicPacks(){
   const target=$('#publishedPacks'),adminList=$('#publicPackList');
-  const uid=String(window.studyStore?.user?.uid||'');
-  if(!uid){publicPackRenderPromise=null;publicPackRenderUid='';target.textContent='Đăng nhập để xem các pack từ vựng công khai.';renderPackLibrary();return}
+  const uid=String(window.studyStore?.user?.uid||'guest');
   if(publicPackRenderPromise&&publicPackRenderUid===uid)return publicPackRenderPromise;
 
   publicPackRenderUid=uid;
@@ -151,8 +155,8 @@ async function renderPublicPacks(){
       // Assigned packs can come from the teacher API and may be slower.
       // Add them after the public catalog is already visible.
       try{
-        const assigned=await loadAssignedPacks();
-        if(String(window.studyStore?.user?.uid||'')!==uid)return;
+        const assigned=uid==='guest'?[]:await loadAssignedPacks();
+        if(String(window.studyStore?.user?.uid||'guest')!==uid)return;
         const assignedBody=assigned.length?assigned.map(pack=>`<div class="published-pack"><span>📩</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ · Bài được giao</small></div><button data-assigned-pack="${esc(pack.id)}">Học</button></div>`).join(''):'';
         target.innerHTML=`<b>Kho từ vựng KatLearn</b>${coreBody}${assignedBody}<b style="display:block;margin-top:16px">Pack từ vựng công khai</b>${publicBody}`;
         renderPackLibrary(packs,assigned);
@@ -206,8 +210,7 @@ async function refreshAuthDependentViews(user){
   // Render the public catalog only once per authenticated session. The
   // account-ready event may arrive shortly after auth-change and should not
   // start a duplicate Firestore/API sync for the same UID.
-  if(user)void renderPublicPacks();
-  else{publicPackRenderPromise=null;publicPackRenderUid='';}
+  void renderPublicPacks();
   await Promise.allSettled([
     renderLeaderboard(),
     window.renderStudentPersonalPacks?.(),
@@ -233,6 +236,7 @@ window.addEventListener('katlearn-account-fast',e=>{if(e.detail?.account){render
 window.addEventListener('katlearn-account-ready',e=>{void refreshAuthDependentViews(e.detail?.account?e.detail.user:null)});
 window.addEventListener('katlearn-account-ready',e=>{const profile=e.detail?.profile||null;updateHomeHeader(profile);updateDailyGoal(profile?.dailyQuestions||0)});renderAuth(null);renderAdmin(null);const loginModal=$('#loginModal');if(loginModal)loginModal.querySelector('.modal-close')?.addEventListener('click',()=>loginModal.classList.remove('show'));if(loginModal)loginModal.onclick=e=>{if(e.target===loginModal)loginModal.classList.remove('show')};function authError(err){if(err.code==='auth/unauthorized-domain')return `Firebase chưa cho phép domain “${location.hostname}”. Vào Authentication → Settings → Authorized domains để thêm domain này.`;const messages={'auth/operation-not-allowed':'Hãy bật Email/Password trong Firebase Authentication trước.','auth/email-already-in-use':'Email này đã có tài khoản. Hãy đăng nhập.','auth/invalid-credential':'Email hoặc mật khẩu không đúng.','auth/weak-password':'Mật khẩu cần ít nhất 6 ký tự.'};return messages[err.code]||'Không thể thực hiện: '+err.message}async function providerLogin(provider){try{const user=await window.studyStore.signIn(provider);$('#loginModal').classList.remove('show');renderAuth(user);toast(`Chào mừng ${user.displayName||'bạn'}! Dữ liệu đang được đồng bộ.`)}catch(err){toast(authError(err))}}async function emailLogin(create){const email=$('#authEmail').value.trim(),password=$('#authPassword').value;if(!email||!password)return;try{const user=await window.studyStore.signInEmail(email,password,create);$('#loginModal').classList.remove('show');renderAuth(user);toast(create?'Đã tạo tài khoản thành công!':'Đăng nhập thành công!')}catch(err){toast(authError(err))}}const emailLoginForm=$('#emailLoginForm'),emailRegister=$('#emailRegister'),googleLogin=$('#googleLogin'),appleLogin=$('#appleLogin'),logoutBtn=$('#logoutBtn'),openProgress=$('#openProgress');if(emailLoginForm)emailLoginForm.onsubmit=e=>{e.preventDefault();emailLogin(false)};if(emailRegister)emailRegister.onclick=()=>emailLogin(true);if(googleLogin)googleLogin.onclick=()=>providerLogin('google');if(appleLogin)appleLogin.onclick=()=>providerLogin('apple');if(logoutBtn)logoutBtn.onclick=async()=>{try{await window.studyStore.signOut();toast('Đã đăng xuất.');setTimeout(()=>location.replace('/login.html'),100)}catch(e){toast('❌ Không thể đăng xuất: '+(e.message||'Lỗi không xác định'))}};if(openProgress)openProgress.onclick=()=>{showPage('progress');$('#accountPanel').hidden=true};document.addEventListener('click',e=>{const topActions=$('.top-actions'),panel=$('#accountPanel');if(topActions&&!topActions.contains(e.target)&&panel)panel.hidden=true});
 renderCard();renderQuiz();updateCoins();openInitialPage();
+void renderPublicPacks();
 
 window.addEventListener('katlearn-personal-pack-open',e=>{const words=Array.isArray(e.detail?.words)?e.detail.words:[];vocab=words;setVocabSource({kind:'personal',id:String(e.detail?.id||''),uid:window.studyStore?.userId||''});cardIndex=0;localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));renderCard();renderQuiz();void syncProfile({personalPackName:String(e.detail?.name||'').trim(),knownWords:known,totalWords:vocab.length,vocab});});
 window.addEventListener('katlearn-personal-pack-deleted',e=>{
