@@ -16,7 +16,7 @@ const FIREBASE_CONFIG={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDoma
 const LMS='https://lms-katlearn.vercel.app',TEACHER='https://teacher-katlearn.vercel.app';
 const $=s=>document.querySelector(s),status=$('#status'),submit=$('#submit');
 let fb=null,auth=null,api=null;
-const catalog={provinces:[],schoolsByProvince:new Map(),schoolById:new Map()};
+const catalog={provinces:[],wardsByProvince:new Map(),schoolsByProvince:new Map(),schoolById:new Map()};
 const CATALOG_URL='./data/national-catalog/full-school-tree.json';
 
 async function init(){
@@ -60,11 +60,12 @@ async function loadCatalog(){
   if(!response.ok)throw new Error('Không tải được danh mục trường quốc gia.');
   const tree=await response.json();
   if(!Array.isArray(tree)||tree.length!==34)throw new Error('Danh mục quốc gia không hợp lệ.');
-  const jobs=[];catalog.provinces=[];catalog.schoolById.clear();catalog.schoolsByProvince.clear();
+  const jobs=[];catalog.provinces=[];catalog.wardsByProvince.clear();catalog.schoolById.clear();catalog.schoolsByProvince.clear();
   for(const province of tree){
     const sourceProvinceId=String(province.id||'').trim(),provinceName=String(province.name||'').trim(),provinceId=officialProvinceCode(provinceName);
     if(!sourceProvinceId||!provinceName||!provinceId)continue;
     catalog.provinces.push({id:provinceId,name:provinceName});
+    catalog.wardsByProvince.set(provinceId,(province.wards||[]).map(ward=>({id:String(ward.id||'').trim(),name:String(ward.name||'').trim()})).filter(x=>x.id&&x.name));
     const rows=[];
     for(const ward of (province.wards||[])){
       for(const school of (ward.schools||[])){
@@ -105,9 +106,10 @@ async function refreshWards(){
   $('#school').innerHTML='<option value="">Chọn trường</option>';$('#classCatalog').innerHTML='<option value="">Chọn lớp</option>';
   if(!provinceId)return;
   const rows=catalog.schoolsByProvince.get(provinceId)||[];
-  const wards=[...new Map(rows.filter(x=>x.wardId&&x.wardName).map(x=>[x.wardId,x.wardName])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'vi'));
-  $('#ward').disabled=!wards.length;
-  $('#ward').innerHTML='<option value="">Chọn xã/phường</option>'+wards.map(([id,name])=>'<option value="'+esc(id)+'">'+esc(name)+'</option>').join('');
+  const wards=[...(catalog.wardsByProvince.get(provinceId)||[]).map(x=>[x.id,x.name]),...rows.filter(x=>x.wardId&&x.wardName).map(x=>[x.wardId,x.wardName])];
+  const uniqueWards=[...new Map(wards.map(([id,name])=>[id,name])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'vi'));
+  $('#ward').disabled=!uniqueWards.length;
+  $('#ward').innerHTML='<option value="">Chọn xã/phường</option>'+uniqueWards.map(([id,name])=>'<option value="'+esc(id)+'">'+esc(name)+'</option>').join('');
 }
 async function refreshSchools(){
   const provinceId=$('#province').value,wardId=$('#ward').value;
