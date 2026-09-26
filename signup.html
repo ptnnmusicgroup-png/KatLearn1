@@ -59,7 +59,7 @@ async function provider(kind){
     const r=await api.signInWithPopup(auth,authProvider);
     const user=r.user;
     if(!user)throw new Error('Không nhận được tài khoản từ nhà cung cấp đăng nhập.');
-    if(!$('#name').value.trim()&&user.displayName)$('#name').value=user.displayName;
+    if(!$('#name').value.trim())$('#name').value=(user.displayName||user.email?.split('@')[0]||'KatLearn Student').trim();
     status.textContent='⏳ Đang tạo hồ sơ KatLearn...';
     await finish(user,p);
   }catch(e){
