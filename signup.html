@@ -14,9 +14,11 @@
 <script>
 const FIREBASE_CONFIG={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDomain:'elp---katlearn.firebaseapp.com',projectId:'elp---katlearn',storageBucket:'elp---katlearn.firebasestorage.app',messagingSenderId:'344478447672',appId:'1:344478447672:web:4ed109a40303d0b41b0ecd',measurementId:'G-KTW11GD97T'};
 const LMS='https://lms-katlearn.vercel.app',TEACHER='https://teacher-katlearn.vercel.app';
-const $=s=>document.querySelector(s),status=$('#status'),submit=$('#submit');let fb=null,auth=null,api=null,catalog={schools:[]};
-let api=null;
-const catalog={schoolsByProvince:new Map(),provinces:[]};
+const $=s=>document.querySelector(s),status=$('#status'),submit=$('#submit');
+let fb=null,auth=null,api=null;
+const catalog={provinces:[],schoolsByProvince:new Map(),schoolById:new Map()};
+const CATALOG_URL='./data/national-catalog/full-school-tree.json';
+
 async function init(){
   const [{initializeApp,getApps},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,createUserWithEmailAndPassword},{getFirestore,collection,getDocs,query,where,doc,getDoc,setDoc}]=await Promise.all([
     import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
@@ -24,77 +26,83 @@ async function init(){
     import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js')
   ]);
   const app=getApps().length?getApps()[0]:initializeApp(FIREBASE_CONFIG);
-  auth=getAuth(app);
-  fb=getFirestore(app);
+  auth=getAuth(app);fb=getFirestore(app);
   api={collection,getDocs,query,where,doc,getDoc,setDoc,GoogleAuthProvider,OAuthProvider,signInWithPopup,createUserWithEmailAndPassword};
-  await loadProvinces();
+  await loadCatalog();
 }
 function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-async function loadProvinces(){
-  const snap=await api.getDocs(api.collection(fb,'KatLearn_TINHTHANH_1'));
-  catalog.provinces=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'vi'));
-  $('#province').innerHTML='<option value="">Chọn tỉnh/thành</option>'+catalog.provinces.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
+function norm(v){return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
+async function sha1Hex(value){const bytes=new TextEncoder().encode(String(value));const hash=await crypto.subtle.digest('SHA-1',bytes);return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+async function makeSchoolId(provinceCode,sourceSchoolId,name){return (await sha1Hex(String(provinceCode)+'|'+String(sourceSchoolId||'')+'|'+norm(name))).slice(0,20)}
+function inferLevel(name){
+  const n=norm(name);
+  if(n.includes('thcs&thpt')||n.includes('thcs thpt')||n.includes('th&thcs')||n.includes('th-thcs')||n.includes('th thcs'))return'combined';
+  if(n.includes('thpt')||n.includes('trung hoc pho thong'))return'high';
+  if(n.includes('thcs')||n.includes('trung hoc co so'))return'middle';
+  if(n.includes('tieu hoc')||n.startsWith('th ')||n.startsWith('th-'))return'primary';
+  return'combined';
 }
-async function loadProvinceSchools(provinceId){
-  if(!provinceId)return[];
-  if(catalog.schoolsByProvince.has(provinceId))return catalog.schoolsByProvince.get(provinceId);
-  const snap=await api.getDocs(api.query(api.collection(fb,'KatLearn_TRUONGHOC_1'),api.where('provinceId','==',provinceId)));
-  const rows=snap.docs.map(d=>({id:d.id,...d.data()}));
-  catalog.schoolsByProvince.set(provinceId,rows);
-  return rows;
+const gradeTemplates={primary:['1','2','3','4','5'],middle:['6','7','8','9'],high:['10','11','12'],combined:['1','2','3','4','5','6','7','8','9','10','11','12']};
+async function loadCatalog(){
+  status.textContent='⏳ Đang tải danh mục tỉnh/thành và trường học...';
+  const response=await fetch(CATALOG_URL,{cache:'force-cache'});
+  if(!response.ok)throw new Error('Không tải được danh mục trường quốc gia.');
+  const tree=await response.json();
+  if(!Array.isArray(tree)||tree.length!==34)throw new Error('Danh mục quốc gia không hợp lệ.');
+  const jobs=[];
+  catalog.provinces=[];
+  catalog.schoolById.clear();
+  catalog.schoolsByProvince.clear();
+  for(const province of tree){
+    const provinceId=String(province.id||'').trim(),provinceName=String(province.name||'').trim();
+    if(!provinceId||!provinceName)continue;
+    catalog.provinces.push({id:provinceId,name:provinceName});
+    const rows=[];
+    for(const ward of (province.wards||[])){
+      for(const school of (ward.schools||[])){
+        const name=String(school.name||'').trim();if(!name)continue;
+        rows.push({provinceId,provinceName,wardId:String(ward.id||''),wardName:String(ward.name||'').trim(),sourceSchoolId:String(school.id||''),name,level:inferLevel(name)});
+      }
+    }
+    catalog.schoolsByProvince.set(provinceId,rows);
+    jobs.push(...rows);
+  }
+  await Promise.all(jobs.map(async school=>{school.id=await makeSchoolId(school.provinceId,school.sourceSchoolId,school.name);catalog.schoolById.set(school.id,school)}));
+  catalog.provinces.sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+  $('#province').innerHTML='<option value="">Chọn tỉnh/thành</option>'+catalog.provinces.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
+  status.textContent='';
 }
 async function refreshWards(){
   const provinceId=$('#province').value;
   $('#ward').disabled=true;$('#school').disabled=true;$('#classCatalog').disabled=true;
   $('#ward').innerHTML='<option value="">'+(provinceId?'⏳ Đang tải xã/phường...':'Chọn xã/phường')+'</option>';
-  $('#school').innerHTML='<option value="">Chọn trường</option>';
-  $('#classCatalog').innerHTML='<option value="">Chọn lớp</option>';
-  if(!provinceId){return}
-  try{
-    const rows=await loadProvinceSchools(provinceId);
-    const wards=[...new Map(rows.filter(x=>x.ward).map(x=>[String(x.wardId||x.ward),String(x.ward)])).entries()]
-      .sort((a,b)=>a[1].localeCompare(b[1],'vi'));
-    $('#ward').disabled=!wards.length;
-    $('#ward').innerHTML='<option value="">Chọn xã/phường</option>'+wards.map(([id,name])=>'<option value="'+esc(id)+'">'+esc(name)+'</option>').join('');
-  }catch(e){
-    $('#ward').innerHTML='<option value="">Không tải được xã/phường</option>';
-    status.textContent='❌ Không tải được danh mục: '+(e?.message||'Lỗi không xác định');
-  }
+  $('#school').innerHTML='<option value="">Chọn trường</option>';$('#classCatalog').innerHTML='<option value="">Chọn lớp</option>';
+  if(!provinceId)return;
+  const rows=catalog.schoolsByProvince.get(provinceId)||[];
+  const wards=[...new Map(rows.filter(x=>x.wardId&&x.wardName).map(x=>[x.wardId,x.wardName])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'vi'));
+  $('#ward').disabled=!wards.length;
+  $('#ward').innerHTML='<option value="">Chọn xã/phường</option>'+wards.map(([id,name])=>'<option value="'+esc(id)+'">'+esc(name)+'</option>').join('');
 }
 async function refreshSchools(){
   const provinceId=$('#province').value,wardId=$('#ward').value;
-  $('#school').disabled=true;$('#classCatalog').disabled=true;
-  $('#classCatalog').innerHTML='<option value="">Chọn lớp</option>';
+  $('#school').disabled=true;$('#classCatalog').disabled=true;$('#classCatalog').innerHTML='<option value="">Chọn lớp</option>';
   if(!provinceId||!wardId){$('#school').innerHTML='<option value="">Chọn trường</option>';return}
-  try{
-    const rows=(await loadProvinceSchools(provinceId)).filter(x=>String(x.wardId||x.ward)===String(wardId));
-    rows.sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'vi'));
-    $('#school').disabled=!rows.length;
-    $('#school').innerHTML='<option value="">Chọn trường</option>'+rows.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join('');
-  }catch(e){
-    $('#school').innerHTML='<option value="">Không tải được trường</option>';
-    status.textContent='❌ Không tải được trường: '+(e?.message||'Lỗi không xác định');
-  }
+  const rows=(catalog.schoolsByProvince.get(provinceId)||[]).filter(x=>x.wardId===wardId).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+  $('#school').disabled=!rows.length;
+  $('#school').innerHTML='<option value="">Chọn trường</option>'+rows.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join('');
 }
 async function refreshClasses(){
-  const schoolId=$('#school').value;
+  const schoolId=$('#school').value,school=catalog.schoolById.get(schoolId);
   $('#classCatalog').disabled=true;
   $('#classCatalog').innerHTML='<option value="">'+(schoolId?'⏳ Đang tải lớp...':'Chọn lớp')+'</option>';
-  if(!schoolId)return;
-  try{
-    const snap=await api.getDocs(api.query(api.collection(fb,'KatLearn_LOPHOC_1'),api.where('schoolId','==',schoolId)));
-    const rows=snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.isTemplate!==false);
-    rows.sort((a,b)=>Number(a.grade||99)-Number(b.grade||99)||String(a.name||'').localeCompare(String(b.name||''),'vi'));
-    $('#classCatalog').disabled=!rows.length;
-    $('#classCatalog').innerHTML='<option value="">Chọn lớp</option>'+rows.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name||('Lớp '+x.grade))+'</option>').join('');
-  }catch(e){
-    $('#classCatalog').innerHTML='<option value="">Không tải được lớp</option>';
-    status.textContent='❌ Không tải được lớp: '+(e?.message||'Lỗi không xác định');
-  }
+  if(!school)return;
+  const grades=gradeTemplates[school.level]||gradeTemplates.combined;
+  $('#classCatalog').disabled=false;
+  $('#classCatalog').innerHTML='<option value="">Chọn lớp</option>'+grades.map(grade=>'<option value="'+esc(schoolId+'-'+grade)+'">Lớp '+esc(grade)+'</option>').join('');
 }
 $('#province').onchange=refreshWards;$('#ward').onchange=refreshSchools;$('#school').onchange=refreshClasses;
 document.querySelectorAll('input[name=accountType]').forEach(r=>r.onchange=()=>$('#classFields').classList.toggle('show',r.value==='class'&&r.checked));
-function profile(){const type=document.querySelector('input[name=accountType]:checked').value;if(type==='free')return{studentAccountType:'free',role:'student'};const sid=$('#school').value,cid=$('#classCatalog').value,s=catalog.schools.find(x=>x.id===sid);if(!sid||!cid)throw new Error('Hãy chọn trường và lớp cho tài khoản lớp học.');return{studentAccountType:'class',role:'student',province:$('#province').value,ward:$('#ward').value,schoolId:sid,schoolName:s?.name||'',catalogClassId:cid,joinedClassIds:[]}}
+function profile(){const type=document.querySelector('input[name=accountType]:checked').value;if(type==='free')return{studentAccountType:'free',role:'student'};const sid=$('#school').value,cid=$('#classCatalog').value,s=catalog.schoolById.get(sid);if(!sid||!cid||!s)throw new Error('Hãy chọn trường và lớp cho tài khoản lớp học.');return{studentAccountType:'class',role:'student',province:s.provinceName,ward:s.wardName,schoolId:sid,schoolName:s.name,catalogClassId:cid,joinedClassIds:[]}}
 function err(e){return({'auth/email-already-in-use':'Email này đã được đăng ký.','auth/weak-password':'Mật khẩu quá yếu.','auth/invalid-email':'Email không hợp lệ.','auth/popup-closed-by-user':'Bạn đã đóng cửa sổ đăng nhập.'}[e?.code]||e?.message||'Không thể tạo tài khoản.')}
 async function finish(u,p){
   const ref=api.doc(fb,'users',u.uid),snap=await api.getDoc(ref),now=Date.now();
