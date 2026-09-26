@@ -53,7 +53,7 @@ match /system/{docId} {
       allow update, delete: if isAdmin();
       match /classes/{catalogClassId} {
         allow read: if true;
-        allow create: if isAdmin() || ((isTeacher() || isPendingTeacher()) && request.resource.data.createdBy == request.auth.uid);
+        allow create: if isAdmin() || (isTeacher() && request.resource.data.createdBy == request.auth.uid);
         allow update, delete: if isAdmin();
       }
     }
