@@ -43,29 +43,36 @@ function inferLevel(name){
   return'combined';
 }
 const gradeTemplates={primary:['1','2','3','4','5'],middle:['6','7','8','9'],high:['10','11','12'],combined:['1','2','3','4','5','6','7','8','9','10','11','12']};
+const OFFICIAL_PROVINCE_CODES={
+  'ha noi':'01','cao bang':'04','tuyen quang':'08','dien bien':'11','lai chau':'12','son la':'14','lao cai':'15','thai nguyen':'19',
+  'lang son':'20','quang ninh':'22','bac ninh':'24','phu tho':'25','hai phong':'31','hung yen':'33','ninh binh':'37','thanh hoa':'38',
+  'nghe an':'40','ha tinh':'42','quang tri':'44','hue':'46','da nang':'48','quang ngai':'51','gia lai':'52','khanh hoa':'56',
+  'dak lak':'66','lam dong':'68','dong nai':'75','ho chi minh':'79','tay ninh':'80','dong thap':'82','vinh long':'86','an giang':'91',
+  'can tho':'92','ca mau':'96'
+};
+function officialProvinceCode(name){
+  const n=norm(String(name||'').replace(/^(Tỉnh|Thành phố)\s*/i,''));
+  return OFFICIAL_PROVINCE_CODES[n]||'';
+}
 async function loadCatalog(){
-  status.textContent='⏳ Đang tải danh mục tỉnh/thành và trường học...';
+  status.textContent='⏳ Đang tải 34 tỉnh/thành và toàn bộ trường học...';
   const response=await fetch(CATALOG_URL,{cache:'force-cache'});
   if(!response.ok)throw new Error('Không tải được danh mục trường quốc gia.');
   const tree=await response.json();
   if(!Array.isArray(tree)||tree.length!==34)throw new Error('Danh mục quốc gia không hợp lệ.');
-  const jobs=[];
-  catalog.provinces=[];
-  catalog.schoolById.clear();
-  catalog.schoolsByProvince.clear();
+  const jobs=[];catalog.provinces=[];catalog.schoolById.clear();catalog.schoolsByProvince.clear();
   for(const province of tree){
-    const provinceId=String(province.id||'').trim(),provinceName=String(province.name||'').trim();
-    if(!provinceId||!provinceName)continue;
+    const sourceProvinceId=String(province.id||'').trim(),provinceName=String(province.name||'').trim(),provinceId=officialProvinceCode(provinceName);
+    if(!sourceProvinceId||!provinceName||!provinceId)continue;
     catalog.provinces.push({id:provinceId,name:provinceName});
     const rows=[];
     for(const ward of (province.wards||[])){
       for(const school of (ward.schools||[])){
         const name=String(school.name||'').trim();if(!name)continue;
-        rows.push({provinceId,provinceName,wardId:String(ward.id||''),wardName:String(ward.name||'').trim(),sourceSchoolId:String(school.id||''),name,level:inferLevel(name)});
+        rows.push({provinceId,provinceName,sourceProvinceId,wardId:String(ward.id||''),wardName:String(ward.name||'').trim(),sourceSchoolId:String(school.id||''),name,level:inferLevel(name)});
       }
     }
-    catalog.schoolsByProvince.set(provinceId,rows);
-    jobs.push(...rows);
+    catalog.schoolsByProvince.set(provinceId,rows);jobs.push(...rows);
   }
   await Promise.all(jobs.map(async school=>{school.id=await makeSchoolId(school.provinceId,school.sourceSchoolId,school.name);catalog.schoolById.set(school.id,school)}));
   catalog.provinces.sort((a,b)=>a.name.localeCompare(b.name,'vi'));
