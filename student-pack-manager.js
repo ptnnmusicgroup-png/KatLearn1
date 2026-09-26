@@ -189,7 +189,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       toast('Không thêm được từ vựng bằng AI: '+(e.message||'Lỗi không xác định'));
     }finally{
       btn.disabled=false;
-      btn.textContent='✨ Thêm từ vựng của bạn';
+      btn.textContent='✨ Tạo từ theo chủ đề';
     }
   }
 
