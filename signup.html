@@ -74,6 +74,25 @@ async function loadCatalog(){
     }
     catalog.schoolsByProvince.set(provinceId,rows);jobs.push(...rows);
   }
+  try{
+    const overrideResponse=await fetch('./data/national-catalog/catalog-overrides.json',{cache:'no-store'});
+    if(overrideResponse.ok){
+      const overrides=await overrideResponse.json();
+      for(const override of Array.isArray(overrides)?overrides:[]){
+        const provinceId=String(override.provinceCode||'').trim(),provinceName=String(override.provinceName||'').trim(),wardId=String(override.wardId||'').trim(),wardName=String(override.wardName||'').trim();
+        const rows=catalog.schoolsByProvince.get(provinceId);
+        if(!rows||!provinceName||!wardId||!wardName)continue;
+        for(const item of (Array.isArray(override.schools)?override.schools:[])){
+          const sourceSchoolId=String(item.sourceSchoolId||'').trim(),name=String(item.name||'').trim();
+          if(!sourceSchoolId||!name)continue;
+          const next={provinceId,provinceName,sourceProvinceId:'',wardId,wardName,sourceSchoolId,name,level:inferLevel(name)};
+          const index=rows.findIndex(x=>x.sourceSchoolId===sourceSchoolId);
+          if(index>=0)rows[index]=next;else rows.push(next);
+        }
+      }
+    }
+  }catch(e){ console.warn('Catalog overrides unavailable:',e); }
+  jobs.length=0; for(const rows of catalog.schoolsByProvince.values())jobs.push(...rows);
   await Promise.all(jobs.map(async school=>{school.id=await makeSchoolId(school.provinceId,school.sourceSchoolId,school.name);catalog.schoolById.set(school.id,school)}));
   catalog.provinces.sort((a,b)=>a.name.localeCompare(b.name,'vi'));
   $('#province').innerHTML='<option value="">Chọn tỉnh/thành</option>'+catalog.provinces.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
