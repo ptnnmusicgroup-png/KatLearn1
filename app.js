@@ -28,12 +28,15 @@ function updateHomeHeader(profile=null){
   const eyebrow=$('.greeting-row .eyebrow'),title=$('.greeting-row h1'),streak=$('.streak-card b');
   if(eyebrow)eyebrow.textContent=days[now.getDay()]+', '+now.getDate()+' THÁNG '+month;
   if(title){
-    const h=now.getHours(),greeting=h>=5&&h<12?'Chào buổi sáng!':h>=12&&h<18?'Chào buổi chiều!':h>=18&&h<23?'Chào buổi tối!':'Chào bạn!';
-    title.innerHTML=esc(greeting.replace('!',''))+'! <span>☀️</span>';
+    const h=now.getHours();
+    const greeting=h>=5&&h<12?'Chào buổi sáng!':h>=12&&h<18?'Chào buổi chiều!':'Chào buổi tối!';
+    const icon=h>=5&&h<12?'☀️':h>=12&&h<18?'🌤️':'🌙';
+    title.innerHTML=esc(greeting.replace('!',''))+'! <span>'+icon+'</span>';
   }
   if(streak&&profile&&Number.isFinite(Number(profile.streak)))streak.textContent=Number(profile.streak).toLocaleString('vi-VN')+' ngày';
 }
 updateHomeHeader();
+setInterval(()=>updateHomeHeader(),30000);
 updateDailyGoal(0);
 const PAGE_ALIASES={vocabulary:'words',words:'words',home:'home',packs:'packs',learn:'learn',practice:'practice',shop:'shop',ranking:'ranking',progress:'progress',studentClasses:'studentClasses'};
 function showPage(rawId,updateHash=true){const id=PAGE_ALIASES[rawId]||rawId;const page=$('#'+id);if(!page)return;$$('.page').forEach(p=>p.classList.remove('active-page'));page.classList.add('active-page');$$('.nav-item').forEach(b=>b.classList.toggle('active',(PAGE_ALIASES[b.dataset.page]||b.dataset.page)===id));$('.sidebar')?.classList.remove('open');if(updateHash){const hash=id==='words'?'vocabulary':id;history.replaceState(null,'','#'+hash)}if(id==='ranking')renderLeaderboard();if(id==='packs')renderPublicPacks();if(id==='words')renderVocabularyViews();if(id==='studentClasses')window.katlearnStudentClasses?.render();window.scrollTo({top:0,behavior:'smooth'})}
