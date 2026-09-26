@@ -71,7 +71,7 @@ function patch(){
   window.studyStore.saveProfile=async data=>{
     const uid=String(window.studyStore?.user?.uid||'');
     if(!uid)return null;
-    if(window.KATLEARN_HYDRATION)await window.KATLEARN_HYDRATION.catch(()=>{});
+    // Do not await KATLEARN_HYDRATION here: auth-sync may call saveProfile() from inside that same promise.
     if(String(window.studyStore?.user?.uid||'')!==uid)return null;
     const vocab=readJson('katlearn-vocab',[]),owned=readJson('katlearn-owned-themes',[]);
     const preserveVocab=preservesRemoteVocab();
