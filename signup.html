@@ -55,22 +55,37 @@ function officialProvinceCode(name){
   return OFFICIAL_PROVINCE_CODES[n]||'';
 }
 async function loadCatalog(){
-  status.textContent='⏳ Đang tải 34 tỉnh/thành và toàn bộ trường học...';
-  const response=await fetch(CATALOG_URL,{cache:'force-cache'});
-  if(!response.ok)throw new Error('Không tải được danh mục trường quốc gia.');
-  const tree=await response.json();
+  status.textContent='⏳ Đang tải danh mục tỉnh/thành, xã/phường và trường học...';
+  const [treeResponse,wardResponse]=await Promise.all([
+    fetch(CATALOG_URL,{cache:'force-cache'}),
+    fetch('./data/national-catalog/official-ward-list.json',{cache:'force-cache'})
+  ]);
+  if(!treeResponse.ok)throw new Error('Không tải được danh mục trường quốc gia.');
+  if(!wardResponse.ok)throw new Error('Không tải được danh sách xã/phường quốc gia.');
+  const [tree,officialCatalog]=await Promise.all([treeResponse.json(),wardResponse.json()]);
   if(!Array.isArray(tree)||tree.length!==34)throw new Error('Danh mục quốc gia không hợp lệ.');
-  const jobs=[];catalog.provinces=[];catalog.wardsByProvince.clear();catalog.schoolById.clear();catalog.schoolsByProvince.clear();
+  if(!officialCatalog||!Array.isArray(officialCatalog.provinces)||officialCatalog.provinceCount!==34||officialCatalog.totalUnitCount!==3321)throw new Error('Danh sách xã/phường quốc gia không hợp lệ.');
+  const jobs=[];
+  catalog.provinces=[];catalog.wardsByProvince.clear();catalog.schoolById.clear();catalog.schoolsByProvince.clear();
+  const officialByProvince=new Map(officialCatalog.provinces.map(p=>[String(p.code||'').trim(),p]));
+  for(const p of officialCatalog.provinces){
+    const provinceId=String(p.code||'').trim(),provinceName=String(p.name||'').trim();
+    if(!provinceId||!provinceName)continue;
+    catalog.provinces.push({id:provinceId,name:provinceName});
+    catalog.wardsByProvince.set(provinceId,(p.wards||[]).map(w=>({id:String(w.id||'').trim(),name:String(w.name||'').replace(/\\s+/g,' ').trim()})).filter(w=>w.id&&w.name));
+  }
   for(const province of tree){
     const sourceProvinceId=String(province.id||'').trim(),provinceName=String(province.name||'').trim(),provinceId=officialProvinceCode(provinceName);
     if(!sourceProvinceId||!provinceName||!provinceId)continue;
-    catalog.provinces.push({id:provinceId,name:provinceName});
-    catalog.wardsByProvince.set(provinceId,(province.wards||[]).map(ward=>({id:String(ward.id||'').trim(),name:String(ward.name||'').trim()})).filter(x=>x.id&&x.name));
+    const officialProvince=officialByProvince.get(provinceId);
+    const wardByKey=new Map((officialProvince?.wards||[]).map(w=>[norm(String(w.name||'').replace(/^(Xã|Phường|Đặc khu)\\s+/i,'')),w]));
     const rows=[];
     for(const ward of (province.wards||[])){
+      const oldWardName=String(ward.name||'').replace(/\\s+/g,' ').trim();
+      const canonical=wardByKey.get(norm(oldWardName.replace(/^(Xã|Phường|Đặc khu)\\s+/i,'')));
       for(const school of (ward.schools||[])){
         const name=String(school.name||'').trim();if(!name)continue;
-        rows.push({provinceId,provinceName,sourceProvinceId,wardId:String(ward.id||''),wardName:String(ward.name||'').trim(),sourceSchoolId:String(school.id||''),name,level:inferLevel(name)});
+        rows.push({provinceId,provinceName,sourceProvinceId,wardId:String(canonical?.id||ward.id||'').trim(),wardName:String(canonical?.name||oldWardName).trim(),sourceSchoolId:String(school.id||''),name,level:inferLevel(name)});
       }
     }
     catalog.schoolsByProvince.set(provinceId,rows);jobs.push(...rows);
@@ -92,8 +107,8 @@ async function loadCatalog(){
         }
       }
     }
-  }catch(e){ console.warn('Catalog overrides unavailable:',e); }
-  jobs.length=0; for(const rows of catalog.schoolsByProvince.values())jobs.push(...rows);
+  }catch(e){console.warn('Catalog overrides unavailable:',e)}
+  jobs.length=0;for(const rows of catalog.schoolsByProvince.values())jobs.push(...rows);
   await Promise.all(jobs.map(async school=>{school.id=await makeSchoolId(school.provinceId,school.sourceSchoolId,school.name);catalog.schoolById.set(school.id,school)}));
   catalog.provinces.sort((a,b)=>a.name.localeCompare(b.name,'vi'));
   $('#province').innerHTML='<option value="">Chọn tỉnh/thành</option>'+catalog.provinces.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
