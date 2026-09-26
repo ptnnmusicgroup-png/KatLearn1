@@ -1,0 +1,16 @@
+[
+  {
+    "provinceCode": "51",
+    "provinceName": "Tỉnh Quảng Ngãi",
+    "wardId": "689ea500229a7e001893691c",
+    "wardName": "Xã Đăk Hà",
+    "schools": [
+      {"sourceSchoolId":"59cdc44f9d2a1700271c5b12","name":"Tiểu học Kim Đồng"},
+      {"sourceSchoolId":"katlearn-dak-ha-2026-th-nguyen-van-troi","name":"Tiểu học Nguyễn Văn Trỗi"},
+      {"sourceSchoolId":"katlearn-dak-ha-2026-th-le-quy-don","name":"Tiểu học Lê Quý Đôn"},
+      {"sourceSchoolId":"katlearn-dak-ha-2026-thcs-chu-van-an","name":"THCS Chu Văn An"},
+      {"sourceSchoolId":"katlearn-dak-ha-2026-thcs-vo-nguyen-giap","name":"THCS Võ Nguyên Giáp"},
+      {"sourceSchoolId":"katlearn-dak-ha-2026-thpt-tran-hung-dao","name":"THPT Trần Hưng Đạo"}
+    ]
+  }
+]
