@@ -156,7 +156,15 @@ async function section(db,section){
   if(key==="teachers"){
     const pending=await list("giáo viên chờ xác minh",db.collection("users").where("role","==","pending_teacher_verification").select(...USER_FIELDS).limit(LIMITS.pending));
     const teachers=await list("giáo viên",db.collection("users").where("role","==","teacher").select(...USER_FIELDS).limit(LIMITS.teachers));
-    return{rows:[...pending.map(x=>({...x,_status:"pending"})),...teachers.map(x=>({...x,_status:"verified"}))],limited:pending.length>=LIMITS.pending||teachers.length>=LIMITS.teachers};
+    const rejected=await list("giáo viên bị từ chối",db.collection("users").where("role","==","teacher_rejected").select(...USER_FIELDS).limit(LIMITS.pending));
+    return{rows:[
+      ...pending.map(x=>({...x,_status:"pending"})),
+      ...teachers.map(x=>({...x,_status:"verified"})),
+      ...rejected.map(x=>({...x,_status:"rejected"}))
+    ],limited:pending.length>=LIMITS.pending||teachers.length>=LIMITS.teachers||rejected.length>=LIMITS.pending};
+  }
+  if(key==="activity"){
+    return{rows:await list("nhật ký Admin",db.collection("adminAudit").orderBy("at","desc").limit(100))};
   }
   const defs={
     users:["tài khoản",db.collection("users").select(...USER_FIELDS).limit(LIMITS.users)],
@@ -187,7 +195,7 @@ module.exports=async(req,res)=>{
       const provinceCode=clean(body.provinceCode,10),data=readProvince(provinceCode);
       const offset=Math.max(0,Number(body.offset)||0),limit=Math.max(1,Math.min(220,Number(body.limit)||180)),chunk=data.slice(offset,offset+limit);
       const writes=await writeCatalogChunk(db,chunk),nextOffset=offset+chunk.length;
-      await audit(db,decoded,"catalog.chunk",provinceCode,{offset,nextOffset,processed:chunk.length});
+      if(offset===0||nextOffset>=data.length)await audit(db,decoded,nextOffset>=data.length?"catalog.complete":"catalog.start",provinceCode,{offset,nextOffset,processed:chunk.length});
       return send(res,200,{ok:true,provinceCode,provinceTotal:data.length,offset,nextOffset,done:nextOffset>=data.length,processed:chunk.length,writes},origin);
     }
     return send(res,400,{ok:false,error:"Action Admin không hợp lệ.",code:"bad_action"},origin);
