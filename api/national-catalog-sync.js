@@ -15,6 +15,9 @@ const OFFICIAL_PROVINCES=[
 
 const SCHOOL_TREE_URL="https://raw.githubusercontent.com/ptnnmusicgroup-png/KatLearn.Teacher/main/data/national-catalog/full-school-tree.json";
 const WARD_LIST_URL="https://raw.githubusercontent.com/ptnnmusicgroup-png/KatLearn.Teacher/main/data/national-catalog/official-ward-list.json";
+let sourceCache=null;
+let sourceCacheAt=0;
+const SOURCE_CACHE_MS=10*60*1000;
 
 const provinceCodeByName=new Map(OFFICIAL_PROVINCES.flatMap(p=>[
   [norm(p.name),p.code],
@@ -69,6 +72,7 @@ async function fetchJson(url,label){
 }
 
 async function sourceRows(){
+  if(sourceCache&&Date.now()-sourceCacheAt<SOURCE_CACHE_MS)return sourceCache;
   const[tree,wardCatalog]=await Promise.all([
     fetchJson(SCHOOL_TREE_URL,"school tree"),
     fetchJson(WARD_LIST_URL,"danh sách xã/phường")
@@ -100,6 +104,8 @@ async function sourceRows(){
       }
     }
   }
+  sourceCache=result;
+  sourceCacheAt=Date.now();
   return result;
 }
 
