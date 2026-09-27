@@ -278,7 +278,12 @@
         api.getDocs(api.query(api.collection(db,'users',uid,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)))
       ]);
       const merged=[];const seen=new Set();
-      for(const snap of [newSnap,oldSnap])for(const d of snap.docs){
+      for(const d of newSnap.docs){
+        const data=d.data()||{};
+        if(data.kind!=='personalPack')continue;
+        seen.add(d.id);merged.push({id:d.id,...data});
+      }
+      for(const d of oldSnap.docs){
         if(seen.has(d.id))continue;
         const data=d.data()||{};
         if(data.kind&&data.kind!=='personalPack')continue;
