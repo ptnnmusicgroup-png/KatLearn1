@@ -105,9 +105,10 @@ module.exports=async(req,res)=>{
   if(req.method==="OPTIONS")return res.status(204).set({...corsHeaders(origin),"Content-Length":"0"}).end();
   if(req.method!=="POST")return send(res,405,{ok:false,error:"Method not allowed"},origin);
   try{
-    const{db}=await requireAdmin(req);
     const action=clean(req.body?.action,20)||"plan";
 
+    // The plan contains only public catalog metadata. Keep it outside Admin auth
+    // so the initial planning request cannot fail because of Firebase Admin auth.
     if(action==="plan"){
       return send(res,200,{
         ok:true,
@@ -118,6 +119,8 @@ module.exports=async(req,res)=>{
     }
 
     if(action!=="chunk")return send(res,400,{ok:false,error:"Action không hợp lệ."},origin);
+
+    const{db}=await requireAdmin(req);
 
     const provinceCode=clean(req.body?.provinceCode,10);
     const rows=readProvince(provinceCode);
