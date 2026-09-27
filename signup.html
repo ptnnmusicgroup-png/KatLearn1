@@ -32,8 +32,8 @@ async function init(){
 }
 function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function norm(v){return String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
-async function sha1Hex(value){const bytes=new TextEncoder().encode(String(value));const hash=await crypto.subtle.digest('SHA-1',bytes);return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('')}
-async function makeSchoolId(provinceCode,sourceSchoolId,name){return (await sha1Hex(String(provinceCode)+'|'+String(sourceSchoolId||'')+'|'+norm(name))).slice(0,20)}
+async function sha256Hex(value){const bytes=new TextEncoder().encode(String(value));const hash=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+async function makeSchoolId(provinceCode,sourceSchoolId,name){return 'sch_'+(await sha256Hex(String(provinceCode)+'|'+String(sourceSchoolId||'')+'|'+String(name||'').trim().toLowerCase())).slice(0,28)}
 function inferLevel(name){
   const n=norm(name);
   if(n.includes('thcs&thpt')||n.includes('thcs thpt')||n.includes('th&thcs')||n.includes('th-thcs')||n.includes('th thcs'))return'combined';
