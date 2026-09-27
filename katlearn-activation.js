@@ -42,7 +42,18 @@
       ['pastel-cat','Pastel Kitty','Một chiếc ảnh pastel siêu chill.','https://images.unsplash.com/photo-1595752776689-aebef37b5d32?auto=format&fit=crop&w=900&q=82']
     ];
     const existing=new Set([...grid.querySelectorAll('[data-katlearn-item]')].map(x=>x.dataset.katlearnItem));
-    items.forEach(([id,name,desc,img])=>{if(existing.has(id))return;const card=document.createElement('article');card.className='shop-item';card.dataset.katlearnItem=id;card.innerHTML=`<img src="${img}" alt="${name}" loading="lazy" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:18px 18px 0 0;display:block"><div style="padding:16px"><span style="font-size:.78rem;font-weight:800;letter-spacing:.06em">KAT'S CUTIE DROP</span><h3 style="margin:.35rem 0">${name}</h3><p style="margin:.35rem 0 1rem">${desc}</p><button type="button" data-price="3000" style="width:100%">🪙 3,000 xu</button></div>`;grid.appendChild(card);const buy=card.querySelector('button');buy.addEventListener('click',async()=>{if(!window.studyStore?.user)return toast('Đăng nhập để mua vật phẩm và lưu vào tài khoản nhé 🐱');const balance=Number((document.getElementById('coinCount')?.textContent||'0').replace(/,/g,''));if(balance<3000)return toast('Bạn chưa đủ 3,000 xu cho vật phẩm này.');try{await window.studyStore.purchase({id:`shop-${id}`,name,price:3000,image:img});buy.textContent='✓ Đã mua';buy.disabled=true;toast(`✓ Đã mua “${name}” với 3,000 xu!`)}catch(err){toast(`❌ Không thể lưu vật phẩm: ${err.message}`)}})});
+    items.forEach(([id,name,desc,img])=>{if(existing.has(id))return;const card=document.createElement('article');card.className='shop-item';card.dataset.katlearnItem=id;card.innerHTML=`<img src="${img}" alt="${name}" loading="lazy" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:18px 18px 0 0;display:block"><div style="padding:16px"><span style="font-size:.78rem;font-weight:800;letter-spacing:.06em">KAT'S CUTIE DROP</span><h3 style="margin:.35rem 0">${name}</h3><p style="margin:.35rem 0 1rem">${desc}</p><button type="button" data-price="3000" style="width:100%">🪙 3,000 xu</button></div>`;grid.appendChild(card);const buy=card.querySelector('button');buy.addEventListener('click',async()=>{if(!window.studyStore?.user)return toast('Đăng nhập để mua vật phẩm và lưu vào tài khoản nhé 🐱');const balance=Number((document.getElementById('coinCount')?.textContent||'0').replace(/,/g,''));if(balance<3000)return toast('Bạn chưa đủ 3,000 xu cho vật phẩm này.');try{
+        const token=await window.studyStore.getIdToken();
+        if(!token)throw new Error('Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại.');
+        const res=await fetch('/api/game-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'purchase',itemId:'shop-'+id})});
+        const data=await res.json().catch(()=>({}));
+        if(!res.ok)throw new Error(data.error||'Không thể hoàn tất giao dịch');
+        if(typeof coins!=='undefined')coins=Number(data.coins??Math.max(0,currentCoins-3000));
+        document.getElementById('coinCount')?.replaceChildren(document.createTextNode(Number(coins||0).toLocaleString('en-US')));
+        document.getElementById('shopCoins')?.replaceChildren(document.createTextNode(Number(coins||0).toLocaleString('en-US')));
+        document.getElementById('panelCoins')?.replaceChildren(document.createTextNode(Number(coins||0).toLocaleString('en-US')));
+        buy.textContent='✓ Đã mua';buy.disabled=true;toast(`✓ Đã mua “${name}” với 3,000 xu!`);
+      }catch(err){toast(`❌ Không thể mua vật phẩm: ${err.message}`)}})});
   }
   function toast(msg){if(typeof window.toast==='function')return window.toast(msg);const el=document.getElementById('toast');if(!el)return;el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600)}
   boot();
