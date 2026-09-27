@@ -1,19 +1,8 @@
 const crypto=require("crypto");
 const fs=require("fs");
 const path=require("path");
-const{initializeApp,cert,getApps}=require("firebase-admin/app");
-const{getAuth}=require("firebase-admin/auth");
-const{getFirestore,FieldValue}=require("firebase-admin/firestore");
-let db,auth;
-function init(){
-  if(!getApps().length){
-    const raw=process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-    if(!raw)throw Object.assign(new Error("Firebase server chưa được cấu hình"),{status:503});
-    let serviceAccount;try{serviceAccount=JSON.parse(raw)}catch(_){throw Object.assign(new Error("FIREBASE_SERVICE_ACCOUNT_JSON không hợp lệ"),{status:503})}
-    initializeApp({credential:cert(serviceAccount)});
-  }
-  auth=getAuth();db=getFirestore();return{auth,db};
-}
+const{init}=require("./_admin");
+const{FieldValue}=require("firebase-admin/firestore");
 const buckets=new Map();
 const CORE_TOPICS=new Set(['daily-life','family','home','food','cooking','shopping','clothes-fashion','school-education','work-career','technology','internet-social-media','health-medicine','sports-fitness','travel-tourism','transport','weather-seasons','environment','animals-nature','feelings-personality','entertainment-culture','city-community','money-finance','communication','people-relationships','places']);
 const SHOP_ITEMS={
