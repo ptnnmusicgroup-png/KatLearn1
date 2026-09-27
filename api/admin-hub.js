@@ -59,7 +59,7 @@ function fail(error,status=502,code="admin_backend_error"){
 }
 async function count(label,query){
   try{return Number((await query.count().get()).data()?.count||0)}
-  catch(error){throw fail(error,502,"count_failed").withContext?.(label)||Object.assign(fail(error,502,"count_failed"),{label})}
+  catch(error){const e=fail(error,502,"count_failed");e.label=label;throw e}
 }
 async function list(label,query){
   try{return rows(await query.get())}
