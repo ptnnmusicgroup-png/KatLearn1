@@ -1,21 +1,13 @@
 {
-  "$schema":"https://openapi.vercel.sh/vercel.json",
-  "functions":{
-    "api/game-action.js":{"includeFiles":"data/vocabulary/*.json"},
-    "api/national-catalog-sync.js":{
-      "includeFiles":"data/national-catalog/*.json",
-      "maxDuration":60
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/game-action.js": {
+      "includeFiles": "data/vocabulary/*.json"
     },
-    "api/admin-state.js":{
-      "maxDuration":60
-    },
-    "api/admin-verify-teacher.js":{
-      "maxDuration":60
-    },
-    "api/admin-hub.js":{
-      "includeFiles":"data/national-catalog/*.json",
-      "maxDuration":60
+    "api/admin-hub.js": {
+      "includeFiles": "data/national-catalog/*.json",
+      "maxDuration": 60
     }
   },
-  "framework":null
+  "framework": null
 }
