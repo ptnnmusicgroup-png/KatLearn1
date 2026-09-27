@@ -149,94 +149,192 @@ async function audit(db,decoded,action,target,extra={}){
   }catch(error){console.error("[KatLearn admin audit]",messageOf(error))}
 }
 async function teacherChange(db,decoded,uid,mode){
-  uid=clean(uid,160);
-  if(!uid)throw fail(new Error("Thiếu UID giáo viên."),400,"missing_uid");
-  const ref=db.collection("users").doc(uid);
-  const snapshot=await ref.get();
-  if(!snapshot.exists)throw fail(new Error("Không tìm thấy hồ sơ giáo viên."),404,"teacher_not_found");
-  const profile=snapshot.data()||{};
-  const verification=profile.teacherVerification||{};
-  if(mode==="reject"){
-    await ref.set({
-      role:"teacher_rejected",
-      teacherVerification:{...verification,status:"rejected",rejectedAt:Date.now(),rejectedBy:decoded.uid},
-      updatedAt:Date.now()
-    },{merge:true});
-    await audit(db,decoded,"teacher.reject",uid);
-    return{uid,status:"rejected"};
+ uid=clean(uid,160);
+ if(!uid)throw fail(new Error("Thiếu UID giáo viên."),400,"missing_uid");
+ const ref=db.collection("users").doc(uid);
+ const snapshot=await ref.get();
+ if(!snapshot.exists)throw fail(new Error("Không tìm thấy hồ sơ giáo viên."),404,"teacher_not_found");
+ const profile=snapshot.data()||{};
+ const verification=profile.teacherVerification||{};
+ if(mode==="reject"){
+  if(String(profile.role||"")!=="pending_teacher_verification"){
+    throw fail(new Error("Chỉ hồ sơ đang chờ xác minh mới có thể bị từ chối."),409,"teacher_not_pending");
   }
-  let schoolId=clean(profile.schoolId),schoolName=clean(profile.schoolName);
-  const province=clean(profile.province),ward=clean(profile.ward);
-  const requestedSchoolName=clean(verification.requestedSchoolName);
-  const requestedClassName=clean(verification.requestedClassName);
-  if(schoolId){
-    const school=await db.collection("schools").doc(schoolId).get();
-    if(!school.exists||clean(school.data()?.province)!==province||clean(school.data()?.ward)!==ward)schoolId="";
-    else schoolName=clean(school.data()?.name)||schoolName;
-  }
-  if(!schoolId&&requestedSchoolName){
-    const same=await db.collection("schools").where("name","==",requestedSchoolName).limit(20).get();
-    const existing=same.docs.map(d=>({id:d.id,...d.data()})).find(x=>clean(x.province)===province&&clean(x.ward)===ward);
-    if(existing){
-      schoolId=existing.id;schoolName=clean(existing.name)||requestedSchoolName;
-    }else{
-      const created=await db.collection("schools").add({
-        name:requestedSchoolName,province,ward,createdBy:uid,createdAt:Date.now(),updatedAt:Date.now()
-      });
-      schoolId=created.id;schoolName=requestedSchoolName;
-    }
-  }
-  if(!schoolId)throw fail(new Error("Hồ sơ chưa có trường hợp lệ."),400,"teacher_school_missing");
-  await db.collection("KatLearn_Teacher_Schools").doc(schoolId).set({
-    name:schoolName,schoolId,province,ward,source:"teacher_verification",updatedAt:Date.now()
-  },{merge:true});
-  const classIds=Array.isArray(profile.classIds)?profile.classIds.filter(Boolean).slice(0,20):[];
-  const valid=[];
-  for(const classId of classIds){
-    const classroom=await db.collection("schools").doc(schoolId).collection("classes").doc(classId).get();
-    if(classroom.exists)valid.push(classId);
-  }
-  if(!valid.length&&requestedClassName){
-    const sameClass=await db.collection("schools").doc(schoolId).collection("classes").where("name","==",requestedClassName).limit(5).get();
-    if(sameClass.docs[0])valid.push(sameClass.docs[0].id);
-    else{
-      const created=await db.collection("schools").doc(schoolId).collection("classes").add({
-        name:requestedClassName,createdBy:uid,teacherUid:uid,schoolId,schoolName,
-        province,ward,createdAt:Date.now(),updatedAt:Date.now()
-      });
-      valid.push(created.id);
-    }
-  }
-  if(!valid.length)throw fail(new Error("Hồ sơ chưa có lớp hợp lệ."),400,"teacher_class_missing");
-  const catalogClassId=clean(valid.includes(profile.catalogClassId)?profile.catalogClassId:valid[0]);
   await ref.set({
-    role:"teacher",schoolId,schoolName,province,ward,classIds:valid,catalogClassId,
-    teacherVerification:{...verification,status:"verified",verifiedAt:Date.now(),verifiedBy:decoded.uid},
-    updatedAt:Date.now()
+   role:"teacher_rejected",
+   teacherVerification:{...verification,status:"rejected",rejectedAt:Date.now(),rejectedBy:decoded.uid},
+   updatedAt:Date.now()
   },{merge:true});
-  for(const classId of valid){
-    await db.collection("schools").doc(schoolId).collection("classes").doc(classId).set({
-      teacherUid:uid,schoolId,schoolName,province,ward,updatedAt:Date.now()
-    },{merge:true});
+  await audit(db,decoded,"teacher.reject",uid);
+  return{uid,status:"rejected"};
+ }
+
+ let schoolId=clean(profile.schoolId),schoolName=clean(profile.schoolName);
+ const province=clean(profile.province),ward=clean(profile.ward);
+ const requestedSchoolName=clean(verification.requestedSchoolName);
+ const requestedClassName=clean(verification.requestedClassName);
+
+ if(schoolId){
+  const school=await db.collection("schools").doc(schoolId).get();
+  if(!school.exists||clean(school.data()?.province)!==province||clean(school.data()?.ward)!==ward){
+   schoolId="";
+  }else{
+   schoolName=clean(school.data()?.name)||schoolName;
   }
-  await audit(db,decoded,"teacher.verify",uid,{schoolId,classIds:valid});
-  return{uid,status:"verified",schoolId,schoolName,province,ward,classIds:valid,catalogClassId};
+ }
+ if(!schoolId&&requestedSchoolName){
+  const same=await db.collection("schools").where("name","==",requestedSchoolName).limit(20).get();
+  const existing=same.docs.map(d=>({id:d.id,...d.data()})).find(x=>clean(x.province)===province&&clean(x.ward)===ward);
+  if(existing){
+   schoolId=existing.id;
+   schoolName=clean(existing.name)||requestedSchoolName;
+  }else{
+   const created=await db.collection("schools").add({
+    name:requestedSchoolName,province,ward,createdBy:uid,createdAt:Date.now(),updatedAt:Date.now()
+   });
+   schoolId=created.id;
+   schoolName=requestedSchoolName;
+  }
+ }
+ if(!schoolId)throw fail(new Error("Hồ sơ chưa có trường hợp lệ."),400,"teacher_school_missing");
+
+ await db.collection("KatLearn_Teacher_Schools").doc(schoolId).set({
+  name:schoolName,schoolId,province,ward,source:"teacher_verification",updatedAt:Date.now()
+ },{merge:true});
+
+ const classIds=Array.isArray(profile.classIds)
+  ?profile.classIds.map(x=>clean(x,160)).filter(Boolean).slice(0,20)
+  :[];
+ const valid=[];
+ const classData=new Map();
+
+ for(const classId of classIds){
+  const topRef=db.collection("classes").doc(classId);
+  const top=await topRef.get();
+  if(top.exists){
+   const data=top.data()||{};
+   if(clean(data.schoolId)===schoolId){
+    valid.push(classId);
+    classData.set(classId,{...data});
+   }
+   continue;
+  }
+  const nestedRef=db.collection("schools").doc(schoolId).collection("classes").doc(classId);
+  const nested=await nestedRef.get();
+  if(nested.exists&&clean(nested.data()?.schoolId||schoolId)===schoolId){
+   valid.push(classId);
+   classData.set(classId,{...nested.data()});
+  }
+ }
+
+ if(!valid.length&&requestedClassName){
+  const topMatches=await db.collection("classes").where("name","==",requestedClassName).limit(20).get();
+  const topExisting=topMatches.docs.map(d=>({id:d.id,...d.data()}))
+   .find(x=>clean(x.schoolId)===schoolId);
+  if(topExisting){
+   valid.push(topExisting.id);
+   classData.set(topExisting.id,{...topExisting});
+  }else{
+   const sameClass=await db.collection("schools").doc(schoolId).collection("classes")
+    .where("name","==",requestedClassName).limit(5).get();
+   if(sameClass.docs[0]){
+    const d=sameClass.docs[0];
+    valid.push(d.id);
+    classData.set(d.id,{...d.data()});
+   }else{
+    const created=await db.collection("schools").doc(schoolId).collection("classes").add({
+     name:requestedClassName,
+     createdBy:uid,
+     teacherUid:uid,
+     schoolId,
+     schoolName,
+     province,
+     ward,
+     createdAt:Date.now(),
+     updatedAt:Date.now()
+    });
+    valid.push(created.id);
+    classData.set(created.id,{
+     name:requestedClassName,createdBy:uid,teacherUid:uid,schoolId,schoolName,province,ward,
+     createdAt:Date.now(),updatedAt:Date.now()
+    });
+   }
+  }
+ }
+
+ if(!valid.length)throw fail(new Error("Hồ sơ chưa có lớp hợp lệ."),400,"teacher_class_missing");
+
+ const catalogClassId=clean(
+  valid.includes(profile.catalogClassId)?profile.catalogClassId:valid[0]
+ );
+
+ for(const classId of valid){
+  const now=Date.now();
+  const base=classData.get(classId)||{};
+  const classRecord={
+   ...base,
+   classId,
+   schoolId,
+   schoolName,
+   province,
+   ward,
+   teacherUid:uid,
+   teacherEmail:clean(profile.email,320),
+   updatedAt:now
+  };
+  await db.collection("schools").doc(schoolId).collection("classes").doc(classId)
+   .set(classRecord,{merge:true});
+  await db.collection("classes").doc(classId).set(classRecord,{merge:true});
+ }
+
+ await ref.set({
+  role:"teacher",
+  schoolId,
+  schoolName,
+  province,
+  ward,
+  classIds:valid,
+  catalogClassId,
+  teacherVerification:{
+   ...verification,
+   status:"verified",
+   verifiedAt:Date.now(),
+   verifiedBy:decoded.uid
+  },
+  updatedAt:Date.now()
+ },{merge:true});
+
+ await audit(db,decoded,"teacher.verify",uid,{schoolId,classIds:valid});
+ return{uid,status:"verified",schoolId,schoolName,province,ward,classIds:valid,catalogClassId};
 }
 async function deletePack(db,decoded,packId){
-  packId=clean(packId,160);
-  if(!packId)throw fail(new Error("Thiếu ID bộ từ."),400,"missing_pack_id");
-  const ref=db.collection("publicPacks").doc(packId);
-  const snap=await ref.get();
-  if(!snap.exists)throw fail(new Error("Không tìm thấy bộ từ."),404,"pack_not_found");
-  const assignments=await db.collection("packAssignments").where("packId","==",packId).get();
-  for(let i=0;i<assignments.docs.length;i+=400){
-    const batch=db.batch();
-    assignments.docs.slice(i,i+400).forEach(doc=>batch.delete(doc.ref));
-    await batch.commit();
-  }
-  await ref.delete();
-  await audit(db,decoded,"pack.delete",packId,{name:snap.data()?.name||""});
-  return{packId};
+ packId=clean(packId,160);
+ if(!packId)throw fail(new Error("Thiếu ID bộ từ."),400,"missing_pack_id");
+ const ref=db.collection("publicPacks").doc(packId);
+ const snap=await ref.get();
+ if(!snap.exists)throw fail(new Error("Không tìm thấy bộ từ."),404,"pack_not_found");
+
+ let deletedAssignments=0;
+ for(let pass=0;pass<10000;pass++){
+  const assignments=await db.collection("packAssignments")
+   .where("packId","==",packId)
+   .limit(400)
+   .get();
+  if(assignments.empty)break;
+  const batch=db.batch();
+  for(const doc of assignments.docs)batch.delete(doc.ref);
+  await batch.commit();
+  deletedAssignments+=assignments.size;
+  if(assignments.size<400)break;
+  if(pass===9999)throw fail(new Error("Không thể dọn hết assignment của bộ từ trong giới hạn an toàn."),504,"pack_assignment_cleanup_limit");
+ }
+
+ await ref.delete();
+ await audit(db,decoded,"pack.delete",packId,{
+  name:snap.data()?.name||"",
+  deletedAssignments
+ });
+ return{packId,deletedAssignments};
 }
 async function overview(db){
   const users=db.collection("users"),classes=db.collection("classes"),packs=db.collection("publicPacks"),schools=db.collection("schools");
