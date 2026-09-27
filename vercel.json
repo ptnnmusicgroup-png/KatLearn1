@@ -5,6 +5,12 @@
     "api/national-catalog-sync.js":{
       "includeFiles":"data/national-catalog/*.json",
       "maxDuration":60
+    },
+    "api/admin-state.js":{
+      "maxDuration":60
+    },
+    "api/admin-verify-teacher.js":{
+      "maxDuration":60
     }
   },
   "framework":null
