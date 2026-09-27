@@ -50,9 +50,18 @@ async function requireAdmin(req){
   const match=/^Bearer\s+(.+)$/i.exec(String(req.headers?.authorization||""));
   if(!match)throw Object.assign(new Error("Bạn cần đăng nhập Admin."),{status:401});
   const{auth,db}=init();
-  const decoded=await auth.verifyIdToken(match[1]);
+  let decoded;
+  try{
+    decoded=await auth.verifyIdToken(match[1]);
+  }catch(error){
+    const code=String(error?.code||"auth_error");
+    const message=code==="auth/id-token-expired"||code==="auth/id-token-revoked"
+      ?"Phiên Admin đã hết hạn. Hãy tải lại trang và đăng nhập lại."
+      :"Không xác thực được phiên Admin trên máy chủ: "+String(error?.message||code);
+    throw Object.assign(new Error(message),{status:401,code});
+  }
   if(String(decoded.email||"").toLowerCase()!==ADMIN_EMAIL){
-    throw Object.assign(new Error("Tài khoản không có quyền Admin."),{status:403});
+    throw Object.assign(new Error("Tài khoản không có quyền Admin."),{status:403,code:"admin_forbidden"});
   }
   return{auth,db,decoded};
 }
