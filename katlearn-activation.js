@@ -76,10 +76,12 @@
         const res=await fetch('/api/game-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'purchase',itemId:'shop-'+id})});
         const data=await res.json().catch(()=>({}));
         if(!res.ok)throw new Error(data.error||'Không thể hoàn tất giao dịch');
-        if(typeof coins!=='undefined')coins=Number(data.coins??Math.max(0,currentCoins-3000));
-        document.getElementById('coinCount')?.replaceChildren(document.createTextNode(Number(coins||0).toLocaleString('en-US')));
-        document.getElementById('shopCoins')?.replaceChildren(document.createTextNode(Number(coins||0).toLocaleString('en-US')));
-        document.getElementById('panelCoins')?.replaceChildren(document.createTextNode(Number(coins||0).toLocaleString('en-US')));
+        const nextCoins=Number(data.coins);
+        if(!Number.isFinite(nextCoins))throw new Error('Server không trả về số dư mới.');
+        if(typeof coins!=='undefined')coins=nextCoins;
+        document.getElementById('coinCount')?.replaceChildren(document.createTextNode(nextCoins.toLocaleString('en-US')));
+        document.getElementById('shopCoins')?.replaceChildren(document.createTextNode(nextCoins.toLocaleString('en-US')));
+        document.getElementById('panelCoins')?.replaceChildren(document.createTextNode(nextCoins.toLocaleString('en-US')));
         buy.textContent='✓ Đã mua';buy.disabled=true;ownedItems.add(id);localStorage.setItem('katlearn-owned-shop-items',JSON.stringify([...ownedItems]));toast(`✓ Đã mua “${name}” với 3,000 xu!`);
       }catch(err){toast(`❌ Không thể mua vật phẩm: ${err.message}`)}})});
   }
