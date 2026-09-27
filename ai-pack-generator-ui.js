@@ -193,7 +193,18 @@
       }));
     },
 
-    open() {
+    async open() {
+      if (!window.studyStore?.user) {
+        window.dispatchEvent(new CustomEvent('toast', { detail: '🔒 Hãy đăng nhập để tạo bộ từ bằng Kat AI nhé!' }));
+        location.href = '/login.html';
+        return;
+      }
+      try {
+        if (window.studyStore?.isClassStudent && await window.studyStore.isClassStudent()) {
+          window.dispatchEvent(new CustomEvent('toast', { detail: '🔒 Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.' }));
+          return;
+        }
+      } catch (_) {}
       document.getElementById('aiPackModal').classList.add('show');
       this.switchToModeSelector();
     },
