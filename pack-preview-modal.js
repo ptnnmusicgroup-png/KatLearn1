@@ -1,5 +1,8 @@
 // Pack Preview Modal - Review and edit before saving
 (function() {
+  const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
+  }[char]));
   const PREVIEW_HTML = `
     <div class="pack-preview-modal" id="packPreviewModal">
       <div class="pack-preview-container">
@@ -90,13 +93,13 @@
       list.innerHTML = words.map((word, idx) => `
         <div class="vocab-preview-item">
           <div class="vocab-preview-content">
-            <div class="vocab-word">${word.word}</div>
+            <div class="vocab-word">${esc(word.word)}</div>
             <div class="vocab-meta">
-              <span class="pos">${word.part_of_speech}</span>
-              <span class="meaning">${word.meaning_vi}</span>
+              <span class="pos">${esc(word.part_of_speech)}</span>
+              <span class="meaning">${esc(word.meaning_vi)}</span>
             </div>
             <div class="vocab-example">
-              <small>${word.example}</small>
+              <small>${esc(word.example)}</small>
             </div>
           </div>
           <div class="vocab-preview-actions">
