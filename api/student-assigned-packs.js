@@ -1,4 +1,4 @@
-const{requireUser,send,method}=require("./_kat-ai");
+const{requireUser,rateLimit,send,method}=require("./_kat-ai");
 const{initializeApp,cert,getApps}=require("firebase-admin/app");
 const{getFirestore}=require("firebase-admin/firestore");
 let db;
@@ -16,7 +16,7 @@ function firestore(){
 module.exports=async(req,res)=>{
   if(!method(res,"GET"))return;
   try{
-    const user=await requireUser(req);
+    const user=await requireUser(req);rateLimit(user.uid,"assigned",30);
     const snap=await firestore().collection("packAssignments").where("studentUids","array-contains",user.uid).get();
     const ids=[...new Set(snap.docs.map(d=>String(d.data()?.packId||"")).filter(Boolean))];
     const packs=[];
