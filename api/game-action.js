@@ -21,7 +21,13 @@ const SHOP_ITEMS={
   'theme-sky':{name:'Sky Day',price:150},
   'theme-pink':{name:'Pink Mood',price:180},
   'theme-ocean':{name:'Ocean Calm',price:220},
-  'theme-lavender':{name:'Lavender Dream',price:260}
+  'theme-lavender':{name:'Lavender Dream',price:260},
+  'shop-cat-nap':{name:'Cat Nap',price:3000,image:'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&q=82'},
+  'shop-tabby-cozy':{name:'Cozy Tabby',price:3000,image:'https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=900&q=82'},
+  'shop-sleepy-cat':{name:'Sleepy Kitty',price:3000,image:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=900&q=82'},
+  'shop-window-cat':{name:'Window Chill',price:3000,image:'https://images.unsplash.com/photo-1489084917528-a57e68a79a1e?auto=format&fit=crop&w=900&q=82'},
+  'shop-soft-cat':{name:'Soft Paws',price:3000,image:'https://images.unsplash.com/photo-1548546738-8509cb246ed3?auto=format&fit=crop&w=900&q=82'},
+  'shop-pastel-cat':{name:'Pastel Kitty',price:3000,image:'https://images.unsplash.com/photo-1595752776689-aebef37b5d32?auto=format&fit=crop&w=900&q=82'}
 };
 function headers(){return{"Content-Type":"application/json","Cache-Control":"no-store"}}
 function send(res,status,body){return res.status(status).set(headers()).json(body)}
@@ -106,7 +112,7 @@ module.exports=async(req,res)=>{
       const sourceKind=await validateQuizSource(db,token.uid,source,word,meaning,profileSnap.data()||{});
       const rewardable=sourceKind!=="legacy";
       const expectedAnswer=mode==="vieng"?word:meaning;
-      const correct=submittedAnswer===expectedAnswer;
+      const correct=norm(submittedAnswer)===norm(expectedAnswer);
       const currentStudyDay=studyDay();
       const rewardRef=rewardable?userRef.collection("rewardClaims").doc(rewardClaimId(sourceKind,String(source?.id||""),word,meaning,mode,currentStudyDay)):null;
       const result=await db.runTransaction(async transaction=>{
@@ -157,8 +163,10 @@ module.exports=async(req,res)=>{
         const itemSnap=await transaction.get(itemRef);
         if(itemSnap.exists)throw Object.assign(new Error("Vật phẩm này đã được mua."),{status:409});
         if(coins<item.price)throw Object.assign(new Error("Không đủ KatCoin."),{status:400});
-        transaction.update(userRef,{coins:coins-item.price,ownedThemes:FieldValue.arrayUnion(itemId)});
-        transaction.set(itemRef,{id:itemId,name:item.name,price:item.price,boughtAt:FieldValue.serverTimestamp()});
+        const profileUpdate={coins:coins-item.price};
+        if(itemId.startsWith('theme-'))profileUpdate.ownedThemes=FieldValue.arrayUnion(itemId);
+        transaction.update(userRef,profileUpdate);
+        transaction.set(itemRef,{id:itemId,name:item.name,price:item.price,...(item.image?{image:item.image}:{}),boughtAt:FieldValue.serverTimestamp()});
         transaction.set(leaderboardRef,publicScore(profile.displayName,coins-item.price,xp),{merge:true});
         return{ok:true,coins:coins-item.price,item:{id:itemId,name:item.name,price:item.price}};
       });
