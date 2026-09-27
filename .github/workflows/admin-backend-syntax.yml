@@ -4,9 +4,6 @@ on:
   push:
     paths:
       - "api/_admin.js"
-      - "api/admin-state.js"
-      - "api/admin-verify-teacher.js"
-      - "api/national-catalog-sync.js"
       - "api/admin-hub.js"
       - ".github/workflows/admin-backend-syntax.yml"
   workflow_dispatch:
@@ -22,7 +19,4 @@ jobs:
       - name: Check backend syntax
         run: |
           node --check api/_admin.js
-          node --check api/admin-state.js
-          node --check api/admin-verify-teacher.js
-          node --check api/national-catalog-sync.js
           node --check api/admin-hub.js
