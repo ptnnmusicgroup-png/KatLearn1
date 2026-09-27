@@ -21,7 +21,7 @@ const PROVINCES=[
   ["96","Tỉnh Cà Mau",593,"province-96.json"]
 ];
 const PROVINCE_MAP=new Map(PROVINCES.map(([code,name,total,file])=>[code,{code,name,total,file}]));
-const USER_FIELDS=["displayName","name","email","role","schoolName","className","accountCode","coins","energy","streak","province","ward","teacherVerification","createdAt","updatedAt","schoolId","classIds","catalogClassId","studentAccountType"];
+const USER_FIELDS=["displayName","name","email","role","schoolName","className","accountCode","coins","energy","streak","province","ward","teacherVerification","createdAt","updatedAt","disabled","schoolId","classIds","catalogClassId","studentAccountType"];
 const CLASS_FIELDS=["name","grade","teacherEmail","teacherUid","schoolName","schoolId","joinCode","studentCount","createdAt","updatedAt","province","ward","catalogClassId","deletingAt"];
 const PACK_FIELDS=["name","createdBy","createdByEmail","createdByUid","createdAt","updatedAt","wordCount"];
 const SCHOOL_FIELDS=["name","province","ward","schoolId","schoolLevel","createdAt","updatedAt","source","provinceId","wardId"];
@@ -446,10 +446,10 @@ async function deleteClass(db,decoded,classId){
   }
   const invites=await db.collection("classInvites").where("classId","==",classId).get();
   const assignments=await db.collection("packAssignments").where("classId","==",classId).get();
-  for(let i=0;i<Math.max(invites.size,assignments.size);i+=350){
+  for(let i=0;i<Math.max(invites.size,assignments.size);i+=200){
     const batch=db.batch();
-    invites.docs.slice(i,i+350).forEach(x=>batch.delete(x.ref));
-    assignments.docs.slice(i,i+350).forEach(x=>batch.delete(x.ref));
+    invites.docs.slice(i,i+200).forEach(x=>batch.delete(x.ref));
+    assignments.docs.slice(i,i+200).forEach(x=>batch.delete(x.ref));
     if(i===0){
       batch.delete(ref);
       if(schoolId)batch.delete(db.collection("schools").doc(schoolId).collection("classes").doc(classId));
