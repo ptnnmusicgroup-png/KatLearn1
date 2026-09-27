@@ -203,7 +203,7 @@ async function teacherChange(db,decoded,uid,mode){
  },{merge:true});
 
  const classIds=Array.isArray(profile.classIds)
-  ?profile.classIds.map(x=>clean(x,160)).filter(Boolean).slice(0,20)
+  ?[...new Set(profile.classIds.map(x=>clean(x,160)).filter(Boolean))].slice(0,20)
   :[];
  const valid=[];
  const classData=new Map();
