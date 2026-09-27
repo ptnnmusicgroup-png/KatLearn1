@@ -388,6 +388,24 @@ async function deleteUser(db,auth,decoded,uid){
   if(!snap.exists)throw fail(new Error("Không tìm thấy hồ sơ tài khoản."),404,"user_not_found");
   const profile=snap.data()||{},email=String(profile.email||"").toLowerCase();
   if(uid===decoded.uid||email==="katlearn.admin@gmail.com")throw fail(new Error("Không thể xóa tài khoản Admin hiện tại."),403,"admin_protected");
+  const classIds=Array.isArray(profile.joinedClassIds)?[...new Set(profile.joinedClassIds.map(x=>clean(x,160)).filter(Boolean))]:[];
+  for(let i=0;i<classIds.length;i+=150){
+    const batch=db.batch();
+    for(const classId of classIds.slice(i,i+150)){
+      batch.delete(db.collection("classes").doc(classId).collection("members").doc(uid));
+    }
+    await batch.commit();
+  }
+  const assignmentSnap=await db.collection("packAssignments").where("studentUids","array-contains",uid).limit(400).get();
+  if(!assignmentSnap.empty){
+    const batch=db.batch();
+    for(const doc of assignmentSnap.docs){
+      const data=doc.data()||{};
+      const studentUids=Array.isArray(data.studentUids)?data.studentUids.filter(x=>x!==uid):[];
+      batch.set(doc.ref,{studentUids,studentCount:studentUids.length,updatedAt:Date.now()},{merge:true});
+    }
+    await batch.commit();
+  }
   try{await auth.deleteUser(uid)}
   catch(error){
     const code=String(error?.code||"");
@@ -400,8 +418,8 @@ async function deleteUser(db,auth,decoded,uid){
     for(const doc of accountSnap.docs)batch.delete(doc.ref);
     await batch.commit();
   }
-  await audit(db,decoded,"user.delete",uid,{email});
-  return{uid};
+  await audit(db,decoded,"user.delete",uid,{email,removedClassMemberships:classIds.length,updatedAssignments:assignmentSnap.size});
+  return{uid,removedClassMemberships:classIds.length,updatedAssignments:assignmentSnap.size};
 }
 
 async function renameClass(db,decoded,classId,name,grade,description){
@@ -490,6 +508,10 @@ async function updateSchool(db,decoded,schoolId,name,province,ward,schoolLevel){
   if(!name)throw fail(new Error("Tên trường không được để trống."),400,"invalid_school_name");
   const ref=db.collection("schools").doc(schoolId),snap=await ref.get();
   if(!snap.exists)throw fail(new Error("Không tìm thấy trường."),404,"school_not_found");
+  const current=snap.data()||{};
+  if(String(current.source||"").startsWith("thanhtungct7")||String(current.sourceType||"").includes("national")){
+    throw fail(new Error("Không sửa trực tiếp trường thuộc National Catalog. Hãy cập nhật từ Catalog."),409,"catalog_school_protected");
+  }
   const patch={name,province,ward,schoolLevel,updatedAt:Date.now()};
   await ref.set(patch,{merge:true});
   await db.collection("KatLearn_Teacher_Schools").doc(schoolId).set({name,province,ward,schoolLevel,updatedAt:Date.now()},{merge:true});
