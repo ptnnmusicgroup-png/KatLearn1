@@ -26,7 +26,7 @@ function publicPacksRows(snapshot){
       createdByEmail:data.createdByEmail,
       createdByUid:data.createdByUid,
       createdAt:data.createdAt?.toMillis?.()??Number(data.createdAt||0),
-      wordCount:Number(data.wordCount||Array.isArray(data.words)?data.words.length:0)
+      wordCount:Number(data.wordCount ?? (Array.isArray(data.words)?data.words.length:0))
     };
   });
 }
