@@ -11,6 +11,10 @@
     },
     "api/admin-verify-teacher.js":{
       "maxDuration":60
+    },
+    "api/admin-hub.js":{
+      "includeFiles":"data/national-catalog/*.json",
+      "maxDuration":60
     }
   },
   "framework":null
