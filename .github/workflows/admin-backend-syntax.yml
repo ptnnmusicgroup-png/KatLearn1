@@ -1,0 +1,26 @@
+name: admin backend syntax
+
+on:
+  push:
+    paths:
+      - "api/_admin.js"
+      - "api/admin-state.js"
+      - "api/admin-verify-teacher.js"
+      - "api/national-catalog-sync.js"
+      - ".github/workflows/admin-backend-syntax.yml"
+  workflow_dispatch:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check backend syntax
+        run: |
+          node --check api/_admin.js
+          node --check api/admin-state.js
+          node --check api/admin-verify-teacher.js
+          node --check api/national-catalog-sync.js
