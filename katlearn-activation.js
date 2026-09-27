@@ -58,7 +58,12 @@
   }
   function addCuteShopItems(){
     const shop=document.getElementById('shop'); if(!shop||shop.dataset.katlearnShopReady==='1')return; shop.dataset.katlearnShopReady='1';
-    let grid=shop.querySelector('.shop-grid'); if(!grid){grid=document.createElement('div');grid.className='shop-grid';shop.appendChild(grid)}
+    let grid=shop.querySelector('.katlearn-cute-shop-grid');
+    if(!grid){
+      grid=document.createElement('div');
+      grid.className='shop-grid katlearn-cute-shop-grid';
+      shop.appendChild(grid);
+    }
     const items=[
       ['cat-nap','Cat Nap','Một góc ngủ mềm mềm cho Kat.','https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&q=82'],
       ['tabby-cozy','Cozy Tabby','Một chiếc mood chill đúng nghĩa.','https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=900&q=82'],
