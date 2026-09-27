@@ -3,8 +3,8 @@ name: admin backend syntax
 on:
   push:
     paths:
-      - "api/_admin.js"
-      - "api/admin-hub.js"
+      - "api/**"
+      - "scripts/**"
       - ".github/workflows/admin-backend-syntax.yml"
   workflow_dispatch:
 
@@ -16,7 +16,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Check backend syntax
+      - name: Check all API syntax
+        shell: bash
         run: |
-          node --check api/_admin.js
-          node --check api/admin-hub.js
+          set -euo pipefail
+          for file in api/*.js; do
+            echo "Checking $file"
+            node --check "$file"
+          done
