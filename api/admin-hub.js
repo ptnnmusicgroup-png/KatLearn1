@@ -3,7 +3,7 @@ const fs=require("fs");
 const path=require("path");
 const crypto=require("crypto");
 
-const ADMIN_EMAIL="katlearn.admin@gmail.com";
+const ADMIN_EMAIL="katlearn.admin@gmail.com"; // rebuilt admin hub
 const LIMITS={users:300,teachers:300,classes:300,packs:300,schools:300,pending:100};
 const DATA_DIR=path.join(__dirname,"../data/national-catalog");
 const PROVINCES=[
