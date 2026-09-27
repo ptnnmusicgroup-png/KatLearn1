@@ -69,6 +69,17 @@ function readProvince(code){
 async function writeChunk(db,rows){
   const writer=db.bulkWriter();
   let successful=0;
+  const provinceMeta=rows[0]&&PROVINCE_BY_CODE.get(String(rows[0].provinceCode));
+  if(provinceMeta){
+    writer.set(db.collection("KatLearn_TINHTHANH_1").doc(String(provinceMeta.code)),{
+      provinceId:String(provinceMeta.code),
+      name:provinceMeta.name,
+      code:String(provinceMeta.code),
+      schoolCount:Number(provinceMeta.total||0),
+      source:"national_catalog_2026",
+      updatedAt:Date.now()
+    },{merge:true});
+  }
   writer.onWriteResult(()=>{successful++});
   writer.onWriteError(error=>{
     console.error("[KatLearn national sync write]",error);
