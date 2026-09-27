@@ -9,26 +9,24 @@ const CLASS_FIELDS=[
   "name","grade","teacherEmail","teacherUid","schoolName","schoolId","joinCode",
   "studentCount","createdAt","province","ward","catalogClassId"
 ];
-const PACK_FIELDS=["name","createdBy","createdByEmail","createdByUid","createdAt","wordCount","words"];
+const PACK_FIELDS=["name","createdBy","createdByEmail","createdByUid","createdAt","wordCount"];
 const SCHOOL_FIELDS=["name","province","ward","schoolId","schoolLevel"];
 
-function rows(snapshot){
-  return snapshot.docs.map(d=>({id:d.id,...d.data()}));
+const LIMITS={users:500,classes:500,packs:500,schools:500,pending:200};
+
+function serialize(value){
+  if(value&&typeof value.toMillis==="function")return value.toMillis();
+  if(Array.isArray(value))return value.map(serialize);
+  if(value&&typeof value==="object"){
+    const out={};
+    for(const[k,v]of Object.entries(value))out[k]=serialize(v);
+    return out;
+  }
+  return value;
 }
 
-function publicPacksRows(snapshot){
-  return snapshot.docs.map(d=>{
-    const data=d.data()||{};
-    return{
-      id:d.id,
-      name:data.name,
-      createdBy:data.createdBy,
-      createdByEmail:data.createdByEmail,
-      createdByUid:data.createdByUid,
-      createdAt:data.createdAt?.toMillis?.()??Number(data.createdAt||0),
-      wordCount:Number(data.wordCount ?? (Array.isArray(data.words)?data.words.length:0))
-    };
-  });
+function rows(snapshot){
+  return snapshot.docs.map(d=>({id:d.id,...serialize(d.data()||{})}));
 }
 
 async function runQuery(label,query){
@@ -38,6 +36,19 @@ async function runQuery(label,query){
     throw Object.assign(new Error("Không đọc được "+label+": "+String(error?.message||"Firestore error")),{
       status:Number(error?.status||error?.statusCode)||502,
       code:error?.code||"firestore_error"
+    });
+  }
+}
+
+async function countQuery(label,query){
+  try{
+    const snapshot=await query.count().get();
+    return Number(snapshot.data()?.count||0);
+  }catch(error){
+    console.error("[KatLearn admin state] count "+label,error);
+    throw Object.assign(new Error("Không đếm được "+label+": "+String(error?.message||"Firestore error")),{
+      status:Number(error?.status||error?.statusCode)||502,
+      code:error?.code||"firestore_count_error"
     });
   }
 }
@@ -52,35 +63,69 @@ module.exports=async(req,res)=>{
 
   try{
     const{db}=await requireAdmin(req);
-    const usersSnap=await runQuery("tài khoản",db.collection("users").select(...USER_FIELDS).limit(5000));
-    const classesSnap=await runQuery("lớp học",db.collection("classes").select(...CLASS_FIELDS).limit(5000));
-    const packsSnap=await runQuery("bộ từ công khai",db.collection("publicPacks").select(...PACK_FIELDS).limit(3000));
-    const schoolsSnap=await runQuery("danh mục trường",db.collection("schools").select(...SCHOOL_FIELDS).limit(500));
+
+    const usersRef=db.collection("users");
+    const classesRef=db.collection("classes");
+    const packsRef=db.collection("publicPacks");
+    const schoolsRef=db.collection("schools");
+
+    const[
+      userCount,
+      teacherCount,
+      studentCount,
+      pendingCount,
+      classCount,
+      packCount,
+      schoolCount,
+      usersSnap,
+      classesSnap,
+      packsSnap,
+      schoolsSnap,
+      pendingSnap
+    ]=await Promise.all([
+      countQuery("tài khoản",usersRef),
+      countQuery("giáo viên",usersRef.where("role","==","teacher")),
+      countQuery("học sinh",usersRef.where("role","==","student")),
+      countQuery("hồ sơ chờ xác minh",usersRef.where("role","==","pending_teacher_verification")),
+      countQuery("lớp học",classesRef),
+      countQuery("bộ từ công khai",packsRef),
+      countQuery("danh mục trường",schoolsRef),
+      runQuery("danh sách tài khoản",usersRef.select(...USER_FIELDS).limit(LIMITS.users)),
+      runQuery("danh sách lớp học",classesRef.select(...CLASS_FIELDS).limit(LIMITS.classes)),
+      runQuery("danh sách bộ từ",packsRef.select(...PACK_FIELDS).limit(LIMITS.packs)),
+      runQuery("danh sách trường",schoolsRef.select(...SCHOOL_FIELDS).limit(LIMITS.schools)),
+      runQuery("hồ sơ giáo viên chờ xác minh",usersRef.where("role","==","pending_teacher_verification").select(...USER_FIELDS).limit(LIMITS.pending))
+    ]);
 
     const users=rows(usersSnap);
     const classes=rows(classesSnap);
-    const packs=publicPacksRows(packsSnap);
+    const packs=packsSnap.docs.map(d=>({
+      id:d.id,...serialize(d.data()||{}),
+      wordCount:Number(d.data()?.wordCount||0)
+    }));
     const schools=rows(schoolsSnap);
-    const pending=users
-      .filter(u=>String(u.role||"").toLowerCase()==="pending_teacher_verification")
-      .sort((a,b)=>{
-        const av=Number(a.teacherVerification?.submittedAt||a.createdAt||0);
-        const bv=Number(b.teacherVerification?.submittedAt||b.createdAt||0);
-        return av-bv;
-      });
+    const pending=rows(pendingSnap).sort((a,b)=>{
+      const av=Number(a.teacherVerification?.submittedAt||a.createdAt||0);
+      const bv=Number(b.teacherVerification?.submittedAt||b.createdAt||0);
+      return av-bv;
+    });
 
     return send(res,200,{
       ok:true,
-      limits:{users:5000,classes:5000,packs:3000,schools:500},
+      limits:LIMITS,
       stats:{
-        users:users.length,
-        teachers:users.filter(u=>String(u.role||"").toLowerCase()==="teacher").length,
-        students:users.filter(u=>String(u.role||"").toLowerCase()==="student").length,
-        pending:pending.length,
-        classes:classes.length,
-        packs:packs.length,
-        schools:schools.length,
-        schoolsLimited:schools.length>=500
+        users:userCount,
+        teachers:teacherCount,
+        students:studentCount,
+        pending:pendingCount,
+        classes:classCount,
+        packs:packCount,
+        schools:schoolCount,
+        usersLimited:userCount>LIMITS.users,
+        classesLimited:classCount>LIMITS.classes,
+        packsLimited:packCount>LIMITS.packs,
+        schoolsLimited:schoolCount>LIMITS.schools,
+        pendingLimited:pendingCount>LIMITS.pending
       },
       users,classes,packs,schools,pending
     },origin);
