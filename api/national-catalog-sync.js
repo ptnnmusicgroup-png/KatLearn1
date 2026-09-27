@@ -103,9 +103,17 @@ async function writeChunk(db,rows){
 module.exports=async(req,res)=>{
   const origin=String(req.headers?.origin||"");
   if(req.method==="OPTIONS")return res.status(204).set({...corsHeaders(origin),"Content-Length":"0"}).end();
+  const action=clean(req.method==="GET"?req.query?.action:req.body?.action,20)||"plan";
+  if(req.method==="GET"&&action==="plan"){
+    return send(res,200,{
+      ok:true,
+      provinces:PROVINCES.map(p=>({code:String(p.code),name:p.name,total:Number(p.total||0)})),
+      totalSchools:TOTAL_SCHOOLS,
+      totalProvinces:PROVINCES.length
+    },origin);
+  }
   if(req.method!=="POST")return send(res,405,{ok:false,error:"Method not allowed"},origin);
   try{
-    const action=clean(req.body?.action,20)||"plan";
 
     // The plan contains only public catalog metadata. Keep it outside Admin auth
     // so the initial planning request cannot fail because of Firebase Admin auth.
