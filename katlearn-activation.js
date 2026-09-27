@@ -28,7 +28,33 @@
     word.addEventListener('input',()=>{clearTimeout(timer);const value=word.value.trim();if(value.length<2){lastWord='';return}timer=setTimeout(()=>fillFromAI(value,true),700)}); btn.addEventListener('click',()=>fillFromAI(word.value,false));
   }
   function wirePackSave(){
-    window.addEventListener('pack-ready-to-save',async e=>{const pack=e.detail;const words=(pack.words||[]).map(w=>({word:String(w.word||'').trim(),mean:String(w.meaning_vi||w.mean||'').trim(),pron:String(w.ipa||w.pronunciation||w.pron||'').trim(),emoji:'📚'})).filter(w=>w.word&&w.mean);if(!words.length)return toast('Pack AI chưa có từ hợp lệ để lưu.');const title=String(pack.pack?.suggested_title||pack.pack?.topic||'AI Vocabulary Pack').trim();localStorage.setItem('katlearn-vocab',JSON.stringify(words));window.dispatchEvent(new CustomEvent('katlearn-ai-pack-saved',{detail:{name:title,words}}));if(window.studyStore?.user&&window.studyStore.isAdmin?.()){try{await window.studyStore.createPublicPack({name:title,words});toast(`✓ Đã lưu “${title}” và xuất bản pack AI.`)}catch(err){toast(`✓ Đã lưu pack AI vào bộ học cá nhân. ${err.message}`)}}else toast(`✓ Đã lưu “${title}” vào bộ từ đang học.`);setTimeout(()=>location.reload(),450)});
+    window.addEventListener('pack-ready-to-save',async e=>{
+      const pack=e.detail||{};
+      const words=(pack.words||[]).map(w=>({word:String(w.word||'').trim(),mean:String(w.meaning_vi||w.mean||'').trim(),pron:String(w.ipa||w.pronunciation||w.pron||'').trim(),emoji:'📚'})).filter(w=>w.word&&w.mean);
+      if(!words.length)return toast('Pack AI chưa có từ hợp lệ để lưu.');
+      const title=String(pack.pack?.suggested_title||pack.pack?.topic||'AI Vocabulary Pack').trim().slice(0,80)||'AI Vocabulary Pack';
+      if(!window.studyStore?.user)return toast('🔒 Hãy đăng nhập để lưu pack AI.');
+      try{
+        if(window.studyStore?.isClassStudent&&await window.studyStore.isClassStudent()){
+          return toast('🔒 Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
+        }
+        if(window.studyStore.isAdmin?.()){
+          await window.studyStore.createPublicPack({name:title,words});
+          window.dispatchEvent(new CustomEvent('katlearn-ai-pack-saved',{detail:{name:title,words,public:true}}));
+          toast(`✓ Đã lưu “${title}” và xuất bản pack AI.`);
+        }else{
+          const ref=await window.studyStore.createPersonalPack({name:title,words});
+          localStorage.setItem('katlearn-vocab',JSON.stringify(words));
+          if(typeof setVocabSource==='function')setVocabSource({kind:'personal',id:ref?.id||''});
+          window.dispatchEvent(new CustomEvent('katlearn-ai-pack-saved',{detail:{name:title,words,id:ref?.id||''}}));
+          toast(`✓ Đã lưu “${title}” vào Bộ từ của tôi.`);
+        }
+      }catch(err){
+        toast(`❌ Không thể lưu pack AI: ${err.message||err}`);
+        return;
+      }
+      setTimeout(()=>location.reload(),450);
+    });
   }
   function addCuteShopItems(){
     const shop=document.getElementById('shop'); if(!shop||shop.dataset.katlearnShopReady==='1')return; shop.dataset.katlearnShopReady='1';
