@@ -1,7 +1,30 @@
-const{requireAdmin,send,corsHeaders,clean}=require("./_admin");
 const fs=require("fs");
 const path=require("path");
 const crypto=require("crypto");
+
+function clean(value,max=200){
+  return String(value??"").trim().slice(0,max);
+}
+function corsHeaders(origin){
+  const h={"Content-Type":"application/json","Cache-Control":"no-store"};
+  if(["https://teacher-katlearn.vercel.app","https://lms-katlearn.vercel.app","http://localhost:3000","http://localhost:5173"].includes(origin)){
+    h["Access-Control-Allow-Origin"]=origin;
+    h["Access-Control-Allow-Methods"]="GET,POST,OPTIONS";
+    h["Access-Control-Allow-Headers"]="authorization,content-type,accept";
+    h["Vary"]="Origin";
+  }
+  return h;
+}
+function writeJson(res,status,body,origin=""){
+  const headers=corsHeaders(origin);
+  const payload=JSON.stringify(body);
+  if(res&&typeof res.setHeader==="function"){
+    for(const[key,value]of Object.entries(headers))res.setHeader(key,value);
+    res.statusCode=Number(status)||200;
+    if(typeof res.end==="function")return res.end(payload);
+  }
+  return new Response(payload,{status:Number(status)||200,headers});
+}
 
 const LIMITS={users:300,teachers:300,classes:300,packs:300,schools:300,pending:100,activity:100};
 const DATA_DIR=path.join(__dirname,"../data/national-catalog");
@@ -811,28 +834,33 @@ module.exports=async(req,res)=>{
     return new Response(null,{status:204,headers:h});
   }
   try{
+    const authorization=String(req.headers?.authorization||"").trim();
+    if(!/^Bearer\s+.+$/i.test(authorization)){
+      return writeJson(res,401,{ok:false,error:"Bạn cần đăng nhập Admin.",code:"missing_admin_token"},origin);
+    }
+    const{requireAdmin}=require("./_admin");
     if(req.method==="GET"){
       const{db}=await requireAdmin(req);
       const value=await section(db,req.query?.section||"overview");
-      return send(res,200,{ok:true,...value,limits:LIMITS},origin);
+      return writeJson(res,200,{ok:true,...value,limits:LIMITS},origin);
     }
-    if(req.method!=="POST")return send(res,405,{ok:false,error:"Method not allowed",code:"method_not_allowed"},origin);
+    if(req.method!=="POST")return writeJson(res,405,{ok:false,error:"Method not allowed",code:"method_not_allowed"},origin);
     const{db,auth,decoded}=await requireAdmin(req);
     const body=req.body&&typeof req.body==="object"?req.body:{};
     const action=clean(body.action,50);
-    if(action==="rename-user")return send(res,200,{ok:true,...await renameUser(db,auth,decoded,body.uid,body.name)},origin);
-    if(action==="disable-user")return send(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,true)},origin);
-    if(action==="enable-user")return send(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,false)},origin);
-    if(action==="reset-user-stats")return send(res,200,{ok:true,...await resetUserStats(db,decoded,body.uid)},origin);
-    if(action==="delete-user")return send(res,200,{ok:true,...await deleteUser(db,auth,decoded,body.uid)},origin);
-    if(action==="update-class")return send(res,200,{ok:true,...await renameClass(db,decoded,body.classId,body.name,body.grade,body.description)},origin);
-    if(action==="delete-class")return send(res,200,{ok:true,...await deleteClass(db,decoded,body.classId)},origin);
-    if(action==="update-school")return send(res,200,{ok:true,...await updateSchool(db,decoded,body.schoolId,body.name,body.province,body.ward,body.schoolLevel)},origin);
-    if(action==="delete-school")return send(res,200,{ok:true,...await deleteSchool(db,decoded,body.schoolId)},origin);
-    if(action==="verify-teacher")return send(res,200,{ok:true,...await teacherChange(db,decoded,body.uid,"verify")},origin);
-    if(action==="reject-teacher")return send(res,200,{ok:true,...await teacherChange(db,decoded,body.uid,"reject")},origin);
-    if(action==="delete-pack")return send(res,200,{ok:true,...await deletePack(db,decoded,body.packId)},origin);
-    if(action==="catalog-plan")return send(res,200,{ok:true,...plan()},origin);
+    if(action==="rename-user")return writeJson(res,200,{ok:true,...await renameUser(db,auth,decoded,body.uid,body.name)},origin);
+    if(action==="disable-user")return writeJson(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,true)},origin);
+    if(action==="enable-user")return writeJson(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,false)},origin);
+    if(action==="reset-user-stats")return writeJson(res,200,{ok:true,...await resetUserStats(db,decoded,body.uid)},origin);
+    if(action==="delete-user")return writeJson(res,200,{ok:true,...await deleteUser(db,auth,decoded,body.uid)},origin);
+    if(action==="update-class")return writeJson(res,200,{ok:true,...await renameClass(db,decoded,body.classId,body.name,body.grade,body.description)},origin);
+    if(action==="delete-class")return writeJson(res,200,{ok:true,...await deleteClass(db,decoded,body.classId)},origin);
+    if(action==="update-school")return writeJson(res,200,{ok:true,...await updateSchool(db,decoded,body.schoolId,body.name,body.province,body.ward,body.schoolLevel)},origin);
+    if(action==="delete-school")return writeJson(res,200,{ok:true,...await deleteSchool(db,decoded,body.schoolId)},origin);
+    if(action==="verify-teacher")return writeJson(res,200,{ok:true,...await teacherChange(db,decoded,body.uid,"verify")},origin);
+    if(action==="reject-teacher")return writeJson(res,200,{ok:true,...await teacherChange(db,decoded,body.uid,"reject")},origin);
+    if(action==="delete-pack")return writeJson(res,200,{ok:true,...await deletePack(db,decoded,body.packId)},origin);
+    if(action==="catalog-plan")return writeJson(res,200,{ok:true,...plan()},origin);
     if(action==="catalog-chunk"){
       const provinceCode=clean(body.provinceCode,10);
       const data=readProvince(provinceCode);
@@ -846,17 +874,17 @@ module.exports=async(req,res)=>{
           offset,nextOffset,processed:chunk.length,provinceTotal:data.length
         });
       }
-      return send(res,200,{
+      return writeJson(res,200,{
         ok:true,provinceCode,provinceTotal:data.length,offset,nextOffset,
         done:nextOffset>=data.length,processed:chunk.length,writes:result.writes
       },origin);
     }
-    return send(res,400,{ok:false,error:"Action Admin không hợp lệ.",code:"bad_action"},origin);
+    return writeJson(res,400,{ok:false,error:"Action Admin không hợp lệ.",code:"bad_action"},origin);
   }catch(error){
     const status=Math.min(599,Math.max(400,Number(error?.status||error?.statusCode)||500));
     const code=typeof error?.code==="string"?error.code:"admin_hub_error";
     const details=error?.label?{label:error.label}:undefined;
     console.error("[KatLearn admin hub]",{status,code,error:messageOf(error),details});
-    return send(res,status,{ok:false,error:messageOf(error,"Không thể xử lý Admin."),code,details},origin);
+    return writeJson(res,status,{ok:false,error:messageOf(error,"Không thể xử lý Admin."),code,details},origin);
   }
 };
