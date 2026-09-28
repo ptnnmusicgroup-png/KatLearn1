@@ -801,7 +801,17 @@ async function section(db,key){
 }
 module.exports=async(req,res)=>{
   const origin=String(req.headers?.origin||"");
-  if(req.method==="OPTIONS")return res.status(204).set({...corsHeaders(origin),"Content-Length":"0"}).end();
+  if(req.method==="OPTIONS"){
+    const h={...corsHeaders(origin),"Content-Length":"0"};
+    if(typeof res?.set==="function")return res.status(204).set(h).end();
+    if(typeof res?.setHeader==="function"){
+      for(const[key,value]of Object.entries(h))res.setHeader(key,value);
+      return res.status(204).end();
+    }
+    const wh=new Headers();
+    for(const[key,value]of Object.entries(h))wh.set(key,value);
+    return new Response(null,{status:204,headers:wh});
+  }
   try{
     if(req.method==="GET"){
       const{db}=await requireAdmin(req);
