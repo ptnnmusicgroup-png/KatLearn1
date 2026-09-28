@@ -883,7 +883,12 @@ module.exports=async(req,res)=>{
   }catch(error){
     const status=Math.min(599,Math.max(400,Number(error?.status||error?.statusCode)||500));
     const code=typeof error?.code==="string"?error.code:"admin_hub_error";
-    const details=error?.label?{label:error.label}:undefined;
+    const details={
+      ...(error?.label?{label:error.label}:{}),
+      ...(error?.credentialEnv?{credentialEnv:error.credentialEnv}:{}),
+      ...(error?.details&&typeof error.details==="object"?{details:error.details}:{})
+    };
+
     console.error("[KatLearn admin hub]",{status,code,error:messageOf(error),details});
     return writeJson(res,status,{ok:false,error:messageOf(error,"Không thể xử lý Admin."),code,details},origin);
   }
