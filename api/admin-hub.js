@@ -22,7 +22,7 @@ const PROVINCES=[
 ];
 const PROVINCE_MAP=new Map(PROVINCES.map(([code,name,total,file])=>[code,{code,name,total,file}]));
 const USER_FIELDS=["displayName","name","email","role","schoolName","className","accountCode","coins","energy","streak","province","ward","teacherVerification","createdAt","updatedAt","disabled","schoolId","classIds","catalogClassId","studentAccountType"];
-const CLASS_FIELDS=["name","grade","teacherEmail","teacherUid","schoolName","schoolId","joinCode","studentCount","createdAt","updatedAt","province","ward","catalogClassId","deletingAt"];
+const CLASS_FIELDS=["name","grade","description","teacherEmail","teacherUid","schoolName","schoolId","joinCode","studentCount","createdAt","updatedAt","province","ward","catalogClassId","deletingAt"];
 const PACK_FIELDS=["name","createdBy","createdByEmail","createdByUid","createdAt","updatedAt","wordCount"];
 const SCHOOL_FIELDS=["name","province","ward","schoolId","schoolLevel","createdAt","updatedAt","source","provinceId","wardId"];
 
@@ -50,6 +50,36 @@ function serialize(value){
   return value;
 }
 function rows(snapshot){return snapshot.docs.map(doc=>({id:doc.id,...serialize(doc.data()||{})}))}
+
+async function activeClassProfile(db,ids){
+ let active=null;const teacherUids=[];
+ for(const id of Array.isArray(ids)?ids.slice(0,50):[]){
+  const classId=clean(id,160);
+  if(!classId)continue;
+  const classSnap=await db.collection("classes").doc(classId).get();
+  if(!classSnap.exists)continue;
+  const cls=classSnap.data()||{},teacherUid=clean(cls.teacherUid,160);
+  if(teacherUid&&!teacherUids.includes(teacherUid))teacherUids.push(teacherUid);
+  if(active)continue;
+  let teacher={};
+  if(teacherUid){
+   const teacherSnap=await db.collection("users").doc(teacherUid).get();
+   teacher=teacherSnap.exists?teacherSnap.data()||{}:{};
+  }
+  active={
+   classId,
+   className:clean(cls.name),
+   schoolId:clean(cls.schoolId),
+   schoolName:clean(cls.schoolName)||clean(teacher.schoolName),
+   province:clean(cls.province)||clean(teacher.province),
+   ward:clean(cls.ward)||clean(teacher.ward),
+   teacherUid,
+   teacherName:clean(teacher.displayName)||clean(cls.teacherName),
+   teacherEmail:clean(teacher.email,320).toLowerCase()||clean(cls.teacherEmail,320).toLowerCase()
+  };
+ }
+ return active?{...active,teacherUids}:{classId:"",className:"",schoolId:"",schoolName:"",province:"",ward:"",teacherUid:"",teacherName:"",teacherEmail:"",teacherUids:[]};
+}
 function fail(error,status=502,code="admin_backend_error"){
   const out=new Error(messageOf(error));
   out.status=Number(error?.status||error?.statusCode)||status;
@@ -156,6 +186,9 @@ async function teacherChange(db,decoded,uid,mode){
  if(!snapshot.exists)throw fail(new Error("Không tìm thấy hồ sơ giáo viên."),404,"teacher_not_found");
  const profile=snapshot.data()||{};
  const verification=profile.teacherVerification||{};
+ if(String(profile.role||"")!=="pending_teacher_verification"){
+  throw fail(new Error("Chỉ hồ sơ đang chờ xác minh mới có thể được duyệt hoặc từ chối."),409,"teacher_not_pending");
+ }
  if(mode==="reject"){
   if(String(profile.role||"")!=="pending_teacher_verification"){
     throw fail(new Error("Chỉ hồ sơ đang chờ xác minh mới có thể bị từ chối."),409,"teacher_not_pending");
@@ -216,6 +249,13 @@ async function teacherChange(db,decoded,uid,mode){
    if(clean(data.schoolId)===schoolId){
     valid.push(classId);
     classData.set(classId,{...data});
+   }else{
+    const nestedRef=db.collection("schools").doc(schoolId).collection("classes").doc(classId);
+    const nested=await nestedRef.get();
+    if(nested.exists&&clean(nested.data()?.schoolId||schoolId)===schoolId){
+     valid.push(classId);
+     classData.set(classId,{...nested.data()});
+    }
    }
    continue;
   }
@@ -232,15 +272,18 @@ async function teacherChange(db,decoded,uid,mode){
   const topExisting=topMatches.docs.map(d=>({id:d.id,...d.data()}))
    .find(x=>clean(x.schoolId)===schoolId);
   if(topExisting){
+   const owner=clean(topExisting.teacherUid,160);
+   if(owner&&owner!==uid)throw fail(new Error("Lớp này đã thuộc một giáo viên khác."),409,"teacher_class_conflict");
    valid.push(topExisting.id);
    classData.set(topExisting.id,{...topExisting});
   }else{
    const sameClass=await db.collection("schools").doc(schoolId).collection("classes")
     .where("name","==",requestedClassName).limit(5).get();
    if(sameClass.docs[0]){
-    const d=sameClass.docs[0];
+    const d=sameClass.docs[0],data=d.data()||{},owner=clean(data.teacherUid,160);
+    if(owner&&owner!==uid)throw fail(new Error("Lớp này đã thuộc một giáo viên khác."),409,"teacher_class_conflict");
     valid.push(d.id);
-    classData.set(d.id,{...d.data()});
+    classData.set(d.id,{...data});
    }else{
     const created=await db.collection("schools").doc(schoolId).collection("classes").add({
      name:requestedClassName,
@@ -337,7 +380,7 @@ async function deletePack(db,decoded,packId){
  return{packId,deletedAssignments};
 }
 
-async function renameUser(db,decoded,uid,name){
+async function renameUser(db,auth,decoded,uid,name){
   uid=clean(uid,160);
   name=clean(name,120);
   if(!uid)throw fail(new Error("Thiếu UID tài khoản."),400,"missing_uid");
@@ -346,7 +389,17 @@ async function renameUser(db,decoded,uid,name){
   if(!snap.exists)throw fail(new Error("Không tìm thấy tài khoản."),404,"user_not_found");
   const profile=snap.data()||{};
   if(String(profile.email||"").toLowerCase()==="katlearn.admin@gmail.com")throw fail(new Error("Không thể sửa tài khoản Admin hệ thống bằng thao tác này."),403,"admin_protected");
-  await ref.set({displayName:name,name,updatedAt:Date.now()},{merge:true});
+  let authUser;
+  try{authUser=await auth.getUser(uid)}
+  catch(error){throw fail(error,502,"auth_lookup_failed")}
+  const previousAuthName=authUser.displayName||"";
+  try{
+   await auth.updateUser(uid,{displayName:name});
+   await ref.set({displayName:name,name,updatedAt:Date.now()},{merge:true});
+  }catch(error){
+   try{await auth.updateUser(uid,{displayName:previousAuthName||null})}catch(_){}
+   throw fail(error,502,"user_rename_failed");
+  }
   await audit(db,decoded,"user.rename",uid,{displayName:name});
   return{uid,displayName:name};
 }
@@ -396,15 +449,46 @@ async function deleteUser(db,auth,decoded,uid){
     }
     await batch.commit();
   }
-  const assignmentSnap=await db.collection("packAssignments").where("studentUids","array-contains",uid).limit(400).get();
-  if(!assignmentSnap.empty){
-    const batch=db.batch();
-    for(const doc of assignmentSnap.docs){
-      const data=doc.data()||{};
-      const studentUids=Array.isArray(data.studentUids)?data.studentUids.filter(x=>x!==uid):[];
-      batch.set(doc.ref,{studentUids,studentCount:studentUids.length,updatedAt:Date.now()},{merge:true});
-    }
-    await batch.commit();
+  const memberDocs=[];
+  try{
+   const group=await db.collectionGroup("members").where("uid","==",uid).get();
+   for(const doc of group.docs)memberDocs.push(doc);
+  }catch(error){
+   console.warn("[KatLearn admin delete-user member lookup]",messageOf(error));
+  }
+  const memberPaths=new Set(memberDocs.map(doc=>doc.ref.path));
+  for(const classId of classIds){
+   const refPath=db.collection("classes").doc(classId).collection("members").doc(uid);
+   if(!memberPaths.has(refPath.path))memberDocs.push({ref:refPath,id:uid,__fallback:true});
+  }
+  const memberClassIds=[...new Set(memberDocs.map(doc=>doc.ref.parent.parent?.id).filter(Boolean))];
+  for(let i=0;i<memberDocs.length;i+=400){
+   const batch=db.batch();
+   memberDocs.slice(i,i+400).forEach(doc=>batch.delete(doc.ref));
+   if(memberDocs.slice(i,i+400).length)await batch.commit();
+  }
+  for(const memberClassId of memberClassIds){
+   const classRef=db.collection("classes").doc(memberClassId);
+   const classSnap=await classRef.get();
+   if(!classSnap.exists)continue;
+   const countSnap=await classRef.collection("members").count().get();
+   await classRef.set({studentCount:Number(countSnap.data()?.count||0),updatedAt:Date.now()},{merge:true});
+  }
+
+  let updatedAssignments=0;
+  for(let pass=0;pass<10000;pass++){
+   const assignmentSnap=await db.collection("packAssignments").where("studentUids","array-contains",uid).limit(400).get();
+   if(assignmentSnap.empty)break;
+   const batch=db.batch();
+   for(const doc of assignmentSnap.docs){
+    const data=doc.data()||{};
+    const studentUids=Array.isArray(data.studentUids)?data.studentUids.filter(x=>x!==uid):[];
+    batch.set(doc.ref,{studentUids,studentCount:studentUids.length,updatedAt:Date.now()},{merge:true});
+   }
+   await batch.commit();
+   updatedAssignments+=assignmentSnap.size;
+   if(assignmentSnap.size<400)break;
+   if(pass===9999)throw fail(new Error("Không thể dọn hết assignment của tài khoản trong giới hạn an toàn."),504,"user_assignment_cleanup_limit");
   }
   try{await auth.deleteUser(uid)}
   catch(error){
@@ -418,8 +502,8 @@ async function deleteUser(db,auth,decoded,uid){
     for(const doc of accountSnap.docs)batch.delete(doc.ref);
     await batch.commit();
   }
-  await audit(db,decoded,"user.delete",uid,{email,removedClassMemberships:classIds.length,updatedAssignments:assignmentSnap.size});
-  return{uid,removedClassMemberships:classIds.length,updatedAssignments:assignmentSnap.size};
+  await audit(db,decoded,"user.delete",uid,{email,removedClassMemberships:memberDocs.length,updatedAssignments});
+  return{uid,removedClassMemberships:memberDocs.length,updatedAssignments};
 }
 
 async function renameClass(db,decoded,classId,name,grade,description){
@@ -431,13 +515,33 @@ async function renameClass(db,decoded,classId,name,grade,description){
   if(!name)throw fail(new Error("Tên lớp không được để trống."),400,"invalid_class_name");
   const ref=db.collection("classes").doc(classId),snap=await ref.get();
   if(!snap.exists)throw fail(new Error("Không tìm thấy lớp."),404,"class_not_found");
-  const current=snap.data()||{},patch={name,grade,description,updatedAt:Date.now()};
+  const current=snap.data()||{};
+  if(current.deletingAt)throw fail(new Error("Lớp đang được xóa, không thể chỉnh sửa."),409,"class_deleting");
+  const patch={name,grade,description,updatedAt:Date.now()};
   await ref.set(patch,{merge:true});
   if(current.schoolId){
     await db.collection("schools").doc(String(current.schoolId)).collection("classes").doc(classId).set(patch,{merge:true});
   }
   const catalogRef=db.collection("KatLearn_LOPHOC_1").doc(classId),catalogSnap=await catalogRef.get();
   if(catalogSnap.exists&&catalogSnap.data()?.isTemplate!==true)await catalogRef.set(patch,{merge:true});
+
+  const members=await ref.collection("members").get();
+  for(let offset=0;offset<members.docs.length;offset+=150){
+   const chunk=members.docs.slice(offset,offset+150);
+   const profiles=await Promise.all(chunk.map(async member=>{
+    const studentRef=db.collection("users").doc(member.id);
+    const studentSnap=await studentRef.get();
+    return{member,studentRef,student:studentSnap.exists?studentSnap.data()||{}:null};
+   }));
+   const batch=db.batch();
+   for(const x of profiles){
+    batch.set(x.member.ref,{className:name,grade,schoolName:clean(current.schoolName),province:clean(current.province),ward:clean(current.ward),updatedAt:Date.now()},{merge:true});
+    if(x.student&&clean(x.student.classId)===classId){
+     batch.set(x.studentRef,{className:name,updatedAt:Date.now()},{merge:true});
+    }
+   }
+   if(profiles.length)await batch.commit();
+  }
   await audit(db,decoded,"class.update",classId,{name,grade});
   return{classId,name,grade,description};
 }
@@ -447,18 +551,24 @@ async function deleteClass(db,decoded,classId){
   if(!classId)throw fail(new Error("Thiếu ID lớp."),400,"missing_class_id");
   const ref=db.collection("classes").doc(classId),snap=await ref.get();
   if(!snap.exists)throw fail(new Error("Không tìm thấy lớp."),404,"class_not_found");
-  const current=snap.data()||{},schoolId=clean(current.schoolId,160),teacherUid=clean(current.teacherUid,160);
+  const current=snap.data()||{};
+  if(current.deletingAt)throw fail(new Error("Lớp đang được xóa."),409,"class_deleting");
+  const schoolId=clean(current.schoolId,160),teacherUid=clean(current.teacherUid,160);
   const members=await ref.collection("members").get();
   for(let offset=0;offset<members.docs.length;offset+=150){
     const chunk=members.docs.slice(offset,offset+150),batch=db.batch();
     const profiles=await Promise.all(chunk.map(async member=>{
-      const s=await db.collection("users").doc(member.id).get();
-      return{ref:member.ref,studentRef:s.ref,data:s.exists?s.data()||{}:{}};
+      const studentRef=db.collection("users").doc(member.id);
+      const s=await studentRef.get();
+      return{ref:member.ref,studentRef,data:s.exists?s.data()||{}:null};
     }));
     for(const x of profiles){
-      const ids=Array.isArray(x.data.joinedClassIds)?x.data.joinedClassIds.filter(id=>id!==classId):[];
       batch.delete(x.ref);
-      batch.set(x.studentRef,{joinedClassIds:ids,studentAccountType:ids.length?"class":"free",updatedAt:Date.now()},{merge:true});
+      if(x.data){
+       const ids=Array.isArray(x.data.joinedClassIds)?x.data.joinedClassIds.filter(id=>id!==classId):[];
+       const active=await activeClassProfile(db,ids);
+       batch.set(x.studentRef,{joinedClassIds:ids,studentAccountType:ids.length?"class":"free",...active,updatedAt:Date.now()},{merge:true});
+      }
     }
     await batch.commit();
   }
@@ -515,7 +625,26 @@ async function updateSchool(db,decoded,schoolId,name,province,ward,schoolLevel){
   const patch={name,province,ward,schoolLevel,updatedAt:Date.now()};
   await ref.set(patch,{merge:true});
   await db.collection("KatLearn_Teacher_Schools").doc(schoolId).set({name,province,ward,schoolLevel,updatedAt:Date.now()},{merge:true});
-  await audit(db,decoded,"school.update",schoolId,{name,province,ward,schoolLevel});
+
+  const relatedUsers=await db.collection("users").where("schoolId","==",schoolId).get();
+  for(let i=0;i<relatedUsers.docs.length;i+=400){
+   const batch=db.batch();
+   relatedUsers.docs.slice(i,i+400).forEach(doc=>batch.set(doc.ref,{schoolName:name,province,ward,updatedAt:Date.now()},{merge:true}));
+   if(relatedUsers.docs.slice(i,i+400).length)await batch.commit();
+  }
+  const relatedClasses=await db.collection("classes").where("schoolId","==",schoolId).get();
+  for(let i=0;i<relatedClasses.docs.length;i+=400){
+   const batch=db.batch();
+   relatedClasses.docs.slice(i,i+400).forEach(doc=>batch.set(doc.ref,{schoolName:name,province,ward,updatedAt:Date.now()},{merge:true}));
+   if(relatedClasses.docs.slice(i,i+400).length)await batch.commit();
+  }
+  const nestedClasses=await ref.collection("classes").get();
+  for(let i=0;i<nestedClasses.docs.length;i+=400){
+   const batch=db.batch();
+   nestedClasses.docs.slice(i,i+400).forEach(doc=>batch.set(doc.ref,{schoolName:name,province,ward,updatedAt:Date.now()},{merge:true}));
+   if(nestedClasses.docs.slice(i,i+400).length)await batch.commit();
+  }
+  await audit(db,decoded,"school.update",schoolId,{name,province,ward,schoolLevel,updatedUsers:relatedUsers.size,updatedClasses:relatedClasses.size});
   return{schoolId,...patch};
 }
 
@@ -621,7 +750,7 @@ module.exports=async(req,res)=>{
     const{db,auth,decoded}=await requireAdmin(req);
     const body=req.body&&typeof req.body==="object"?req.body:{};
     const action=clean(body.action,50);
-    if(action==="rename-user")return send(res,200,{ok:true,...await renameUser(db,decoded,body.uid,body.name)},origin);
+    if(action==="rename-user")return send(res,200,{ok:true,...await renameUser(db,auth,decoded,body.uid,body.name)},origin);
     if(action==="disable-user")return send(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,true)},origin);
     if(action==="enable-user")return send(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,false)},origin);
     if(action==="reset-user-stats")return send(res,200,{ok:true,...await resetUserStats(db,decoded,body.uid)},origin);
