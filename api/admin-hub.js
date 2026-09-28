@@ -378,7 +378,7 @@ async function deletePack(db,decoded,packId){
   if(pass===9999)throw fail(new Error("Không thể dọn hết assignment của bộ từ trong giới hạn an toàn."),504,"pack_assignment_cleanup_limit");
  }
 
- await ref.delete();
+ await db.recursiveDelete(ref);
  await audit(db,decoded,"pack.delete",packId,{
   name:snap.data()?.name||"",
   deletedAssignments
@@ -470,11 +470,12 @@ async function deleteUser(db,auth,decoded,uid){
   const profile=snap.data()||{},email=String(profile.email||"").toLowerCase();
   if(uid===decoded.uid||email==="katlearn.admin@gmail.com")throw fail(new Error("Không thể xóa tài khoản Admin hiện tại."),403,"admin_protected");
   if(String(profile.role||"").toLowerCase()==="teacher"){
-   const [ownedClasses,ownedPacks]=await Promise.all([
+   const [ownedClasses,ownedPacks,ownedNestedClasses]=await Promise.all([
     db.collection("classes").where("teacherUid","==",uid).limit(1).get(),
-    db.collection("publicPacks").where("createdByUid","==",uid).limit(1).get()
+    db.collection("publicPacks").where("createdByUid","==",uid).limit(1).get(),
+    db.collectionGroup("classes").where("teacherUid","==",uid).limit(1).get()
    ]);
-   if(!ownedClasses.empty||!ownedPacks.empty){
+   if(!ownedClasses.empty||!ownedPacks.empty||!ownedNestedClasses.empty){
     throw fail(new Error("Không thể xóa giáo viên khi tài khoản vẫn còn lớp học hoặc bộ từ do tài khoản này quản lý. Hãy xử lý các tài nguyên đó trước."),409,"teacher_owns_resources");
    }
   }
@@ -532,7 +533,7 @@ async function deleteUser(db,auth,decoded,uid){
     const code=String(error?.code||"");
     if(code!=="auth/user-not-found")throw fail(error,502,"auth_delete_failed");
   }
-  await ref.delete();
+  await db.recursiveDelete(ref);
   let deletedAccounts=0;
   for(let pass=0;pass<10000;pass++){
    const accountSnap=await db.collection("accounts").where("uid","==",uid).limit(400).get();
@@ -688,6 +689,13 @@ async function updateSchool(db,decoded,schoolId,name,province,ward,schoolLevel){
   }
 
   let syncedMembers=0;
+  const schoolMemberDocs=await db.collectionGroup("members").where("schoolId","==",schoolId).get();
+  for(let i=0;i<schoolMemberDocs.docs.length;i+=400){
+   const batch=db.batch();
+   const chunk=schoolMemberDocs.docs.slice(i,i+400);
+   chunk.forEach(doc=>batch.set(doc.ref,{schoolName:name,province,ward,updatedAt:Date.now()},{merge:true}));
+   if(chunk.length){await batch.commit();syncedMembers+=chunk.length}
+  }
   for(const classDoc of relatedClasses.docs){
    const memberDocs=await classDoc.ref.collection("members").get();
    for(let i=0;i<memberDocs.docs.length;i+=400){
@@ -710,11 +718,12 @@ async function deleteSchool(db,decoded,schoolId){
   if(String(school.source||"").startsWith("thanhtungct7")||String(school.sourceType||"").includes("national")){
     throw fail(new Error("Không xóa trực tiếp trường thuộc National Catalog. Hãy xử lý từ Catalog."),409,"catalog_school_protected");
   }
-  const [usersSnap,classesSnap]=await Promise.all([
+  const [usersSnap,classesSnap,nestedClassesSnap]=await Promise.all([
     db.collection("users").where("schoolId","==",schoolId).limit(1).get(),
-    db.collection("classes").where("schoolId","==",schoolId).limit(1).get()
+    db.collection("classes").where("schoolId","==",schoolId).limit(1).get(),
+    db.collectionGroup("classes").where("schoolId","==",schoolId).limit(1).get()
   ]);
-  if(!usersSnap.empty||!classesSnap.empty)throw fail(new Error("Không thể xóa trường đang có tài khoản hoặc lớp liên kết."),409,"school_in_use");
+  if(!usersSnap.empty||!classesSnap.empty||!nestedClassesSnap.empty)throw fail(new Error("Không thể xóa trường đang có tài khoản hoặc lớp liên kết."),409,"school_in_use");
   const batch=db.batch();
   batch.delete(ref);
   batch.delete(db.collection("KatLearn_Teacher_Schools").doc(schoolId));
