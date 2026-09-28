@@ -12,8 +12,19 @@ const ALLOWED_ORIGINS=new Set([
 
 function init(){
   if(!getApps().length){
-    const raw=String(process.env.FIREBASE_SERVICE_ACCOUNT_JSON||"").trim();
-    const encoded=String(process.env.FIREBASE_SERVICE_ACCOUNT_JSON_BASE64||"").trim();
+    const raw=String(
+      process.env.FIREBASE_SERVICE_ACCOUNT_JSON||
+      process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT||
+      process.env.FIREBASE_SERVICE_ACCOUNT||
+      process.env.GOOGLE_CREDENTIALS_JSON||
+      ""
+    ).trim();
+    const encoded=String(
+      process.env.FIREBASE_SERVICE_ACCOUNT_JSON_BASE64||
+      process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_BASE64||
+      process.env.GOOGLE_CREDENTIALS_JSON_BASE64||
+      ""
+    ).trim();
     let serviceAccount=null;
     if(raw){
       try{serviceAccount=JSON.parse(raw)}catch(_){throw Object.assign(new Error("FIREBASE_SERVICE_ACCOUNT_JSON is invalid on the lms-katlearn server."),{status:503,code:"firebase_credentials_invalid"})}
