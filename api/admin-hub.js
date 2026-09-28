@@ -803,14 +803,12 @@ module.exports=async(req,res)=>{
   const origin=String(req.headers?.origin||"");
   if(req.method==="OPTIONS"){
     const h={...corsHeaders(origin),"Content-Length":"0"};
-    if(typeof res?.set==="function")return res.status(204).set(h).end();
-    if(typeof res?.setHeader==="function"){
+    if(res&&typeof res.setHeader==="function"){
       for(const[key,value]of Object.entries(h))res.setHeader(key,value);
-      return res.status(204).end();
+      res.statusCode=204;
+      return typeof res.end==="function"?res.end() : new Response(null,{status:204,headers:h});
     }
-    const wh=new Headers();
-    for(const[key,value]of Object.entries(h))wh.set(key,value);
-    return new Response(null,{status:204,headers:wh});
+    return new Response(null,{status:204,headers:h});
   }
   try{
     if(req.method==="GET"){
