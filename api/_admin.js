@@ -10,6 +10,30 @@ const ALLOWED_ORIGINS=new Set([
   "http://localhost:5173"
 ]);
 
+function credentialEnvStatus(){
+  const names=[
+    "FIREBASE_SERVICE_ACCOUNT_JSON",
+    "FIREBASE_ADMIN_SERVICE_ACCOUNT",
+    "FIREBASE_SERVICE_ACCOUNT",
+    "GOOGLE_CREDENTIALS_JSON",
+    "FIREBASE_SERVICE_ACCOUNT_JSON_BASE64",
+    "FIREBASE_ADMIN_SERVICE_ACCOUNT_BASE64",
+    "GOOGLE_CREDENTIALS_JSON_BASE64",
+    "FIREBASE_PROJECT_ID",
+    "FIREBASE_ADMIN_PROJECT_ID",
+    "GOOGLE_CLOUD_PROJECT",
+    "FIREBASE_CLIENT_EMAIL",
+    "FIREBASE_ADMIN_CLIENT_EMAIL",
+    "GOOGLE_CLIENT_EMAIL",
+    "FIREBASE_PRIVATE_KEY",
+    "FIREBASE_ADMIN_PRIVATE_KEY",
+    "GOOGLE_PRIVATE_KEY"
+  ];
+  const present={};
+  for(const name of names)present[name]=Boolean(String(process.env[name]||"").trim());
+  return present;
+}
+
 function init(){
   if(!getApps().length){
     const raw=String(
@@ -52,7 +76,14 @@ function init(){
       ).replace(/\\n/g,"\n").trim();
       if(projectId&&clientEmail&&privateKey)serviceAccount={project_id:projectId,client_email:clientEmail,private_key:privateKey};
     }
-    if(!serviceAccount)throw Object.assign(new Error("Firebase Admin credentials are not configured on the lms-katlearn server. Configure FIREBASE_SERVICE_ACCOUNT_JSON/FIREBASE_ADMIN_SERVICE_ACCOUNT/GOOGLE_CREDENTIALS_JSON, a BASE64 variant, or FIREBASE_PROJECT_ID/FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY."),{status:503,code:"firebase_credentials_missing"});
+    if(!serviceAccount){
+      const out=Object.assign(
+        new Error("Firebase Admin credentials are not configured on the lms-katlearn server."),
+        {status:503,code:"firebase_credentials_missing"}
+      );
+      out.credentialEnv=credentialEnvStatus();
+      throw out;
+    }
     if(!serviceAccount.project_id||!serviceAccount.client_email||!serviceAccount.private_key){
       throw Object.assign(new Error("Firebase Admin credentials are incomplete: project_id, client_email, and private_key are required."),{status:503,code:"firebase_credentials_incomplete"});
     }
