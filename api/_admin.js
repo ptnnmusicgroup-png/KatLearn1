@@ -15,16 +15,16 @@ function init(){
     const raw=String(process.env.FIREBASE_SERVICE_ACCOUNT_JSON||"").trim();
     let serviceAccount=null;
     if(raw){
-      try{serviceAccount=JSON.parse(raw)}catch(_){throw Object.assign(new Error("FIREBASE_SERVICE_ACCOUNT_JSON is invalid on the lms-katlearn server."),{status:503})}
+      try{serviceAccount=JSON.parse(raw)}catch(_){throw Object.assign(new Error("FIREBASE_SERVICE_ACCOUNT_JSON is invalid on the lms-katlearn server."),{status:503,code:"firebase_credentials_invalid"})}
     }else{
       const projectId=String(process.env.FIREBASE_PROJECT_ID||process.env.FIREBASE_ADMIN_PROJECT_ID||"").trim();
       const clientEmail=String(process.env.FIREBASE_CLIENT_EMAIL||process.env.FIREBASE_ADMIN_CLIENT_EMAIL||"").trim();
-      const privateKey=String(process.env.FIREBASE_PRIVATE_KEY||process.env.FIREBASE_ADMIN_PRIVATE_KEY||"").replace(/\\n/g,"\n").trim();
-      if(projectId&&clientEmail&&privateKey)serviceAccount={project_id:projectId,client_email:clientEmail,private_key:privateKey};
+      const privateKey=String(process.env.FIREBASE_PRIVATE_KEY||process.env.FIREBASE_ADMIN_PRIVATE_KEY||"").replace(/\n/g,"\n").trim();
+      if(projectId&&clientEmail&&privateKey)serviceAccount={project_id:projectId,client_email:clientEmail,private_key:privateKey.replace(/\\n/g,"\n")};
     }
-    if(!serviceAccount)throw Object.assign(new Error("Firebase Admin credentials are not configured on the lms-katlearn server. Configure FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_PROJECT_ID/FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY."),{status:503});
+    if(!serviceAccount)throw Object.assign(new Error("Firebase Admin credentials are not configured on the lms-katlearn server. Configure FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_PROJECT_ID/FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY."),{status:503,code:"firebase_credentials_missing"});
     if(!serviceAccount.project_id||!serviceAccount.client_email||!serviceAccount.private_key){
-      throw Object.assign(new Error("Firebase Admin credentials are incomplete: project_id, client_email, and private_key are required."),{status:503});
+      throw Object.assign(new Error("Firebase Admin credentials are incomplete: project_id, client_email, and private_key are required."),{status:503,code:"firebase_credentials_incomplete"});
     }
     initializeApp({credential:cert(serviceAccount)});
   }
@@ -36,23 +36,35 @@ function corsHeaders(origin){
   if(ALLOWED_ORIGINS.has(origin)){
     h["Access-Control-Allow-Origin"]=origin;
     h["Access-Control-Allow-Methods"]="GET,POST,OPTIONS";
-    h["Access-Control-Allow-Headers"]="authorization,content-type";
+    h["Access-Control-Allow-Headers"]="authorization,content-type,accept";
     h["Vary"]="Origin";
   }
   return h;
 }
 
 function send(res,status,body,origin=""){
-  return res.status(status).set(corsHeaders(origin)).json(body);
+  const headers=corsHeaders(origin);
+  if(typeof res?.set==="function"){
+    return res.status(status).set(headers).json(body);
+  }
+  if(typeof res?.setHeader==="function"){
+    for(const[key,value]of Object.entries(headers))res.setHeader(key,value);
+  }
+  if(typeof res?.status==="function"&&typeof res?.json==="function"){
+    return res.status(status).json(body);
+  }
+  const responseHeaders=new Headers();
+  for(const[key,value]of Object.entries(headers))responseHeaders.set(key,value);
+  return new Response(JSON.stringify(body),{status,headers:responseHeaders});
 }
 
 async function requireAdmin(req){
   const match=/^Bearer\s+(.+)$/i.exec(String(req.headers?.authorization||""));
-  if(!match)throw Object.assign(new Error("Bạn cần đăng nhập Admin."),{status:401});
+  if(!match)throw Object.assign(new Error("Bạn cần đăng nhập Admin."),{status:401,code:"missing_admin_token"});
   const{auth,db}=init();
   let decoded;
   try{
-    decoded=await auth.verifyIdToken(match[1]);
+    decoded=await auth.verifyIdToken(match[1],true);
   }catch(error){
     const code=String(error?.code||"auth_error");
     const message=code==="auth/id-token-expired"||code==="auth/id-token-revoked"
