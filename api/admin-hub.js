@@ -247,14 +247,18 @@ async function teacherChange(db,decoded,uid,mode){
   if(top.exists){
    const data=top.data()||{};
    if(clean(data.schoolId)===schoolId){
+    const owner=clean(data.teacherUid,160);
+    if(owner&&owner!==uid)throw fail(new Error("Một lớp trong hồ sơ này đã thuộc giáo viên khác."),409,"teacher_class_conflict");
     valid.push(classId);
     classData.set(classId,{...data});
    }else{
     const nestedRef=db.collection("schools").doc(schoolId).collection("classes").doc(classId);
     const nested=await nestedRef.get();
     if(nested.exists&&clean(nested.data()?.schoolId||schoolId)===schoolId){
+     const nestedData=nested.data()||{},owner=clean(nestedData.teacherUid,160);
+     if(owner&&owner!==uid)throw fail(new Error("Một lớp trong hồ sơ này đã thuộc giáo viên khác."),409,"teacher_class_conflict");
      valid.push(classId);
-     classData.set(classId,{...nested.data()});
+     classData.set(classId,{...nestedData});
     }
    }
    continue;
@@ -262,8 +266,10 @@ async function teacherChange(db,decoded,uid,mode){
   const nestedRef=db.collection("schools").doc(schoolId).collection("classes").doc(classId);
   const nested=await nestedRef.get();
   if(nested.exists&&clean(nested.data()?.schoolId||schoolId)===schoolId){
+   const nestedData=nested.data()||{},owner=clean(nestedData.teacherUid,160);
+   if(owner&&owner!==uid)throw fail(new Error("Một lớp trong hồ sơ này đã thuộc giáo viên khác."),409,"teacher_class_conflict");
    valid.push(classId);
-   classData.set(classId,{...nested.data()});
+   classData.set(classId,{...nestedData});
   }
  }
 
