@@ -406,8 +406,20 @@ async function renameUser(db,auth,decoded,uid,name){
    try{await auth.updateUser(uid,{displayName:previousAuthName||null})}catch(_){}
    throw fail(error,502,"user_rename_failed");
   }
-  await audit(db,decoded,"user.rename",uid,{displayName:name});
-  return{uid,displayName:name};
+  let syncedMembers=0;
+  try{
+   const memberDocs=await db.collectionGroup("members").where("uid","==",uid).get();
+   for(let i=0;i<memberDocs.docs.length;i+=400){
+    const batch=db.batch();
+    memberDocs.docs.slice(i,i+400).forEach(doc=>batch.set(doc.ref,{displayName:name,updatedAt:Date.now()},{merge:true}));
+    const chunkSize=memberDocs.docs.slice(i,i+400).length;
+    if(chunkSize){await batch.commit();syncedMembers+=chunkSize}
+   }
+  }catch(error){
+   console.warn("[KatLearn admin rename-user member sync]",messageOf(error));
+  }
+  await audit(db,decoded,"user.rename",uid,{displayName:name,syncedMembers});
+  return{uid,displayName:name,syncedMembers};
 }
 
 async function setUserDisabled(db,auth,decoded,uid,disabled){
@@ -417,7 +429,11 @@ async function setUserDisabled(db,auth,decoded,uid,disabled){
   if(!snap.exists)throw fail(new Error("Không tìm thấy tài khoản."),404,"user_not_found");
   const profile=snap.data()||{},email=String(profile.email||"").toLowerCase();
   if(email==="katlearn.admin@gmail.com")throw fail(new Error("Không thể khóa tài khoản Admin hệ thống."),403,"admin_protected");
-  const nextDisabled=Boolean(disabled),previousDisabled=Boolean(profile.disabled);
+  const nextDisabled=Boolean(disabled);
+  let authUser;
+  try{authUser=await auth.getUser(uid)}
+  catch(error){throw fail(error,502,"auth_lookup_failed")}
+  const previousDisabled=Boolean(authUser.disabled);
   try{await auth.updateUser(uid,{disabled:nextDisabled})}
   catch(error){throw fail(error,502,"auth_update_failed")}
   try{
@@ -670,7 +686,18 @@ async function updateSchool(db,decoded,schoolId,name,province,ward,schoolLevel){
    nestedClasses.docs.slice(i,i+400).forEach(doc=>batch.set(doc.ref,{schoolName:name,province,ward,updatedAt:Date.now()},{merge:true}));
    if(nestedClasses.docs.slice(i,i+400).length)await batch.commit();
   }
-  await audit(db,decoded,"school.update",schoolId,{name,province,ward,schoolLevel,updatedUsers:relatedUsers.size,updatedClasses:relatedClasses.size});
+
+  let syncedMembers=0;
+  for(const classDoc of relatedClasses.docs){
+   const memberDocs=await classDoc.ref.collection("members").get();
+   for(let i=0;i<memberDocs.docs.length;i+=400){
+    const batch=db.batch();
+    const chunk=memberDocs.docs.slice(i,i+400);
+    chunk.forEach(doc=>batch.set(doc.ref,{schoolName:name,province,ward,updatedAt:Date.now()},{merge:true}));
+    if(chunk.length){await batch.commit();syncedMembers+=chunk.length}
+   }
+  }
+  await audit(db,decoded,"school.update",schoolId,{name,province,ward,schoolLevel,updatedUsers:relatedUsers.size,updatedClasses:relatedClasses.size,syncedMembers});
   return{schoolId,...patch};
 }
 
