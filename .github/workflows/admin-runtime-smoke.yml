@@ -20,6 +20,14 @@ jobs:
             sleep 10
           done
           test "$ok" = "1"
+      - name: Diagnose Firebase Admin credential env presence
+        run: |
+          set -euo pipefail
+          body="$(mktemp)"
+          code="$(curl -sS -o "$body" -w '%{http_code}' --max-time 30 -H 'Authorization: Bearer diagnostic-invalid-token' 'https://lms-katlearn.vercel.app/api/admin-hub?section=overview' || true)"
+          echo "Diagnostic HTTP $code"
+          cat "$body" || true
+
       - name: Check Teacher Admin proxy without auth
         run: |
           set -euo pipefail
