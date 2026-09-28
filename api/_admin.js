@@ -13,16 +13,20 @@ const ALLOWED_ORIGINS=new Set([
 function init(){
   if(!getApps().length){
     const raw=String(process.env.FIREBASE_SERVICE_ACCOUNT_JSON||"").trim();
+    const encoded=String(process.env.FIREBASE_SERVICE_ACCOUNT_JSON_BASE64||"").trim();
     let serviceAccount=null;
     if(raw){
       try{serviceAccount=JSON.parse(raw)}catch(_){throw Object.assign(new Error("FIREBASE_SERVICE_ACCOUNT_JSON is invalid on the lms-katlearn server."),{status:503,code:"firebase_credentials_invalid"})}
+    }else if(encoded){
+      try{serviceAccount=JSON.parse(Buffer.from(encoded,"base64").toString("utf8"))}
+      catch(_){throw Object.assign(new Error("FIREBASE_SERVICE_ACCOUNT_JSON_BASE64 is invalid on the lms-katlearn server."),{status:503,code:"firebase_credentials_invalid"})}
     }else{
       const projectId=String(process.env.FIREBASE_PROJECT_ID||process.env.FIREBASE_ADMIN_PROJECT_ID||"").trim();
       const clientEmail=String(process.env.FIREBASE_CLIENT_EMAIL||process.env.FIREBASE_ADMIN_CLIENT_EMAIL||"").trim();
       const privateKey=String(process.env.FIREBASE_PRIVATE_KEY||process.env.FIREBASE_ADMIN_PRIVATE_KEY||"").replace(/\\n/g,"\n").trim();
       if(projectId&&clientEmail&&privateKey)serviceAccount={project_id:projectId,client_email:clientEmail,private_key:privateKey};
     }
-    if(!serviceAccount)throw Object.assign(new Error("Firebase Admin credentials are not configured on the lms-katlearn server. Configure FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_PROJECT_ID/FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY."),{status:503,code:"firebase_credentials_missing"});
+    if(!serviceAccount)throw Object.assign(new Error("Firebase Admin credentials are not configured on the lms-katlearn server. Configure FIREBASE_SERVICE_ACCOUNT_JSON, FIREBASE_SERVICE_ACCOUNT_JSON_BASE64, or FIREBASE_PROJECT_ID/FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY."),{status:503,code:"firebase_credentials_missing"});
     if(!serviceAccount.project_id||!serviceAccount.client_email||!serviceAccount.private_key){
       throw Object.assign(new Error("Firebase Admin credentials are incomplete: project_id, client_email, and private_key are required."),{status:503,code:"firebase_credentials_incomplete"});
     }
