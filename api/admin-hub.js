@@ -572,7 +572,6 @@ async function deleteClass(db,decoded,classId){
   const ref=db.collection("classes").doc(classId),snap=await ref.get();
   if(!snap.exists)throw fail(new Error("Không tìm thấy lớp."),404,"class_not_found");
   const current=snap.data()||{};
-  if(current.deletingAt)throw fail(new Error("Lớp đang được xóa."),409,"class_deleting");
   const schoolId=clean(current.schoolId,160),teacherUid=clean(current.teacherUid,160);
   const members=await ref.collection("members").get();
   for(let offset=0;offset<members.docs.length;offset+=150){
