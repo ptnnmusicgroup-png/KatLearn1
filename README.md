@@ -23,9 +23,17 @@ Trong Firebase Console, bật **Authentication → Sign-in method → Google** v
 
 Không dán Gemini API key vào Firebase config hoặc JavaScript chạy trên trình duyệt. Khóa phải được giữ ở biến môi trường phía máy chủ. Gemini API hiện có Free Tier cho một số model, nhưng vẫn có giới hạn lưu lượng và chính sách dữ liệu riêng của Google.
 
-## Kích hoạt tài khoản Admin
+## Kích hoạt backend Admin
 
-Tài khoản admin của KatLearn là `katlearn.admin@gmail.com`. Bật **Email/Password** trong Firebase Authentication, rồi tại website chọn **Tạo tài khoản Email mới** và dùng đúng email này. Sau đó Publish `firestore.rules`; Rules sẽ tự cấp quyền xuất bản pack cho đúng email đó. Không cần service-account JSON hoặc chạy script cấp claim.
+Tài khoản admin của KatLearn là `katlearn.admin@gmail.com`. Ngoài Firebase Authentication + Firestore Rules, các API quản trị chạy phía server còn cần **Firebase Admin credentials** trong môi trường triển khai.
+
+Trên Vercel project `lms-katlearn`, vào **Settings → Environment Variables** và thêm một trong hai cách:
+
+- `FIREBASE_SERVICE_ACCOUNT_JSON`: toàn bộ JSON service account.
+- Hoặc `FIREBASE_SERVICE_ACCOUNT_JSON_BASE64`: bản Base64 của toàn bộ JSON service account.
+- Phương án thứ ba là ba biến `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`.
+
+Các biến phải được bật cho **Production** và cần redeploy sau khi thay đổi. Không commit service-account JSON vào GitHub.
 
 ## Nếu Firebase không đăng nhập được
 
