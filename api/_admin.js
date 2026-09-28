@@ -44,18 +44,13 @@ function corsHeaders(origin){
 
 function send(res,status,body,origin=""){
   const headers=corsHeaders(origin);
-  if(typeof res?.set==="function"){
-    return res.status(status).set(headers).json(body);
-  }
-  if(typeof res?.setHeader==="function"){
+  const payload=JSON.stringify(body);
+  if(res&&typeof res.setHeader==="function"){
     for(const[key,value]of Object.entries(headers))res.setHeader(key,value);
+    res.statusCode=Number(status)||200;
+    if(typeof res.end==="function")return res.end(payload);
   }
-  if(typeof res?.status==="function"&&typeof res?.json==="function"){
-    return res.status(status).json(body);
-  }
-  const responseHeaders=new Headers();
-  for(const[key,value]of Object.entries(headers))responseHeaders.set(key,value);
-  return new Response(JSON.stringify(body),{status,headers:responseHeaders});
+  return new Response(payload,{status:Number(status)||200,headers});
 }
 
 async function requireAdmin(req){
