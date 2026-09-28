@@ -19,7 +19,13 @@ const SHOP_ITEMS={
   'shop-pastel-cat':{name:'Pastel Kitty',price:3000,image:'https://images.unsplash.com/photo-1595752776689-aebef37b5d32?auto=format&fit=crop&w=900&q=82'}
 };
 function headers(){return{"Content-Type":"application/json","Cache-Control":"no-store"}}
-function send(res,status,body){return res.status(status).set(headers()).json(body)}
+function send(res,status,body){
+  const h=headers();
+  if(typeof res?.set==="function")return res.status(status).set(h).json(body);
+  if(typeof res?.setHeader==="function")for(const[key,value]of Object.entries(h))res.setHeader(key,value);
+  if(typeof res?.status==="function"&&typeof res?.json==="function")return res.status(status).json(body);
+  return new Response(JSON.stringify(body),{status,headers:h});
+}
 async function user(req){
   const match=/^Bearer\s+(.+)$/i.exec(req.headers?.authorization||"");
   if(!match)throw Object.assign(new Error("Bạn cần đăng nhập."),{status:401});
