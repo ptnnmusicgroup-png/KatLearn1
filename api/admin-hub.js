@@ -411,11 +411,17 @@ async function setUserDisabled(db,auth,decoded,uid,disabled){
   if(!snap.exists)throw fail(new Error("Không tìm thấy tài khoản."),404,"user_not_found");
   const profile=snap.data()||{},email=String(profile.email||"").toLowerCase();
   if(email==="katlearn.admin@gmail.com")throw fail(new Error("Không thể khóa tài khoản Admin hệ thống."),403,"admin_protected");
-  try{await auth.updateUser(uid,{disabled:Boolean(disabled)})}
+  const nextDisabled=Boolean(disabled),previousDisabled=Boolean(profile.disabled);
+  try{await auth.updateUser(uid,{disabled:nextDisabled})}
   catch(error){throw fail(error,502,"auth_update_failed")}
-  await ref.set({disabled:Boolean(disabled),updatedAt:Date.now()},{merge:true});
-  await audit(db,decoded,disabled?"user.disable":"user.enable",uid,{email});
-  return{uid,disabled:Boolean(disabled)};
+  try{
+   await ref.set({disabled:nextDisabled,updatedAt:Date.now()},{merge:true});
+  }catch(error){
+   try{await auth.updateUser(uid,{disabled:previousDisabled})}catch(_){}
+   throw fail(error,502,"user_status_sync_failed");
+  }
+  await audit(db,decoded,nextDisabled?"user.disable":"user.enable",uid,{email});
+  return{uid,disabled:nextDisabled};
 }
 
 async function resetUserStats(db,decoded,uid){
@@ -441,6 +447,15 @@ async function deleteUser(db,auth,decoded,uid){
   if(!snap.exists)throw fail(new Error("Không tìm thấy hồ sơ tài khoản."),404,"user_not_found");
   const profile=snap.data()||{},email=String(profile.email||"").toLowerCase();
   if(uid===decoded.uid||email==="katlearn.admin@gmail.com")throw fail(new Error("Không thể xóa tài khoản Admin hiện tại."),403,"admin_protected");
+  if(String(profile.role||"").toLowerCase()==="teacher"){
+   const [ownedClasses,ownedPacks]=await Promise.all([
+    db.collection("classes").where("teacherUid","==",uid).limit(1).get(),
+    db.collection("publicPacks").where("createdByUid","==",uid).limit(1).get()
+   ]);
+   if(!ownedClasses.empty||!ownedPacks.empty){
+    throw fail(new Error("Không thể xóa giáo viên khi tài khoản vẫn còn lớp học hoặc bộ từ do tài khoản này quản lý. Hãy xử lý các tài nguyên đó trước."),409,"teacher_owns_resources");
+   }
+  }
   const classIds=Array.isArray(profile.joinedClassIds)?[...new Set(profile.joinedClassIds.map(x=>clean(x,160)).filter(Boolean))]:[];
   for(let i=0;i<classIds.length;i+=150){
     const batch=db.batch();
@@ -496,14 +511,19 @@ async function deleteUser(db,auth,decoded,uid){
     if(code!=="auth/user-not-found")throw fail(error,502,"auth_delete_failed");
   }
   await ref.delete();
-  const accountSnap=await db.collection("accounts").where("uid","==",uid).limit(20).get();
-  if(!accountSnap.empty){
-    const batch=db.batch();
-    for(const doc of accountSnap.docs)batch.delete(doc.ref);
-    await batch.commit();
+  let deletedAccounts=0;
+  for(let pass=0;pass<10000;pass++){
+   const accountSnap=await db.collection("accounts").where("uid","==",uid).limit(400).get();
+   if(accountSnap.empty)break;
+   const batch=db.batch();
+   for(const doc of accountSnap.docs)batch.delete(doc.ref);
+   await batch.commit();
+   deletedAccounts+=accountSnap.size;
+   if(accountSnap.size<400)break;
+   if(pass===9999)throw fail(new Error("Không thể dọn hết account liên kết trong giới hạn an toàn."),504,"account_cleanup_limit");
   }
-  await audit(db,decoded,"user.delete",uid,{email,removedClassMemberships:memberDocs.length,updatedAssignments});
-  return{uid,removedClassMemberships:memberDocs.length,updatedAssignments};
+  await audit(db,decoded,"user.delete",uid,{email,removedClassMemberships:memberDocs.length,updatedAssignments,deletedAccounts});
+  return{uid,removedClassMemberships:memberDocs.length,updatedAssignments,deletedAccounts};
 }
 
 async function renameClass(db,decoded,classId,name,grade,description){
@@ -586,8 +606,9 @@ async function deleteClass(db,decoded,classId){
       if(teacherUid){
         const teacherRef=db.collection("users").doc(teacherUid),teacherSnap=await teacherRef.get();
         if(teacherSnap.exists){
-          const ids=Array.isArray(teacherSnap.data()?.classIds)?teacherSnap.data().classIds.filter(id=>id!==classId):[];
-          batch.set(teacherRef,{classIds:ids,updatedAt:Date.now()},{merge:true});
+          const teacher=teacherSnap.data()||{},ids=Array.isArray(teacher.classIds)?teacher.classIds.filter(id=>id!==classId):[];
+          const nextCatalog=clean(teacher.catalogClassId,160)===classId?(ids[0]||""):clean(teacher.catalogClassId,160);
+          batch.set(teacherRef,{classIds:ids,catalogClassId:nextCatalog,updatedAt:Date.now()},{merge:true});
         }
       }
     }
