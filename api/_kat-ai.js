@@ -10,6 +10,12 @@ async function requireUser(req){const header=req.headers?.authorization||"";cons
 function rateLimit(uid,bucket,limit,windowMs=60000){const now=Date.now(),key=uid+":"+bucket,old=buckets.get(key)||[],fresh=old.filter(t=>now-t<windowMs);if(fresh.length>=limit){const retryAfter=Math.max(1,Math.ceil((windowMs-(now-fresh[0]))/1000));throw Object.assign(new Error("Bạn dùng Kat AI hơi nhanh. Thử lại sau "+retryAfter+" giây nhé."),{status:429,retryAfter})}fresh.push(now);buckets.set(key,fresh)}
 function safetyIdentifier(uid){return crypto.createHash("sha256").update(String(uid)).digest("hex").slice(0,64)}
 function jsonHeaders(extra={}){return{"Content-Type":"application/json","Cache-Control":"no-store",...extra}}
-function send(res,status,body,extra={}){return res.status(status).set(jsonHeaders(extra)).json(body)}
+function send(res,status,body,extra={}){
+  const h=jsonHeaders(extra);
+  if(typeof res?.set==="function")return res.status(status).set(h).json(body);
+  if(typeof res?.setHeader==="function")for(const[key,value]of Object.entries(h))res.setHeader(key,value);
+  if(typeof res?.status==="function"&&typeof res?.json==="function")return res.status(status).json(body);
+  return new Response(JSON.stringify(body),{status,headers:h});
+}
 function method(res,allowed="POST"){if(res.req.method!==allowed){send(res,405,{error:"Method Not Allowed"});return false}return true}
 module.exports={requireUser,rateLimit,safetyIdentifier,generateGemini,jsonHeaders,send,method};
