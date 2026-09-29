@@ -157,18 +157,44 @@ input:focus,select:focus,textarea:focus{
 #form .actions{align-items:center}
 #form .actions .link{margin-left:2px}
 @media(max-width:900px){
-  .auth-screen,body>main{grid-template-columns:1fr;width:min(700px,calc(100% - 30px));gap:22px;padding:28px 0}
-  .hero{text-align:center;max-width:none}.hero .back{display:inline-flex}
+  .auth-screen,body>main{
+    grid-template-columns:1fr;
+    width:min(700px,calc(100% - clamp(20px,6vw,30px)));
+    gap:clamp(18px,4vw,24px);
+    padding:clamp(22px,5vw,32px) 0 clamp(24px,6vw,36px)
+  }
+  .hero{text-align:center;max-width:none}
+  .hero .back{display:inline-flex}
   .steps,.cat-pill{justify-content:center}
-  .hero h1{font-size:54px!important}
+  .hero h1{font-size:clamp(46px,8vw,58px)!important}
+  .hero .tagline,.hero>p:not(:first-of-type){font-size:clamp(16px,2.8vw,20px)!important}
 }
 @media(max-width:640px){
-  .auth-screen,body>main{width:calc(100% - 20px);padding:18px 0 28px}
-  .hero h1{font-size:43px!important;letter-spacing:-1.8px!important}
-  .hero .tagline,.hero>p:not(:first-of-type){font-size:16px!important}
-  .card{padding:20px!important;border-radius:22px!important}
+  .auth-screen,body>main{
+    width:calc(100% - clamp(20px,6vw,28px));
+    padding:clamp(14px,4vw,20px) 0 clamp(22px,6vw,30px)
+  }
+  .hero h1{
+    font-size:clamp(38px,11vw,48px)!important;
+    letter-spacing:clamp(-1.8px,-.45vw,-1.2px)!important
+  }
+  .hero .tagline,.hero>p:not(:first-of-type){font-size:clamp(15px,4vw,17px)!important}
+  .back{margin-bottom:clamp(18px,5vw,26px)!important;padding:8px 10px!important;font-size:11px}
+  .steps,.cat-pill{gap:7px;margin-top:18px}
+  .step,.cat-pill{min-height:36px;padding:8px 10px!important;font-size:9px!important}
+  .card{padding:clamp(16px,5vw,21px)!important;border-radius:clamp(18px,5vw,23px)!important}
+  .brand{margin-bottom:14px!important}
+  .logo{width:42px!important;height:42px!important;border-radius:13px!important}
+  .tabs{margin-bottom:15px!important}
+  .tab,.tabs a{min-height:40px!important}
   .providers{grid-template-columns:1fr!important}
   .grid,#form .grid{grid-template-columns:1fr!important}
-  #form .actions{align-items:stretch}.actions .submit,.actions .link{width:100%;justify-content:center;text-align:center}
+  input,select,textarea{font-size:16px!important;min-height:48px!important}
+  .account-types{grid-template-columns:1fr!important}
+  .account-type{min-height:0!important;padding:13px!important}
+  .actions{gap:8px}
+  #form .actions{align-items:stretch}
+  .actions .submit,.actions .link{width:100%;justify-content:center;text-align:center}
+  .notice{padding:11px 12px!important}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important}}
