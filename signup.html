@@ -78,11 +78,11 @@ async function loadCatalog(){
     const sourceProvinceId=String(province.id||'').trim(),provinceName=String(province.name||'').trim(),provinceId=officialProvinceCode(provinceName);
     if(!sourceProvinceId||!provinceName||!provinceId)continue;
     const officialProvince=officialByProvince.get(provinceId);
-    const wardByKey=new Map((officialProvince?.wards||[]).map(w=>[norm(String(w.name||'').replace(/^(Xã|Phường|Đặc khu)\\s+/i,'')),w]));
+    const wardByKey=new Map((officialProvince?.wards||[]).map(w=>[norm(String(w.name||'').replace(/^(Xã|Phường|Đặc khu)\s+/i,'')),w]));
     const rows=[];
     for(const ward of (province.wards||[])){
       const oldWardName=String(ward.name||'').replace(/\s+/g,' ').trim();
-      const canonical=wardByKey.get(norm(oldWardName.replace(/^(Xã|Phường|Đặc khu)\\s+/i,'')));
+      const canonical=wardByKey.get(norm(oldWardName.replace(/^(Xã|Phường|Đặc khu)\s+/i,'')));
       for(const school of (ward.schools||[])){
         const name=String(school.name||'').trim();if(!name)continue;
         rows.push({provinceId,provinceName,sourceProvinceId,wardId:String(canonical?.id||ward.id||'').trim(),wardName:String(canonical?.name||oldWardName).trim(),sourceSchoolId:String(school.id||''),name,level:inferLevel(name)});
