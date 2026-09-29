@@ -162,12 +162,10 @@
       this.currentPack.pack.suggested_title = document.getElementById('previewPackTitle').value;
       this.currentPack.pack.description = document.getElementById('previewPackDesc').value;
 
-      // Dispatch save event
+      // Dispatch save event; the persistence listener owns the success toast.
       window.dispatchEvent(new CustomEvent('pack-ready-to-save', {
         detail: this.currentPack
       }));
-
-      window.dispatchEvent(new CustomEvent('toast', { detail: '✓ Pack đã được lưu' }));
       this.close();
     },
 
