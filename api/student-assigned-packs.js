@@ -1,16 +1,8 @@
 const{requireUser,rateLimit,send,method}=require("./_kat-ai");
-const{initializeApp,cert,getApps}=require("firebase-admin/app");
-const{getFirestore}=require("firebase-admin/firestore");
+const{init}=require("./_admin");
 let db;
 function firestore(){
-  if(!db){
-    const raw=process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-    if(!raw)throw Object.assign(new Error("KatLearn server auth chưa được cấu hình"),{status:503});
-    let serviceAccount;
-    try{serviceAccount=JSON.parse(raw)}catch(_){throw Object.assign(new Error("FIREBASE_SERVICE_ACCOUNT_JSON không hợp lệ"),{status:503})}
-    if(!getApps().length)initializeApp({credential:cert(serviceAccount)});
-    db=getFirestore();
-  }
+  if(!db)db=init().db;
   return db;
 }
 module.exports=async(req,res)=>{
