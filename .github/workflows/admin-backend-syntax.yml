@@ -1,10 +1,9 @@
-name: admin backend syntax
+name: JavaScript syntax audit
 
 on:
   push:
     paths:
-      - "api/**"
-      - "scripts/**"
+      - "**/*.js"
       - ".github/workflows/admin-backend-syntax.yml"
   workflow_dispatch:
 
@@ -16,11 +15,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Check all API syntax
+      - name: Check every JavaScript file
         shell: bash
         run: |
           set -euo pipefail
-          for file in api/*.js; do
+          while IFS= read -r file; do
             echo "Checking $file"
             node --check "$file"
-          done
+          done < <(find . -type f -name '*.js' -not -path './.git/*' | sort)
