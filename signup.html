@@ -72,7 +72,7 @@ async function loadCatalog(){
     const provinceId=String(p.code||'').trim(),provinceName=String(p.name||'').trim();
     if(!provinceId||!provinceName)continue;
     catalog.provinces.push({id:provinceId,name:provinceName});
-    catalog.wardsByProvince.set(provinceId,(p.wards||[]).map(w=>({id:String(w.id||'').trim(),name:String(w.name||'').replace(/\\s+/g,' ').trim()})).filter(w=>w.id&&w.name));
+    catalog.wardsByProvince.set(provinceId,(p.wards||[]).map(w=>({id:String(w.id||'').trim(),name:String(w.name||'').replace(/\s+/g,' ').trim()})).filter(w=>w.id&&w.name));
   }
   for(const province of tree){
     const sourceProvinceId=String(province.id||'').trim(),provinceName=String(province.name||'').trim(),provinceId=officialProvinceCode(provinceName);
@@ -81,7 +81,7 @@ async function loadCatalog(){
     const wardByKey=new Map((officialProvince?.wards||[]).map(w=>[norm(String(w.name||'').replace(/^(Xã|Phường|Đặc khu)\\s+/i,'')),w]));
     const rows=[];
     for(const ward of (province.wards||[])){
-      const oldWardName=String(ward.name||'').replace(/\\s+/g,' ').trim();
+      const oldWardName=String(ward.name||'').replace(/\s+/g,' ').trim();
       const canonical=wardByKey.get(norm(oldWardName.replace(/^(Xã|Phường|Đặc khu)\\s+/i,'')));
       for(const school of (ward.schools||[])){
         const name=String(school.name||'').trim();if(!name)continue;
