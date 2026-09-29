@@ -94,7 +94,8 @@
           resolve(user);
         }));
 
-        // Profile hydration is owned by auth-sync.js so each auth event has one sync owner.\n        return true;
+        // Profile hydration is owned by auth-sync.js so each auth event has one sync owner.
+        return true;
       })().finally(()=>{connectPromise=null});
 
       return connectPromise;
