@@ -266,11 +266,13 @@
     async deletePersonalPack(packId){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần xóa.');
-      const uid=currentUser.uid;let code='';
-      try{code=await this.ensureAccountNamespace();}catch(_){}
-      if(!code)return api.deleteDoc(api.doc(db,'users',uid,'personalPacks',packId));
-      const newRef=api.doc(db,'accounts',code,'memory',packId),newSnap=await api.getDoc(newRef);
-      return api.deleteDoc(newSnap.exists()?newRef:api.doc(db,'users',uid,'personalPacks',packId));
+      const uid=currentUser.uid,token=await this.getIdToken(true);
+      if(!token)throw new Error('Phiên đăng nhập không còn hợp lệ.');
+      const res=await fetch('/api/personal-pack-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'delete',id:String(packId)})});
+      const data=await res.json().catch(()=>({}));
+      if(String(window.studyStore?.user?.uid||'')!==uid)return null;
+      if(!res.ok)throw new Error(data.error||'Không thể xóa bộ từ.');
+      return data;
     },
     async personalPacks(){
       if(!db||!currentUser)return[];
