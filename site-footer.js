@@ -13,11 +13,15 @@
         max-width:none;
         box-sizing:border-box;
         padding:clamp(22px,3vw,30px) clamp(18px,3vw,42px) clamp(18px,2.5vw,24px);
-        border-top:1px solid rgba(103,90,75,.11);
-        background:
-          radial-gradient(circle at 92% 8%,rgba(109,94,252,.055),transparent 28%),
-          linear-gradient(180deg,#fffdf9 0%,#faf8f4 100%) !important;
-        color:#7d746d;
+        border-top:1px solid rgba(255,255,255,.62);
+        border-bottom:0;
+        background:rgba(255,255,255,.28) !important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,.76),
+          0 -18px 50px rgba(68,54,112,.045);
+        color:#6f6875;
+        backdrop-filter:blur(24px) saturate(145%);
+        -webkit-backdrop-filter:blur(24px) saturate(145%);
         font:500 11px/1.7 'Be Vietnam Pro',sans-serif;
         overflow:hidden;
       }
@@ -103,8 +107,11 @@
         padding:7px 9px;
         border:1px solid #ebe7e2;
         border-radius:9px;
-        background:rgba(255,255,255,.76);
-        color:#6f6862;
+        background:rgba(255,255,255,.34);
+        border-color:rgba(255,255,255,.58);
+        color:#665f6d;
+        backdrop-filter:blur(12px);
+        -webkit-backdrop-filter:blur(12px);
         font-size:9px;
         box-shadow:0 4px 12px rgba(74,62,48,.035);
       }
@@ -112,8 +119,10 @@
         padding:13px 14px 12px;
         border:1px solid #ebe5dd;
         border-radius:14px;
-        background:rgba(255,255,255,.72);
-        box-shadow:0 8px 22px rgba(74,62,48,.045);
+        background:rgba(255,255,255,.34);
+        box-shadow:0 10px 28px rgba(68,54,112,.05),inset 0 1px 0 rgba(255,255,255,.64);
+        backdrop-filter:blur(12px);
+        -webkit-backdrop-filter:blur(12px);
       }
       #katlearnFooter .footer-protection-title{
         display:flex;
@@ -151,7 +160,7 @@
         padding:4px 7px;
         border:1px solid #ebe7e2;
         border-radius:8px;
-        background:#fff;
+        background:rgba(255,255,255,.42);
       }
       #katlearnFooter .dmca-badge img{
         width:112px;
@@ -171,7 +180,7 @@
         gap:clamp(10px,2vw,18px);
         margin:clamp(17px,2.5vw,22px) 0 0;
         padding-top:13px;
-        border-top:1px solid #eeeae5;
+        border-top:1px solid rgba(255,255,255,.54);
         width:100%;
         max-width:none;
         color:#a09891;
