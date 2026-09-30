@@ -113,18 +113,15 @@
         const code=String(profile.accountCode);
         const accountRef=api.doc(db,'accounts',code);
         const memoryRef=api.doc(db,'accounts',code,'memory','meta');
-        const snap=await api.getDoc(accountRef);
-        if(!snap.exists()){
-          await api.setDoc(accountRef,{
-            accountCode:code,uid,email:user.email||'',displayName:user.displayName||'',
-            loginName:String(user.email||'').split('@')[0]||'katlearn',
-            createdAt:profile.createdAt||api.serverTimestamp(),updatedAt:api.serverTimestamp()
-          },{merge:false});
-          await api.setDoc(memoryRef,{accountCode:code,uid,updatedAt:api.serverTimestamp()},{merge:true});
-        }else{
-          await api.setDoc(accountRef,{uid,email:user.email||'',displayName:user.displayName||'',updatedAt:api.serverTimestamp()},{merge:true});
-          await api.setDoc(memoryRef,{accountCode:code,uid,updatedAt:api.serverTimestamp()},{merge:true});
-        }
+        // Do not read the account first: Firestore rules intentionally protect
+        // account documents, including missing docs. A merge write is permitted
+        // for this user's own account and works for both create and update.
+        await api.setDoc(accountRef,{
+          accountCode:code,uid,email:user.email||'',displayName:user.displayName||'',
+          loginName:String(user.email||'').split('@')[0]||'katlearn',
+          createdAt:profile.createdAt||api.serverTimestamp(),updatedAt:api.serverTimestamp()
+        },{merge:true});
+        await api.setDoc(memoryRef,{accountCode:code,uid,updatedAt:api.serverTimestamp()},{merge:true});
         return code;
       }
 
@@ -132,17 +129,12 @@
       const sequenceRef=api.doc(db,'system','accountSequence');
       const result=await api.runTransaction(db,async tx=>{
         const seqSnap=await tx.get(sequenceRef);
-        let next=Number(seqSnap.exists()?seqSnap.data()?.lastIssued:0)+1;
-        let code=formatAccountCode(prefix,next);
-        let accountRef=api.doc(db,'accounts',code);
-        let accountSnap=await tx.get(accountRef);
-        while(accountSnap.exists()){
-          next++;
-          code=formatAccountCode(prefix,next);
-          accountRef=api.doc(db,'accounts',code);
-          accountSnap=await tx.get(accountRef);
-        }
+        const next=Number(seqSnap.exists()?seqSnap.data()?.lastIssued:0)+1;
+        const code=formatAccountCode(prefix,next);
+        const accountRef=api.doc(db,'accounts',code);
         const memoryRef=api.doc(db,'accounts',code,'memory','meta');
+        // accountSequence is the global allocator, so collision probing is
+        // unnecessary and would require a read of a possibly missing account.
         tx.set(sequenceRef,{lastIssued:next,updatedAt:api.serverTimestamp()},{merge:true});
         tx.set(accountRef,{
           accountCode:code,uid,email:user.email||'',displayName:user.displayName||'',
@@ -162,16 +154,11 @@
       const user=currentUser,uid=user.uid,sequenceRef=api.doc(db,'system','packSequence');
       const result=await api.runTransaction(db,async tx=>{
         const seq=await tx.get(sequenceRef);
-        let next=Number(seq.exists()?seq.data()?.lastIssued:0)+1;
-        let docId=formatPackDocumentId(next,packName,user.displayName||user.email?.split('@')[0]||'KatLearn Student');
-        let ref=api.doc(db,'accounts',code,'memory',docId);
-        let snap=await tx.get(ref);
-        while(snap.exists()){
-          next++;
-          docId=formatPackDocumentId(next,packName,user.displayName||user.email?.split('@')[0]||'KatLearn Student');
-          ref=api.doc(db,'accounts',code,'memory',docId);
-          snap=await tx.get(ref);
-        }
+        const next=Number(seq.exists()?seq.data()?.lastIssued:0)+1;
+        const docId=formatPackDocumentId(next,packName,user.displayName||user.email?.split('@')[0]||'KatLearn Student');
+        const ref=api.doc(db,'accounts',code,'memory',docId);
+        // packSequence is the global allocator, so probing the pack document
+        // would only introduce an unnecessary protected read.
         tx.set(sequenceRef,{lastIssued:next,updatedAt:api.serverTimestamp()},{merge:true});
         return {code:next,docId,refPath:ref.path};
       });
@@ -252,6 +239,10 @@
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');
       const user=currentUser,uid=user.uid;
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      const profile=await this.loadProfile();
+      if(String(profile?.studentAccountType||'free').toLowerCase()==='class'){
+        throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
+      }
       let identity=null;
       try{identity=await this.ensurePackIdentity(pack?.name||'Pack')}catch(namespaceError){console.warn('[KatLearn] Falling back to legacy personal pack storage:',namespaceError)}
       const payload={
