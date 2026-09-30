@@ -463,13 +463,14 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     window.addEventListener('8b1-auth-change',()=>setTimeout(renderMine,0));
     // Render again after the Firestore profile/accountCode has been hydrated.
     window.addEventListener('katlearn-account-ready',()=>setTimeout(renderMine,0));
-    const nav=$('#packs');
-    if(nav){
+    ['#packs','#personalPacks'].forEach(selector=>{
+      const nav=$(selector);
+      if(!nav)return;
       const observer=new MutationObserver(()=>{
-        if($('#packs').classList.contains('active-page'))renderMine();
+        if($(selector).classList.contains('active-page'))renderMine();
       });
       observer.observe(nav,{attributes:true,attributeFilter:['class']});
-    }
+    });
     setTimeout(renderMine,500);
   }
 
