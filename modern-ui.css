@@ -806,3 +806,104 @@ body{
   .sidebar::after{animation:none!important}
   .page{animation:none!important}
 }
+
+
+/* ===== Liquid droplet navigation — fluid active indicator ===== */
+@media(min-width:821px){
+  .sidebar nav{
+    position:relative!important;
+    isolation:isolate;
+    padding:3px!important;
+    overflow-x:auto;
+    overflow-y:visible;
+    border-radius:16px;
+  }
+  .sidebar nav::before{
+    content:"";
+    position:absolute;
+    z-index:0;
+    left:var(--kl-nav-x,0px);
+    top:var(--kl-nav-y,0px);
+    width:var(--kl-nav-w,0px);
+    height:var(--kl-nav-h,0px);
+    border-radius:999px;
+    background:
+      radial-gradient(circle at 24% 18%,rgba(255,255,255,.88),transparent 27%),
+      linear-gradient(135deg,rgba(154,137,255,.60),rgba(214,207,255,.42) 58%,rgba(255,255,255,.55));
+    border:1px solid rgba(255,255,255,.72);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.95),
+      inset 0 -1px 0 rgba(132,111,228,.13),
+      0 10px 26px rgba(107,89,205,.16),
+      0 0 18px rgba(155,139,255,.12);
+    backdrop-filter:blur(18px) saturate(165%);
+    -webkit-backdrop-filter:blur(18px) saturate(165%);
+    pointer-events:none;
+    transform:translateZ(0);
+    transition:
+      left .48s cubic-bezier(.22,1,.36,1),
+      top .42s cubic-bezier(.22,1,.36,1),
+      width .46s cubic-bezier(.22,1,.36,1),
+      height .34s ease,
+      border-radius .42s cubic-bezier(.22,1,.36,1),
+      filter .3s ease;
+    will-change:left,width,transform,filter;
+  }
+  .sidebar nav::after{
+    content:"";
+    position:absolute;
+    z-index:0;
+    left:calc(var(--kl-nav-x,0px) + var(--kl-nav-w,0px) * .18);
+    top:calc(var(--kl-nav-y,0px) + var(--kl-nav-h,0px) * .14);
+    width:calc(var(--kl-nav-w,0px) * .24);
+    height:calc(var(--kl-nav-h,0px) * .24);
+    border-radius:50%;
+    background:rgba(255,255,255,.70);
+    filter:blur(4px);
+    opacity:.72;
+    pointer-events:none;
+    transition:left .50s cubic-bezier(.22,1,.36,1),top .42s ease,width .46s ease;
+  }
+  .sidebar nav.liquid-moving::before{
+    filter:blur(.15px) saturate(1.2);
+    animation:klLiquidBlob .52s cubic-bezier(.22,1,.36,1);
+  }
+  .sidebar nav.liquid-moving::after{
+    animation:klLiquidShine .52s cubic-bezier(.22,1,.36,1);
+  }
+  .sidebar .nav-item{
+    position:relative!important;
+    z-index:1!important;
+    background:rgba(255,255,255,.055)!important;
+    border-color:rgba(255,255,255,.11)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16)!important;
+  }
+  .sidebar .nav-item.active{
+    background:rgba(255,255,255,.06)!important;
+    border-color:rgba(255,255,255,.14)!important;
+    color:#5743c2!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.28)!important;
+    transform:none!important;
+  }
+  .sidebar .nav-item:hover:not(.active){
+    transform:translateY(-1px)!important;
+  }
+}
+@keyframes klLiquidBlob{
+  0%{transform:translateZ(0) scale(.94,.86);border-radius:44% 56% 50% 50% / 48% 42% 58% 52%}
+  24%{transform:translateZ(0) scale(1.09,.86);border-radius:60% 40% 45% 55% / 44% 57% 43% 56%}
+  50%{transform:translateZ(0) scale(1.03,1.04);border-radius:55% 45% 58% 42% / 48% 54% 46% 52%}
+  78%{transform:translateZ(0) scale(.99,1.01);border-radius:48% 52% 52% 48% / 52% 45% 55% 48%}
+  100%{transform:translateZ(0) scale(1);border-radius:999px}
+}
+@keyframes klLiquidShine{
+  0%{opacity:.15;transform:translateX(-8px) scale(.8)}
+  38%{opacity:.82;transform:translateX(5px) scale(1.08)}
+  100%{opacity:.62;transform:translateX(0) scale(1)}
+}
+@media(max-width:820px){
+  .sidebar nav{position:relative!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .sidebar nav::before,.sidebar nav::after{transition:none!important;animation:none!important}
+}
