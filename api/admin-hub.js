@@ -865,7 +865,7 @@ module.exports=async(req,res)=>{
       const provinceCode=clean(body.provinceCode,10);
       const data=readProvince(provinceCode);
       const offset=Math.max(0,Number(body.offset)||0);
-      const limit=Math.max(1,Math.min(180,Number(body.limit)||150));
+      const limit=Math.max(1,Math.min(60,Number(body.limit)||50));
       const chunk=data.slice(offset,offset+limit);
       const result=await writeCatalogChunk(db,chunk);
       const nextOffset=offset+chunk.length;
