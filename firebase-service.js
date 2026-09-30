@@ -215,10 +215,35 @@
       if(!db||!currentUser)return;
       const user=currentUser,uid=user.uid;
       if(expectedUid&&String(expectedUid)!==uid)return;
+      if(currentUser?.uid!==uid)return;
+      const ref=api.doc(db,'users',uid);
+      const existing=await api.getDoc(ref);
       const payload={...data};
       ['__coinsAuthoritative','coins','energy','streak','lastStudyDay','dailyQuestions','dailyCorrect','questionsAnswered','correctAnswers','ownedThemes','teacherUid','teacherUids','studentAccountType','classId','className','catalogClassId','schoolId','schoolName','province','ward','teacherName','teacherEmail'].forEach(k=>delete payload[k]);
-      if(currentUser?.uid!==uid)return;
-      return api.setDoc(api.doc(db,'users',uid),{displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',email:user.email||'',photoURL:user.photoURL||'',updatedAt:api.serverTimestamp(),...payload},{merge:true});
+      const base={
+        displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
+        email:user.email||'',
+        photoURL:user.photoURL||'',
+        provider:user.providerData?.[0]?.providerId||'password',
+        role:'student',
+        coins:0,
+        energy:0,
+        streak:0,
+        lastStudyDay:'',
+        dailyQuestions:0,
+        dailyCorrect:0,
+        questionsAnswered:0,
+        correctAnswers:0,
+        ownedThemes:[],
+        joinedClassIds:[],
+        teacherUid:'',
+        teacherUids:[],
+        totalWords:0
+      };
+      if(!existing.exists()){
+        return api.setDoc(ref,{...base,...payload,updatedAt:api.serverTimestamp()},{merge:false});
+      }
+      return api.setDoc(ref,{...payload,displayName:user.displayName||existing.data()?.displayName||user.email?.split('@')[0]||'KatLearn Student',email:user.email||existing.data()?.email||'',photoURL:user.photoURL||existing.data()?.photoURL||'',updatedAt:api.serverTimestamp()},{merge:true});
     },
     async recordAnswer(data){if(!db||!currentUser)return;await api.addDoc(api.collection(db,'users',this.userId,'attempts'),{...data,createdAt:api.serverTimestamp()});await this.saveProfile({lastStudyAt:api.serverTimestamp()})},
     async purchase(item){if(!db||!currentUser)return;return api.setDoc(api.doc(db,'users',this.userId,'items',item.id),{...item,boughtAt:api.serverTimestamp()})},
