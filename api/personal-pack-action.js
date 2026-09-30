@@ -43,6 +43,9 @@ module.exports=async(req,res)=>{
   if(!method(req,res,"POST"))return;
   try{
     const user=await requireUser(req);
+    const{db:guardDb}=init();
+    const guardProfile=await guardDb.collection("users").doc(user.uid).get();
+    if(String(guardProfile.data()?.studentAccountType||"free").toLowerCase()==="class")throw Object.assign(new Error("Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân."),{status:403,code:"personal_pack_forbidden_class"});
     const body=req.body||{};
     const action=String(body.action||"").trim().toLowerCase();
     const packId=clean(body.id,180);
