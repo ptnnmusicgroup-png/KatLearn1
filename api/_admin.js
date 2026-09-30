@@ -3,6 +3,7 @@ const{getAuth}=require("firebase-admin/auth");
 const{getFirestore}=require("firebase-admin/firestore");
 
 const ADMIN_EMAIL="katlearn.admin@gmail.com";
+const EXPECTED_FIREBASE_PROJECT_ID="elp---katlearn";
 const ALLOWED_ORIGINS=new Set([
   "https://teacher-katlearn.vercel.app",
   "https://lms-katlearn.vercel.app",
@@ -86,6 +87,9 @@ function init(){
     }
     if(!serviceAccount.project_id||!serviceAccount.client_email||!serviceAccount.private_key){
       throw Object.assign(new Error("Firebase Admin credentials are incomplete: project_id, client_email, and private_key are required."),{status:503,code:"firebase_credentials_incomplete"});
+    }
+    if(String(serviceAccount.project_id)!==EXPECTED_FIREBASE_PROJECT_ID){
+      throw Object.assign(new Error("Firebase Admin credentials đang thuộc project "+String(serviceAccount.project_id)+" nhưng KatLearn client dùng project "+EXPECTED_FIREBASE_PROJECT_ID+"."),{status:503,code:"firebase_project_mismatch"});
     }
     initializeApp({credential:cert(serviceAccount)});
   }
