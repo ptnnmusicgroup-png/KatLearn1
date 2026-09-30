@@ -850,3 +850,11 @@ body{
     max-height:94dvh!important;
   }
 }
+
+
+/* ===== Public pack import action ===== */
+#takePublicPackBtn[hidden]{display:none!important}
+#takePublicPackBtn{border:1px solid rgba(123,97,255,.16)!important;background:rgba(255,255,255,.72)!important;color:#6351cc!important;border-radius:13px!important;min-height:44px!important;padding:0 14px!important;font:800 11px 'Be Vietnam Pro'!important;box-shadow:0 8px 22px rgba(79,63,140,.07)!important}
+#takePublicPackBtn:hover{transform:translateY(-1px)!important;background:rgba(248,246,255,.95)!important;border-color:rgba(123,97,255,.30)!important}
+#takePublicPackBtn:active{transform:translateY(1px) scale(.985)!important}
+@media(max-width:620px){#takePublicPackBtn{width:100%;min-height:42px!important}}
