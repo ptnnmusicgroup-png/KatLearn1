@@ -195,27 +195,11 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
 
   async function isManagedStudent(){return !!window.studyStore?.user&&await window.studyStore.isClassStudent?.()}
 
-  async function open(pack=null){
-    try{
-      if(!window.studyStore?.user&&window.studyStore?.waitForAuth){
-        await window.studyStore.waitForAuth();
-      }
-    }catch(_){}
-    if(!window.studyStore?.user){
-      toast('Hãy đăng nhập để tạo bộ từ riêng nhé! 🐱');
-      location.href='/login.html';
-      return;
-    }
+  function open(pack=null){
+    if(!window.studyStore?.user){toast('Hãy đăng nhập để tạo bộ từ riêng nhé! 🐱');location.href='/login.html';return;}
     if(window.studyStore?.isClassStudent){
-      try{
-        const blocked=await window.studyStore.isClassStudent();
-        if(blocked){
-          toast('🔒 Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
-          return;
-        }
-      }catch(e){
-        console.warn('[KatLearn] Could not verify account type:',e);
-      }
+      window.studyStore.isClassStudent().then(blocked=>{if(blocked)toast('🔒 Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');else openPackModal(pack)});
+      return;
     }
     openPackModal(pack);
   }
@@ -473,42 +457,19 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     catch(e){toast('Không thể đổi tên: '+(e.message||'Lỗi không xác định'))}
   }
 
-  function bindCreatePersonalPack(){
-    const btn=$('#createPersonalPack');
-    if(!btn)return false;
-    if(btn.dataset.katPackBound==='1')return true;
-    btn.dataset.katPackBound='1';
-    btn.addEventListener('click',e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      void open();
-    });
-    return true;
-  }
-
   function init(){
-    if(document.readyState==='loading'){
-      document.addEventListener('DOMContentLoaded',bindCreatePersonalPack,{once:true});
-    }else{
-      bindCreatePersonalPack();
-    }
-    window.addEventListener('8b1-auth-change',()=>{
-      bindCreatePersonalPack();
-      setTimeout(renderMine,0);
-    });
-    window.addEventListener('pageshow',bindCreatePersonalPack);
+    const btn=$('#createPersonalPack');
+    if(!btn)return;
+    btn.onclick=open;
+    window.addEventListener('8b1-auth-change',()=>setTimeout(renderMine,0));
     const nav=$('#packs');
     if(nav){
       const observer=new MutationObserver(()=>{
-        bindCreatePersonalPack();
         if($('#packs').classList.contains('active-page'))renderMine();
       });
-      observer.observe(nav,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
+      observer.observe(nav,{attributes:true,attributeFilter:['class']});
     }
-    setTimeout(()=>{
-      bindCreatePersonalPack();
-      renderMine();
-    },500);
+    setTimeout(renderMine,500);
   }
 
   init();
