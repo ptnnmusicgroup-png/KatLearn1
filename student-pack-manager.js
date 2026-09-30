@@ -461,6 +461,8 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     const btn=$('#createPersonalPack');
     if(btn)btn.onclick=()=>{location.href='/create-pack.html'};
     window.addEventListener('8b1-auth-change',()=>setTimeout(renderMine,0));
+    // Render again after the Firestore profile/accountCode has been hydrated.
+    window.addEventListener('katlearn-account-ready',()=>setTimeout(renderMine,0));
     const nav=$('#packs');
     if(nav){
       const observer=new MutationObserver(()=>{
