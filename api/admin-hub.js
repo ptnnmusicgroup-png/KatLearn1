@@ -922,10 +922,27 @@ async function section(db,key,queryParams={}){
   if(key==="overview")return overview(db);
   if(key==="catalog")return{catalog:plan()};
   if(key==="private-packs"){
-    const snap=await db.collectionGroup("personalPacks").limit(LIMITS.privatePacks).get();
-    const rows=snap.docs.map(doc=>{const data=serialize(doc.data()||{});const ownerUid=doc.ref.parent?.parent?.id||data.ownerUid||"";return{id:doc.id,ownerUid,...data,wordCount:Number(data.wordCount)||((Array.isArray(data.words)?data.words.length:0))}}).sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0));
-    let total=rows.length;try{total=await count("bộ từ riêng",db.collectionGroup("personalPacks"))}catch(_){ }
-    return{rows,total,limited:Number(total)>rows.length};
+    const [accountSnap,legacySnap]=await Promise.all([
+      db.collectionGroup("memory").where("kind","==","personalPack").limit(LIMITS.privatePacks).get(),
+      db.collectionGroup("personalPacks").limit(LIMITS.privatePacks).get()
+    ]);
+    const merged=new Map();
+    for(const doc of accountSnap.docs){
+      const data=serialize(doc.data()||{});
+      const accountCode=String(doc.ref.parent?.parent?.id||data.ownerAccountCode||"").trim();
+      const ownerUid=String(data.ownerUid||"").trim();
+      if(!ownerUid||!accountCode)continue;
+      merged.set("account:"+doc.ref.path,{id:doc.id,ownerUid,accountCode,source:"accounts",...data,wordCount:Number(data.wordCount)||((Array.isArray(data.words)?data.words.length:0))});
+    }
+    for(const doc of legacySnap.docs){
+      const data=serialize(doc.data()||{});
+      const ownerUid=String(doc.ref.parent?.parent?.id||data.ownerUid||"").trim();
+      if(!ownerUid)continue;
+      const accountCode=String(data.ownerAccountCode||"").trim();
+      merged.set("legacy:"+doc.ref.path,{id:doc.id,ownerUid,accountCode,source:"users",...data,wordCount:Number(data.wordCount)||((Array.isArray(data.words)?data.words.length:0))});
+    }
+    const rows=[...merged.values()].sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0));
+    return{rows,total:rows.length,limited:accountSnap.size>=LIMITS.privatePacks||legacySnap.size>=LIMITS.privatePacks};
   }
   if(key==="pack"){
     const packId=clean(queryParams.id,160);
