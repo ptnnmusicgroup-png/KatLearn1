@@ -248,6 +248,7 @@
       if(String(window.studyStore?.user?.uid||'')!==uid)return null;
       if(!res.ok)throw new Error(data.error||'Không thể lưu bộ từ.');
       return data;
+    },
     async updatePersonalPack(packId,pack){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');
