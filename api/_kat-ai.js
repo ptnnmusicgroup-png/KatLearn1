@@ -39,7 +39,20 @@ async function generateGemini({contents,systemInstruction,responseSchema,maxOutp
 async function requireUser(req){
   const match=/^Bearer\s+(.+)$/i.exec(String(req.headers?.authorization||""));
   if(!match)throw Object.assign(new Error("Bạn cần đăng nhập để dùng Kat AI."),{status:401,code:"missing_ai_token"});
-  try{return await firebaseAuth().verifyIdToken(match[1])}catch(_){throw Object.assign(new Error("Phiên đăng nhập không hợp lệ. Hãy đăng nhập lại."),{status:401,code:"invalid_ai_token"})}
+  try{return await firebaseAuth().verifyIdToken(match[1])}
+  catch(error){
+    const code=String(error?.code||"auth_error");
+    const raw=String(error?.message||"").toLowerCase();
+    if(code==="auth/id-token-expired"||raw.includes("expired"))
+      throw Object.assign(new Error("Phiên đăng nhập đã hết hạn. Hãy tải lại trang rồi thử lại."),{status:401,code:"ai_token_expired"});
+    if(code==="auth/id-token-revoked"||raw.includes("revoked"))
+      throw Object.assign(new Error("Phiên đăng nhập đã bị thu hồi. Hãy đăng nhập lại nhé."),{status:401,code:"ai_token_revoked"});
+    if(code==="auth/id-token-project-id-mismatch"||raw.includes("project id")||raw.includes("audience"))
+      throw Object.assign(new Error("ID token đang thuộc Firebase project khác với server KatLearn. Kiểm tra Firebase Admin credentials trên Vercel."),{status:503,code:"ai_token_project_mismatch"});
+    if(code==="auth/invalid-id-token"||raw.includes("incorrect claim")||raw.includes("invalid id token"))
+      throw Object.assign(new Error("ID token Firebase không hợp lệ. Hãy tải lại trang và đăng nhập lại."),{status:401,code:"ai_token_invalid"});
+    throw Object.assign(new Error("Server không xác thực được phiên Firebase của bạn ("+code+")."),{status:503,code:"ai_token_verify_failed"});
+  }
 }
 function rateLimit(uid,bucket,limit,windowMs=60000){
   const now=Date.now(),key=uid+":"+bucket,old=buckets.get(key)||[],fresh=old.filter(t=>now-t<windowMs);
