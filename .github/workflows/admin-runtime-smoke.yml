@@ -27,6 +27,14 @@ jobs:
           code="$(curl -sS -o "$body" -w '%{http_code}' --max-time 30 -H 'Authorization: Bearer diagnostic-invalid-token' 'https://lms-katlearn.vercel.app/api/admin-hub?section=overview' || true)"
           echo "Diagnostic HTTP $code"
           cat "$body" || true
+          if [ "$code" != "401" ]; then
+            echo "Firebase Admin runtime is not healthy/configured: expected 401 from an invalid token when server credentials are valid."
+            exit 1
+          fi
+          if grep -Eq 'firebase_credentials_(missing|invalid|incomplete)|firebase_project_mismatch' "$body"; then
+            echo "Firebase Admin configuration error detected in production."
+            exit 1
+          fi
 
       - name: Check Teacher Admin proxy without auth
         run: |
