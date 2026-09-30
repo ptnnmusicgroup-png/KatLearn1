@@ -104,49 +104,47 @@
     async waitForAuth(){return authReady?await authReady:null},
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
     async ensureAccountNamespace(){
-      const user=currentUser;if(!user||!db)throw new Error('Hãy đăng nhập trước.');
+      const user=currentUser;
+      if(!user||!db)throw new Error('Hãy đăng nhập trước.');
       const uid=user.uid;
-      const profile=await this.loadProfile();
-      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-
-      if(profile?.accountCode){
-        const code=String(profile.accountCode);
-        const accountRef=api.doc(db,'accounts',code);
-        const memoryRef=api.doc(db,'accounts',code,'memory','meta');
-        // Do not read the account first: Firestore rules intentionally protect
-        // account documents, including missing docs. A merge write is permitted
-        // for this user's own account and works for both create and update.
-        await api.setDoc(accountRef,{
-          accountCode:code,uid,email:user.email||'',displayName:user.displayName||'',
-          loginName:String(user.email||'').split('@')[0]||'katlearn',
-          createdAt:profile.createdAt||api.serverTimestamp(),updatedAt:api.serverTimestamp()
-        },{merge:true});
-        await api.setDoc(memoryRef,{accountCode:code,uid,updatedAt:api.serverTimestamp()},{merge:true});
-        return code;
-      }
-
-      const prefix=createAccountPrefix(user);
+      const profileRef=api.doc(db,'users',uid);
       const sequenceRef=api.doc(db,'system','accountSequence');
+      const prefix=createAccountPrefix(user);
+
       const result=await api.runTransaction(db,async tx=>{
+        const profileSnap=await tx.get(profileRef);
+        const existingProfile=profileSnap.exists()?profileSnap.data()||{}:{};
+        const existingCode=String(existingProfile.accountCode||'').trim();
+
+        if(existingCode){
+          const accountRef=api.doc(db,'accounts',existingCode);
+          const memoryRef=api.doc(db,'accounts',existingCode,'memory','meta');
+          tx.set(accountRef,{
+            accountCode:existingCode,uid,email:user.email||'',displayName:user.displayName||'',
+            loginName:prefix.login,createdAt:existingProfile.createdAt||api.serverTimestamp(),updatedAt:api.serverTimestamp()
+          },{merge:true});
+          tx.set(memoryRef,{accountCode:existingCode,uid,updatedAt:api.serverTimestamp()},{merge:true});
+          return existingCode;
+        }
+
         const seqSnap=await tx.get(sequenceRef);
         const next=Number(seqSnap.exists()?seqSnap.data()?.lastIssued:0)+1;
         const code=formatAccountCode(prefix,next);
         const accountRef=api.doc(db,'accounts',code);
         const memoryRef=api.doc(db,'accounts',code,'memory','meta');
-        // accountSequence is the global allocator, so collision probing is
-        // unnecessary and would require a read of a possibly missing account.
+
         tx.set(sequenceRef,{lastIssued:next,updatedAt:api.serverTimestamp()},{merge:true});
         tx.set(accountRef,{
           accountCode:code,uid,email:user.email||'',displayName:user.displayName||'',
           loginName:prefix.login,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()
         },{merge:false});
         tx.set(memoryRef,{accountCode:code,uid,createdAt:api.serverTimestamp(),updatedAt:api.serverTimestamp()},{merge:true});
+        tx.set(profileRef,{accountCode:code,updatedAt:api.serverTimestamp()},{merge:true});
         return code;
       });
 
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      await this.saveProfile({accountCode:result},uid);
-      return currentUser?.uid===uid?result:null;
+      return result;
     },
     async ensurePackIdentity(packName){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập trước.');
