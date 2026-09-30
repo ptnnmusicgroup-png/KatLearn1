@@ -26,8 +26,9 @@ function writeJson(res,status,body,origin=""){
   return new Response(payload,{status:Number(status)||200,headers});
 }
 
-const LIMITS={users:300,teachers:300,classes:300,packs:300,schools:300,pending:100,activity:100};
+const LIMITS={users:300,teachers:300,classes:300,packs:300,privatePacks:300,schools:300,pending:100,activity:100};
 const DATA_DIR=path.join(__dirname,"../data/national-catalog");
+const VOCAB_DIR=path.join(__dirname,"../data/vocabulary");
 const TOTAL_SCHOOLS=22850;
 const PROVINCES=[
   ["01","Thành phố Hà Nội",2828,"province-01.json"],["04","Tỉnh Cao Bằng",150,"province-04.json"],["08","Tỉnh Tuyên Quang",300,"province-08.json"],
@@ -138,6 +139,41 @@ async function updatePublicPack(db,decoded,packId,name,words){
 
   await audit(db,decoded,"pack.update",packId,{name,wordCount:normalized.length});
   return{packId,name,wordCount:normalized.length,updatedAt:now};
+}
+
+function codePublicPackId(id,file){
+  const base=clean(id||String(file||"").replace(/\.json$/,""),120).replace(/[^a-zA-Z0-9_-]+/g,"_");
+  return "code_"+(base||"pack");
+}
+function readCodePublicPacks(){
+  let files=[];
+  try{files=fs.readdirSync(VOCAB_DIR).filter(name=>name.toLowerCase().endsWith(".json")).sort()}catch(error){throw fail(new Error("Không đọc được kho bộ từ trong code: "+messageOf(error)),500,"code_pack_source_unavailable")}
+  const out=[];
+  for(const file of files){
+    try{
+      const raw=fs.readFileSync(path.join(VOCAB_DIR,file),"utf8");
+      const data=JSON.parse(raw)||{};
+      const words=Array.isArray(data.words)?data.words.map(serialize):[];
+      if(!words.length)continue;
+      const sourceId=clean(data.id||String(file).replace(/\.json$/,""),120);
+      out.push({id:codePublicPackId(sourceId,file),sourceId,sourceFile:"data/vocabulary/"+file,sourceHash:crypto.createHash("sha256").update(raw).digest("hex"),name:clean(data.name||sourceId,200),description:clean(data.description||"",500),words,wordCount:words.length});
+    }catch(error){throw fail(new Error("Không đọc được bộ từ code "+file+": "+messageOf(error)),500,"code_pack_read_failed")}
+  }
+  return out;
+}
+async function syncCodePublicPacks(db,decoded){
+  const packs=readCodePublicPacks();
+  if(!packs.length)throw fail(new Error("Kho bộ từ trong code đang trống."),500,"code_pack_source_empty");
+  const stateRef=db.collection(ADMIN_SYNC_COLLECTION).doc("codePublicPacks");
+  const mirror=stateRef.collection("items");
+  const batch=db.batch();
+  const now=Date.now();
+  for(const pack of packs)batch.set(mirror.doc(pack.id),{sourceId:pack.sourceId,sourceFile:pack.sourceFile,sourceHash:pack.sourceHash,source:"code:data/vocabulary",name:pack.name,description:pack.description,words:pack.words,wordCount:pack.wordCount,syncedAt:now},{merge:true});
+  await batch.commit();
+  const totalWords=packs.reduce((sum,p)=>sum+p.wordCount,0);
+  await stateRef.set({source:"code:data/vocabulary",total:packs.length,totalWords,processed:packs.length,done:true,updatedAt:now},{merge:true});
+  await audit(db,decoded,"sync.complete","codePublicPacks",{total:packs.length,totalWords,mirror:ADMIN_SYNC_COLLECTION+"/codePublicPacks"});
+  return{entity:"codePublicPacks",total:packs.length,totalWords,processed:packs.length,done:true};
 }
 
 
