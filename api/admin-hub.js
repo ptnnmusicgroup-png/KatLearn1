@@ -908,7 +908,7 @@ async function overview(db){
   return{
     stats:{
       users:userCount,teachers:teacherCount,students:studentCount,pending:pendingCount,
-      classes:classCount,packs:packCount,schools:schoolCount,
+      classes:classCount,packs:packCount,codePacks:await safeCount("bộ từ trong code",db.collection(ADMIN_SYNC_COLLECTION).doc("codePublicPacks").collection("items"),warnings),schools:schoolCount,
       syncedSchools:syncedSchoolCount,syncedProvinces:syncedProvinceCount
     },
     pending:pending.sort((a,b)=>Number(a.teacherVerification?.submittedAt||a.createdAt||0)-Number(b.teacherVerification?.submittedAt||b.createdAt||0)),
@@ -921,12 +921,23 @@ async function section(db,key,queryParams={}){
   key=String(key||"overview");
   if(key==="overview")return overview(db);
   if(key==="catalog")return{catalog:plan()};
+  if(key==="private-packs"){
+    const snap=await db.collectionGroup("personalPacks").limit(LIMITS.privatePacks).get();
+    const rows=snap.docs.map(doc=>{const data=serialize(doc.data()||{});const ownerUid=doc.ref.parent?.parent?.id||data.ownerUid||"";return{id:doc.id,ownerUid,...data,wordCount:Number(data.wordCount)||((Array.isArray(data.words)?data.words.length:0))}}).sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0));
+    let total=rows.length;try{total=await count("bộ từ riêng",db.collectionGroup("personalPacks"))}catch(_){ }
+    return{rows,total,limited:Number(total)>rows.length};
+  }
   if(key==="pack"){
     const packId=clean(queryParams.id,160);
     if(!packId)throw fail(new Error("Thiếu ID bộ từ."),400,"missing_pack_id");
     const snap=await db.collection("publicPacks").doc(packId).get();
     if(!snap.exists)throw fail(new Error("Không tìm thấy bộ từ."),404,"pack_not_found");
     return{pack:{id:snap.id,...serialize(snap.data()||{})}};
+  }
+  if(key==="packs"){
+    const publicRows=await list("bộ từ công khai",db.collection("publicPacks").select(...PACK_FIELDS).limit(LIMITS.packs));
+    const codePacks=readCodePublicPacks().map(({words,...meta})=>meta);
+    return{rows:publicRows,limited:publicRows.length>=LIMITS.packs,codePacks,codePackCount:codePacks.length,codeWordCount:codePacks.reduce((sum,p)=>sum+Number(p.wordCount||0),0)};
   }
   if(key==="teachers"){
     const [pending,verified,rejected]=await Promise.all([
@@ -949,7 +960,6 @@ async function section(db,key,queryParams={}){
   const defs={
     users:["tài khoản",db.collection("users").select(...USER_FIELDS).limit(LIMITS.users)],
     classes:["lớp học",db.collection("classes").select(...CLASS_FIELDS).limit(LIMITS.classes)],
-    packs:["bộ từ công khai",db.collection("publicPacks").select(...PACK_FIELDS).limit(LIMITS.packs)],
     schools:["trường học",db.collection("schools").select(...SCHOOL_FIELDS).limit(LIMITS.schools)]
   };
   if(!defs[key])throw fail(new Error("Khu vực Admin không hợp lệ."),400,"bad_section");
@@ -997,6 +1007,7 @@ module.exports=async(req,res)=>{
     if(action==="delete-pack")return writeJson(res,200,{ok:true,...await deletePack(db,decoded,body.packId)},origin);
     if(action==="update-pack")return writeJson(res,200,{ok:true,...await updatePublicPack(db,decoded,body.packId,body.name,body.words)},origin);
     if(action==="sync-directory-chunk")return writeJson(res,200,{ok:true,...await syncDirectoryChunk(db,decoded,body.entity,body.cursor,body.limit)},origin);
+    if(action==="sync-code-public-packs")return writeJson(res,200,{ok:true,...await syncCodePublicPacks(db,decoded)},origin);
     if(action==="catalog-plan")return writeJson(res,200,{ok:true,...plan()},origin);
     if(action==="catalog-chunk"){
       const provinceCode=clean(body.provinceCode,10);
