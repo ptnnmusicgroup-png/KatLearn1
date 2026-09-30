@@ -388,3 +388,80 @@ body.pack-auth-gate .published-packs{
     padding:13px!important;
   }
 }
+
+/* ===== Global fluid sizing + footer/main boundary ===== */
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+.app-shell{
+  width:100%;
+  min-width:0;
+}
+.app-shell main{
+  min-width:0;
+  width:auto;
+  flex:1 1 auto;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+.page{
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding-inline:clamp(12px,3vw,42px)!important;
+}
+#home{
+  container-type:inline-size;
+  width:100%;
+}
+#home .activity-grid{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr))!important;
+}
+#home .bottom-grid{
+  grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);
+}
+#katlearnFooter,
+.site-footer{
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  border-radius:0!important;
+  box-sizing:border-box!important;
+}
+#katlearnFooter .footer-grid,
+#katlearnFooter .footer-bottom{
+  width:100%!important;
+  max-width:none!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+#katlearnFooter .footer-grid{
+  grid-template-columns:minmax(0,1.45fr) minmax(0,.8fr) minmax(0,.95fr);
+}
+@media(max-width:1050px){
+  #home .bottom-grid{
+    grid-template-columns:1fr;
+  }
+}
+@media(max-width:900px){
+  #katlearnFooter .footer-grid{
+    grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+  }
+}
+@media(max-width:620px){
+  .page{
+    padding-inline:clamp(10px,3.5vw,16px)!important;
+  }
+  #home .activity-grid{
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))!important;
+  }
+  #home .bottom-grid{
+    grid-template-columns:1fr;
+  }
+  #katlearnFooter .footer-grid{
+    grid-template-columns:1fr;
+  }
+}
