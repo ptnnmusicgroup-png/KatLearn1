@@ -284,32 +284,15 @@
     },
     async personalPacks(){
       if(!db||!currentUser)return[];
-      const uid=currentUser.uid;let code='';
-      try{code=await this.ensureAccountNamespace();}catch(e){console.warn('[KatLearn] Account namespace unavailable; using legacy packs:',e)}
-      if(!code){
-        const oldSnap=await api.getDocs(api.query(api.collection(db,'users',uid,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)));
-        return oldSnap.docs.map(d=>({id:d.id,...d.data()}));
-      }
-      const [newSnap,oldSnap]=await Promise.all([
-        api.getDocs(api.query(api.collection(db,'accounts',code,'memory'),api.orderBy('createdAt','desc'),api.limit(100))),
-        api.getDocs(api.query(api.collection(db,'users',uid,'personalPacks'),api.orderBy('createdAt','desc'),api.limit(100)))
-      ]);
-      const merged=[];const seen=new Set();
-      for(const d of newSnap.docs){
-        const data=d.data()||{};
-        if(data.kind!=='personalPack')continue;
-        seen.add(d.id);merged.push({id:d.id,...data});
-      }
-      for(const d of oldSnap.docs){
-        if(seen.has(d.id))continue;
-        const data=d.data()||{};
-        if(data.kind&&data.kind!=='personalPack')continue;
-        seen.add(d.id);merged.push({id:d.id,...data});
-      }
-      return merged.sort((a,b)=>{
-        const ta=a.createdAt?.seconds||a.createdAt||0,tb=b.createdAt?.seconds||b.createdAt||0;
-        return Number(tb)-Number(ta);
-      }).slice(0,100);
+      const uid=currentUser.uid;
+      const token=await this.getIdToken(true);
+      if(!token)throw new Error("Phiên đăng nhập không còn hợp lệ.");
+      const res=await fetch("/api/personal-packs",{method:"GET",headers:{Authorization:"Bearer "+token,"Accept":"application/json"},cache:"no-store"});
+      const data=await res.json().catch(()=>({}));
+      if(String(window.studyStore?.user?.uid||"")!==uid)return[];
+      if(!res.ok)throw new Error(data.error||"Không thể đồng bộ bộ từ của tài khoản.");
+      const packs=Array.isArray(data.packs)?data.packs:[];
+      return packs.filter(p=>String(p?.ownerUid||uid)===uid).map(p=>({...p,id:String(p.id||"")}));
     },
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
