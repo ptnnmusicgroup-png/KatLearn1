@@ -3,7 +3,7 @@ function clean(value,max=1000){return String(value??"").trim().slice(0,max)}
 const PACK_INSTRUCTIONS=`Bạn là Kat AI, trợ lý tạo bộ từ vựng tiếng Anh cho học sinh Việt Nam.
 Tạo toàn bộ bộ từ trong một lần. Không lặp từ, không bịa từ hoặc IPA. Ưu tiên từ thực sự liên quan đến chủ đề và trình độ.`;
 const WORD_PROPERTIES={word:{type:"string"},meaning_vi:{type:"string"},part_of_speech:{type:"string"},ipa:{type:"string"},example:{type:"string"},translation_vi:{type:"string"},synonyms:{type:"array",items:{type:"string"}},antonyms:{type:"array",items:{type:"string"}},notes:{type:"string"},difficulty:{type:"string"},topic:{type:"string"}};
-const REQUIRED_WORD=["word","meaning_vi","part_of_speech","ipa","example","translation_vi","synonyms","antonyms","notes","difficulty","topic"];
+const REQUIRED_WORD=["word","meaning_vi","part_of_speech","ipa","example","notes"];
 const WORD_SCHEMA={type:"object",additionalProperties:false,properties:WORD_PROPERTIES,required:REQUIRED_WORD};
 const SCHEMA={type:"object",additionalProperties:false,properties:{pack:{type:"object",additionalProperties:false,properties:{suggested_title:{type:"string"},description:{type:"string"},topic:{type:"string"},difficulty:{type:"string"},purpose:{type:"string"}},required:["suggested_title","description","topic","difficulty","purpose"]},words:{type:"array",items:WORD_SCHEMA}},required:["pack","words"]};
 const RETRY_SCHEMA={type:"object",additionalProperties:false,properties:{words:{type:"array",items:WORD_SCHEMA}},required:["words"]};
@@ -28,7 +28,7 @@ module.exports=async(req,res)=>{
       const retryResult=parseJson(modelText(response));words=uniqueWords([...words,...(Array.isArray(retryResult.words)?retryResult.words:[])]);result={...result,pack:result.pack||{}};
     }
     if(words.length<wordCount)throw Object.assign(new Error("Gemini chưa tạo đủ "+wordCount+" từ. Hãy thử lại với topic cụ thể hơn."),{status:502,code:"gemini_not_enough_words"});
-    words=words.slice(0,wordCount);result.pack=result.pack||{};result.pack.topic=prompt;result.pack.difficulty=difficulty;result.pack.purpose=purpose;result.words=words;
+    words=words.slice(0,wordCount).map(item=>({...item,translation_vi:String(item.translation_vi||item.meaning_vi||""),synonyms:Array.isArray(item.synonyms)?item.synonyms:[],antonyms:Array.isArray(item.antonyms)?item.antonyms:[],difficulty:String(item.difficulty||difficulty),topic:String(item.topic||prompt)}));result.pack=result.pack||{};result.pack.topic=prompt;result.pack.difficulty=difficulty;result.pack.purpose=purpose;result.words=words;
     return send(res,200,result);
   }catch(error){return send(res,error.status||500,{error:String(error.message||"Kat AI không thể tạo bộ từ."),code:error.code||"ai_pack_failed"},error.retryAfter?{"Retry-After":String(error.retryAfter)}:{})}
 };
