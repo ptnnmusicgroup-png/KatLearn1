@@ -403,6 +403,8 @@ html,body{
   min-width:0;
   width:auto;
   flex:1 1 auto;
+  margin-left:0!important;
+  margin-right:0!important;
 }
 .page{
   width:100%;
