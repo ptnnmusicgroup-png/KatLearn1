@@ -252,15 +252,16 @@
     async updatePersonalPack(packId,pack){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');
-      const user=currentUser,uid=user.uid;
-      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      let ownerAccountCode='';
-      try{ownerAccountCode=await this.ensureAccountNamespace();}catch(_){}
-      if(!ownerAccountCode)return api.updateDoc(api.doc(db,'users',uid,'personalPacks',packId),{...pack,ownerUid:uid,updatedAt:api.serverTimestamp()});
-      const newRef=api.doc(db,'accounts',ownerAccountCode,'memory',packId);
-      const newSnap=await api.getDoc(newRef);
-      const ref=newSnap.exists()?newRef:api.doc(db,'users',uid,'personalPacks',packId);
-      return api.updateDoc(ref,{...pack,kind:'personalPack',ownerUid:uid,ownerEmail:user.email||'',ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',ownerAccountCode,updatedAt:api.serverTimestamp()});
+      const uid=currentUser.uid,token=await this.getIdToken(true);
+      if(!token)throw new Error('Phiên đăng nhập không còn hợp lệ.');
+      const body={action:'update',id:String(packId)};
+      if(Object.prototype.hasOwnProperty.call(pack||{},'name'))body.name=String(pack.name||'').trim();
+      if(Object.prototype.hasOwnProperty.call(pack||{},'words'))body.words=Array.isArray(pack.words)?pack.words:[];
+      const res=await fetch('/api/personal-pack-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(body)});
+      const data=await res.json().catch(()=>({}));
+      if(String(window.studyStore?.user?.uid||'')!==uid)return null;
+      if(!res.ok)throw new Error(data.error||'Không thể cập nhật bộ từ.');
+      return data;
     },
     async deletePersonalPack(packId){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');
