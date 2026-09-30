@@ -277,6 +277,10 @@
     async personalPacks(){
       if(!db||!currentUser)return[];
       const uid=currentUser.uid;
+      // Always provision/read the generated accountCode before loading packs.
+      // The API uses that code as the canonical personal-pack namespace.
+      const accountCode=await this.ensureAccountCode();
+      if(String(window.studyStore?.user?.uid||'')!==uid)return[];
       const token=await this.getIdToken(true);
       if(!token)throw new Error("Phiên đăng nhập không còn hợp lệ.");
       const res=await fetch("/api/personal-packs",{method:"GET",headers:{Authorization:"Bearer "+token,"Accept":"application/json"},cache:"no-store"});
@@ -284,7 +288,10 @@
       if(String(window.studyStore?.user?.uid||"")!==uid)return[];
       if(!res.ok)throw new Error(data.error||"Không thể đồng bộ bộ từ của tài khoản.");
       const packs=Array.isArray(data.packs)?data.packs:[];
-      return packs.filter(p=>String(p?.ownerUid||uid)===uid).map(p=>({...p,id:String(p.id||"")}));
+      return packs
+        .filter(p=>String(p?.ownerUid||uid)===uid)
+        .filter(p=>!p?.ownerAccountCode||String(p.ownerAccountCode)===String(data.accountCode||accountCode))
+        .map(p=>({...p,id:String(p.id||""),accountCode:String(p.accountCode||data.accountCode||accountCode)}));
     },
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
