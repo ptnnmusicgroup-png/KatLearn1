@@ -23,6 +23,7 @@ module.exports=async(req,res)=>{
     for(const doc of userSnap.docs){
       const data=doc.data()||{};
       if(data.kind&&data.kind!=="personalPack")continue;
+      if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
       seen.add(doc.id);
       merged.push(packData(doc.id,data,"users"));
     }
@@ -35,6 +36,7 @@ module.exports=async(req,res)=>{
         for(const doc of memorySnap.docs){
           const data=doc.data()||{};
           if(data.kind!=="personalPack"||seen.has(doc.id))continue;
+          if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
           seen.add(doc.id);
           merged.push(packData(doc.id,data,"accounts"));
         }
