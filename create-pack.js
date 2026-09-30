@@ -4,7 +4,7 @@
   const toast=msg=>{const el=$('#cpToast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(window.__cpToastTimer);window.__cpToastTimer=setTimeout(()=>el.classList.remove('show'),3200)};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const endpoint=name=>'/api/'+String(name||'').replace(/^\/+/, '');
-  const authHeaders=async()=>{const h={'Content-Type':'application/json'};try{const token=await window.studyStore?.getIdToken?.();if(token)h.Authorization='Bearer '+token}catch(_){ }return h};
+  const authHeaders=async()=>{const h={'Content-Type':'application/json'};try{const token=await window.studyStore?.getIdToken?.(true);if(token)h.Authorization='Bearer '+token}catch(_){ }return h};
   let user=null;
   function normalizeType(v){const x=String(v||'').toLowerCase();if(x.includes('noun')||x.includes('danh từ'))return'noun';if(x.includes('verb')||x.includes('động từ'))return'verb';if(x.includes('adjective')||x.includes('tính từ'))return'adjective';if(x.includes('adverb')||x.includes('trạng từ'))return'adverb';if(x.includes('phrase')||x.includes('cụm'))return'phrase';return'other'}
   function row(data={}){
