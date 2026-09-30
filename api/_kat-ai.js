@@ -39,7 +39,10 @@ async function generateGemini({contents,systemInstruction,responseSchema,maxOutp
 async function requireUser(req){
   const match=/^Bearer\s+(.+)$/i.exec(String(req.headers?.authorization||""));
   if(!match)throw Object.assign(new Error("Bạn cần đăng nhập để dùng Kat AI."),{status:401,code:"missing_ai_token"});
-  try{return await firebaseAuth().verifyIdToken(match[1])}
+  let auth;
+  try{auth=firebaseAuth()}
+  catch(error){throw error}
+  try{return await auth.verifyIdToken(match[1])}
   catch(error){
     const code=String(error?.code||"auth_error");
     const raw=String(error?.message||"").toLowerCase();
@@ -50,7 +53,7 @@ async function requireUser(req){
     if(code==="auth/id-token-project-id-mismatch"||raw.includes("project id")||raw.includes("audience"))
       throw Object.assign(new Error("ID token đang thuộc Firebase project khác với server KatLearn. Kiểm tra Firebase Admin credentials trên Vercel."),{status:503,code:"ai_token_project_mismatch"});
     if(code==="auth/invalid-id-token"||raw.includes("incorrect claim")||raw.includes("invalid id token"))
-      throw Object.assign(new Error("ID token Firebase không hợp lệ. Hãy tải lại trang và đăng nhập lại."),{status:401,code:"ai_token_invalid"});
+      throw Object.assign(new Error("ID token Firebase không hợp lệ. Hãy tải lại trang rồi thử lại."),{status:401,code:"ai_token_invalid"});
     throw Object.assign(new Error("Server không xác thực được phiên Firebase của bạn ("+code+")."),{status:503,code:"ai_token_verify_failed"});
   }
 }
