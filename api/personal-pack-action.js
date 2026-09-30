@@ -26,15 +26,24 @@ function sanitizeWords(input){
 }
 
 async function findPack(db,uid,packId){
-  const userRef=db.collection("users").doc(uid).collection("personalPacks").doc(packId);
-  const userSnap=await userRef.get();
-  if(userSnap.exists)return {ref:userRef,snap:userSnap,source:"users"};
-  const profile=await db.collection("users").doc(uid).get();
-  const accountCode=String(profile.data()?.accountCode||"").trim();
+  const profileSnap=await db.collection("users").doc(uid).get();
+  const accountCode=String(profileSnap.data()?.accountCode||"").trim();
+
   if(accountCode){
     const accountRef=db.collection("accounts").doc(accountCode).collection("memory").doc(packId);
     const accountSnap=await accountRef.get();
-    if(accountSnap.exists&&accountSnap.data()?.kind==="personalPack")return {ref:accountRef,snap:accountSnap,source:"accounts"};
+    if(accountSnap.exists&&accountSnap.data()?.kind==="personalPack"
+      &&String(accountSnap.data()?.ownerUid||uid)===uid
+      &&(!accountSnap.data()?.ownerAccountCode||String(accountSnap.data()?.ownerAccountCode)===accountCode)){
+      return {ref:accountRef,snap:accountSnap,source:"accounts",accountCode};
+    }
+  }
+
+  // Backward-compatible reader for legacy packs created in users/{uid}/personalPacks.
+  const userRef=db.collection("users").doc(uid).collection("personalPacks").doc(packId);
+  const userSnap=await userRef.get();
+  if(userSnap.exists&&(!userSnap.data()?.ownerUid||String(userSnap.data()?.ownerUid)===uid)){
+    return {ref:userRef,snap:userSnap,source:"users",accountCode};
   }
   return null;
 }
@@ -75,7 +84,7 @@ module.exports=async(req,res)=>{
     if(Object.keys(update).length===1)throw Object.assign(new Error("Không có dữ liệu nào để cập nhật."),{status:400,code:"pack_update_empty"});
     await found.ref.update(update);
     const snap=await found.ref.get();
-    return send(res,200,{ok:true,id:packId,action:"update",source:found.source,...serialize(snap.data()||{})});
+    return send(res,200,{ok:true,id:packId,action:"update",source:found.source,accountCode:found.accountCode||String(snap.data()?.ownerAccountCode||""),...serialize(snap.data()||{})});
   }catch(error){
     return send(res,error.status||500,{
       ok:false,
