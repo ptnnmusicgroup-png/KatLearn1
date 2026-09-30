@@ -1,4 +1,4 @@
-const{requireUser,rateLimit,generateGemini,parseJson,send,method}=require("./_kat-ai");
+const{requireUser,rateLimit,generateGemini,parseJson,modelText,send,method}=require("./_kat-ai");
 function clean(value,max=1000){return String(value??"").trim().slice(0,max)}
 const PACK_INSTRUCTIONS=`Bạn là Kat AI, trợ lý tạo bộ từ vựng tiếng Anh cho học sinh Việt Nam.
 Tạo toàn bộ bộ từ trong một lần. Không lặp từ, không bịa từ hoặc IPA. Ưu tiên từ thực sự liên quan đến chủ đề và trình độ.`;
@@ -17,7 +17,7 @@ module.exports=async(req,res)=>{
     if(!prompt)throw Object.assign(new Error("Hãy nhập chủ đề hoặc yêu cầu cho Kat AI."),{status:400,code:"prompt_missing"});
     const contents="Yêu cầu: "+prompt+"\nSố lượng chính xác: "+wordCount+"\nTrình độ: "+difficulty+"\nMục đích: "+purpose+"\nLoại từ: "+wordTypes+(instructions?"\nHướng dẫn bổ sung: "+instructions:"")+"\nPhải trả về đúng "+wordCount+" mục từ, không ít hơn.";
     let response=await generateGemini({maxOutputTokens:Math.min(16000,Math.max(7000,wordCount*140)),temperature:.35,systemInstruction:PACK_INSTRUCTIONS,contents,responseSchema:SCHEMA});
-    let result=parseJson(response?.text);
+    let result=parseJson(modelText(response));
     const normalizeWord=value=>String(value??"").trim().toLowerCase().replace(/\s+/g," ");
     const uniqueWords=input=>{const seen=new Set(),out=[];for(const item of Array.isArray(input)?input:[]){const key=normalizeWord(item?.word);if(!key||seen.has(key))continue;seen.add(key);out.push(item)}return out};
     let words=uniqueWords(result.words);
@@ -25,7 +25,7 @@ module.exports=async(req,res)=>{
       const missing=wordCount-words.length,existing=words.map(w=>normalizeWord(w.word)).filter(Boolean).slice(0,100).join(", ");
       const retryContents=contents+"\nĐã có các từ: "+existing+". Hãy CHỈ tạo thêm "+missing+" từ mới, không lặp bất kỳ từ nào trong danh sách đã có và không giải thích.";
       response=await generateGemini({maxOutputTokens:Math.min(10000,Math.max(2200,missing*150)),temperature:.3,systemInstruction:PACK_INSTRUCTIONS,contents:retryContents,responseSchema:RETRY_SCHEMA});
-      const retryResult=parseJson(response?.text);words=uniqueWords([...words,...(Array.isArray(retryResult.words)?retryResult.words:[])]);result={...result,pack:result.pack||{}};
+      const retryResult=parseJson(modelText(response));words=uniqueWords([...words,...(Array.isArray(retryResult.words)?retryResult.words:[])]);result={...result,pack:result.pack||{}};
     }
     if(words.length<wordCount)throw Object.assign(new Error("Gemini chưa tạo đủ "+wordCount+" từ. Hãy thử lại với topic cụ thể hơn."),{status:502,code:"gemini_not_enough_words"});
     words=words.slice(0,wordCount);result.pack=result.pack||{};result.pack.topic=prompt;result.pack.difficulty=difficulty;result.pack.purpose=purpose;result.words=words;
