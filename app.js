@@ -39,7 +39,7 @@ updateHomeHeader();
 setInterval(()=>updateHomeHeader(),30000);
 updateDailyGoal(0);
 const PAGE_ALIASES={vocabulary:'words',words:'words',home:'home',packs:'packs',learn:'learn',practice:'practice',shop:'shop',ranking:'ranking',progress:'progress',studentClasses:'studentClasses'};
-function showPage(rawId,updateHash=true){const id=PAGE_ALIASES[rawId]||rawId;const page=$('#'+id);if(!page)return;$$('.page').forEach(p=>p.classList.remove('active-page'));page.classList.add('active-page');$$('.nav-item').forEach(b=>b.classList.toggle('active',(PAGE_ALIASES[b.dataset.page]||b.dataset.page)===id));$('.sidebar')?.classList.remove('open');if(updateHash){const hash=id==='words'?'vocabulary':id;history.replaceState(null,'','#'+hash)}if(id==='ranking')renderLeaderboard();if(id==='packs')renderPublicPacks();if(id==='words')renderVocabularyViews();if(id==='studentClasses')window.katlearnStudentClasses?.render();window.scrollTo({top:0,behavior:'smooth'})}
+function showPage(rawId,updateHash=true){const id=PAGE_ALIASES[rawId]||rawId;if(id!=='learn'&&['public','core','assigned'].includes(String(activeVocabSource?.kind||'')))restorePersonalVocabulary();const page=$('#'+id);if(!page)return;$('.page').forEach(p=>p.classList.remove('active-page'));page.classList.add('active-page');$('.nav-item').forEach(b=>b.classList.toggle('active',(PAGE_ALIASES[b.dataset.page]||b.dataset.page)===id));$('.sidebar')?.classList.remove('open');updatePublicPackAction(id);if(updateHash){const hash=id==='words'?'vocabulary':id;history.replaceState(null,'','#'+hash)}if(id==='ranking')renderLeaderboard();if(id==='packs')renderPublicPacks();if(id==='words')renderVocabularyViews();if(id==='studentClasses')window.katlearnStudentClasses?.render();window.scrollTo({top:0,behavior:'smooth'})}
 function openInitialPage(){const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();showPage(hash&&PAGE_ALIASES[hash]?hash:'home',false)}
 $$('.nav-item').forEach(b=>b.onclick=()=>showPage(b.dataset.page));$$('[data-go]').forEach(b=>b.onclick=()=>showPage(b.dataset.go));if($('.start-lesson'))$('.start-lesson').onclick=()=>showPage('learn');if($('.menu-toggle'))$('.menu-toggle').onclick=()=>$('.sidebar')?.classList.toggle('open');window.addEventListener('hashchange',()=>{const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();if(hash&&PAGE_ALIASES[hash])showPage(hash,false)});
 function renderWordList(){const list=$('#wordList');list.innerHTML=vocab.length?vocab.map((v,i)=>`<button class="word-item ${i===cardIndex?'selected':''}" data-index="${i}">${esc(v.word)}<small>${esc(v.pron||'Chưa có phiên âm')}</small>${knownWordKeys.has(vocabKey(v))?'<i>✓</i>':''}</button>`).join(''):'<p class="empty-state">Chưa có từ nào.</p>';$$('.word-item').forEach(b=>b.onclick=()=>{cardIndex=+b.dataset.index;renderCard()});['#wordListCount','#totalWords','#cardTotal'].forEach(s=>$(s).textContent=vocab.length)}
@@ -64,6 +64,7 @@ if(addWordBtn)addWordBtn.onclick=()=>{if(requireSignedInPersonalService())wordMo
 if(wordModal){wordModal.querySelector('.modal-close')?.addEventListener('click',()=>wordModal.classList.remove('show'));wordModal.onclick=e=>{if(e.target===wordModal)wordModal.classList.remove('show')}}
 if(wordSave)wordSave.onclick=async()=>{const sourceKind=String(activeVocabSource?.kind||'legacy');if(['core','public','assigned'].includes(sourceKind))return toast('🔒 Kho từ này chỉ để học. Hãy tạo một bộ từ cá nhân nếu muốn thêm từ mới.');const authUid=String(window.studyStore?.user?.uid||'');if(sourceKind==='legacy'&&authUid&&await window.studyStore?.isClassStudent?.()){if(String(window.studyStore?.user?.uid||'')===authUid)toast('🔒 Tài khoản lớp học chỉ sử dụng bộ từ do KatLearn/GV quản lý.');return}if(authUid&&String(window.studyStore?.user?.uid||'')!==authUid)return;const item={word:$('#newWord')?.value.trim()||'',mean:$('#newMeaning')?.value.trim()||'',pron:$('#newPronounce')?.value.trim()||'',emoji:'📚'};if(!item.word||!item.mean)return toast('Hãy nhập từ và nghĩa trước nhé.');if(vocab.some(v=>v.word.toLowerCase()===item.word.toLowerCase()))return toast('Từ vựng này đã có trong danh sách.');vocab.push(item);localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));cardIndex=vocab.length-1;wordModal?.classList.remove('show');renderCard();renderQuiz();syncProfile();toast('Đã thêm “'+item.word+'” vào bộ từ của bạn!')};
 
+const takePublicPackBtn=$('#takePublicPackBtn');if(takePublicPackBtn)takePublicPackBtn.onclick=takePublicPack;
 $('#addWordFromList').onclick=()=>{if(requireSignedInPersonalService())$('#wordModal').classList.add('show')};
 $('#openFlashcards').onclick=()=>showPage('learn');$('#wordSearch').oninput=e=>renderVocabularyViews(e.target.value);
 function esc(text){return String(text||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
@@ -97,6 +98,58 @@ async function loadAssignedPacks(){
   }catch(e){if(String(window.studyStore?.user?.uid||'')===uid)console.warn('[KatLearn] assigned packs:',e);return[]}
 }
 function setVocabSource(source){activeVocabSource=source||{kind:'legacy'};if(activeVocabSource.kind==='personal'&&!activeVocabSource.uid)activeVocabSource.uid=window.studyStore?.userId||'';localStorage.setItem('katlearn-vocab-source',JSON.stringify(activeVocabSource));loadKnownState()}
+let learningPack=null;
+let personalVocabSnapshot=null;
+async function restorePersonalVocabulary(){
+  let personal=[];
+  try{personal=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(!Array.isArray(personal))personal=[]}catch(_){personal=[]}
+  const storedSource=(()=>{try{return JSON.parse(localStorage.getItem('katlearn-vocab-source')||'null')}catch(_){return null}})();
+  if(['public','core','assigned'].includes(String(storedSource?.kind||''))){
+    try{
+      const profile=await window.studyStore?.loadProfile?.();
+      if(Array.isArray(profile?.vocab))personal=profile.vocab;
+    }catch(_){ }
+  }
+  vocab=Array.isArray(personal)?personal:[];
+  activeVocabSource={kind:'personal',uid:String(window.studyStore?.user?.uid||'')};
+  localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
+  localStorage.setItem('katlearn-vocab-source',JSON.stringify(activeVocabSource));
+  loadKnownState();
+  cardIndex=Math.min(cardIndex,Math.max(0,vocab.length-1));
+  renderCard();renderQuiz();updateCoins();
+  updatePublicPackAction('learn');
+  personalVocabSnapshot=null;
+}
+function updatePublicPackAction(pageId){
+  const btn=$('#takePublicPackBtn');
+  if(!btn)return;
+  const isPublic=pageId==='learn'&&String(activeVocabSource?.kind||'')==='public'&&Array.isArray(learningPack?.words)&&learningPack.words.length;
+  btn.hidden=!isPublic;
+  if(isPublic)btn.textContent=`＋ Lấy bộ “${learningPack.name||'này'}”`;
+}
+async function takePublicPack(){
+  if(String(activeVocabSource?.kind||'')!=='public'||!Array.isArray(learningPack?.words))return;
+  const uid=String(window.studyStore?.user?.uid||'');
+  if(!uid)return;
+  let personal=[];
+  try{personal=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(!Array.isArray(personal))personal=[]}catch(_){personal=[]}
+  const source=(()=>{try{return JSON.parse(localStorage.getItem('katlearn-vocab-source')||'null')}catch(_){return null}})();
+  if(['public','core','assigned'].includes(String(source?.kind||''))){
+    try{const profile=await window.studyStore?.loadProfile?.();if(Array.isArray(profile?.vocab))personal=profile.vocab}catch(_){ }
+  }
+  const seen=new Set(personal.map(v=>vocabKey(v)));
+  const additions=learningPack.words.filter(v=>v&&!seen.has(vocabKey(v)));
+  vocab=[...personal,...additions];
+  activeVocabSource={kind:'personal',uid};
+  localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
+  localStorage.setItem('katlearn-vocab-source',JSON.stringify(activeVocabSource));
+  loadKnownState();
+  cardIndex=0;
+  renderCard();renderQuiz();updateCoins();
+  updatePublicPackAction('learn');
+  await syncProfile();
+  toast(`✓ Đã lấy ${additions.length} từ từ “${learningPack.name||'pack'}” vào bộ từ cá nhân.`);
+}
 function openVocabularyPack(pack){
   if(!pack)return;
   if(!window.studyStore?.user){
@@ -105,13 +158,20 @@ function openVocabularyPack(pack){
     window.setTimeout(()=>location.href='/login.html',220);
     return;
   }
-  vocab=Array.isArray(pack.words)?pack.words:[];
-  if(!pack.current)setVocabSource(pack.core?{kind:'core',id:pack.topicId}:pack.assigned?{kind:'assigned',id:pack.id}:{kind:'public',id:pack.id});
-  else loadKnownState();
+  if(pack.current){
+    restorePersonalVocabulary();
+    return;
+  }
+  if(!['public','core','assigned'].includes(String(activeVocabSource?.kind||''))){
+    try{personalVocabSnapshot=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]')}catch(_){personalVocabSnapshot=Array.isArray(vocab)?[...vocab]:[]}
+  }
+  learningPack={...pack,words:Array.isArray(pack.words)?pack.words:[]};
+  vocab=[...learningPack.words];
+  setVocabSource(pack.core?{kind:'core',id:pack.topicId}:pack.assigned?{kind:'assigned',id:pack.id}:{kind:'public',id:pack.id});
   cardIndex=0;
-  localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
-  renderCard();renderQuiz();showPage('learn');
-  toast(`Đã mở “${pack.name}”.`);
+  // Deliberately do NOT write learningPack.words into the personal vocab localStorage.
+  renderCard();renderQuiz();showPage('learn');updatePublicPackAction('learn');
+  toast(`Đã mở “${pack.name}” để học. Bộ từ cá nhân của bạn vẫn giữ nguyên.`);
 }
 async function openCoreTopic(topicId){
   try{openVocabularyPack(await loadCoreTopic(topicId))}
