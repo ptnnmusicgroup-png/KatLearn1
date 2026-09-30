@@ -29,6 +29,9 @@ module.exports=async(req,res)=>{
   if(!method(req,res))return;
   try{
     const user=await requireUser(req);
+    const{db:profileDb}=init();
+    const profileSnap=await profileDb.collection("users").doc(user.uid).get();
+    if(String(profileSnap.data()?.studentAccountType||"free").toLowerCase()==="class")throw Object.assign(new Error("Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân."),{status:403,code:"personal_pack_forbidden_class"});
     const body=req.body||{};
     const name=clean(body.name,80);
     const words=sanitizeWords(body.words);
