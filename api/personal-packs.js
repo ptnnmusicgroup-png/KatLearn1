@@ -18,31 +18,36 @@ module.exports=async(req,res)=>{
     const uid=String(user.uid);
     const merged=[];
     const seen=new Set();
+    const profileSnap=await db.collection("users").doc(uid).get();
+    const profile=profileSnap.data()||{};
+    const accountCode=String(profile.accountCode||"").trim();
 
+    if(accountCode){
+      try{
+        const memorySnap=await db.collection("accounts").doc(accountCode).collection("memory").where("kind","==","personalPack").limit(100).get();
+        for(const doc of memorySnap.docs){
+          const data=doc.data()||{};
+          if(String(data.kind)!=="personalPack")continue;
+          if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
+          if(data.ownerAccountCode&&String(data.ownerAccountCode)!==accountCode)continue;
+          seen.add(doc.id);
+          merged.push(packData(doc.id,{...data,ownerAccountCode:accountCode},"accounts"));
+        }
+      }catch(accountError){
+        console.warn("[KatLearn] Account-memory personal packs unavailable:",accountError?.message||accountError);
+      }
+    }
+
+    // Backward-compatible migration reader for packs created before the
+    // accountCode namespace became the canonical source.
     const userSnap=await db.collection("users").doc(uid).collection("personalPacks").limit(100).get();
     for(const doc of userSnap.docs){
       const data=doc.data()||{};
       if(data.kind&&data.kind!=="personalPack")continue;
       if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
+      if(seen.has(doc.id))continue;
       seen.add(doc.id);
-      merged.push(packData(doc.id,data,"users"));
-    }
-
-    try{
-      const profileSnap=await db.collection("users").doc(uid).get();
-      const accountCode=String(profileSnap.data()?.accountCode||"").trim();
-      if(accountCode){
-        const memorySnap=await db.collection("accounts").doc(accountCode).collection("memory").limit(100).get();
-        for(const doc of memorySnap.docs){
-          const data=doc.data()||{};
-          if(data.kind!=="personalPack"||seen.has(doc.id))continue;
-          if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
-          seen.add(doc.id);
-          merged.push(packData(doc.id,data,"accounts"));
-        }
-      }
-    }catch(accountError){
-      console.warn("[KatLearn] Account-memory personal packs unavailable:",accountError?.message||accountError);
+      merged.push(packData(doc.id,{...data,ownerAccountCode:accountCode},"users"));
     }
 
     merged.sort((a,b)=>{
@@ -51,7 +56,7 @@ module.exports=async(req,res)=>{
       return tb-ta;
     });
 
-    return send(res,200,{ok:true,uid,packs:merged.slice(0,100)});
+    return send(res,200,{ok:true,uid,accountCode,packs:merged.slice(0,100)});
   }catch(error){
     return send(res,error.status||500,{
       ok:false,
