@@ -5,7 +5,7 @@
       "includeFiles": "data/vocabulary/*.json"
     },
     "api/admin-hub.js": {
-      "includeFiles": ["data/national-catalog/*.json","data/vocabulary/*.json"],
+      "includeFiles": "data/**/*.json",
       "maxDuration": 60
     }
   },
