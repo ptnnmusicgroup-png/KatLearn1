@@ -240,26 +240,14 @@
       const user=currentUser,uid=user.uid;
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
       const profile=await this.loadProfile();
-      if(String(profile?.studentAccountType||'free').toLowerCase()==='class'){
-        throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
-      }
-      let identity=null;
-      try{identity=await this.ensurePackIdentity(pack?.name||'Pack')}catch(namespaceError){console.warn('[KatLearn] Falling back to legacy personal pack storage:',namespaceError)}
-      const payload={
-        ...pack,kind:'personalPack',ownerUid:uid,ownerEmail:user.email||'',
-        ownerDisplayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
-        ownerAccountCode:identity?.accountCode||'',packCode:identity?.packCode||'',
-        updatedAt:api.serverTimestamp(),createdAt:api.serverTimestamp()
-      };
-      if(identity?.accountCode){
-        try{
-          const ref=api.doc(db,'accounts',identity.accountCode,'memory',identity.docId);
-          await api.setDoc(ref,payload,{merge:false});
-          return {id:identity.docId,packCode:identity.packCode,...payload};
-        }catch(namespaceError){console.warn('[KatLearn] New account memory write failed; using legacy storage:',namespaceError)}
-      }
-      return api.addDoc(api.collection(db,'users',uid,'personalPacks'),payload);
-    },
+      if(String(profile?.studentAccountType||'free').toLowerCase()==='class')throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
+      const token=await this.getIdToken(true);
+      if(!token)throw new Error('Phiên đăng nhập không còn hợp lệ.');
+      const res=await fetch('/api/personal-pack',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({name:String(pack?.name||'').trim(),words:Array.isArray(pack?.words)?pack.words:[]})});
+      const data=await res.json().catch(()=>({}));
+      if(String(window.studyStore?.user?.uid||'')!==uid)return null;
+      if(!res.ok)throw new Error(data.error||'Không thể lưu bộ từ.');
+      return data;
     async updatePersonalPack(packId,pack){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');
