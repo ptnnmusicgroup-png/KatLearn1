@@ -465,3 +465,34 @@ html,body{
     grid-template-columns:1fr;
   }
 }
+
+/* ===== Full-height sidebar + flush page ending ===== */
+.app-shell{
+  align-items:stretch;
+  min-height:100vh;
+}
+.app-shell main{
+  min-height:0!important;
+  align-self:stretch;
+}
+@media(min-width:821px){
+  .app-shell{
+    align-items:stretch;
+  }
+  .sidebar{
+    position:relative!important;
+    top:auto!important;
+    height:auto!important;
+    min-height:100%!important;
+    align-self:stretch!important;
+  }
+}
+@media(max-width:820px){
+  .sidebar{
+    height:100vh!important;
+    min-height:100vh!important;
+  }
+}
+#katlearnFooter{
+  margin-bottom:0!important;
+}
