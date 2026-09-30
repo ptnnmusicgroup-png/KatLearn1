@@ -1,7 +1,7 @@
 // KatLearn AI Pack Generator core - server-side Gemini only
 (function(){
   const endpoint=name=>'/api/'+name;
-  const authHeaders=async()=>{const h={'Content-Type':'application/json'};try{const t=await window.studyStore?.getIdToken?.();if(t)h.Authorization='Bearer '+t}catch(_){}return h};
+  const authHeaders=async()=>{const h={'Content-Type':'application/json'};try{const t=await window.studyStore?.getIdToken?.(true);if(t)h.Authorization='Bearer '+t}catch(_){}return h};
   const post=async(path,body)=>{
     const res=await fetch(endpoint(path),{method:'POST',headers:await authHeaders(),body:JSON.stringify(body)});
     let data={}; try{data=await res.json()}catch(e){}
