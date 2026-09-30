@@ -2,7 +2,7 @@ const{requireUser,rateLimit,generateGemini,parseJson,modelText,send,method}=requ
 function clean(value,max=1000){return String(value??"").trim().slice(0,max)}
 const PACK_INSTRUCTIONS=`Bạn là Kat AI, trợ lý tạo bộ từ vựng tiếng Anh cho học sinh Việt Nam.
 Tạo toàn bộ bộ từ trong một lần. Không lặp từ, không bịa từ hoặc IPA. Ưu tiên từ thực sự liên quan đến chủ đề và trình độ.`;
-const WORD_PROPERTIES={word:{type:"string"},meaning_vi:{type:"string"},part_of_speech:{type:"string"},ipa:{type:"string"},example:{type:"string"},translation_vi:{type:"string"},synonyms:{type:"array",items:{type:"string"}},antonyms:{type:"array",items:{type:"string"}},notes:{type:"string"},difficulty:{type:"string"},topic:{type:"string"}};
+const WORD_PROPERTIES={word:{type:"string"},meaning_vi:{type:"string"},part_of_speech:{type:"string"},ipa:{type:"string"},example:{type:"string"},notes:{type:"string"}};
 const REQUIRED_WORD=["word","meaning_vi","part_of_speech","ipa","example","notes"];
 const WORD_SCHEMA={type:"object",additionalProperties:false,properties:WORD_PROPERTIES,required:REQUIRED_WORD};
 const SCHEMA={type:"object",additionalProperties:false,properties:{pack:{type:"object",additionalProperties:false,properties:{suggested_title:{type:"string"},description:{type:"string"},topic:{type:"string"},difficulty:{type:"string"},purpose:{type:"string"}},required:["suggested_title","description","topic","difficulty","purpose"]},words:{type:"array",items:WORD_SCHEMA}},required:["pack","words"]};
