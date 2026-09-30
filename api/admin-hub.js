@@ -48,6 +48,98 @@ const USER_FIELDS=["displayName","name","email","role","schoolName","className",
 const CLASS_FIELDS=["name","grade","description","teacherEmail","teacherUid","schoolName","schoolId","joinCode","studentCount","createdAt","updatedAt","province","ward","catalogClassId","deletingAt"];
 const PACK_FIELDS=["name","createdBy","createdByEmail","createdByUid","createdAt","updatedAt","wordCount"];
 const SCHOOL_FIELDS=["name","province","ward","schoolId","schoolLevel","createdAt","updatedAt","source","provinceId","wardId"];
+const ADMIN_SYNC_COLLECTION="KatLearn_ADMIN_SYNC_1";
+const SYNC_CONFIG={
+  users:{source:"users",limit:200,fields:USER_FIELDS},
+  classes:{source:"classes",limit:200,fields:CLASS_FIELDS},
+  packs:{source:"publicPacks",limit:20,fields:null}
+};
+
+async function syncDirectoryChunk(db,decoded,entity,cursor,requestedLimit){
+  const config=SYNC_CONFIG[String(entity||"").toLowerCase()];
+  if(!config)throw fail(new Error("Loại dữ liệu đồng bộ không hợp lệ."),400,"bad_sync_entity");
+
+  const stateRef=db.collection(ADMIN_SYNC_COLLECTION).doc(entity);
+  const stateSnap=await stateRef.get();
+  let total=Number(stateSnap.exists?stateSnap.data()?.total:0)||0;
+  if(!total)total=await count("đồng bộ "+entity,db.collection(config.source));
+
+  const safeLimit=Math.max(1,Math.min(config.limit,Number(requestedLimit)||config.limit));
+  let query=db.collection(config.source).orderBy("__name__").limit(safeLimit);
+  const safeCursor=clean(cursor,160);
+  if(safeCursor)query=query.startAfter(safeCursor);
+
+  const snapshot=await query.get();
+  const mirror=stateRef.collection("items");
+  const now=Date.now();
+
+  if(snapshot.empty){
+    await stateRef.set({sourceCollection:config.source,total,lastCursor:safeCursor,done:true,updatedAt:now},{merge:true});
+    return{entity,total,processed:0,nextCursor:safeCursor,done:true};
+  }
+
+  const batch=db.batch();
+  for(const doc of snapshot.docs){
+    const raw=doc.data()||{};
+    const data=config.fields
+      ? Object.fromEntries(config.fields.filter(key=>Object.prototype.hasOwnProperty.call(raw,key)).map(key=>[key,serialize(raw[key])]))
+      : serialize(raw);
+    batch.set(mirror.doc(doc.id),{
+      sourceId:doc.id,
+      sourceCollection:config.source,
+      data,
+      syncedAt:now
+    },{merge:true});
+  }
+  await batch.commit();
+
+  const nextCursor=snapshot.docs[snapshot.docs.length-1].id;
+  const done=snapshot.size<safeLimit;
+  await stateRef.set({
+    sourceCollection:config.source,
+    total,
+    lastCursor:nextCursor,
+    lastProcessed:snapshot.size,
+    done,
+    updatedAt:now
+  },{merge:true});
+
+  if(done)await audit(db,decoded,"sync.complete",entity,{total,mirror:ADMIN_SYNC_COLLECTION+"/"+entity});
+  return{entity,total,processed:snapshot.size,nextCursor,done};
+}
+
+async function updatePublicPack(db,decoded,packId,name,words){
+  packId=clean(packId,160);
+  name=clean(name,200);
+  if(!packId)throw fail(new Error("Thiếu ID bộ từ."),400,"missing_pack_id");
+  if(!name)throw fail(new Error("Tên bộ từ không được để trống."),400,"invalid_pack_name");
+  if(!Array.isArray(words))throw fail(new Error("Danh sách từ của bộ phải là một mảng."),400,"invalid_pack_words");
+  if(words.length>2000)throw fail(new Error("Bộ từ không được vượt quá 2.000 mục từ."),400,"pack_words_too_many");
+
+  const ref=db.collection("publicPacks").doc(packId);
+  const snap=await ref.get();
+  if(!snap.exists)throw fail(new Error("Không tìm thấy bộ từ."),404,"pack_not_found");
+
+  const normalized=words.map((word,index)=>{
+    if(!word||typeof word!=="object")throw fail(new Error("Mục từ #"+(index+1)+" không hợp lệ."),400,"invalid_pack_word");
+    return serialize(word);
+  });
+  const now=Date.now();
+  const patch={name,words:normalized,wordCount:normalized.length,updatedAt:now};
+  await ref.set(patch,{merge:true});
+
+  const mirrorRef=db.collection(ADMIN_SYNC_COLLECTION).doc("packs").collection("items").doc(packId);
+  await mirrorRef.set({
+    sourceId:packId,
+    sourceCollection:"publicPacks",
+    data:serialize({...snap.data(),...patch}),
+    syncedAt:now
+  },{merge:true});
+
+  await audit(db,decoded,"pack.update",packId,{name,wordCount:normalized.length});
+  return{packId,name,wordCount:normalized.length,updatedAt:now};
+}
+
 
 function messageOf(error,fallback="Lỗi Admin"){
   if(error==null)return fallback;
@@ -789,10 +881,17 @@ async function overview(db){
     degraded:warnings.length>0
   };
 }
-async function section(db,key){
+async function section(db,key,queryParams={}){
   key=String(key||"overview");
   if(key==="overview")return overview(db);
   if(key==="catalog")return{catalog:plan()};
+  if(key==="pack"){
+    const packId=clean(queryParams.id,160);
+    if(!packId)throw fail(new Error("Thiếu ID bộ từ."),400,"missing_pack_id");
+    const snap=await db.collection("publicPacks").doc(packId).get();
+    if(!snap.exists)throw fail(new Error("Không tìm thấy bộ từ."),404,"pack_not_found");
+    return{pack:{id:snap.id,...serialize(snap.data()||{})}};
+  }
   if(key==="teachers"){
     const [pending,verified,rejected]=await Promise.all([
       list("giáo viên chờ xác minh",db.collection("users").where("role","==","pending_teacher_verification").select(...USER_FIELDS).limit(LIMITS.pending)),
@@ -841,7 +940,7 @@ module.exports=async(req,res)=>{
     const{requireAdmin}=require("./_admin");
     if(req.method==="GET"){
       const{db}=await requireAdmin(req);
-      const value=await section(db,req.query?.section||"overview");
+      const value=await section(db,req.query?.section||"overview",req.query||{});
       return writeJson(res,200,{ok:true,...value,limits:LIMITS},origin);
     }
     if(req.method!=="POST")return writeJson(res,405,{ok:false,error:"Method not allowed",code:"method_not_allowed"},origin);
@@ -860,6 +959,8 @@ module.exports=async(req,res)=>{
     if(action==="verify-teacher")return writeJson(res,200,{ok:true,...await teacherChange(db,decoded,body.uid,"verify")},origin);
     if(action==="reject-teacher")return writeJson(res,200,{ok:true,...await teacherChange(db,decoded,body.uid,"reject")},origin);
     if(action==="delete-pack")return writeJson(res,200,{ok:true,...await deletePack(db,decoded,body.packId)},origin);
+    if(action==="update-pack")return writeJson(res,200,{ok:true,...await updatePublicPack(db,decoded,body.packId,body.name,body.words)},origin);
+    if(action==="sync-directory-chunk")return writeJson(res,200,{ok:true,...await syncDirectoryChunk(db,decoded,body.entity,body.cursor,body.limit)},origin);
     if(action==="catalog-plan")return writeJson(res,200,{ok:true,...plan()},origin);
     if(action==="catalog-chunk"){
       const provinceCode=clean(body.provinceCode,10);
