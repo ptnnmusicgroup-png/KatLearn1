@@ -1,3 +1,4 @@
+@import url("katlearn-blue-theme.css?v=20261001-1");
 /* KatLearn modern UI refresh — presentation layer only.
    Keeps the existing HTML/JS selectors and learning logic intact. */
 :root{
