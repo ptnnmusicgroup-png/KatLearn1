@@ -537,6 +537,178 @@ async function deletePack(db,decoded,packId){
  return{packId,deletedAssignments};
 }
 
+async function migrateFirestoreUid(db,auth,decoded,oldUid,newUid){
+  oldUid=clean(oldUid,128);
+  newUid=clean(newUid,128);
+  if(!oldUid)throw fail(new Error("Thiếu UID hiện tại."),400,"missing_old_uid");
+  if(!newUid)throw fail(new Error("Thiếu UID Firebase mới."),400,"missing_new_uid");
+  if(oldUid===newUid)return{oldUid,newUid,status:"unchanged"};
+
+  const sourceRef=db.collection("users").doc(oldUid);
+  const sourceSnap=await sourceRef.get();
+  if(!sourceSnap.exists)throw fail(new Error("Không tìm thấy hồ sơ users/{uid} hiện tại."),404,"user_not_found");
+  const sourceProfile=sourceSnap.data()||{};
+  const profileEmail=String(sourceProfile.email||"").trim().toLowerCase();
+  if(profileEmail==="katlearn.admin@gmail.com"||oldUid===decoded.uid)
+    throw fail(new Error("Không thể đổi UID của tài khoản Admin hiện tại."),403,"admin_protected");
+
+  let sourceAuth=null;
+  try{sourceAuth=await auth.getUser(oldUid)}catch(error){
+    if(String(error?.code||"")!=="auth/user-not-found")throw fail(error,502,"auth_source_lookup_failed");
+  }
+
+  let targetAuth;
+  try{targetAuth=await auth.getUser(newUid)}
+  catch(error){throw fail(error,404,"target_auth_user_not_found")}
+
+  const sourceEmail=String(sourceAuth?.email||profileEmail).trim().toLowerCase();
+  const targetEmail=String(targetAuth?.email||"").trim().toLowerCase();
+  if(!targetEmail)throw fail(new Error("UID Firebase đích chưa có email, không thể xác minh tài khoản."),409,"target_auth_email_missing");
+  if(sourceEmail&&sourceEmail!==targetEmail){
+    throw fail(new Error("UID Firebase đích thuộc email khác ("+targetEmail+"). Email hồ sơ hiện tại là "+sourceEmail+"."),409,"uid_email_mismatch");
+  }
+
+  const targetRef=db.collection("users").doc(newUid);
+  const existingTarget=await targetRef.get();
+  const targetData=existingTarget.exists?existingTarget.data()||{}:{};
+  const resumable=existingTarget.exists&&String(targetData.uidMigrationFrom||"")===oldUid;
+  if(existingTarget.exists&&!resumable){
+    throw fail(new Error("UID đích đã có hồ sơ users/{uid}. Không ghi đè tài khoản đang tồn tại."),409,"target_profile_exists");
+  }
+
+  const stamp=Date.now();
+  const migratedProfile={
+    ...sourceProfile,
+    uid:newUid,
+    email:sourceProfile.email||targetAuth.email||"",
+    displayName:sourceProfile.displayName||targetAuth.displayName||"",
+    name:sourceProfile.name||sourceProfile.displayName||targetAuth.displayName||"",
+    uidMigrationFrom:oldUid,
+    uidMigrationAt:stamp,
+    uidMigratedBy:decoded.uid,
+    updatedAt:stamp
+  };
+
+  async function copySubtree(sourceNode,targetNode){
+    const collections=await sourceNode.listCollections();
+    for(const collectionRef of collections){
+      const docs=await collectionRef.get();
+      for(let i=0;i<docs.docs.length;i+=400){
+        const batch=db.batch();
+        const chunk=docs.docs.slice(i,i+400);
+        for(const docSnap of chunk){
+          batch.set(targetNode.collection(collectionRef.id).doc(docSnap.id),docSnap.data(),{merge:true});
+        }
+        if(chunk.length)await batch.commit();
+      }
+      for(const docSnap of docs.docs){
+        await copySubtree(docSnap.ref,targetNode.collection(collectionRef.id).doc(docSnap.id));
+      }
+    }
+  }
+
+  if(!resumable){
+    await targetRef.set(migratedProfile,{merge:false});
+  }else{
+    await targetRef.set(migratedProfile,{merge:true});
+  }
+
+  try{
+    await copySubtree(sourceRef,targetRef);
+
+    const userWrites=[];
+    const queueBatchWrites=async changes=>{
+      for(let i=0;i<changes.length;i+=400){
+        const batch=db.batch();
+        const chunk=changes.slice(i,i+400);
+        chunk.forEach(change=>change.type==="delete"?batch.delete(change.ref):batch.set(change.ref,change.data,{merge:true}));
+        if(chunk.length)await batch.commit();
+      }
+    };
+
+    const members=await db.collectionGroup("members").where("uid","==",oldUid).get();
+    const memberChanges=[];
+    for(const member of members.docs){
+      const newMemberRef=member.ref.parent.doc(newUid);
+      const data={...member.data(),uid:newUid,uidMigrationFrom:oldUid,updatedAt:stamp};
+      memberChanges.push({type:"set",ref:newMemberRef,data},{type:"delete",ref:member.ref});
+    }
+    await queueBatchWrites(memberChanges);
+
+    const usersTeacher=await db.collection("users").where("teacherUid","==",oldUid).get();
+    await queueBatchWrites(usersTeacher.docs.map(d=>({type:"set",ref:d.ref,data:{teacherUid:newUid,updatedAt:stamp}})));
+
+    const usersTeacherArray=await db.collection("users").where("teacherUids","array-contains",oldUid).get();
+    await queueBatchWrites(usersTeacherArray.docs.map(d=>{
+      const data=d.data()||{},oldList=Array.isArray(data.teacherUids)?data.teacherUids:[],teacherUids=[...new Set(oldList.map(x=>String(x)===oldUid?newUid:String(x)))];
+      return{type:"set",ref:d.ref,data:{teacherUids,updatedAt:stamp}};
+    }));
+
+    const classes=await db.collection("classes").where("teacherUid","==",oldUid).get();
+    await queueBatchWrites(classes.docs.map(d=>({type:"set",ref:d.ref,data:{teacherUid:newUid,updatedAt:stamp}})));
+
+    const nestedClasses=await db.collectionGroup("classes").where("teacherUid","==",oldUid).get();
+    await queueBatchWrites(nestedClasses.docs.map(d=>({type:"set",ref:d.ref,data:{teacherUid:newUid,updatedAt:stamp}})));
+
+    const invites=await db.collection("classInvites").where("teacherUid","==",oldUid).get();
+    await queueBatchWrites(invites.docs.map(d=>({type:"set",ref:d.ref,data:{teacherUid:newUid,updatedAt:stamp}})));
+
+    const packs=await db.collection("publicPacks").where("createdByUid","==",oldUid).get();
+    await queueBatchWrites(packs.docs.map(d=>({type:"set",ref:d.ref,data:{createdByUid:newUid,updatedAt:stamp}})));
+
+    const assignmentsTeacher=await db.collection("packAssignments").where("teacherUid","==",oldUid).get();
+    await queueBatchWrites(assignmentsTeacher.docs.map(d=>({type:"set",ref:d.ref,data:{teacherUid:newUid,updatedAt:stamp}})));
+
+    const assignmentsStudent=await db.collection("packAssignments").where("studentUids","array-contains",oldUid).get();
+    await queueBatchWrites(assignmentsStudent.docs.map(d=>{
+      const data=d.data()||{},list=Array.isArray(data.studentUids)?data.studentUids:[],studentUids=[...new Set(list.map(x=>String(x)===oldUid?newUid:String(x)))];
+      return{type:"set",ref:d.ref,data:{studentUids,updatedAt:stamp}};
+    }));
+
+    const accountDocs=await db.collection("accounts").where("uid","==",oldUid).get();
+    await queueBatchWrites(accountDocs.docs.map(d=>({type:"set",ref:d.ref,data:{uid:newUid,updatedAt:stamp}})));
+
+    const memoryOwner=await db.collectionGroup("memory").where("ownerUid","==",oldUid).get();
+    await queueBatchWrites(memoryOwner.docs.map(d=>({type:"set",ref:d.ref,data:{ownerUid:newUid,updatedAt:stamp}})));
+
+    const memoryUid=await db.collectionGroup("memory").where("uid","==",oldUid).get();
+    await queueBatchWrites(memoryUid.docs.map(d=>({type:"set",ref:d.ref,data:{uid:newUid,updatedAt:stamp}})));
+
+    const oldLeaderboardId=crypto.createHash("sha256").update(String(oldUid)).digest("hex").slice(0,32);
+    const newLeaderboardId=crypto.createHash("sha256").update(String(newUid)).digest("hex").slice(0,32);
+    if(oldLeaderboardId!==newLeaderboardId){
+      const oldLeaderboard=db.collection("leaderboard").doc(oldLeaderboardId);
+      const oldBoardSnap=await oldLeaderboard.get();
+      if(oldBoardSnap.exists){
+        await db.collection("leaderboard").doc(newLeaderboardId).set(oldBoardSnap.data()||{},{merge:true});
+        await oldLeaderboard.delete();
+      }
+    }
+
+    const mirrorOld=db.collection("KatLearn_ADMIN_SYNC_1").doc("users").collection("items").doc(oldUid);
+    const mirrorSnap=await mirrorOld.get();
+    if(mirrorSnap.exists){
+      await db.collection("KatLearn_ADMIN_SYNC_1").doc("users").collection("items").doc(newUid).set({
+        ...(mirrorSnap.data()||{}),
+        sourceId:newUid,
+        data:{...((mirrorSnap.data()||{}).data||{}),uid:newUid,uidMigrationFrom:oldUid,updatedAt:stamp},
+        syncedAt:stamp
+      },{merge:true});
+      await mirrorOld.delete();
+    }
+
+    await targetRef.set({uid:newUid,uidMigrationStatus:"complete",uidMigrationFrom:oldUid,uidMigrationAt:stamp,uidMigratedBy:decoded.uid,updatedAt:stamp},{merge:true});
+    await db.recursiveDelete(sourceRef);
+    await audit(db,decoded,"user.uid_migrate",oldUid,{newUid,sourceEmail,targetEmail,members:members.size,teacherProfiles:usersTeacher.size,teacherArrays:usersTeacherArray.size,classes:classes.size,nestedClasses:nestedClasses.size,invites:invites.size,packs:packs.size,teacherAssignments:assignmentsTeacher.size,studentAssignments:assignmentsStudent.size,accounts:accountDocs.size,memoryOwner:memoryOwner.size,memoryUid:memoryUid.size});
+    return{oldUid,newUid,status:"migrated",email:targetEmail,members:members.size};
+  }catch(error){
+    if(!resumable){
+      try{await db.recursiveDelete(targetRef)}catch(rollbackError){console.warn("[KatLearn admin UID migration rollback]",messageOf(rollbackError))}
+    }
+    throw error;
+  }
+}
+
 async function renameUser(db,auth,decoded,uid,name){
   uid=clean(uid,160);
   name=clean(name,120);
@@ -1091,6 +1263,7 @@ module.exports=async(req,res)=>{
     const{db,auth,decoded}=await requireAdmin(req);
     const body=req.body&&typeof req.body==="object"?req.body:{};
     const action=clean(body.action,50);
+    if(action==="migrate-user-uid")return writeJson(res,200,{ok:true,...await migrateFirestoreUid(db,auth,decoded,body.oldUid,body.newUid)},origin);
     if(action==="rename-user")return writeJson(res,200,{ok:true,...await renameUser(db,auth,decoded,body.uid,body.name)},origin);
     if(action==="disable-user")return writeJson(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,true)},origin);
     if(action==="enable-user")return writeJson(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,false)},origin);
