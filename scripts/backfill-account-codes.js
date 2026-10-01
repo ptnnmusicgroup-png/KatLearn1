@@ -92,6 +92,7 @@ async function main(){
         code=formatAccountCode(prefix,sequence);
       }
       item.code=code;
+      item.isNewAccount=true;
       existingAccounts.add(code);
       owners.set(code,item.doc.id);
     }
@@ -135,10 +136,9 @@ async function main(){
       assigned++;
     }
 
-    if(!existingAccounts.has(code)){
+    if(item.isNewAccount){
       add(()=>batch.set(accountRef,accountData,{merge:true}));
       accountsCreated++;
-      existingAccounts.add(code);
     }else{
       add(()=>batch.set(accountRef,accountData,{merge:true}));
     }
