@@ -922,8 +922,25 @@ async function section(db,key,queryParams={}){
   if(key==="overview")return overview(db);
   if(key==="catalog")return{catalog:plan()};
   if(key==="private-packs"){
+    // The filtered collection-group query needs a Firestore collection-group index.
+    // Keep a zero-index fallback so the Admin Hub remains usable while that index
+    // is being created (or when deployments run against a fresh project).
     const [accountSnap,legacySnap]=await Promise.all([
-      db.collectionGroup("memory").where("kind","==","personalPack").limit(LIMITS.privatePacks).get(),
+      (async()=>{
+        try{
+          return await db.collectionGroup("memory")
+            .where("kind","==","personalPack")
+            .limit(LIMITS.privatePacks)
+            .get();
+        }catch(error){
+          const message=messageOf(error);
+          if(!/requires a COLLECTION_GROUP_.*index|FAILED_PRECONDITION/i.test(message))throw error;
+          const fallbackLimit=Math.min(1000,LIMITS.privatePacks*4);
+          const snapshot=await db.collectionGroup("memory").limit(fallbackLimit).get();
+          const matching=snapshot.docs.filter(doc=>String(doc.data()?.kind||"")==="personalPack");
+          return{docs:matching,size:matching.length,empty:matching.length===0};
+        }
+      })(),
       db.collectionGroup("personalPacks").limit(LIMITS.privatePacks).get()
     ]);
     const merged=new Map();
