@@ -77,3 +77,7 @@ button:not(.nav-item):not(.primary-btn):not(.add-word-btn):not(.create-pack-btn)
 #home .purple-av{background:#4f9fd0!important}
 #home .orange-av{background:#72b8da!important}
 #home .yellow-av{background:#8ac8e5!important}
+
+/* Project mascot logo */
+.brand-mark,.cp-brand-mark,.settings-brand-mark,.logo{background-image:url("https://scontent.fdad3-8.fna.fbcdn.net/v/t39.30808-6/833852899_1036001496136474_1572160514169669950_n.jpg?stp=dst-jpg_tt6&cstp=mx997x1181&ctp=s997x1181&_nc_cat=107&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_ohc=IuOlr6Oa9MAQ7kNvwFAGAVl&_nc_oc=AdqIXKG8L2jud5_lx0-nbwYNLLvWAwM7ScazDz25TZyPhCGPKN198yrzJJK0L20rj5o&_nc_zt=23&_nc_ht=scontent.fdad3-8.fna&_nc_gid=GV7MYJktsa2PRXiQiIRk6A&_nc_ss=7b2a8&oh=00_AQO_XjhUoUFxoUaPR6JXNBqTbVj68Yu8aMN0oPdg4DA_qg&oe=6AC3ADA2")!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important;color:transparent!important;font-size:0!important;overflow:hidden!important;border:1px solid rgba(255,255,255,.55)!important}
+.brand-mark::before,.brand-mark::after,.cp-brand-mark::before,.cp-brand-mark::after,.settings-brand-mark::before,.settings-brand-mark::after,.logo::before,.logo::after{display:none!important;content:none!important}
