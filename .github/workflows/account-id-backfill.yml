@@ -1,0 +1,43 @@
+name: Backfill Firebase account IDs
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: katlearn-account-id-backfill-main
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install server dependencies
+        run: npm install --no-audit --no-fund --ignore-scripts
+
+      - name: Backfill account IDs
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${FIREBASE_SERVICE_ACCOUNT_JSON:-}" ]; then
+            echo "::error::Missing GitHub Actions secret FIREBASE_SERVICE_ACCOUNT_JSON"
+            exit 1
+          fi
+          node scripts/backfill-account-codes.js
