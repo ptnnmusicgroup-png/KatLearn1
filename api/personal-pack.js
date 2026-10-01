@@ -70,7 +70,8 @@ module.exports=async(req,res)=>{
     if(!words.length)throw Object.assign(new Error("Bộ từ cần ít nhất một từ có nghĩa."),{status:400,code:"pack_words_missing"});
     const{db}=init();
     const now=new Date();
-    const ref=await db.collection("accounts").doc(accountCode).collection("memory").add({
+    const ref=db.collection("accounts").doc(accountCode).collection("memory").doc();
+    const payload={
       name,
       words,
       kind:"personalPack",
@@ -80,9 +81,15 @@ module.exports=async(req,res)=>{
       ownerDisplayName:String(user.name||user.displayName||user.email?.split("@")[0]||"KatLearn Student"),
       createdAt:now,
       updatedAt:now
-    });
-    const snap=await ref.get();
-    return send(res,200,{id:ref.id,accountCode,source:"accounts",...serialize(snap.data()||{})});
+    };
+    // Keep the user's own Firestore namespace in sync with the account namespace.
+    // The same pack id is intentionally used in both locations.
+    const userRef=db.collection("users").doc(user.uid).collection("personalPacks").doc(ref.id);
+    const batch=db.batch();
+    batch.set(ref,payload);
+    batch.set(userRef,payload);
+    await batch.commit();
+    return send(res,200,{id:ref.id,accountCode,source:"users",...serialize(payload)});
   }catch(error){
     return send(res,error.status||500,{
       error:String(error.message||"Không thể lưu bộ từ."),
