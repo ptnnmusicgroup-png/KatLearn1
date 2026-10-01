@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#7562e8">
+<title>KatLearn | Cài đặt tài khoản</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="settings.css">
+</head>
+<body>
+<div class="settings-page">
+<header class="settings-top">
+  <a class="settings-brand" href="/"><span class="settings-brand-mark">🐱</span><span>Kat<span>Learn</span></span></a>
+  <a class="settings-back" href="/">← Về KatLearn</a>
+</header>
+<main class="settings-layout" id="settingsMain" hidden>
+  <section class="settings-hero">
+    <p class="eyebrow">TÀI KHOẢN KATLEARN</p>
+    <h1>Thay đổi thông tin tài khoản</h1>
+    <p>Cập nhật thông tin hiển thị của bạn. Email đăng nhập và mã tài khoản được giữ nguyên.</p>
+  </section>
+  <section class="settings-card">
+    <div class="profile-preview">
+      <div class="profile-avatar" id="settingsAvatar">K</div>
+      <div><b id="settingsName">KatLearn Student</b><small id="settingsEmail"></small></div>
+    </div>
+    <form id="accountInfoForm">
+      <label>Tên hiển thị<input id="accountDisplayName" maxlength="80" autocomplete="name" required></label>
+      <label>Ảnh đại diện <span>(URL, không bắt buộc)</span><input id="accountPhotoURL" maxlength="1000" type="url" placeholder="https://..." autocomplete="url"></label>
+      <label>Email đăng nhập<input id="accountEmail" disabled></label>
+      <div class="account-code-field"><span>Mã tài khoản</span><b id="accountInfoCode">Đang tải...</b></div>
+      <div class="form-actions"><a class="settings-cancel" href="/">Hủy</a><button type="submit" class="settings-save" id="accountInfoSave">Lưu thay đổi</button></div>
+      <p id="accountInfoStatus" class="settings-status"></p>
+    </form>
+  </section>
+</main>
+<section class="settings-locked" id="settingsLocked">
+  <div class="settings-card locked-card">
+    <div class="locked-icon">🔒</div><h2>Hãy đăng nhập để thay đổi tài khoản</h2>
+    <p>Trang này chỉ dành cho tài khoản KatLearn đang đăng nhập.</p>
+    <a class="settings-save" href="/login.html">Đăng nhập →</a>
+  </div>
+</section>
+</div>
+<div id="settingsToast" class="settings-toast"></div>
+<script src="admin-config.js"></script>
+<script src="firebase-service.js?v=20261001-1"></script>
+<script src="settings.js"></script>
+</body>
+</html>
