@@ -1,5 +1,5 @@
 (function(){
-  const $=s=>document.querySelector(s),$=s=>document.querySelectorAll(s);
+  const $=s=>document.querySelector(s);
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   let packs=[],questions=[],index=0,score=0,answered=false,selectedPack=null,questionCount=10;
 
@@ -118,7 +118,7 @@
     $('#revisionExamAnswers').innerHTML=q.options.map((a,i)=>'<button class="revision-exam-answer" type="button" data-answer="'+esc(a)+'"><b>'+labels[i]+'</b><span>'+esc(a)+'</span></button>').join('');
     $('#revisionExamFeedback').textContent='';
     $('#revisionExamNext').disabled=true;
-    $$('.revision-exam-answer').forEach(btn=>btn.onclick=()=>answer(btn));
+    document.querySelectorAll('.revision-exam-answer').forEach(btn=>btn.onclick=()=>answer(btn));
   }
 
   function answer(btn){
@@ -126,7 +126,7 @@
     answered=true;
     const q=questions[index],good=btn.dataset.answer===q.correct;
     if(good)score++;
-    $$('.revision-exam-answer').forEach(b=>{
+    document.querySelectorAll('.revision-exam-answer').forEach(b=>{
       b.disabled=true;
       if(b.dataset.answer===q.correct)b.classList.add('correct');
     });
@@ -161,7 +161,7 @@
     $('#revisionExamWrong').textContent=String(total-score);
     $('#revisionExamCountDone').textContent=total;
     const wrong=questions.filter((q,i)=>{
-      const choices=$$('[data-answer]');
+      const choices=document.querySelectorAll('[data-answer]');
       return false;
     });
     const list=$('#revisionExamWrongList');
