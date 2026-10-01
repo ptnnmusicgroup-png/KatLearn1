@@ -410,15 +410,23 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       if(String(window.studyStore?.user?.uid||'')!==uid)return;
       const packs=await window.studyStore.personalPacks();
       if(String(window.studyStore?.user?.uid||'')!==uid)return;
-      $('#personalPackCount').textContent=packs.length;
-      box.innerHTML=packs.length
-        ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>Những bộ từ bạn tự tạo — riêng cho tài khoản của bạn.</p></div></div><div class="personal-pack-grid">${packs.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng</p></div><div style="display:flex;gap:7px;align-items:center"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn">⋮</button></div></article>`).join('')}</div>`
-        : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Mở trang tạo bộ từ →</a> 🐾</div>';
+      const safePacks=packs.filter(p=>String(p?.ownerUid||uid)===uid);
+      const totalWords=safePacks.reduce((sum,p)=>sum+(Array.isArray(p.words)?p.words.length:0),0);
+      const knownWords=safePacks.reduce((sum,p)=>{
+        const raw=localStorage.getItem('katlearn-known:'+uid+':personal:'+String(p.id||''));
+        try{const parsed=JSON.parse(raw||'[]');return sum+(Array.isArray(parsed)?parsed.filter(Boolean).length:0)}catch(_){return sum}
+      },0);
+      $('#personalPackCount').textContent=safePacks.length;
+      const wordStat=$('#personalWordCount');if(wordStat)wordStat.textContent=totalWords;
+      const knownStat=$('#personalKnownCount');if(knownStat)knownStat.textContent=Math.min(knownWords,totalWords);
+      box.innerHTML=safePacks.length
+        ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>${safePacks.length} bộ từ · ${totalWords} từ · đồng bộ riêng theo tài khoản.</p></div><span class="personal-pack-account-pill">🔐 ${esc(String(safePacks[0]?.ownerAccountCode||safePacks[0]?.accountCode||'').trim()||'Mã tài khoản đang đồng bộ')}</span></div><div class="personal-pack-grid">${safePacks.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng · bộ riêng</p></div><div style="display:flex;gap:7px;align-items:center"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn">⋮</button></div></article>`).join('')}</div>`
+        : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Tạo bộ từ đầu tiên →</a> 🐾</div>';
 
       $$('[data-my-pack-menu]').forEach(b=>b.onclick=e=>{e.stopPropagation();openPersonalPackMenu(b,packs.find(x=>x.id===b.dataset.myPackMenu))});
       $$('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
       $$('[data-my-pack]').forEach(b=>b.onclick=async()=>{
-        const p=packs.find(x=>x.id===b.dataset.myPack);
+        const p=safePacks.find(x=>x.id===b.dataset.myPack);
         if(!p)return;
         const words=Array.isArray(p.words)?p.words:[];
         window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:p.id,name:p.name||''}}));
