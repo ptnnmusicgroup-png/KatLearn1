@@ -1,3 +1,4 @@
+@import url("katlearn-blue-theme.css?v=20261001-1");
 /* KatLearn — standalone create pack page */
 :root{--cp-text:#2e2940;--cp-muted:#8b8499;--cp-card:rgba(255,255,255,.72);--cp-card-strong:rgba(255,255,255,.88);--cp-purple:#7562e8;--cp-purple-dark:#5e4dd0;--cp-shadow:0 24px 80px rgba(64,48,112,.10)}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Be Vietnam Pro",system-ui,sans-serif;color:var(--cp-text);background:radial-gradient(circle at 8% 7%,rgba(121,96,255,.16),transparent 28rem),radial-gradient(circle at 92% 10%,rgba(255,184,160,.13),transparent 24rem),linear-gradient(145deg,#f7f5ff 0%,#fbfafc 52%,#f5f8ff 100%)}body{overflow-x:hidden}button,input,textarea,select{font:inherit}button,a{-webkit-tap-highlight-color:transparent}
