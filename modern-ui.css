@@ -851,3 +851,7 @@ body{
 /* Personal pack account scope */
 .personal-pack-account-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid rgba(103,87,213,.16);border-radius:999px;background:rgba(255,255,255,.62);font-size:11px;font-weight:800;color:#6757d5;white-space:nowrap;max-width:100%;}
 @media(max-width:760px){.personal-packs-title{flex-wrap:wrap;}.personal-pack-account-pill{white-space:normal;}}
+
+/* Home account profile editor */
+.account-edit-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}.account-edit-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#fff0ea,#f0ecff);font-size:24px;flex:none}.account-edit-head h2{margin:3px 0 4px}.account-edit-head .subtext{margin:0}.account-code-field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid #ececf4;border-radius:10px;background:#fafafe;color:#69758a;font-size:11px}.account-code-field b{color:#6757d5;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:620px){.account-edit-head{gap:10px}.account-edit-icon{width:40px;height:40px;font-size:21px}.account-edit-head h2{font-size:20px}}
