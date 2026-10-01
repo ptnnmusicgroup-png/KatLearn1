@@ -72,7 +72,7 @@
       if(connectPromise)return connectPromise;
 
       connectPromise=(async()=>{
-        const [{initializeApp,getApps,deleteApp},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword}]=await Promise.all([
+        const [{initializeApp,getApps,deleteApp},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile}]=await Promise.all([
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js')
@@ -86,7 +86,7 @@
         db=getFirestore(app);
         api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction};
         auth=getAuth(app);
-        api.auth={GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword};
+        api.auth={GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile};
 
         authReady=new Promise(resolve=>api.auth.onAuthStateChanged(auth,user=>{
           currentUser=user;
@@ -162,6 +162,21 @@
       });
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
       return {accountCode:code,packCode:String(result.code).padStart(5,'0'),docId:result.docId};
+    },
+    async updateAccountInfo(data={}){
+      if(!db||!currentUser)throw new Error('Hãy đăng nhập để thay đổi thông tin tài khoản.');
+      const uid=currentUser.uid;
+      const displayName=String(data.displayName??currentUser.displayName??'').trim().slice(0,80);
+      const photoURL=String(data.photoURL??currentUser.photoURL??'').trim().slice(0,1000);
+      if(!displayName)throw new Error('Tên hiển thị không được để trống.');
+      if(api.auth?.updateProfile){
+        await api.auth.updateProfile(currentUser,{displayName,photoURL});
+      }
+      await this.saveProfile({displayName,photoURL},uid);
+      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      renderAccountUi(currentUser);
+      window.dispatchEvent(new CustomEvent('katlearn-account-profile-updated',{detail:{user:currentUser,displayName,photoURL}}));
+      return {uid,displayName,photoURL,email:currentUser.email||''};
     },
     async ensureAccountCode(){return this.ensureAccountNamespace();},
     async getRole(){const p=await this.loadProfile();return String(p?.role||'student').toLowerCase()},
