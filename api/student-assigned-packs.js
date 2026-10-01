@@ -6,7 +6,7 @@ function firestore(){
   return db;
 }
 module.exports=async(req,res)=>{
-  if(!method(res,"GET"))return;
+  if(!method(req,res,"GET"))return;
   try{
     const user=await requireUser(req);rateLimit(user.uid,"assigned",30);
     const snap=await firestore().collection("packAssignments").where("studentUids","array-contains",user.uid).get();
