@@ -239,57 +239,115 @@
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
       const profile=await this.loadProfile();
       if(String(profile?.studentAccountType||'free').toLowerCase()==='class')throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
-      const token=await this.getIdToken(true);
-      if(!token)throw new Error('Phiên đăng nhập không còn hợp lệ.');
-      const res=await fetch('/api/personal-pack',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({name:String(pack?.name||'').trim(),words:Array.isArray(pack?.words)?pack.words:[]})});
-      const data=await res.json().catch(()=>({}));
-      if(String(window.studyStore?.user?.uid||'')!==uid)return null;
-      if(!res.ok)throw new Error(data.error||'Không thể lưu bộ từ.');
-      return data;
+      const name=String(pack?.name||'').trim();
+      const words=Array.isArray(pack?.words)?pack.words:[];
+      if(!name)throw new Error('Hãy đặt tên cho bộ từ nhé.');
+      if(!words.length)throw new Error('Bộ từ cần ít nhất một từ có nghĩa.');
+
+      const accountCode=await this.ensureAccountCode();
+      const identity=await this.ensurePackIdentity(name);
+      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      const now=api.serverTimestamp();
+      const payload={
+        name,words,kind:'personalPack',
+        ownerUid:uid,ownerAccountCode:accountCode,
+        ownerEmail:String(user.email||''),
+        ownerDisplayName:String(user.displayName||user.email?.split('@')[0]||'KatLearn Student'),
+        createdAt:now,updatedAt:now
+      };
+      const userRef=api.doc(db,'users',uid,'personalPacks',identity.docId);
+      const accountRef=api.doc(db,'accounts',accountCode,'memory',identity.docId);
+      // Write directly to the user's namespace. This makes personal packs
+      // visible immediately at users/{uid}/personalPacks/{packId}.
+      await api.setDoc(userRef,payload,{merge:false});
+      await api.setDoc(accountRef,payload,{merge:false});
+      return {id:identity.docId,accountCode,source:'users',...payload};
     },
     async updatePersonalPack(packId,pack){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần cập nhật.');
-      const uid=currentUser.uid,token=await this.getIdToken(true);
-      if(!token)throw new Error('Phiên đăng nhập không còn hợp lệ.');
-      const body={action:'update',id:String(packId)};
-      if(Object.prototype.hasOwnProperty.call(pack||{},'name'))body.name=String(pack.name||'').trim();
-      if(Object.prototype.hasOwnProperty.call(pack||{},'words'))body.words=Array.isArray(pack.words)?pack.words:[];
-      const res=await fetch('/api/personal-pack-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(body)});
-      const data=await res.json().catch(()=>({}));
-      if(String(window.studyStore?.user?.uid||'')!==uid)return null;
-      if(!res.ok)throw new Error(data.error||'Không thể cập nhật bộ từ.');
-      return data;
+      const uid=currentUser.uid;
+      const profile=await this.loadProfile();
+      if(String(profile?.studentAccountType||'free').toLowerCase()==='class')throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
+      const accountCode=String(profile?.accountCode||'').trim()||await this.ensureAccountCode();
+      const userRef=api.doc(db,'users',uid,'personalPacks',String(packId));
+      const accountRef=api.doc(db,'accounts',accountCode,'memory',String(packId));
+      let snap=await api.getDoc(userRef);
+      if(!snap.exists()){
+        snap=await api.getDoc(accountRef);
+        if(!snap.exists()||String(snap.data()?.ownerUid||uid)!==uid)throw new Error('Bộ từ không còn tồn tại hoặc không thuộc tài khoản này.');
+      }
+      if(String(snap.data()?.ownerUid||uid)!==uid)throw new Error('Bộ từ không thuộc tài khoản này.');
+
+      const update={updatedAt:api.serverTimestamp()};
+      if(Object.prototype.hasOwnProperty.call(pack||{},'name')){
+        const name=String(pack.name||'').trim();
+        if(!name)throw new Error('Tên bộ từ không được để trống.');
+        update.name=name;
+      }
+      if(Object.prototype.hasOwnProperty.call(pack||{},'words')){
+        const words=Array.isArray(pack.words)?pack.words:[];
+        if(!words.length)throw new Error('Bộ từ cần ít nhất một từ có nghĩa.');
+        update.words=words;
+      }
+
+      const merged={...(snap.data()||{}),...update,ownerUid:uid,ownerAccountCode:accountCode};
+      await api.setDoc(userRef,merged,{merge:true});
+      await api.setDoc(accountRef,merged,{merge:true});
+      return {id:String(packId),accountCode,source:'users',...merged};
     },
     async deletePersonalPack(packId){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần xóa.');
-      const uid=currentUser.uid,token=await this.getIdToken(true);
-      if(!token)throw new Error('Phiên đăng nhập không còn hợp lệ.');
-      const res=await fetch('/api/personal-pack-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'delete',id:String(packId)})});
-      const data=await res.json().catch(()=>({}));
-      if(String(window.studyStore?.user?.uid||'')!==uid)return null;
-      if(!res.ok)throw new Error(data.error||'Không thể xóa bộ từ.');
-      return data;
+      const uid=currentUser.uid;
+      const profile=await this.loadProfile();
+      if(String(profile?.studentAccountType||'free').toLowerCase()==='class')throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
+      const accountCode=String(profile?.accountCode||'').trim()||await this.ensureAccountCode();
+      await api.deleteDoc(api.doc(db,'users',uid,'personalPacks',String(packId)));
+      await api.deleteDoc(api.doc(db,'accounts',accountCode,'memory',String(packId)));
+      return {ok:true,id:String(packId),action:'delete',accountCode};
     },
     async personalPacks(){
       if(!db||!currentUser)return[];
       const uid=currentUser.uid;
-      // Always provision/read the generated accountCode before loading packs.
-      // The API uses that code as the canonical personal-pack namespace.
       const accountCode=await this.ensureAccountCode();
       if(String(window.studyStore?.user?.uid||'')!==uid)return[];
-      const token=await this.getIdToken(true);
-      if(!token)throw new Error("Phiên đăng nhập không còn hợp lệ.");
-      const res=await fetch("/api/personal-packs",{method:"GET",headers:{Authorization:"Bearer "+token,"Accept":"application/json"},cache:"no-store"});
-      const data=await res.json().catch(()=>({}));
-      if(String(window.studyStore?.user?.uid||"")!==uid)return[];
-      if(!res.ok)throw new Error(data.error||"Không thể đồng bộ bộ từ của tài khoản.");
-      const packs=Array.isArray(data.packs)?data.packs:[];
-      return packs
-        .filter(p=>String(p?.ownerUid||uid)===uid)
-        .filter(p=>!p?.ownerAccountCode||String(p.ownerAccountCode)===String(data.accountCode||accountCode))
-        .map(p=>({...p,id:String(p.id||""),accountCode:String(p.accountCode||data.accountCode||accountCode)}));
+
+      const merged=new Map();
+      const userSnap=await api.getDocs(api.query(
+        api.collection(db,'users',uid,'personalPacks'),
+        api.limit(100)
+      ));
+      for(const doc of userSnap.docs){
+        const data=doc.data()||{};
+        if(data.kind&&data.kind!=='personalPack')continue;
+        if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
+        if(data.ownerAccountCode&&String(data.ownerAccountCode)!==accountCode)continue;
+        merged.set(doc.id,{id:doc.id,...data,accountCode:String(data.ownerAccountCode||accountCode),source:'users'});
+      }
+
+      // Read older account-only packs and transparently mirror them into the
+      // user's own subcollection so the user path remains complete.
+      const accountSnap=await api.getDocs(api.query(
+        api.collection(db,'accounts',accountCode,'memory'),
+        api.where('kind','==','personalPack'),
+        api.limit(100)
+      ));
+      for(const doc of accountSnap.docs){
+        const data=doc.data()||{};
+        if(String(data.ownerUid||uid)!==uid)continue;
+        if(data.ownerAccountCode&&String(data.ownerAccountCode)!==accountCode)continue;
+        if(merged.has(doc.id))continue;
+        const payload={...data,ownerUid:uid,ownerAccountCode:accountCode};
+        merged.set(doc.id,{id:doc.id,...payload,accountCode,source:'users'});
+        await api.setDoc(api.doc(db,'users',uid,'personalPacks',doc.id),payload,{merge:true});
+      }
+
+      return [...merged.values()].sort((a,b)=>{
+        const ta=Number(a.createdAt?.seconds||a.createdAt||0);
+        const tb=Number(b.createdAt?.seconds||b.createdAt||0);
+        return tb-ta;
+      });
     },
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
