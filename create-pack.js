@@ -37,7 +37,14 @@
     if(!user)return redirectToLogin();
     const name=$('#cpPackName').value.trim(),data=collectWords();if(!name)return toast('Hãy đặt tên cho bộ từ nhé!');if(!data.raw.length)return toast('Hãy nhập ít nhất một từ có nghĩa!');if(data.words.length>100)return toast('Mỗi bộ từ tối đa 100 từ trong trang này.');
     const btn=$('#cpSave');btn.disabled=true;btn.textContent='⏳ Đang lưu...';hideAlert();if(data.duplicates)toast('Đã tự bỏ '+data.duplicates+' từ bị trùng.');
-    try{const res=await fetch(endpoint('personal-pack'),{method:'POST',headers:await authHeaders(),body:JSON.stringify({name,words:data.words})});const saved=await res.json();if(!res.ok)throw new Error(saved.error||'Không thể lưu bộ từ.');const savedId=saved?.id||'';window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words:data.words,id:savedId,name}}));toast(`Đã tạo “${name}” gồm ${data.words.length} từ! 🐱`);setTimeout(()=>{location.href='/?created=1#personalPacks'},650)}
+    try{
+      if(!window.studyStore?.createPersonalPack)throw new Error('KatLearn account service chưa sẵn sàng.');
+      const saved=await window.studyStore.createPersonalPack({name,words:data.words});
+      const savedId=String(saved?.id||'');
+      window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words:data.words,id:savedId,name}}));
+      toast(`Đã tạo “${name}” gồm ${data.words.length} từ! 🐱`);
+      setTimeout(()=>{location.href='/?created=1#personalPacks'},650);
+    }
     catch(e){showAlert('Không thể lưu bộ từ: '+(e.message||'Lỗi không xác định'));toast('Không thể tạo bộ từ lúc này.')}finally{btn.disabled=false;btn.textContent='Tạo bộ từ →'}
   }
   function updateAccountUi(u){user=u||null;const name=u?.displayName||u?.email?.split('@')[0]||'Tài khoản KatLearn';$('#cpName').textContent=name;$('#cpEmail').textContent=u?.email||'';$('#cpAvatar').textContent=(name.trim().charAt(0)||'K').toUpperCase();$('#cpStatusText').textContent=u?'Tài khoản cá nhân đang sẵn sàng tạo bộ từ.':'Chưa đăng nhập — đang chuyển tới trang đăng nhập.'}
