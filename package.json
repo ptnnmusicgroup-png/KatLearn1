@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node dev-server.js",
-    "seed:public-vocab": "node scripts/seed-public-vocabulary.mjs"
+    "seed:public-vocab": "node scripts/seed-public-vocabulary.mjs",
+    "sync:account-ids": "node scripts/backfill-account-codes.js"
   },
   "dependencies": {
     "firebase-admin": "13.10.0",
