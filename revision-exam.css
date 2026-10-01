@@ -1,0 +1,54 @@
+.revision-exam-shell{max-width:1120px;margin:0 auto}
+.revision-exam-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:22px;margin-bottom:22px}
+.revision-exam-kicker{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:#eaf7ff;color:#176b9b;font-size:10px;font-weight:900;letter-spacing:.12em}
+.revision-exam-hero h1{margin:10px 0 6px;font:700 clamp(34px,4.5vw,52px) Fredoka,sans-serif;letter-spacing:-.02em}
+.revision-exam-hero p{margin:0;color:#718096;line-height:1.65}
+.revision-exam-badge{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid #cfe5f2;border-radius:16px;background:rgba(255,255,255,.72);box-shadow:0 10px 28px rgba(23,107,155,.08);font-size:12px;font-weight:800;color:#176b9b;white-space:nowrap}
+.revision-exam-card{background:rgba(255,255,255,.86);border:1px solid #d7ebf6;border-radius:26px;padding:24px;box-shadow:0 24px 70px rgba(30,91,122,.10);backdrop-filter:blur(18px)}
+.revision-exam-setup{display:grid;grid-template-columns:1.4fr .8fr auto;gap:14px;align-items:end}
+.revision-exam-field{display:grid;gap:7px}
+.revision-exam-field span{font-size:11px;font-weight:900;color:#526578}
+.revision-exam-field select{width:100%;min-height:48px;border:1px solid #cfe5f2;border-radius:14px;padding:0 13px;background:#fff;color:#244457;font:600 13px 'Be Vietnam Pro',sans-serif}
+.revision-exam-start{min-height:48px;border:0;border-radius:14px;padding:0 20px;background:linear-gradient(135deg,#0b5f9f,#1b8bd4 55%,#62c8fa);color:#fff;font:800 13px 'Be Vietnam Pro',sans-serif;cursor:pointer;box-shadow:0 12px 24px rgba(11,95,159,.20)}
+.revision-exam-start:disabled{opacity:.6;cursor:not-allowed}
+.revision-exam-note{margin:14px 0 0;padding:11px 13px;border-radius:13px;background:#f2f9fd;color:#557184;font-size:11px;line-height:1.6}
+.revision-exam-panel{margin-top:18px}
+.revision-exam-top{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;margin-bottom:18px}
+.revision-exam-counter{font-size:12px;font-weight:900;color:#176b9b;white-space:nowrap}
+.revision-exam-progress{height:9px;border-radius:999px;background:#e8f2f8;overflow:hidden}
+.revision-exam-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0b5f9f,#62c8fa);border-radius:inherit;transition:width .25s ease}
+.revision-exam-score{font-size:12px;font-weight:900;color:#64748b;white-space:nowrap}
+.revision-exam-question{padding:24px 22px;border:1px solid #deedf5;border-radius:22px;background:linear-gradient(145deg,#fff,#f7fcff)}
+.revision-exam-direction{margin:0 0 7px;color:#6690a9;font-size:10px;font-weight:900;letter-spacing:.12em}
+.revision-exam-word{margin:0;color:#16374b;font:700 clamp(26px,4vw,42px) Fredoka,sans-serif}
+.revision-exam-pron{margin:7px 0 0;color:#7a8e9d;font-size:13px}
+.revision-exam-context{margin:13px 0 0;padding:11px 13px;border-left:3px solid #62c8fa;border-radius:10px;background:#eef8ff;color:#4d6677;font-size:12px;line-height:1.6}
+.revision-exam-answers{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:16px}
+.revision-exam-answer{display:flex;align-items:flex-start;gap:11px;width:100%;min-height:58px;padding:12px 14px;border:1px solid #d8e9f2;border-radius:16px;background:#fff;color:#2e4b5d;text-align:left;font:700 12px 'Be Vietnam Pro',sans-serif;cursor:pointer;transition:.18s ease}
+.revision-exam-answer:hover:not(:disabled){transform:translateY(-1px);border-color:#8fcfee;box-shadow:0 9px 20px rgba(23,107,155,.08)}
+.revision-exam-answer b{flex:0 0 28px;width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#eaf7ff;color:#176b9b}
+.revision-exam-answer.correct{border-color:#73c69a;background:#effaf4;color:#256344}
+.revision-exam-answer.correct b{background:#d8f3e3;color:#25744d}
+.revision-exam-answer.wrong{border-color:#efa2a2;background:#fff4f4;color:#9a4141}
+.revision-exam-answer.wrong b{background:#ffdede;color:#a34a4a}
+.revision-exam-answer:disabled{cursor:default}
+.revision-exam-feedback{min-height:23px;margin-top:12px;font-size:12px;font-weight:800;color:#536979}
+.revision-exam-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+.revision-exam-next,.revision-exam-restart{min-height:44px;border:0;border-radius:13px;padding:0 17px;background:#176b9b;color:#fff;font:800 12px 'Be Vietnam Pro',sans-serif;cursor:pointer}
+.revision-exam-next:disabled{opacity:.45;cursor:not-allowed}
+.revision-exam-result{display:grid;gap:16px;text-align:center;padding:26px}
+.revision-exam-result-score{font:700 68px Fredoka,sans-serif;color:#176b9b;line-height:1}
+.revision-exam-result h2{margin:0;font:700 31px Fredoka,sans-serif;color:#17384d}
+.revision-exam-result p{margin:0;color:#718096;font-size:12px;line-height:1.65}
+.revision-exam-result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.revision-exam-result-stats div{padding:14px;border-radius:16px;background:#f4faff;border:1px solid #dbeef8}
+.revision-exam-result-stats b{display:block;color:#176b9b;font-size:20px}
+.revision-exam-result-stats span{display:block;margin-top:4px;color:#6f8290;font-size:10px;font-weight:800}
+.revision-exam-wrong{text-align:left;margin-top:2px}
+.revision-exam-wrong h3{margin:0 0 8px;font-size:13px;color:#284b61}
+.revision-exam-wrong-list{display:grid;gap:7px}
+.revision-exam-wrong-item{padding:10px 12px;border:1px solid #edf1f5;border-radius:13px;background:#fff;font-size:11px;color:#587080}
+.revision-exam-wrong-item b{color:#24485d}
+.revision-exam-empty{padding:30px 18px;text-align:center;border:1px dashed #bddceb;border-radius:18px;background:#f7fcff;color:#678291;font-size:12px;line-height:1.7}
+.revision-exam-open-pack{display:inline-flex;align-items:center;justify-content:center;margin-top:12px;min-height:42px;padding:0 15px;border-radius:12px;background:#176b9b;color:#fff;text-decoration:none;font-size:12px;font-weight:800}
+@media(max-width:780px){.revision-exam-hero{align-items:flex-start;flex-direction:column}.revision-exam-setup{grid-template-columns:1fr}.revision-exam-answers{grid-template-columns:1fr}.revision-exam-top{grid-template-columns:1fr}.revision-exam-score{justify-self:end}.revision-exam-result-stats{grid-template-columns:1fr}.revision-exam-card{padding:17px}}
