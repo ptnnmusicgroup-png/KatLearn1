@@ -192,48 +192,13 @@ if(packModal)packModal.querySelector('.modal-close')?.addEventListener('click',(
 if(packModal)packModal.onclick=e=>{if(e.target===packModal)packModal.classList.remove('show')};
 const addPackRowBtn=$('#addPackRow');if(addPackRowBtn)addPackRowBtn.onclick=()=>$('#packWordRows')?.append(packRow());
 const publicPackForm=$('#publicPackForm');if(publicPackForm)publicPackForm.onsubmit=async e=>{e.preventDefault();if(!window.studyStore.isAdmin())return toast('Tài khoản này chưa có quyền admin.');const words=[...$$('.pack-word-row')].map(row=>({word:row.querySelector('.pack-english').value.trim(),mean:row.querySelector('.pack-vietnamese').value.trim(),pron:row.querySelector('.pack-pronunciation').value.trim(),emoji:'📚'})).filter(item=>item.word&&item.mean);if(!words.length)return toast('Pack cần ít nhất một từ đủ Anh–Việt.');try{await window.studyStore.createPublicPack({name:$('#publicPackName').value.trim(),words});$('#packModal').classList.remove('show');await renderPublicPacks();toast(`Đã xuất bản pack gồm ${words.length} từ vựng!`)}catch(err){toast('Không thể xuất bản: '+err.message)}};const copySecretCommand=$('#copySecretCommand');if(copySecretCommand)copySecretCommand.onclick=async()=>{try{await navigator.clipboard.writeText('GEMINI_API_KEY');toast('Đã sao chép lệnh Firebase Secret.')}catch(e){toast('Hãy sao chép lệnh hiển thị bên trên.')}};
-const settingsModal=$('#settingsModal'),settingsContent=$('#settingsContent');
-function openAccountInfoModal(){
-  const user=window.studyStore?.user;
-  if(!user){location.replace('/login.html');return;}
-  if(!settingsContent||!settingsModal)return;
-  const name=user.displayName||user.email?.split('@')[0]||'KatLearn Student';
-  const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  settingsContent.innerHTML=`<div class="account-edit-head"><div class="account-edit-icon">🐱</div><div><p class="eyebrow">TÀI KHOẢN KATLEARN</p><h2>Thay đổi thông tin tài khoản</h2><p class="subtext">Cập nhật thông tin hiển thị của bạn. Email đăng nhập được giữ nguyên.</p></div></div><form id="accountInfoForm" class="teacher-form"><label>Tên hiển thị<input id="accountDisplayName" maxlength="80" value="${safe(name)}" autocomplete="name" required></label><label>Ảnh đại diện <span style="font-weight:500;color:#8b95a7">(URL, không bắt buộc)</span><input id="accountPhotoURL" maxlength="1000" value="${safe(user.photoURL||'')}" placeholder="https://..." type="url" autocomplete="url"></label><label>Email đăng nhập<input value="${safe(user.email||'')}" disabled></label><div class="account-code-field"><span>Mã tài khoản</span><b id="accountInfoCode">Đang tải...</b></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button type="button" class="teacher-btn secondary" id="accountInfoCancel">Hủy</button><button type="submit" class="primary-btn" id="accountInfoSave">Lưu thay đổi</button></div><p id="accountInfoStatus" class="subtext" style="margin:4px 0 0"></p></form>`;
-  settingsModal.classList.add('show');
-  void window.studyStore?.loadProfile?.().then(profile=>{
-    const el=$('#accountInfoCode');
-    if(el)el.textContent=String(profile?.accountCode||'Chưa có mã');
-  }).catch(()=>{const el=$('#accountInfoCode');if(el)el.textContent='Không tải được'});
-  $('#accountInfoCancel')?.addEventListener('click',()=>settingsModal.classList.remove('show'));
-  $('#accountInfoForm')?.addEventListener('submit',async e=>{
-    e.preventDefault();
-    const btn=$('#accountInfoSave'),status=$('#accountInfoStatus');
-    const displayName=$('#accountDisplayName')?.value.trim()||'';
-    const photoURL=$('#accountPhotoURL')?.value.trim()||'';
-    if(!displayName)return toast('Tên hiển thị không được để trống.');
-    btn.disabled=true;btn.textContent='⏳ Đang lưu...';
-    if(status)status.textContent='';
-    try{
-      await window.studyStore.updateAccountInfo({displayName,photoURL});
-      settingsModal.classList.remove('show');
-      toast('✓ Đã cập nhật thông tin tài khoản.');
-    }catch(err){
-      if(status)status.textContent='Không thể lưu: '+(err.message||'Lỗi không xác định');
-      toast('Không thể cập nhật tài khoản.');
-    }finally{btn.disabled=false;btn.textContent='Lưu thay đổi'}
-  });
-}
-if(settingsModal)settingsModal.querySelector('.modal-close')?.addEventListener('click',()=>settingsModal.classList.remove('show'));
-if(settingsModal)settingsModal.onclick=e=>{if(e.target===settingsModal)settingsModal.classList.remove('show')};
 const settingsBtn=$('#settingsBtn');
 if(settingsBtn){
   settingsBtn.title='Thay đổi thông tin tài khoản';
   settingsBtn.setAttribute('aria-label','Thay đổi thông tin tài khoản');
-  settingsBtn.onclick=openAccountInfoModal;
+  settingsBtn.onclick=()=>{location.href='/settings.html'};
 }
 window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG).then(()=>syncProfile()).catch(e=>console.warn('Firebase chưa kết nối:',e));
-
 function renderAuth(user){const login=$('#loginBtn'),trigger=$('#accountTrigger'),panel=$('#accountPanel');if(!login||!trigger||!panel)return;login.hidden=!!user;trigger.hidden=!user;if(!user){panel.hidden=true;login.onclick=()=>location.replace('/login.html');return}const name=user.displayName||user.email?.split('@')[0]||'KatLearn Student',initial=name.trim()[0].toUpperCase();['#accountAvatar','#panelAvatar'].forEach(s=>{const avatar=$(s);avatar.textContent=initial;if(user.photoURL){avatar.style.backgroundImage=`url("${user.photoURL}")`;avatar.style.backgroundSize='cover';avatar.style.color='transparent'}else{avatar.style.backgroundImage='';avatar.style.color='#fff'}});$('#accountName').textContent=name;$('#panelName').textContent=name;$('#panelEmail').textContent=user.email||'';updateCoins();trigger.onclick=()=>panel.hidden=!panel.hidden;panel.hidden=false}
 async function refreshAuthDependentViews(user){
   // Auth is the fast source of truth. Never block section access on Firestore.
