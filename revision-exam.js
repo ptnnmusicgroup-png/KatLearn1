@@ -1,5 +1,5 @@
 (function(){
-  const $=s=>document.querySelector(s);
+  const $=s=>document.querySelector(s),$=s=>document.querySelectorAll(s);
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   let packs=[],questions=[],index=0,score=0,answered=false,selectedPack=null,questionCount=10;
 
@@ -40,9 +40,12 @@
         renderLocked('📚 Bạn cần ít nhất một bộ từ riêng có từ vựng để bắt đầu bài thi.',true);
         return;
       }
-      const activeId=String(window.activeVocabSource?.kind==='personal'?window.activeVocabSource?.id:'');
+      const activeSource=typeof activeVocabSource!=='undefined'?activeVocabSource:null;
+      const activeId=String(activeSource?.kind==='personal'?activeSource?.id:'');
       select.innerHTML=packs.map((p,i)=>'<option value="'+esc(p.id)+'">'+esc(p.name||'Bộ từ của tôi')+' · '+p.words.length+' từ</option>').join('');
       select.value=packs.some(p=>String(p.id)===activeId)?activeId:packs[0].id;
+      const empty=$('#revisionExamEmpty');if(empty)empty.hidden=true;
+      const setup=$('#revisionExamSetup');if(setup)setup.hidden=false;
       updateStartState();
     }catch(e){
       select.innerHTML='<option value="">Không tải được</option>';
@@ -51,8 +54,13 @@
   }
 
   function renderLocked(message,noPack=false){
-    const area=$('#revisionExamWorkspace');if(!area)return;
-    area.innerHTML='<div class="revision-exam-empty"><div style="font-size:32px;margin-bottom:6px">'+(noPack?'📚':'🐾')+'</div><b>'+esc(message)+'</b>'+(noPack?'<br><a class="revision-exam-open-pack" href="#personalPacks" data-exam-open-packs>Mở Bộ từ riêng →</a>':'')+'</div>';
+    const empty=$('#revisionExamEmpty'),setup=$('#revisionExamSetup'),panel=$('#revisionExamPanel'),result=$('#revisionExamResult');
+    if(!empty)return;
+    empty.innerHTML='<div class="revision-exam-empty"><div style="font-size:32px;margin-bottom:6px">'+(noPack?'📚':'🐾')+'</div><b>'+esc(message)+'</b>'+(noPack?'<br><a class="revision-exam-open-pack" href="#personalPacks" data-exam-open-packs>Mở Bộ từ riêng →</a>':'')+'</div>';
+    empty.hidden=false;
+    if(setup)setup.hidden=true;
+    if(panel)panel.hidden=true;
+    if(result)result.hidden=true;
     $('[data-exam-open-packs]')?.addEventListener('click',()=>typeof showPage==='function'&&showPage('personalPacks'));
   }
 
