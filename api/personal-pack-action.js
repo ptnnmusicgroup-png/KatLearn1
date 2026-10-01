@@ -29,21 +29,23 @@ async function findPack(db,uid,packId){
   const profileSnap=await db.collection("users").doc(uid).get();
   const accountCode=String(profileSnap.data()?.accountCode||"").trim();
 
+  // Canonical user namespace first: users/{uid}/personalPacks/{packId}
+  const userRef=db.collection("users").doc(uid).collection("personalPacks").doc(packId);
+  const userSnap=await userRef.get();
+  if(userSnap.exists&&(!userSnap.data()?.ownerUid||String(userSnap.data()?.ownerUid)===uid)
+    &&(!userSnap.data()?.ownerAccountCode||!accountCode||String(userSnap.data()?.ownerAccountCode)===accountCode)){
+    return {ref:userRef,snap:userSnap,source:"users",accountCode,userRef,accountSnap:null};
+  }
+
+  // Compatibility fallback for packs created before user-namespace sync.
   if(accountCode){
     const accountRef=db.collection("accounts").doc(accountCode).collection("memory").doc(packId);
     const accountSnap=await accountRef.get();
     if(accountSnap.exists&&accountSnap.data()?.kind==="personalPack"
       &&String(accountSnap.data()?.ownerUid||uid)===uid
       &&(!accountSnap.data()?.ownerAccountCode||String(accountSnap.data()?.ownerAccountCode)===accountCode)){
-      return {ref:accountRef,snap:accountSnap,source:"accounts",accountCode};
+      return {ref:accountRef,snap:accountSnap,source:"accounts",accountCode,userRef,accountSnap};
     }
-  }
-
-  // Backward-compatible reader for legacy packs created in users/{uid}/personalPacks.
-  const userRef=db.collection("users").doc(uid).collection("personalPacks").doc(packId);
-  const userSnap=await userRef.get();
-  if(userSnap.exists&&(!userSnap.data()?.ownerUid||String(userSnap.data()?.ownerUid)===uid)){
-    return {ref:userRef,snap:userSnap,source:"users",accountCode};
   }
   return null;
 }
@@ -64,7 +66,15 @@ module.exports=async(req,res)=>{
     if(!found)throw Object.assign(new Error("Bộ từ không còn tồn tại hoặc không thuộc tài khoản này."),{status:404,code:"personal_pack_not_found"});
 
     if(action==="delete"){
-      await found.ref.delete();
+      const batch=db.batch();
+      batch.delete(found.ref);
+      if(found.source==="users" || found.accountSnap){
+        batch.delete(db.collection("users").doc(user.uid).collection("personalPacks").doc(packId));
+      }
+      if(found.accountCode){
+        batch.delete(db.collection("accounts").doc(found.accountCode).collection("memory").doc(packId));
+      }
+      await batch.commit();
       return send(res,200,{ok:true,id:packId,action:"delete"});
     }
 
@@ -82,9 +92,21 @@ module.exports=async(req,res)=>{
       update.words=words;
     }
     if(Object.keys(update).length===1)throw Object.assign(new Error("Không có dữ liệu nào để cập nhật."),{status:400,code:"pack_update_empty"});
-    await found.ref.update(update);
-    const snap=await found.ref.get();
-    return send(res,200,{ok:true,id:packId,action:"update",source:found.source,accountCode:found.accountCode||String(snap.data()?.ownerAccountCode||""),...serialize(snap.data()||{})});
+
+    const current=found.snap.data()||{};
+    const payload={...current,...update,ownerUid:user.uid,ownerAccountCode:found.accountCode||String(current.ownerAccountCode||"")};
+    const batch=db.batch();
+    const userRef=db.collection("users").doc(user.uid).collection("personalPacks").doc(packId);
+    batch.set(userRef,payload,{merge:true});
+    if(found.accountCode){
+      const accountRef=db.collection("accounts").doc(found.accountCode).collection("memory").doc(packId);
+      batch.set(accountRef,payload,{merge:true});
+    }else{
+      batch.set(found.ref,payload,{merge:true});
+    }
+    await batch.commit();
+    const snap=await userRef.get();
+    return send(res,200,{ok:true,id:packId,action:"update",source:"users",accountCode:found.accountCode||String(snap.data()?.ownerAccountCode||""),...serialize(snap.data()||{})});
   }catch(error){
     return send(res,error.status||500,{
       ok:false,
