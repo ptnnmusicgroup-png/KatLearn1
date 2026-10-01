@@ -31,3 +31,49 @@ button:not(.nav-item):not(.primary-btn):not(.add-word-btn):not(.create-pack-btn)
 .vn-ui-motif .vn-lotus{display:grid;place-items:center;width:34px;height:34px;border:1px solid #b9def0;border-radius:50%;background:rgba(235,248,255,.9);color:#238bc8;font-size:18px;box-shadow:0 8px 18px rgba(7,84,141,.08)}
 .vn-ui-motif .vn-star{color:#45acd9;font-size:12px}
 @media(max-width:700px){.vn-ui-motif{right:12px;bottom:12px;transform:scale(.82);transform-origin:right bottom}}
+
+/* Home-only hard overrides: remove every remaining legacy purple accent */
+:root{
+  --purple:#1677c8!important;
+  --purple2:#54b7f5!important;
+  --bg:#eef7ff!important;
+  --line:#d7e8f5!important;
+  --coral:#369edc!important;
+}
+#home .eyebrow{color:#2d82b5!important}
+#home h1{color:#12304a!important}
+#home .streak-card{border:1px solid #d7e8f5!important;background:linear-gradient(135deg,#fff,#eaf7ff)!important;box-shadow:0 12px 30px rgba(18,73,112,.08)!important}
+#home .streak-days i{background:#e3f4ff!important;color:#1677c8!important}
+#home .streak-days .today{border-color:#70bfe8!important;background:#fff!important;color:#0b609a!important}
+#home .hero-card{background:radial-gradient(circle at 88% 18%,rgba(255,255,255,.96),transparent 28%),linear-gradient(125deg,#07548d 0%,#1677c8 54%,#5bc7f7 100%)!important;box-shadow:0 18px 42px rgba(7,84,141,.20)!important;border-color:#78c9ec!important}
+#home .hero-content .tag{background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.30)!important;color:#fff!important}
+#home .hero-content h2,#home .hero-content p{color:#fff!important}
+#home .hero-content h2 em{color:#bfeeff!important}
+#home .hero-meta span{background:rgba(255,255,255,.13)!important;border-color:rgba(255,255,255,.23)!important;color:#e9f9ff!important}
+#home .primary-btn{background:#fff!important;color:#07548d!important;border-color:transparent!important;box-shadow:0 10px 24px rgba(3,55,88,.20)!important}
+#home .primary-btn:hover{background:#eaf8ff!important;color:#06466f!important}
+#home .hero-art .blob{background:rgba(159,224,251,.42)!important}
+#home .floating-card{background:#fff!important;color:#126b9f!important;box-shadow:0 12px 24px rgba(7,84,141,.18)!important}
+#home .floating-card b{color:#2496cf!important}
+#home .section-heading h2{color:#12304a!important}
+#home .activity-card{border-color:#d7e8f5!important;background:linear-gradient(135deg,#fff 0%,#eef9ff 100%)!important;box-shadow:0 8px 24px rgba(18,73,112,.07)!important}
+#home .activity-card:hover{border-color:#a9d7ed!important;background:linear-gradient(135deg,#fff 0%,#e5f6ff 100%)!important}
+#home .activity-card .activity-icon,
+#home .activity-card.coral .activity-icon,
+#home .activity-card.blue .activity-icon,
+#home .activity-card.purple .activity-icon,
+#home .activity-card.yellow .activity-icon{background:#e1f4ff!important;color:#0b6ba5!important}
+#home .activity-card .activity-card-arrow,
+#home .activity-card>i{color:#1681bf!important}
+#home .daily-goal,#home .mini-ranking{border-color:#d7e8f5!important;background:#fff!important;box-shadow:0 8px 24px rgba(18,73,112,.07)!important}
+#home .goal-icon{background:#e2f4ff!important;color:#0b6fac!important}
+#home .progress-line{background:#e0edf5!important}
+#home .progress-line span{background:linear-gradient(90deg,#0e71b5,#5bc7f7)!important}
+#home .daily-goal>strong,#home .daily-goal small b{color:#1486bf!important}
+#home .card-title button{color:#1477b7!important}
+#home .rank-row strong small{color:#1477b7!important;background:#e5f5ff!important}
+#home .rank-row.you{background:#eef8ff!important}
+#home .rank-avatar{background:#63afd3!important}
+#home .purple-av{background:#4f9fd0!important}
+#home .orange-av{background:#72b8da!important}
+#home .yellow-av{background:#8ac8e5!important}
