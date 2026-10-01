@@ -917,6 +917,35 @@ async function overview(db){
     degraded:warnings.length>0
   };
 }
+async function listAllAuthUsers(auth){
+  const users=[];
+  let pageToken;
+  do{
+    const page=await auth.listUsers(1000,pageToken);
+    users.push(...page.users);
+    pageToken=page.pageToken||undefined;
+  }while(pageToken);
+  return users;
+}
+function authUserRow(user){
+  const createdAt=Date.parse(String(user?.metadata?.creationTime||""))||0;
+  const lastSignInAt=Date.parse(String(user?.metadata?.lastSignInTime||""))||0;
+  return{
+    id:user.uid,
+    uid:user.uid,
+    email:String(user.email||""),
+    displayName:String(user.displayName||""),
+    name:String(user.displayName||""),
+    photoURL:String(user.photoURL||""),
+    disabled:Boolean(user.disabled),
+    createdAt,
+    lastSignInAt,
+    authProviders:Array.isArray(user.providerData)
+      ?user.providerData.map(provider=>String(provider?.providerId||"")).filter(Boolean)
+      :[],
+    authSource:"firebase_auth"
+  };
+}
 async function section(db,key,queryParams={}){
   key=String(key||"overview");
   if(key==="overview")return overview(db);
@@ -991,8 +1020,43 @@ async function section(db,key,queryParams={}){
   if(key==="activity"){
     return{rows:await list("nhật ký Admin",db.collection("adminAudit").orderBy("at","desc").limit(LIMITS.activity))};
   }
+  if(key==="users"){
+    // Firebase Auth is the source of truth for "tài khoản".
+    // Enrich every Auth account with its Firestore users/{uid} profile when present,
+    // so accounts that somehow missed a profile document still appear in Admin.
+    const [authUsers,profileRows]=await Promise.all([
+      listAllAuthUsers(queryParams.auth),
+      list("hồ sơ tài khoản",db.collection("users").select(...USER_FIELDS))
+    ]);
+    const profiles=new Map(profileRows.map(row=>[String(row.id),row]));
+    const rows=authUsers.map(user=>{
+      const authRow=authUserRow(user);
+      const profile=profiles.get(String(user.uid))||{};
+      return{
+        ...profile,
+        ...authRow,
+        displayName:String(profile.displayName||profile.name||authRow.displayName||authRow.email||"KatLearn User"),
+        name:String(profile.name||profile.displayName||authRow.displayName||authRow.email||"KatLearn User"),
+        email:String(profile.email||authRow.email||""),
+        role:String(profile.role||""),
+        accountCode:String(profile.accountCode||""),
+        createdAt:Number(profile.createdAt||authRow.createdAt)||0,
+        lastSignInAt:authRow.lastSignInAt,
+        disabled:Boolean(authRow.disabled),
+        profileExists:profiles.has(String(user.uid)),
+        authSource:"firebase_auth"
+      };
+    });
+    return{
+      rows,
+      total:rows.length,
+      profileCount:profileRows.length,
+      authCount:authUsers.length,
+      missingProfiles:rows.filter(row=>!row.profileExists).length,
+      limited:false
+    };
+  }
   const defs={
-    users:["tài khoản",db.collection("users").select(...USER_FIELDS).limit(LIMITS.users)],
     classes:["lớp học",db.collection("classes").select(...CLASS_FIELDS).limit(LIMITS.classes)],
     schools:["trường học",db.collection("schools").select(...SCHOOL_FIELDS).limit(LIMITS.schools)]
   };
@@ -1019,8 +1083,8 @@ module.exports=async(req,res)=>{
     }
     const{requireAdmin}=require("./_admin");
     if(req.method==="GET"){
-      const{db}=await requireAdmin(req);
-      const value=await section(db,req.query?.section||"overview",req.query||{});
+      const{db,auth}=await requireAdmin(req);
+      const value=await section(db,req.query?.section||"overview",{...req.query,auth});
       return writeJson(res,200,{ok:true,...value,limits:LIMITS},origin);
     }
     if(req.method!=="POST")return writeJson(res,405,{ok:false,error:"Method not allowed",code:"method_not_allowed"},origin);
