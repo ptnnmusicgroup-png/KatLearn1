@@ -38,7 +38,7 @@ module.exports=async(req,res)=>{
     if(accountCode){
       try{
         const memorySnap=await db.collection("accounts").doc(accountCode).collection("memory").where("kind","==","personalPack").limit(100).get();
-        const backfill=batch=db.batch();
+        const backfill=db.batch();
         let backfillCount=0;
         for(const doc of memorySnap.docs){
           const data=doc.data()||{};
