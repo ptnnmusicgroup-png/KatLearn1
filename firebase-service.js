@@ -259,8 +259,21 @@
       const accountRef=api.doc(db,'accounts',accountCode,'memory',identity.docId);
       // Write directly to the user's namespace. This makes personal packs
       // visible immediately at users/{uid}/personalPacks/{packId}.
-      await api.setDoc(userRef,payload,{merge:false});
-      await api.setDoc(accountRef,payload,{merge:false});
+      try{
+        await api.setDoc(userRef,payload,{merge:false});
+      }catch(directError){
+        // Fallback for deployments where Firestore Rules have not yet been
+        // published: the protected server endpoint can still provision the
+        // same user namespace with Firebase Admin.
+        const token=await this.getIdToken(true);
+        if(!token)throw directError;
+        const res=await fetch('/api/personal-pack',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({id:identity.docId,name,words})});
+        const data=await res.json().catch(()=>({}));
+        if(!res.ok)throw new Error(data.error||directError.message||'Không thể lưu bộ từ.');
+        return data;
+      }
+      try{await api.setDoc(accountRef,payload,{merge:false})}
+      catch(mirrorError){console.warn('[KatLearn] Account pack mirror failed:',mirrorError)}
       return {id:identity.docId,accountCode,source:'users',...payload};
     },
     async updatePersonalPack(packId,pack){
@@ -292,8 +305,18 @@
       }
 
       const merged={...(snap.data()||{}),...update,ownerUid:uid,ownerAccountCode:accountCode};
-      await api.setDoc(userRef,merged,{merge:true});
-      await api.setDoc(accountRef,merged,{merge:true});
+      try{
+        await api.setDoc(userRef,merged,{merge:true});
+      }catch(directError){
+        const token=await this.getIdToken(true);
+        if(!token)throw directError;
+        const res=await fetch('/api/personal-pack-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'update',id:String(packId),...(Object.prototype.hasOwnProperty.call(pack||{},'name')?{name:String(pack.name||'').trim()}:{}),...(Object.prototype.hasOwnProperty.call(pack||{},'words')?{words:Array.isArray(pack.words)?pack.words:[]}:{})})});
+        const data=await res.json().catch(()=>({}));
+        if(!res.ok)throw new Error(data.error||directError.message||'Không thể cập nhật bộ từ.');
+        return data;
+      }
+      try{await api.setDoc(accountRef,merged,{merge:true})}
+      catch(mirrorError){console.warn('[KatLearn] Account pack mirror failed:',mirrorError)}
       return {id:String(packId),accountCode,source:'users',...merged};
     },
     async deletePersonalPack(packId){
@@ -303,8 +326,17 @@
       const profile=await this.loadProfile();
       if(String(profile?.studentAccountType||'free').toLowerCase()==='class')throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
       const accountCode=String(profile?.accountCode||'').trim()||await this.ensureAccountCode();
-      await api.deleteDoc(api.doc(db,'users',uid,'personalPacks',String(packId)));
-      await api.deleteDoc(api.doc(db,'accounts',accountCode,'memory',String(packId)));
+      try{
+        await api.deleteDoc(api.doc(db,'users',uid,'personalPacks',String(packId)));
+      }catch(directError){
+        const token=await this.getIdToken(true);
+        if(!token)throw directError;
+        const res=await fetch('/api/personal-pack-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'delete',id:String(packId)})});
+        const data=await res.json().catch(()=>({}));
+        if(!res.ok)throw new Error(data.error||directError.message||'Không thể xóa bộ từ.');
+        return data;
+      }
+      try{await api.deleteDoc(api.doc(db,'accounts',accountCode,'memory',String(packId)))}catch(mirrorError){console.warn('[KatLearn] Account pack mirror delete failed:',mirrorError)}
       return {ok:true,id:String(packId),action:'delete',accountCode};
     },
     async personalPacks(){
@@ -328,11 +360,16 @@
 
       // Read older account-only packs and transparently mirror them into the
       // user's own subcollection so the user path remains complete.
-      const accountSnap=await api.getDocs(api.query(
-        api.collection(db,'accounts',accountCode,'memory'),
-        api.where('kind','==','personalPack'),
-        api.limit(100)
-      ));
+      let accountSnap={docs:[]};
+      try{
+        accountSnap=await api.getDocs(api.query(
+          api.collection(db,'accounts',accountCode,'memory'),
+          api.where('kind','==','personalPack'),
+          api.limit(100)
+        ));
+      }catch(accountError){
+        console.warn('[KatLearn] Account personal pack mirror read failed:',accountError);
+      }
       for(const doc of accountSnap.docs){
         const data=doc.data()||{};
         if(String(data.ownerUid||uid)!==uid)continue;
