@@ -1,0 +1,399 @@
+{
+  "id": "weather-seasons",
+  "name": "Weather_Seasons_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for weather seasons.",
+  "words": [
+    {
+      "word": "weather",
+      "mean": "weather",
+      "pron": "",
+      "type": "word",
+      "example": "I use “weather” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "season",
+      "mean": "season",
+      "pron": "",
+      "type": "word",
+      "example": "I use “season” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "spring",
+      "mean": "spring",
+      "pron": "",
+      "type": "word",
+      "example": "I use “spring” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "summer",
+      "mean": "summer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “summer” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "autumn",
+      "mean": "autumn",
+      "pron": "",
+      "type": "word",
+      "example": "I use “autumn” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "winter",
+      "mean": "winter",
+      "pron": "",
+      "type": "word",
+      "example": "I use “winter” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "rain",
+      "mean": "rain",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rain” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "snow",
+      "mean": "snow",
+      "pron": "",
+      "type": "word",
+      "example": "I use “snow” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "wind",
+      "mean": "wind",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wind” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "storm",
+      "mean": "storm",
+      "pron": "",
+      "type": "word",
+      "example": "I use “storm” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "cloud",
+      "mean": "cloud",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cloud” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "sun",
+      "mean": "sun",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sun” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "sunny",
+      "mean": "sunny",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sunny” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "rainy",
+      "mean": "rainy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rainy” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "snowy",
+      "mean": "snowy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “snowy” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "windy",
+      "mean": "windy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “windy” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "hot",
+      "mean": "hot",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hot” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "cold",
+      "mean": "cold",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cold” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "warm",
+      "mean": "warm",
+      "pron": "",
+      "type": "word",
+      "example": "I use “warm” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "cool",
+      "mean": "cool",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cool” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "temperature",
+      "mean": "temperature",
+      "pron": "",
+      "type": "word",
+      "example": "I use “temperature” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "degree",
+      "mean": "degree",
+      "pron": "",
+      "type": "word",
+      "example": "I use “degree” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "forecast",
+      "mean": "forecast",
+      "pron": "",
+      "type": "word",
+      "example": "I use “forecast” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "sky",
+      "mean": "sky",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sky” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "air",
+      "mean": "air",
+      "pron": "",
+      "type": "word",
+      "example": "I use “air” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "fog",
+      "mean": "fog",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fog” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "ice",
+      "mean": "ice",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ice” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "heat",
+      "mean": "heat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “heat” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "dry",
+      "mean": "dry",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dry” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "wet",
+      "mean": "wet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wet” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "umbrella",
+      "mean": "umbrella",
+      "pron": "",
+      "type": "word",
+      "example": "I use “umbrella” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "coat",
+      "mean": "coat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “coat” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "climate",
+      "mean": "climate",
+      "pron": "",
+      "type": "word",
+      "example": "I use “climate” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "morning",
+      "mean": "morning",
+      "pron": "",
+      "type": "word",
+      "example": "I use “morning” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "afternoon",
+      "mean": "afternoon",
+      "pron": "",
+      "type": "word",
+      "example": "I use “afternoon” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "evening",
+      "mean": "evening",
+      "pron": "",
+      "type": "word",
+      "example": "I use “evening” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "night",
+      "mean": "night",
+      "pron": "",
+      "type": "word",
+      "example": "I use “night” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "today",
+      "mean": "today",
+      "pron": "",
+      "type": "word",
+      "example": "I use “today” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "tomorrow",
+      "mean": "tomorrow",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tomorrow” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "week",
+      "mean": "week",
+      "pron": "",
+      "type": "word",
+      "example": "I use “week” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "month",
+      "mean": "month",
+      "pron": "",
+      "type": "word",
+      "example": "I use “month” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "year",
+      "mean": "year",
+      "pron": "",
+      "type": "word",
+      "example": "I use “year” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "change",
+      "mean": "change",
+      "pron": "",
+      "type": "word",
+      "example": "I use “change” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "freeze",
+      "mean": "freeze",
+      "pron": "",
+      "type": "word",
+      "example": "I use “freeze” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "melt",
+      "mean": "melt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “melt” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "shine",
+      "mean": "shine",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shine” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "blow",
+      "mean": "blow",
+      "pron": "",
+      "type": "word",
+      "example": "I use “blow” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "fall",
+      "mean": "fall",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fall” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    },
+    {
+      "word": "rise",
+      "mean": "rise",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rise” in everyday life.",
+      "note": "Everyday weather seasons vocabulary."
+    }
+  ]
+}
