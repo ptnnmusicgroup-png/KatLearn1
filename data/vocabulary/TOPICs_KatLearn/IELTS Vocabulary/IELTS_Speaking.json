@@ -1,0 +1,664 @@
+{
+  "id": "ielts-speaking",
+  "name": "IELTS Speaking Vocabulary",
+  "description": "Từ và cụm từ tự nhiên cho IELTS Speaking Part 1–3, gồm mô tả, sở thích, trải nghiệm, ý kiến, so sánh, nguyên nhân, ví dụ và cách nối ý. Ưu tiên ngôn ngữ nói tự nhiên thay vì học thuộc bài mẫu.",
+  "words": [
+    {
+      "word": "routine",
+      "mean": "thói quen; nếp sinh hoạt",
+      "pron": "",
+      "type": "noun",
+      "example": "My daily routine is fairly simple on weekdays.",
+      "note": "Useful for Part 1 topics about study, work, and daily life.",
+      "category": "part1"
+    },
+    {
+      "word": "commute",
+      "mean": "việc đi lại hằng ngày",
+      "pron": "",
+      "type": "noun",
+      "example": "My commute is much shorter than it used to be.",
+      "note": "Useful for work, study, and transport topics.",
+      "category": "part1"
+    },
+    {
+      "word": "household",
+      "mean": "hộ gia đình; việc gia đình",
+      "pron": "",
+      "type": "noun",
+      "example": "Everyone in my household helps with chores.",
+      "note": "Useful for home and family topics.",
+      "category": "part1"
+    },
+    {
+      "word": "leisure",
+      "mean": "thời gian rảnh; hoạt động giải trí",
+      "pron": "",
+      "type": "noun",
+      "example": "I usually read during my leisure time.",
+      "note": "Useful formal noun for free-time discussions.",
+      "category": "part1"
+    },
+    {
+      "word": "pastime",
+      "mean": "thú tiêu khiển",
+      "pron": "",
+      "type": "noun",
+      "example": "Listening to music is one of my favourite pastimes.",
+      "note": "Natural alternative to hobby in some contexts.",
+      "category": "part1"
+    },
+    {
+      "word": "unwind",
+      "mean": "thư giãn",
+      "pron": "",
+      "type": "verb",
+      "example": "I usually listen to music to unwind after school.",
+      "note": "Natural speaking verb for relaxing after a busy day.",
+      "category": "part1"
+    },
+    {
+      "word": "catch up",
+      "mean": "gặp lại; cập nhật chuyện",
+      "pron": "",
+      "type": "phrasal verb",
+      "example": "I sometimes catch up with my friends at the weekend.",
+      "note": "Very useful for friends and socialising topics.",
+      "category": "part1"
+    },
+    {
+      "word": "socialise",
+      "mean": "giao lưu; gặp gỡ",
+      "pron": "",
+      "type": "verb",
+      "example": "I like socialising with people who share my interests.",
+      "note": "British spelling commonly used in IELTS.",
+      "category": "part1"
+    },
+    {
+      "word": "memorable",
+      "mean": "đáng nhớ",
+      "pron": "",
+      "type": "adjective",
+      "example": "It was a memorable trip because I travelled with my family.",
+      "note": "Useful for Part 2 stories and experiences.",
+      "category": "part2"
+    },
+    {
+      "word": "preference",
+      "mean": "sở thích; sự ưu tiên",
+      "pron": "",
+      "type": "noun",
+      "example": "My preference is to study in the morning.",
+      "note": "Useful when comparing choices and giving reasons.",
+      "category": "opinion"
+    },
+    {
+      "word": "keen on",
+      "mean": "rất thích",
+      "pron": "",
+      "type": "adjective phrase",
+      "example": "I am quite keen on documentaries.",
+      "note": "Natural phrase for likes and interests.",
+      "category": "part1"
+    },
+    {
+      "word": "fond of",
+      "mean": "thích",
+      "pron": "",
+      "type": "adjective phrase",
+      "example": "I have always been fond of old songs.",
+      "note": "Useful for expressing long-term preferences.",
+      "category": "part1"
+    },
+    {
+      "word": "tend to",
+      "mean": "có xu hướng",
+      "pron": "",
+      "type": "verb phrase",
+      "example": "I tend to study better when it is quiet.",
+      "note": "Useful for describing habits without sounding absolute.",
+      "category": "part1"
+    },
+    {
+      "word": "from time to time",
+      "mean": "thỉnh thoảng",
+      "pron": "",
+      "type": "phrase",
+      "example": "I eat out from time to time.",
+      "note": "Natural frequency phrase for Part 1.",
+      "category": "part1"
+    },
+    {
+      "word": "once in a while",
+      "mean": "thỉnh thoảng",
+      "pron": "",
+      "type": "phrase",
+      "example": "I watch a film once in a while.",
+      "note": "Natural alternative to sometimes.",
+      "category": "part1"
+    },
+    {
+      "word": "usually",
+      "mean": "thường",
+      "pron": "",
+      "type": "adverb",
+      "example": "I usually review vocabulary before bed.",
+      "note": "Useful but basic; combine with more specific details.",
+      "category": "part1"
+    },
+    {
+      "word": "fairly",
+      "mean": "khá; tương đối",
+      "pron": "",
+      "type": "adverb",
+      "example": "My hometown is fairly quiet at night.",
+      "note": "Useful for moderate descriptions.",
+      "category": "description"
+    },
+    {
+      "word": "particularly",
+      "mean": "đặc biệt",
+      "pron": "",
+      "type": "adverb",
+      "example": "I particularly enjoy listening to live music.",
+      "note": "Useful for adding precise emphasis.",
+      "category": "description"
+    },
+    {
+      "word": "genuinely",
+      "mean": "thực sự",
+      "pron": "",
+      "type": "adverb",
+      "example": "I genuinely enjoy learning about different cultures.",
+      "note": "Useful for sounding natural when expressing real enthusiasm.",
+      "category": "opinion"
+    },
+    {
+      "word": "admittedly",
+      "mean": "phải thừa nhận rằng",
+      "pron": "",
+      "type": "adverb",
+      "example": "Admittedly, public transport can be crowded at rush hour.",
+      "note": "Useful for balanced responses in Part 3.",
+      "category": "balance"
+    },
+    {
+      "word": "personally",
+      "mean": "cá nhân tôi",
+      "pron": "",
+      "type": "adverb",
+      "example": "Personally, I prefer working in a small team.",
+      "note": "Natural way to signal a personal view.",
+      "category": "opinion"
+    },
+    {
+      "word": "I suppose",
+      "mean": "tôi cho là; có lẽ",
+      "pron": "",
+      "type": "phrase",
+      "example": "I suppose the main reason is convenience.",
+      "note": "Useful for softening an opinion naturally.",
+      "category": "opinion"
+    },
+    {
+      "word": "I'd say",
+      "mean": "tôi sẽ nói rằng",
+      "pron": "",
+      "type": "phrase",
+      "example": "I'd say my hometown is fairly peaceful.",
+      "note": "Natural way to answer without sounding memorised.",
+      "category": "opinion"
+    },
+    {
+      "word": "what I like about",
+      "mean": "điều tôi thích ở",
+      "pron": "",
+      "type": "phrase",
+      "example": "What I like about my school is the friendly atmosphere.",
+      "note": "Useful for giving a reason for a preference.",
+      "category": "opinion"
+    },
+    {
+      "word": "one thing that stands out",
+      "mean": "một điều nổi bật",
+      "pron": "",
+      "type": "phrase",
+      "example": "One thing that stands out is the city's food culture.",
+      "note": "Useful for describing memorable features.",
+      "category": "description"
+    },
+    {
+      "word": "it depends",
+      "mean": "còn tùy",
+      "pron": "",
+      "type": "phrase",
+      "example": "It depends on how much free time I have.",
+      "note": "Useful for nuanced Part 3 answers.",
+      "category": "balance"
+    },
+    {
+      "word": "compared with",
+      "mean": "so với",
+      "pron": "",
+      "type": "phrase",
+      "example": "Compared with my old school, my current school is larger.",
+      "note": "Useful for direct personal comparisons.",
+      "category": "comparison"
+    },
+    {
+      "word": "especially",
+      "mean": "đặc biệt là",
+      "pron": "",
+      "type": "adverb",
+      "example": "I enjoy outdoor activities, especially cycling.",
+      "note": "Natural emphasis word for examples.",
+      "category": "description"
+    },
+    {
+      "word": "absolutely",
+      "mean": "hoàn toàn; chắc chắn",
+      "pron": "",
+      "type": "adverb",
+      "example": "I would absolutely recommend visiting my hometown.",
+      "note": "Strong emphasis; use when genuine.",
+      "category": "opinion"
+    },
+    {
+      "word": "definitely",
+      "mean": "chắc chắn",
+      "pron": "",
+      "type": "adverb",
+      "example": "I would definitely choose the train for a long journey.",
+      "note": "Natural emphatic adverb.",
+      "category": "opinion"
+    },
+    {
+      "word": "probably",
+      "mean": "có lẽ",
+      "pron": "",
+      "type": "adverb",
+      "example": "I would probably spend more time outdoors if I could.",
+      "note": "Useful for hypothetical and uncertain answers.",
+      "category": "opinion"
+    },
+    {
+      "word": "ideally",
+      "mean": "lý tưởng nhất là",
+      "pron": "",
+      "type": "adverb",
+      "example": "Ideally, I would like to study abroad one day.",
+      "note": "Useful for future plans and preferences.",
+      "category": "future"
+    },
+    {
+      "word": "spontaneous",
+      "mean": "ngẫu hứng",
+      "pron": "",
+      "type": "adjective",
+      "example": "I enjoy spontaneous trips when my schedule allows.",
+      "note": "Useful for describing personality and travel.",
+      "category": "personality"
+    },
+    {
+      "word": "convenient",
+      "mean": "thuận tiện",
+      "pron": "",
+      "type": "adjective",
+      "example": "Online shopping is convenient because it saves time.",
+      "note": "High-frequency adjective for daily-life topics.",
+      "category": "description"
+    },
+    {
+      "word": "affordable",
+      "mean": "giá phải chăng",
+      "pron": "",
+      "type": "adjective",
+      "example": "The café is affordable for students.",
+      "note": "Useful for money, shopping, housing, and travel topics.",
+      "category": "description"
+    },
+    {
+      "word": "accessible",
+      "mean": "dễ tiếp cận; dễ sử dụng",
+      "pron": "",
+      "type": "adjective",
+      "example": "The library is easily accessible by bus.",
+      "note": "Useful for transport, services, and technology topics.",
+      "category": "description"
+    },
+    {
+      "word": "lively",
+      "mean": "sôi động",
+      "pron": "",
+      "type": "adjective",
+      "example": "The city centre is lively at night.",
+      "note": "Useful for describing places and atmospheres.",
+      "category": "description"
+    },
+    {
+      "word": "peaceful",
+      "mean": "yên bình",
+      "pron": "",
+      "type": "adjective",
+      "example": "I prefer living in a peaceful neighbourhood.",
+      "note": "Useful for hometown and home topics.",
+      "category": "description"
+    },
+    {
+      "word": "crowded",
+      "mean": "đông đúc",
+      "pron": "",
+      "type": "adjective",
+      "example": "The market gets very crowded at weekends.",
+      "note": "Useful for city, transport, and travel topics.",
+      "category": "description"
+    },
+    {
+      "word": "scenic",
+      "mean": "có phong cảnh đẹp",
+      "pron": "",
+      "type": "adjective",
+      "example": "The route is scenic, especially near the coast.",
+      "note": "Useful for travel and hometown descriptions.",
+      "category": "description"
+    },
+    {
+      "word": "breathtaking",
+      "mean": "ngoạn mục",
+      "pron": "",
+      "type": "adjective",
+      "example": "The mountain view was absolutely breathtaking.",
+      "note": "Useful for strong positive descriptions in Part 2.",
+      "category": "description"
+    },
+    {
+      "word": "fascinating",
+      "mean": "hấp dẫn; thú vị",
+      "pron": "",
+      "type": "adjective",
+      "example": "I find space exploration fascinating.",
+      "note": "Useful for describing subjects, people, and experiences.",
+      "category": "description"
+    },
+    {
+      "word": "challenging",
+      "mean": "thử thách",
+      "pron": "",
+      "type": "adjective",
+      "example": "Learning to speak confidently was challenging at first.",
+      "note": "Useful for experiences and personal development.",
+      "category": "description"
+    },
+    {
+      "word": "rewarding",
+      "mean": "đáng giá; đem lại cảm giác thành tựu",
+      "pron": "",
+      "type": "adjective",
+      "example": "Volunteering can be challenging but very rewarding.",
+      "note": "Useful for work, study, and activities.",
+      "category": "description"
+    },
+    {
+      "word": "stressful",
+      "mean": "căng thẳng",
+      "pron": "",
+      "type": "adjective",
+      "example": "Exams can be stressful if I do not prepare well.",
+      "note": "Useful for study, work, and modern-life topics.",
+      "category": "description"
+    },
+    {
+      "word": "overwhelming",
+      "mean": "quá tải; choáng ngợp",
+      "pron": "",
+      "type": "adjective",
+      "example": "Moving to a huge city can feel overwhelming at first.",
+      "note": "Useful for strong negative or mixed feelings.",
+      "category": "feelings"
+    },
+    {
+      "word": "beneficial",
+      "mean": "có lợi",
+      "pron": "",
+      "type": "adjective",
+      "example": "Regular exercise is beneficial for my health.",
+      "note": "Useful for Part 3 when discussing effects.",
+      "category": "effects"
+    },
+    {
+      "word": "let me think",
+      "mean": "để tôi nghĩ xem",
+      "pron": "",
+      "type": "discourse phrase",
+      "example": "Let me think; I would probably choose the countryside.",
+      "note": "Natural stalling phrase; use sparingly.",
+      "category": "fluency"
+    },
+    {
+      "word": "to be honest",
+      "mean": "thành thật mà nói",
+      "pron": "",
+      "type": "discourse phrase",
+      "example": "To be honest, I do not spend much time watching television.",
+      "note": "Useful for natural personal answers.",
+      "category": "fluency"
+    },
+    {
+      "word": "as far as I remember",
+      "mean": "theo như tôi nhớ",
+      "pron": "",
+      "type": "discourse phrase",
+      "example": "As far as I remember, the library opened about ten years ago.",
+      "note": "Useful when recalling details in Part 2.",
+      "category": "fluency"
+    },
+    {
+      "word": "what I mean is",
+      "mean": "ý tôi là",
+      "pron": "",
+      "type": "discourse phrase",
+      "example": "What I mean is that I prefer a quieter environment.",
+      "note": "Useful for self-correction and clarification.",
+      "category": "fluency"
+    },
+    {
+      "word": "the main reason is",
+      "mean": "lý do chính là",
+      "pron": "",
+      "type": "phrase",
+      "example": "The main reason is that it saves me a lot of time.",
+      "note": "Useful for extending answers with a reason.",
+      "category": "fluency"
+    },
+    {
+      "word": "for instance",
+      "mean": "ví dụ",
+      "pron": "",
+      "type": "discourse phrase",
+      "example": "For instance, I often use podcasts to practise listening.",
+      "note": "Useful for supporting an example naturally.",
+      "category": "fluency"
+    },
+    {
+      "word": "on the whole",
+      "mean": "nhìn chung",
+      "pron": "",
+      "type": "phrase",
+      "example": "On the whole, I am happy with my current routine.",
+      "note": "Useful summary phrase for longer answers.",
+      "category": "fluency"
+    },
+    {
+      "word": "in other words",
+      "mean": "nói cách khác",
+      "pron": "",
+      "type": "phrase",
+      "example": "In other words, I prefer quality to quantity.",
+      "note": "Useful for paraphrasing or clarifying.",
+      "category": "fluency"
+    },
+    {
+      "word": "that said",
+      "mean": "tuy vậy",
+      "pron": "",
+      "type": "phrase",
+      "example": "That said, I still think public transport needs improvement.",
+      "note": "Useful for balanced Part 3 responses.",
+      "category": "balance"
+    },
+    {
+      "word": "at the same time",
+      "mean": "đồng thời; tuy nhiên",
+      "pron": "",
+      "type": "phrase",
+      "example": "It is convenient, but at the same time it can be expensive.",
+      "note": "Useful for presenting two sides.",
+      "category": "balance"
+    },
+    {
+      "word": "if I had to choose",
+      "mean": "nếu phải chọn",
+      "pron": "",
+      "type": "phrase",
+      "example": "If I had to choose, I would pick the countryside.",
+      "note": "Natural way to answer comparison questions.",
+      "category": "opinion"
+    },
+    {
+      "word": "from my point of view",
+      "mean": "theo quan điểm của tôi",
+      "pron": "",
+      "type": "phrase",
+      "example": "From my point of view, schools should teach practical skills.",
+      "note": "Useful in Part 3; avoid repeating it mechanically.",
+      "category": "opinion"
+    },
+    {
+      "word": "in my experience",
+      "mean": "theo kinh nghiệm của tôi",
+      "pron": "",
+      "type": "phrase",
+      "example": "In my experience, group work can improve communication.",
+      "note": "Useful for personal examples.",
+      "category": "experience"
+    },
+    {
+      "word": "a good example of this is",
+      "mean": "một ví dụ điển hình là",
+      "pron": "",
+      "type": "phrase",
+      "example": "A good example of this is our school recycling project.",
+      "note": "Useful when developing a Part 3 point.",
+      "category": "examples"
+    },
+    {
+      "word": "one reason for this is",
+      "mean": "một lý do cho điều này là",
+      "pron": "",
+      "type": "phrase",
+      "example": "One reason for this is that people are more connected online.",
+      "note": "Useful for causal explanation.",
+      "category": "causes"
+    },
+    {
+      "word": "to some extent",
+      "mean": "ở một mức độ nào đó",
+      "pron": "",
+      "type": "phrase",
+      "example": "To some extent, social media has changed how people communicate.",
+      "note": "Useful for nuanced agreement or partial support.",
+      "category": "balance"
+    },
+    {
+      "word": "in the long run",
+      "mean": "về lâu dài",
+      "pron": "",
+      "type": "phrase",
+      "example": "In the long run, learning to manage money is very useful.",
+      "note": "Useful for consequences and future effects.",
+      "category": "future"
+    },
+    {
+      "word": "make a difference",
+      "mean": "tạo ra sự khác biệt",
+      "pron": "",
+      "type": "phrase",
+      "example": "Even small lifestyle changes can make a difference.",
+      "note": "Useful for impact and solutions.",
+      "category": "effects"
+    },
+    {
+      "word": "have an impact on",
+      "mean": "có tác động đến",
+      "pron": "",
+      "type": "phrase",
+      "example": "Technology has a major impact on how students learn.",
+      "note": "Core phrase for discussing effects.",
+      "category": "effects"
+    },
+    {
+      "word": "take something for granted",
+      "mean": "coi điều gì là hiển nhiên",
+      "pron": "",
+      "type": "phrase",
+      "example": "People sometimes take clean water for granted.",
+      "note": "Useful advanced phrase for social and environmental topics.",
+      "category": "society"
+    },
+    {
+      "word": "broaden my horizons",
+      "mean": "mở rộng hiểu biết",
+      "pron": "",
+      "type": "phrase",
+      "example": "Travelling can broaden my horizons.",
+      "note": "Natural phrase for travel, education, and experiences.",
+      "category": "experience"
+    },
+    {
+      "word": "step out of my comfort zone",
+      "mean": "bước ra khỏi vùng an toàn",
+      "pron": "",
+      "type": "phrase",
+      "example": "Giving a presentation helped me step out of my comfort zone.",
+      "note": "Useful for personal development and challenge topics.",
+      "category": "experience"
+    },
+    {
+      "word": "keep in touch",
+      "mean": "giữ liên lạc",
+      "pron": "",
+      "type": "phrase",
+      "example": "I use messaging apps to keep in touch with my cousins.",
+      "note": "Useful for technology and relationships topics.",
+      "category": "relationships"
+    },
+    {
+      "word": "get along with",
+      "mean": "hòa thuận với",
+      "pron": "",
+      "type": "phrase",
+      "example": "I get along well with my classmates.",
+      "note": "Useful for friends, family, and school topics.",
+      "category": "relationships"
+    },
+    {
+      "word": "have a soft spot for",
+      "mean": "đặc biệt yêu thích",
+      "pron": "",
+      "type": "phrase",
+      "example": "I have a soft spot for old cartoons.",
+      "note": "Natural idiomatic phrase; use only when it feels natural.",
+      "category": "preferences"
+    },
+    {
+      "word": "not my cup of tea",
+      "mean": "không phải gu của tôi",
+      "pron": "",
+      "type": "idiom",
+      "example": "Horror films are not really my cup of tea.",
+      "note": "Natural but informal; suitable for Speaking, not formal Writing.",
+      "category": "preferences"
+    }
+  ]
+}
