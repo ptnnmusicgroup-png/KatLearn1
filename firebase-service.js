@@ -369,49 +369,77 @@
       const user=currentUser||await this.waitForAuth();
       if(!db||!user)return[];
       const uid=String(user.uid||'');
-      if(!uid)return[];
-      if(currentUser?.uid!==uid)return[];
+      if(!uid||currentUser?.uid!==uid)return[];
+
+      const normalizePacks=(docs,source,accountCode='')=>docs.map(doc=>{
+        const data=typeof doc.data==='function'?(doc.data()||{}):(doc||{});
+        const id=typeof doc.id==='string'?doc.id:String(data.id||'');
+        return{
+          id,...data,kind:'personalPack',
+          ownerUid:String(data.ownerUid||uid),
+          accountCode:String(data.ownerAccountCode||accountCode||''),
+          source
+        };
+      }).filter(pack=>String(pack.ownerUid||uid)===uid).sort((a,b)=>{
+        const ta=Number(a.createdAt?.seconds||a.createdAt||0);
+        const tb=Number(b.createdAt?.seconds||b.createdAt||0);
+        return tb-ta;
+      });
+
+      let directError=null;
       try{
-        // Canonical read source for the UI. Personal packs live under the
-        // authenticated Firebase UID; account memory is only a mirror/Admin source.
+        // Primary path: Auth UID -> users/{uid}/personalPacks.
         const snap=await api.getDocs(api.query(
           api.collection(db,'users',uid,'personalPacks')
         ));
-        return snap.docs.map(doc=>{
-          const data=doc.data()||{};
-          return {
-            id:doc.id,
-            ...data,
-            kind:'personalPack',
-            ownerUid:String(data.ownerUid||uid),
-            accountCode:String(data.ownerAccountCode||''),
-            source:'users'
-          };
-        }).filter(pack=>!pack.ownerUid||String(pack.ownerUid)===uid).sort((a,b)=>{
-          const ta=Number(a.createdAt?.seconds||a.createdAt||0);
-          const tb=Number(b.createdAt?.seconds||b.createdAt||0);
-          return tb-ta;
-        });
-      }catch(directError){
-        // Fallback through the protected server reader when Firestore client
-        // rules/index/session state prevent a direct collection read.
-        try{
-          const token=await this.getIdToken(true);
-          if(!token)throw directError;
-          const res=await fetch('/api/personal-packs',{method:'GET',cache:'no-store',headers:{Authorization:'Bearer '+token,Accept:'application/json'}});
-          const data=await res.json().catch(()=>({}));
-          if(!res.ok)throw new Error(data.error||directError.message||'Không thể tải bộ từ.');
-          return (Array.isArray(data.packs)?data.packs:[]).map(pack=>({
-            ...pack,
-            kind:'personalPack',
-            ownerUid:String(pack.ownerUid||uid),
-            accountCode:String(pack.ownerAccountCode||data.accountCode||''),
-            source:String(pack.source||'users')
-          })).filter(pack=>String(pack.ownerUid||uid)===uid);
-        }catch(serverError){
-          console.warn('[KatLearn] Personal packs load failed (client + server fallback):',directError,serverError);
-          throw serverError;
+        return normalizePacks(snap.docs,'users');
+      }catch(error){
+        directError=error;
+      }
+
+      // Rules-safe fallback: locate the account by the same authenticated UID,
+      // then read its mirrored personal-pack memory. No profile lookup required.
+      try{
+        const accountSnap=await api.getDocs(api.query(
+          api.collection(db,'accounts'),
+          api.where('uid','==',uid),
+          api.limit(1)
+        ));
+        if(accountSnap.docs.length){
+          const accountDoc=accountSnap.docs[0];
+          const accountCode=String(accountDoc.id||accountDoc.data()?.accountCode||'').trim();
+          if(accountCode){
+            const memorySnap=await api.getDocs(api.query(
+              api.collection(db,'accounts',accountCode,'memory'),
+              api.where('kind','==','personalPack'),
+              api.limit(100)
+            ));
+            return normalizePacks(memorySnap.docs,'account-memory',accountCode);
+          }
         }
+      }catch(accountError){
+        console.warn('[KatLearn] Account-memory personal packs fallback failed:',accountError);
+      }
+
+      // Last resort: protected server reader, when Firebase Admin is configured.
+      try{
+        const token=await this.getIdToken(true);
+        if(!token)throw directError;
+        const res=await fetch('/api/personal-packs',{
+          method:'GET',cache:'no-store',
+          headers:{Authorization:'Bearer '+token,Accept:'application/json'}
+        });
+        const data=await res.json().catch(()=>({}));
+        if(!res.ok)throw new Error(data.error||directError?.message||'Không thể tải bộ từ.');
+        return (Array.isArray(data.packs)?data.packs:[]).map(pack=>({
+          ...pack,kind:'personalPack',
+          ownerUid:String(pack.ownerUid||uid),
+          accountCode:String(pack.ownerAccountCode||data.accountCode||''),
+          source:String(pack.source||'users')
+        })).filter(pack=>String(pack.ownerUid||uid)===uid);
+      }catch(serverError){
+        console.warn('[KatLearn] Personal packs load failed (UID + account + server):',directError,serverError);
+        throw serverError;
       }
     },
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
