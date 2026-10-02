@@ -981,3 +981,56 @@ body{
   .kat-library-folder-head{align-items:flex-start;flex-direction:column}
   .kat-library-folder-grid,.pack-library-grid{grid-template-columns:1fr}
 }
+
+
+
+/* Nested vocabulary library leaf */
+.kat-library-leaf-card{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:20px;
+  border:1px solid var(--kl-line);
+  border-radius:22px;
+  background:rgba(255,255,255,.94);
+  box-shadow:var(--kl-shadow-sm);
+}
+.kat-library-leaf-card>span{
+  width:56px;
+  height:56px;
+  flex:0 0 56px;
+  display:grid;
+  place-items:center;
+  border-radius:17px;
+  background:linear-gradient(135deg,#f1edff,#fff7fb);
+  font-size:28px;
+}
+.kat-library-leaf-card>div{min-width:0}
+.kat-library-leaf-card h3{
+  margin:0 0 5px;
+  font:700 20px Fredoka,sans-serif;
+  color:#342c42;
+}
+.kat-library-leaf-card p{
+  margin:0;
+  color:var(--kl-muted);
+  font-size:11px;
+  line-height:1.55;
+}
+.kat-library-leaf-card button{
+  margin-left:auto;
+  flex:0 0 auto;
+  border:0;
+  border-radius:13px;
+  padding:11px 15px;
+  background:linear-gradient(135deg,var(--kl-accent),var(--kl-accent-2));
+  color:#fff;
+  font:800 11px "Be Vietnam Pro",sans-serif;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(123,97,255,.16);
+}
+.kat-library-leaf-card button:hover{transform:translateY(-1px)}
+@media (max-width:680px){
+  .kat-library-leaf-card{align-items:flex-start;flex-wrap:wrap}
+  .kat-library-leaf-card button{margin-left:72px}
+}
