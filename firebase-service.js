@@ -101,7 +101,12 @@
       return connectPromise;
     },
     connected(){return !!db},
-    async waitForAuth(){return authReady?await authReady:null},
+    async waitForAuth(){
+      if(!authReady&&!auth&&window.KATLEARN_FIREBASE_CONFIG){
+        try{await this.connect(window.KATLEARN_FIREBASE_CONFIG)}catch(_){return null}
+      }
+      return authReady?await authReady:currentUser;
+    },
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
     async ensureAccountNamespace(){
       const user=currentUser;
@@ -355,9 +360,14 @@
       return {ok:true,id:String(packId),action:'delete',accountCode};
     },
     async personalPacks(){
-      if(!db||!currentUser)return[];
-      const uid=String(currentUser.uid||'');
+      if(!db&&!authReady&&window.KATLEARN_FIREBASE_CONFIG){
+        try{await this.connect(window.KATLEARN_FIREBASE_CONFIG)}catch(_){return[]}
+      }
+      const user=currentUser||await this.waitForAuth();
+      if(!db||!user)return[];
+      const uid=String(user.uid||'');
       if(!uid)return[];
+      if(currentUser?.uid!==uid)return[];
       try{
         // Canonical read source for the UI. Personal packs live under the
         // authenticated Firebase UID; account memory is only a mirror/Admin source.
