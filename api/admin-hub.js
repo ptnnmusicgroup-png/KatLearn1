@@ -394,6 +394,24 @@ async function syncAllPersonalPacks(db,decoded){
       ref:db.collection("users").doc(ownerUid).collection("personalPacks").doc(doc.id),
       data:payload
     });
+    mirrorWrites.push({
+      ref:db.collection(ADMIN_SYNC_COLLECTION).doc("personalPacks").collection("items").doc(accountCode+"__"+doc.id),
+      data:{
+        sourceId:doc.id,
+        sourceCollection:"accounts/{accountCode}/memory",
+        accountCode,
+        ownerUid,
+        ownerEmail:String(payload.ownerEmail||""),
+        ownerDisplayName:String(payload.ownerDisplayName||""),
+        name:String(payload.name||""),
+        description:String(payload.description||""),
+        kind:"personalPack",
+        words:payload.words,
+        wordCount:payload.wordCount,
+        syncedAt:Date.now()
+      }
+    });
+    totalWords+=payload.wordCount;
     reverseRepaired++;
   }
 
