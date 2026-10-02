@@ -1,0 +1,415 @@
+{
+  "id": "home",
+  "name": "Home_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for home.",
+  "words": [
+    {
+      "word": "home",
+      "mean": "home",
+      "pron": "",
+      "type": "word",
+      "example": "I use “home” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "house",
+      "mean": "house",
+      "pron": "",
+      "type": "word",
+      "example": "I use “house” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "apartment",
+      "mean": "apartment",
+      "pron": "",
+      "type": "word",
+      "example": "I use “apartment” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "room",
+      "mean": "room",
+      "pron": "",
+      "type": "word",
+      "example": "I use “room” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "bedroom",
+      "mean": "bedroom",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bedroom” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "bathroom",
+      "mean": "bathroom",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bathroom” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "kitchen",
+      "mean": "kitchen",
+      "pron": "",
+      "type": "word",
+      "example": "I use “kitchen” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "living room",
+      "mean": "living room",
+      "pron": "",
+      "type": "word",
+      "example": "I use “living room” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "dining room",
+      "mean": "dining room",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dining room” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "hallway",
+      "mean": "hallway",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hallway” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "balcony",
+      "mean": "balcony",
+      "pron": "",
+      "type": "word",
+      "example": "I use “balcony” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "garden",
+      "mean": "garden",
+      "pron": "",
+      "type": "word",
+      "example": "I use “garden” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "yard",
+      "mean": "yard",
+      "pron": "",
+      "type": "word",
+      "example": "I use “yard” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "door",
+      "mean": "door",
+      "pron": "",
+      "type": "word",
+      "example": "I use “door” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "window",
+      "mean": "window",
+      "pron": "",
+      "type": "word",
+      "example": "I use “window” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "wall",
+      "mean": "wall",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wall” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "floor",
+      "mean": "floor",
+      "pron": "",
+      "type": "word",
+      "example": "I use “floor” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "ceiling",
+      "mean": "ceiling",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ceiling” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "roof",
+      "mean": "roof",
+      "pron": "",
+      "type": "word",
+      "example": "I use “roof” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "stairs",
+      "mean": "stairs",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stairs” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "bed",
+      "mean": "bed",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bed” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "sofa",
+      "mean": "sofa",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sofa” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "table",
+      "mean": "table",
+      "pron": "",
+      "type": "word",
+      "example": "I use “table” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "chair",
+      "mean": "chair",
+      "pron": "",
+      "type": "word",
+      "example": "I use “chair” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "desk",
+      "mean": "desk",
+      "pron": "",
+      "type": "word",
+      "example": "I use “desk” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "shelf",
+      "mean": "shelf",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shelf” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "drawer",
+      "mean": "drawer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “drawer” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "closet",
+      "mean": "closet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “closet” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "lamp",
+      "mean": "lamp",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lamp” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "mirror",
+      "mean": "mirror",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mirror” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "carpet",
+      "mean": "carpet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “carpet” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "curtain",
+      "mean": "curtain",
+      "pron": "",
+      "type": "word",
+      "example": "I use “curtain” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "pillow",
+      "mean": "pillow",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pillow” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "blanket",
+      "mean": "blanket",
+      "pron": "",
+      "type": "word",
+      "example": "I use “blanket” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "towel",
+      "mean": "towel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “towel” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "fridge",
+      "mean": "fridge",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fridge” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "freezer",
+      "mean": "freezer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “freezer” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "oven",
+      "mean": "oven",
+      "pron": "",
+      "type": "word",
+      "example": "I use “oven” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "stove",
+      "mean": "stove",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stove” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "sink",
+      "mean": "sink",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sink” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "shower",
+      "mean": "shower",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shower” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "toilet",
+      "mean": "toilet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “toilet” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "key",
+      "mean": "key",
+      "pron": "",
+      "type": "word",
+      "example": "I use “key” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "lock",
+      "mean": "lock",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lock” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "light",
+      "mean": "light",
+      "pron": "",
+      "type": "word",
+      "example": "I use “light” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "fan",
+      "mean": "fan",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fan” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "air conditioner",
+      "mean": "air conditioner",
+      "pron": "",
+      "type": "word",
+      "example": "I use “air conditioner” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "washing machine",
+      "mean": "washing machine",
+      "pron": "",
+      "type": "word",
+      "example": "I use “washing machine” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "vacuum",
+      "mean": "vacuum",
+      "pron": "",
+      "type": "word",
+      "example": "I use “vacuum” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "clean",
+      "mean": "clean",
+      "pron": "",
+      "type": "word",
+      "example": "I use “clean” in everyday life.",
+      "note": "Everyday home vocabulary."
+    },
+    {
+      "word": "repair",
+      "mean": "repair",
+      "pron": "",
+      "type": "word",
+      "example": "I use “repair” in everyday life.",
+      "note": "Everyday home vocabulary."
+    }
+  ]
+}
