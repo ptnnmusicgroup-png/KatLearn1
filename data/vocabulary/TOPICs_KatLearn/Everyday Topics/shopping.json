@@ -1,0 +1,407 @@
+{
+  "id": "shopping",
+  "name": "Shopping_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for shopping.",
+  "words": [
+    {
+      "word": "shop",
+      "mean": "shop",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shop” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "store",
+      "mean": "store",
+      "pron": "",
+      "type": "word",
+      "example": "I use “store” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "market",
+      "mean": "market",
+      "pron": "",
+      "type": "word",
+      "example": "I use “market” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "mall",
+      "mean": "mall",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mall” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "supermarket",
+      "mean": "supermarket",
+      "pron": "",
+      "type": "word",
+      "example": "I use “supermarket” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "customer",
+      "mean": "customer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “customer” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "seller",
+      "mean": "seller",
+      "pron": "",
+      "type": "word",
+      "example": "I use “seller” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "cashier",
+      "mean": "cashier",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cashier” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "price",
+      "mean": "price",
+      "pron": "",
+      "type": "word",
+      "example": "I use “price” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "cost",
+      "mean": "cost",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cost” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "sale",
+      "mean": "sale",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sale” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "discount",
+      "mean": "discount",
+      "pron": "",
+      "type": "word",
+      "example": "I use “discount” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "cheap",
+      "mean": "cheap",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cheap” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "expensive",
+      "mean": "expensive",
+      "pron": "",
+      "type": "word",
+      "example": "I use “expensive” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "buy",
+      "mean": "buy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “buy” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "sell",
+      "mean": "sell",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sell” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "pay",
+      "mean": "pay",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pay” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "cash",
+      "mean": "cash",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cash” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "card",
+      "mean": "card",
+      "pron": "",
+      "type": "word",
+      "example": "I use “card” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "change",
+      "mean": "change",
+      "pron": "",
+      "type": "word",
+      "example": "I use “change” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "receipt",
+      "mean": "receipt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “receipt” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "bag",
+      "mean": "bag",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bag” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "basket",
+      "mean": "basket",
+      "pron": "",
+      "type": "word",
+      "example": "I use “basket” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "cart",
+      "mean": "cart",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cart” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "size",
+      "mean": "size",
+      "pron": "",
+      "type": "word",
+      "example": "I use “size” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "color",
+      "mean": "color",
+      "pron": "",
+      "type": "word",
+      "example": "I use “color” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "brand",
+      "mean": "brand",
+      "pron": "",
+      "type": "word",
+      "example": "I use “brand” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "product",
+      "mean": "product",
+      "pron": "",
+      "type": "word",
+      "example": "I use “product” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "item",
+      "mean": "item",
+      "pron": "",
+      "type": "word",
+      "example": "I use “item” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "order",
+      "mean": "order",
+      "pron": "",
+      "type": "word",
+      "example": "I use “order” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "delivery",
+      "mean": "delivery",
+      "pron": "",
+      "type": "word",
+      "example": "I use “delivery” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "online",
+      "mean": "online",
+      "pron": "",
+      "type": "word",
+      "example": "I use “online” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "website",
+      "mean": "website",
+      "pron": "",
+      "type": "word",
+      "example": "I use “website” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "return",
+      "mean": "return",
+      "pron": "",
+      "type": "word",
+      "example": "I use “return” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "exchange",
+      "mean": "exchange",
+      "pron": "",
+      "type": "word",
+      "example": "I use “exchange” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "refund",
+      "mean": "refund",
+      "pron": "",
+      "type": "word",
+      "example": "I use “refund” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "offer",
+      "mean": "offer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “offer” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "choice",
+      "mean": "choice",
+      "pron": "",
+      "type": "word",
+      "example": "I use “choice” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "quality",
+      "mean": "quality",
+      "pron": "",
+      "type": "word",
+      "example": "I use “quality” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "review",
+      "mean": "review",
+      "pron": "",
+      "type": "word",
+      "example": "I use “review” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "rating",
+      "mean": "rating",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rating” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "try",
+      "mean": "try",
+      "pron": "",
+      "type": "word",
+      "example": "I use “try” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "wear",
+      "mean": "wear",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wear” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "fit",
+      "mean": "fit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fit” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "need",
+      "mean": "need",
+      "pron": "",
+      "type": "word",
+      "example": "I use “need” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "want",
+      "mean": "want",
+      "pron": "",
+      "type": "word",
+      "example": "I use “want” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "compare",
+      "mean": "compare",
+      "pron": "",
+      "type": "word",
+      "example": "I use “compare” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "save",
+      "mean": "save",
+      "pron": "",
+      "type": "word",
+      "example": "I use “save” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "spend",
+      "mean": "spend",
+      "pron": "",
+      "type": "word",
+      "example": "I use “spend” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    },
+    {
+      "word": "budget",
+      "mean": "budget",
+      "pron": "",
+      "type": "word",
+      "example": "I use “budget” in everyday life.",
+      "note": "Everyday shopping vocabulary."
+    }
+  ]
+}
