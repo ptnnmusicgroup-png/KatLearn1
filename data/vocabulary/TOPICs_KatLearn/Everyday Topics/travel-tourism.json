@@ -1,0 +1,391 @@
+{
+  "id": "travel-tourism",
+  "name": "Travel_Tourism_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for travel tourism.",
+  "words": [
+    {
+      "word": "travel",
+      "mean": "travel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “travel” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "trip",
+      "mean": "trip",
+      "pron": "",
+      "type": "word",
+      "example": "I use “trip” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "tour",
+      "mean": "tour",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tour” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "tourist",
+      "mean": "tourist",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tourist” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "holiday",
+      "mean": "holiday",
+      "pron": "",
+      "type": "word",
+      "example": "I use “holiday” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "vacation",
+      "mean": "vacation",
+      "pron": "",
+      "type": "word",
+      "example": "I use “vacation” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "hotel",
+      "mean": "hotel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hotel” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "hostel",
+      "mean": "hostel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hostel” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "room",
+      "mean": "room",
+      "pron": "",
+      "type": "word",
+      "example": "I use “room” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "booking",
+      "mean": "booking",
+      "pron": "",
+      "type": "word",
+      "example": "I use “booking” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "ticket",
+      "mean": "ticket",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ticket” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "passport",
+      "mean": "passport",
+      "pron": "",
+      "type": "word",
+      "example": "I use “passport” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "visa",
+      "mean": "visa",
+      "pron": "",
+      "type": "word",
+      "example": "I use “visa” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "airport",
+      "mean": "airport",
+      "pron": "",
+      "type": "word",
+      "example": "I use “airport” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "station",
+      "mean": "station",
+      "pron": "",
+      "type": "word",
+      "example": "I use “station” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "flight",
+      "mean": "flight",
+      "pron": "",
+      "type": "word",
+      "example": "I use “flight” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "train",
+      "mean": "train",
+      "pron": "",
+      "type": "word",
+      "example": "I use “train” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "bus",
+      "mean": "bus",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bus” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "map",
+      "mean": "map",
+      "pron": "",
+      "type": "word",
+      "example": "I use “map” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "guide",
+      "mean": "guide",
+      "pron": "",
+      "type": "word",
+      "example": "I use “guide” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "beach",
+      "mean": "beach",
+      "pron": "",
+      "type": "word",
+      "example": "I use “beach” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "mountain",
+      "mean": "mountain",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mountain” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "museum",
+      "mean": "museum",
+      "pron": "",
+      "type": "word",
+      "example": "I use “museum” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "city",
+      "mean": "city",
+      "pron": "",
+      "type": "word",
+      "example": "I use “city” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "country",
+      "mean": "country",
+      "pron": "",
+      "type": "word",
+      "example": "I use “country” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "visit",
+      "mean": "visit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “visit” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "arrive",
+      "mean": "arrive",
+      "pron": "",
+      "type": "word",
+      "example": "I use “arrive” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "leave",
+      "mean": "leave",
+      "pron": "",
+      "type": "word",
+      "example": "I use “leave” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "stay",
+      "mean": "stay",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stay” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "book",
+      "mean": "book",
+      "pron": "",
+      "type": "word",
+      "example": "I use “book” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "pack",
+      "mean": "pack",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pack” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "luggage",
+      "mean": "luggage",
+      "pron": "",
+      "type": "word",
+      "example": "I use “luggage” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "bag",
+      "mean": "bag",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bag” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "camera",
+      "mean": "camera",
+      "pron": "",
+      "type": "word",
+      "example": "I use “camera” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "photo",
+      "mean": "photo",
+      "pron": "",
+      "type": "word",
+      "example": "I use “photo” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "food",
+      "mean": "food",
+      "pron": "",
+      "type": "word",
+      "example": "I use “food” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "restaurant",
+      "mean": "restaurant",
+      "pron": "",
+      "type": "word",
+      "example": "I use “restaurant” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "local",
+      "mean": "local",
+      "pron": "",
+      "type": "word",
+      "example": "I use “local” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "culture",
+      "mean": "culture",
+      "pron": "",
+      "type": "word",
+      "example": "I use “culture” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "language",
+      "mean": "language",
+      "pron": "",
+      "type": "word",
+      "example": "I use “language” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "souvenir",
+      "mean": "souvenir",
+      "pron": "",
+      "type": "word",
+      "example": "I use “souvenir” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "journey",
+      "mean": "journey",
+      "pron": "",
+      "type": "word",
+      "example": "I use “journey” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "destination",
+      "mean": "destination",
+      "pron": "",
+      "type": "word",
+      "example": "I use “destination” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "route",
+      "mean": "route",
+      "pron": "",
+      "type": "word",
+      "example": "I use “route” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "plan",
+      "mean": "plan",
+      "pron": "",
+      "type": "word",
+      "example": "I use “plan” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "guest",
+      "mean": "guest",
+      "pron": "",
+      "type": "word",
+      "example": "I use “guest” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "check-in",
+      "mean": "check-in",
+      "pron": "",
+      "type": "word",
+      "example": "I use “check-in” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    },
+    {
+      "word": "check-out",
+      "mean": "check-out",
+      "pron": "",
+      "type": "word",
+      "example": "I use “check-out” in everyday life.",
+      "note": "Everyday travel tourism vocabulary."
+    }
+  ]
+}
