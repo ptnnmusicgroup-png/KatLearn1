@@ -1,154 +1,28 @@
 {
-  "version": 1,
+  "version": 2,
   "root": "TOPICs_KatLearn",
-  "note": "Requested source titles are catalogued here. KatLearn will use original, source-aligned vocabulary rather than reproducing full copyrighted wordlists.",
-  "collections": [
-    {
-      "folder": "School Curriculum/Global Success",
-      "items": [
-        "Tiếng Anh Lớp 10 (Global Success)",
-        "Tiếng Anh Lớp 11 (Global Success)",
-        "Tiếng Anh Lớp 12 (Global Success)",
-        "Lớp 9 Global Success",
-        "Lớp 8 Global Success",
-        "Lớp 7 Global Success",
-        "Lớp 6 Global Success",
-        "Lớp 1 Global Success",
-        "Lớp 2 Global Success",
-        "Lớp 3 Global Success",
-        "Lớp 4 Global Success",
-        "Lớp 5 Global Success"
-      ]
-    },
-    {
-      "folder": "School Curriculum/Friends Global",
-      "items": [
-        "Tiếng Anh Lớp 10 (Friend Global)",
-        "Tiếng Anh Lớp 11 (Friend Global)",
-        "Tiếng Anh Lớp 12 (Friend Global)",
-        "Lớp 9: Friend Plus",
-        "Lớp 8: Friend Plus",
-        "Lớp 7: Friend Plus",
-        "Lớp 6: Friend Plus"
-      ]
-    },
-    {
-      "folder": "Exam Preparation",
-      "items": [
-        "Luyện Thi ĐGNL HN/HCM",
-        "Từ vựng VIP 90 - Cô Mai Phương",
-        "500 từ xuất hiện trong đề thi thử THPT 2026",
-        "Collocation, cụm đồng từ, cấu trúc quan trọng thi THPTQG 2026 (cô Mai Phương)",
-        "Idioms và từ vựng ăn điểm các sở 2026",
-        "TỪ VỰNG C1-C2 THƯỜNG XUYÊN XUẤT HIỆN( Cô Mai Phương)",
-        "1000 TỪ VỰNG TRỌNG ĐIỂM 2025 (SGK + COLLOCATION + PHRASAL VERB) (CÔ MAI PHƯƠNG)",
-        "14 Chủ Đề Từ Vựng Tiếng Anh Chắc Chắn Xuất Hiện Trong Kỳ Thi ( Cô Mai Phương)",
-        "ETS 2026 VOCABULARY",
-        "ETS 2024",
-        "ETS 2023",
-        "HUY FORUM",
-        "Ôn thi vào 10 Cô Trang Anh",
-        "Từ vựng & Idom & Collation chuyên Anh"
-      ]
-    },
-    {
-      "folder": "IELTS Vocabulary",
-      "items": [
-        "IELT theo chủ đề",
-        "IELTS theo kỹ năng trong bài thi",
-        "Vocabulary In Use Elementary",
-        "Cambridge Practice Tests for IELTS 21",
-        "Cambridge Practice Tests for IELTS (18-20)",
-        "Vocabulary in Use - Pre-intermediate & Intermediate",
-        "Vocabulary In Use - Upper-Intermediate",
-        "Sách Vocabulary for IELTS Advanced",
-        "Vocabulary in Use - Advanced",
-        "Cambridge Practice Tests for IELTS (9-11)",
-        "Cambridge Practice Tests for IELTS (12-14)",
-        "Cambridge Practice Tests for IELTS (15-17)",
-        "Sách Barrons Essential Words",
-        "Bộ VOL 9",
-        "Sách English Collocations in Use Intermediate",
-        "Sách Vocabulary for IELTS",
-        "Sách English Collocations in Use Advanced",
-        "Bộ Vol 1",
-        "Bộ Vol 2",
-        "Bộ Vol 3",
-        "Bộ Vol 4",
-        "Bộ Vol 5",
-        "Bộ Vol 6",
-        "Bộ VOL 7",
-        "Bộ Vol 7",
-        "Bộ VOL 8"
-      ]
-    },
-    {
-      "folder": "TOEIC & ETS",
-      "items": [
-        "TOEIC 0-500+",
-        "HACKERS TOEIC VOCAB",
-        "TOEIC 500-650+"
-      ]
-    },
-    {
-      "folder": "General English & CEFR",
-      "items": [
-        "Sách Vocabulary for IELTS",
-        "Sách 4000 Essential English Words",
-        "3000 từ vựng thông dụng",
-        "A1 (0-3.0)",
-        "Sách Destination B1",
-        "Sách Destination C1&C2",
-        "Sách Destination B2",
-        "A2 (3.0-3.5)",
-        "B1 (4.0-5.0)",
-        "C1",
-        "B2 (5.5-6.5)",
-        "Giao tiếp thông dụng",
-        "Oxford 3000 từ thông dụng"
-      ]
-    },
-    {
-      "folder": "Academic & Specialized",
-      "items": [
-        "Chuyên nghành CNTT",
-        "SAT 500 từ quan trọng",
-        "Chuyên nghành Y Khoa",
-        "Chuyên nghành Xuất nhập khẩu",
-        "Chuyên nghành Xây dựng",
-        "360 động từ bất qui tắc"
-      ]
-    },
-    {
-      "folder": "Elementary & Secondary",
-      "items": [
-        "Lớp 6 Global Success",
-        "Lớp 6: Friend Plus",
-        "Lớp 7 Global Success",
-        "Lớp 7: Friend Plus",
-        "Lớp 8 Global Success",
-        "Lớp 8: Friend Plus",
-        "Lớp 9 Global Success",
-        "Lớp 9: Friend Plus"
-      ]
-    }
+  "libraryName": "KatLearn Vocabulary Library",
+  "model": "unified-curated",
+  "description": "Một kho vocabulary thống nhất của KatLearn; các tài liệu tham khảo bên ngoài chỉ định hướng chủ đề và mục tiêu học.",
+  "referenceFamilies": {
+    "school": "English curriculum and textbook themes across grades 1-12",
+    "ielts": "IELTS practice, vocabulary and skills materials",
+    "toeic": "TOEIC and workplace vocabulary materials",
+    "exam": "THCS, THPT, ĐGNL and exam-oriented vocabulary",
+    "general": "Oxford/Cambridge-style general English and CEFR frameworks",
+    "specialized": "IT, medicine, import-export, construction, SAT and irregular verbs"
+  },
+  "katlearnPacks": [
+    "KatLearn Synthesis Core",
+    "KatLearn CEFR Builder",
+    "KatLearn Academic & Writing",
+    "KatLearn Collocations & Phrasal Verbs",
+    "KatLearn Exam · Workplace · Specialized",
+    "KatLearn School English",
+    "KatLearn Irregular Verbs"
   ],
-  "existingKatLearnPacks": [
-    {
-      "id": "ielts-writing-task-1",
-      "path": "IELTS Vocabulary/IELTS_Writing_Task_1.json"
-    },
-    {
-      "id": "ielts-writing-task-2",
-      "path": "IELTS Vocabulary/IELTS_Writing_Task_2.json"
-    },
-    {
-      "id": "ielts-reading",
-      "path": "IELTS Vocabulary/IELTS_Reading.json"
-    },
-    {
-      "id": "ielts-speaking",
-      "path": "IELTS Vocabulary/IELTS_Speaking.json"
-    }
+  "legacyTopicFolders": [
+    "Everyday Topics/",
+    "IELTS Vocabulary/"
   ]
 }
