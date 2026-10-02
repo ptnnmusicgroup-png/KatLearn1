@@ -1,0 +1,399 @@
+{
+  "id": "family",
+  "name": "Family_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for family.",
+  "words": [
+    {
+      "word": "family",
+      "mean": "family",
+      "pron": "",
+      "type": "word",
+      "example": "I use “family” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "parent",
+      "mean": "parent",
+      "pron": "",
+      "type": "word",
+      "example": "I use “parent” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "mother",
+      "mean": "mother",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mother” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "father",
+      "mean": "father",
+      "pron": "",
+      "type": "word",
+      "example": "I use “father” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "mom",
+      "mean": "mom",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mom” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "dad",
+      "mean": "dad",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dad” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "son",
+      "mean": "son",
+      "pron": "",
+      "type": "word",
+      "example": "I use “son” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "daughter",
+      "mean": "daughter",
+      "pron": "",
+      "type": "word",
+      "example": "I use “daughter” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "brother",
+      "mean": "brother",
+      "pron": "",
+      "type": "word",
+      "example": "I use “brother” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "sister",
+      "mean": "sister",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sister” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "child",
+      "mean": "child",
+      "pron": "",
+      "type": "word",
+      "example": "I use “child” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "baby",
+      "mean": "baby",
+      "pron": "",
+      "type": "word",
+      "example": "I use “baby” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "grandparent",
+      "mean": "grandparent",
+      "pron": "",
+      "type": "word",
+      "example": "I use “grandparent” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "grandmother",
+      "mean": "grandmother",
+      "pron": "",
+      "type": "word",
+      "example": "I use “grandmother” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "grandfather",
+      "mean": "grandfather",
+      "pron": "",
+      "type": "word",
+      "example": "I use “grandfather” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "uncle",
+      "mean": "uncle",
+      "pron": "",
+      "type": "word",
+      "example": "I use “uncle” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "aunt",
+      "mean": "aunt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “aunt” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "cousin",
+      "mean": "cousin",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cousin” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "husband",
+      "mean": "husband",
+      "pron": "",
+      "type": "word",
+      "example": "I use “husband” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "wife",
+      "mean": "wife",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wife” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "partner",
+      "mean": "partner",
+      "pron": "",
+      "type": "word",
+      "example": "I use “partner” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "relative",
+      "mean": "relative",
+      "pron": "",
+      "type": "word",
+      "example": "I use “relative” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "member",
+      "mean": "member",
+      "pron": "",
+      "type": "word",
+      "example": "I use “member” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "home",
+      "mean": "home",
+      "pron": "",
+      "type": "word",
+      "example": "I use “home” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "birthday",
+      "mean": "birthday",
+      "pron": "",
+      "type": "word",
+      "example": "I use “birthday” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "wedding",
+      "mean": "wedding",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wedding” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "support",
+      "mean": "support",
+      "pron": "",
+      "type": "word",
+      "example": "I use “support” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "care",
+      "mean": "care",
+      "pron": "",
+      "type": "word",
+      "example": "I use “care” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "love",
+      "mean": "love",
+      "pron": "",
+      "type": "word",
+      "example": "I use “love” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "visit",
+      "mean": "visit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “visit” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "call",
+      "mean": "call",
+      "pron": "",
+      "type": "word",
+      "example": "I use “call” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "help",
+      "mean": "help",
+      "pron": "",
+      "type": "word",
+      "example": "I use “help” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "share",
+      "mean": "share",
+      "pron": "",
+      "type": "word",
+      "example": "I use “share” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "trust",
+      "mean": "trust",
+      "pron": "",
+      "type": "word",
+      "example": "I use “trust” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "respect",
+      "mean": "respect",
+      "pron": "",
+      "type": "word",
+      "example": "I use “respect” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "raise",
+      "mean": "raise",
+      "pron": "",
+      "type": "word",
+      "example": "I use “raise” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "grow",
+      "mean": "grow",
+      "pron": "",
+      "type": "word",
+      "example": "I use “grow” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "marry",
+      "mean": "marry",
+      "pron": "",
+      "type": "word",
+      "example": "I use “marry” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "divorce",
+      "mean": "divorce",
+      "pron": "",
+      "type": "word",
+      "example": "I use “divorce” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "single",
+      "mean": "single",
+      "pron": "",
+      "type": "word",
+      "example": "I use “single” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "young",
+      "mean": "young",
+      "pron": "",
+      "type": "word",
+      "example": "I use “young” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "old",
+      "mean": "old",
+      "pron": "",
+      "type": "word",
+      "example": "I use “old” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "close",
+      "mean": "close",
+      "pron": "",
+      "type": "word",
+      "example": "I use “close” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "kind",
+      "mean": "kind",
+      "pron": "",
+      "type": "word",
+      "example": "I use “kind” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "strict",
+      "mean": "strict",
+      "pron": "",
+      "type": "word",
+      "example": "I use “strict” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "proud",
+      "mean": "proud",
+      "pron": "",
+      "type": "word",
+      "example": "I use “proud” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "worried",
+      "mean": "worried",
+      "pron": "",
+      "type": "word",
+      "example": "I use “worried” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "happy",
+      "mean": "happy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “happy” in everyday life.",
+      "note": "Everyday family vocabulary."
+    },
+    {
+      "word": "sad",
+      "mean": "sad",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sad” in everyday life.",
+      "note": "Everyday family vocabulary."
+    }
+  ]
+}
