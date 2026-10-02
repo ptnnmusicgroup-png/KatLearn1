@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#6958d8"><title>KatLearn | Kiểm tra từ vựng</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="katlearn-blue-theme.css?v=20261001-1"><link rel="stylesheet" href="test.css?v=20261002-1"></head>
+<body><main class="test-page"><div class="test-wrap">
+<header class="test-top"><a class="test-brand" href="/index.html"><span class="test-brand-logo" aria-hidden="true"></span><span class="test-brand-name">Kat<span>Learn</span></span></a><div class="test-top-actions"><a href="/index.html">← Trang chủ</a></div></header>
+<div id="testToast" class="test-toast" aria-live="assertive"></div>
+<section class="test-hero"><p class="test-kicker">KATLEARN · SMART VOCABULARY TEST</p><h1 class="test-title">Kiểm tra từ vựng.</h1><p class="test-subtitle">Chọn một hoặc nhiều bộ từ riêng. KatLearn sẽ tự trộn dữ liệu và tạo một đề mới cho mỗi lần làm — không cộng KatCoin.</p><span class="test-hero-badge">🔒 Toàn màn hình · chống thoát đề</span></section>
+<section id="packSetup" class="test-card"><h2>Chọn bộ từ để ra đề</h2><p>Chỉ dùng các bộ từ học sinh tự thêm trong tài khoản của bạn. Có thể chọn nhiều bộ để tạo một đề tổng hợp.</p><div id="packEmpty" hidden></div>
+<div class="pack-toolbar"><div class="pack-toolbar-note">Đã chọn <b id="selectedPackCount">0</b> bộ · <b id="selectedWordCount">0</b> từ hợp lệ</div><div class="pack-actions"><button id="selectAll" type="button">Chọn tất cả</button><button id="clearAll" type="button">Bỏ chọn</button></div></div>
+<div id="packList" class="pack-grid"></div>
+<div class="test-config"><label class="test-field"><span>SỐ CÂU</span><select id="questionCount"><option value="10">10 câu · nhanh</option><option value="15" selected>15 câu · tiêu chuẩn</option><option value="20">20 câu · đầy đủ</option><option value="30">30 câu · thử thách</option></select></label>
+<div class="test-field"><span>NGUYÊN TẮC</span><div style="height:46px;display:flex;align-items:center;padding:0 13px;border:1px solid var(--test-line);border-radius:14px;background:#fff;color:#756a80;font-size:10px;font-weight:800">🎲 Trộn lại mỗi đề</div></div>
+<button id="startTest" class="test-start" type="button" disabled>Cần ít nhất 4 từ</button></div>
+<p class="test-hint" id="setupStatus">Khi bắt đầu, trình duyệt sẽ yêu cầu KatLearn chuyển sang chế độ toàn màn hình.</p></section>
+<section id="testRun" class="test-run"><div class="test-hud"><span id="testCounter" class="test-counter">CÂU 1 / 15</span><div class="test-progress-wrap"><div id="testProgress" class="test-progress"></div></div><span class="test-score">Điểm <b id="testScore">0</b></span><span id="testTimer" class="test-timer">⏱ 00:00</span></div>
+<section class="test-card test-question-card"><span id="testType" class="test-type">ENGLISH → VIETNAMESE</span><p id="testQuestionLabel" class="test-question-label">Chọn nghĩa tiếng Việt phù hợp nhất.</p><h2 id="testWord" class="test-word">—</h2><p id="testPron" class="test-pron"></p><div id="testExample" class="test-example" hidden></div><div id="testOptions" class="test-options"></div><input id="testInput" class="test-input" autocomplete="off" spellcheck="false" hidden>
+<div class="test-actions"><p id="testFeedback" class="test-feedback"></p><button id="submitAnswer" class="test-submit" type="button" disabled>Chốt đáp án →</button><button id="testNext" class="test-next" type="button" hidden>Câu tiếp theo →</button></div></section>
+<p class="test-run-note">🔒 Rời khỏi chế độ toàn màn hình sẽ kết thúc bài kiểm tra hiện tại và đưa bạn về Trang chủ.</p></section>
+<section id="testResult" class="test-result"><section class="test-card result-card"><div id="resultRing" class="result-ring"><b id="resultPercent">0%</b></div><h2 id="resultTitle">Hoàn thành! 🐱</h2><p id="resultText"></p>
+<div class="result-stats"><div class="result-stat"><b id="resultCorrect">0</b><span>ĐÚNG</span></div><div class="result-stat"><b id="resultWrong">0</b><span>SAI</span></div><div class="result-stat"><b id="resultTotal">0</b><span>TỔNG CÂU</span></div><div class="result-stat"><b id="resultTime">00:00</b><span>THỜI GIAN</span></div></div>
+<div id="resultWrongWords" class="result-review"></div><div class="result-actions"><button id="retryTest" type="button">↻ Tạo đề mới</button><button id="homeFromResult" type="button" class="primary">← Về Trang chủ</button></div></section></section>
+<footer class="test-foot">KatLearn · English learning from Việt Nam 🇻🇳 · Smart Vocabulary Test</footer>
+</div></main>
+<script src="admin-config.js"></script><script src="firebase-service.js?v=20260930-10"></script><script src="auth-sync.js"></script><script src="test.js?v=20261002-1"></script>
+</body></html>
