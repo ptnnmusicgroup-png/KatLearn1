@@ -1,0 +1,407 @@
+{
+  "id": "environment",
+  "name": "Environment_Topic_Dùng hằng ngày",
+  "description": "50 từ vựng cốt lõi theo chủ đề.",
+  "words": [
+    {
+      "word": "environment",
+      "mean": "environment",
+      "pron": "",
+      "type": "word",
+      "example": "I use “environment” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "nature",
+      "mean": "nature",
+      "pron": "",
+      "type": "word",
+      "example": "I use “nature” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "air",
+      "mean": "air",
+      "pron": "",
+      "type": "word",
+      "example": "I use “air” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "water",
+      "mean": "water",
+      "pron": "",
+      "type": "word",
+      "example": "I use “water” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "soil",
+      "mean": "soil",
+      "pron": "",
+      "type": "word",
+      "example": "I use “soil” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "land",
+      "mean": "land",
+      "pron": "",
+      "type": "word",
+      "example": "I use “land” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "forest",
+      "mean": "forest",
+      "pron": "",
+      "type": "word",
+      "example": "I use “forest” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "tree",
+      "mean": "tree",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tree” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "plant",
+      "mean": "plant",
+      "pron": "",
+      "type": "word",
+      "example": "I use “plant” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "flower",
+      "mean": "flower",
+      "pron": "",
+      "type": "word",
+      "example": "I use “flower” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "river",
+      "mean": "river",
+      "pron": "",
+      "type": "word",
+      "example": "I use “river” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "lake",
+      "mean": "lake",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lake” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "sea",
+      "mean": "sea",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sea” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "ocean",
+      "mean": "ocean",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ocean” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "beach",
+      "mean": "beach",
+      "pron": "",
+      "type": "word",
+      "example": "I use “beach” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "mountain",
+      "mean": "mountain",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mountain” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "animal",
+      "mean": "animal",
+      "pron": "",
+      "type": "word",
+      "example": "I use “animal” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "wildlife",
+      "mean": "wildlife",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wildlife” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "pollution",
+      "mean": "pollution",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pollution” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "waste",
+      "mean": "waste",
+      "pron": "",
+      "type": "word",
+      "example": "I use “waste” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "trash",
+      "mean": "trash",
+      "pron": "",
+      "type": "word",
+      "example": "I use “trash” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "plastic",
+      "mean": "plastic",
+      "pron": "",
+      "type": "word",
+      "example": "I use “plastic” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "recycle",
+      "mean": "recycle",
+      "pron": "",
+      "type": "word",
+      "example": "I use “recycle” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "recycling",
+      "mean": "recycling",
+      "pron": "",
+      "type": "word",
+      "example": "I use “recycling” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "energy",
+      "mean": "energy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “energy” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "solar",
+      "mean": "solar",
+      "pron": "",
+      "type": "word",
+      "example": "I use “solar” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "wind",
+      "mean": "wind",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wind” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "climate",
+      "mean": "climate",
+      "pron": "",
+      "type": "word",
+      "example": "I use “climate” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "global warming",
+      "mean": "global warming",
+      "pron": "",
+      "type": "word",
+      "example": "I use “global warming” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "carbon",
+      "mean": "carbon",
+      "pron": "",
+      "type": "word",
+      "example": "I use “carbon” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "emission",
+      "mean": "emission",
+      "pron": "",
+      "type": "word",
+      "example": "I use “emission” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "green",
+      "mean": "green",
+      "pron": "",
+      "type": "word",
+      "example": "I use “green” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "clean",
+      "mean": "clean",
+      "pron": "",
+      "type": "word",
+      "example": "I use “clean” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "dirty",
+      "mean": "dirty",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dirty” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "protect",
+      "mean": "protect",
+      "pron": "",
+      "type": "word",
+      "example": "I use “protect” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "save",
+      "mean": "save",
+      "pron": "",
+      "type": "word",
+      "example": "I use “save” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "reduce",
+      "mean": "reduce",
+      "pron": "",
+      "type": "word",
+      "example": "I use “reduce” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "reuse",
+      "mean": "reuse",
+      "pron": "",
+      "type": "word",
+      "example": "I use “reuse” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "resource",
+      "mean": "resource",
+      "pron": "",
+      "type": "word",
+      "example": "I use “resource” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "earth",
+      "mean": "earth",
+      "pron": "",
+      "type": "word",
+      "example": "I use “earth” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "planet",
+      "mean": "planet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “planet” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "natural",
+      "mean": "natural",
+      "pron": "",
+      "type": "word",
+      "example": "I use “natural” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "electric",
+      "mean": "electric",
+      "pron": "",
+      "type": "word",
+      "example": "I use “electric” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "fuel",
+      "mean": "fuel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fuel” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "factory",
+      "mean": "factory",
+      "pron": "",
+      "type": "word",
+      "example": "I use “factory” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "smoke",
+      "mean": "smoke",
+      "pron": "",
+      "type": "word",
+      "example": "I use “smoke” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "noise",
+      "mean": "noise",
+      "pron": "",
+      "type": "word",
+      "example": "I use “noise” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "damage",
+      "mean": "damage",
+      "pron": "",
+      "type": "word",
+      "example": "I use “damage” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "future",
+      "mean": "future",
+      "pron": "",
+      "type": "word",
+      "example": "I use “future” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    },
+    {
+      "word": "sustainable",
+      "mean": "sustainable",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sustainable” in everyday life.",
+      "note": "Everyday environment vocabulary."
+    }
+  ]
+}
