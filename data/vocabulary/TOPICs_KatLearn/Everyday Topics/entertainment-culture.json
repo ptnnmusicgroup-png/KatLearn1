@@ -1,0 +1,407 @@
+{
+  "id": "entertainment-culture",
+  "name": "Entertainment_Culture_Topic_Dùng hằng ngày",
+  "description": "50 từ vựng cốt lõi theo chủ đề.",
+  "words": [
+    {
+      "word": "music",
+      "mean": "music",
+      "pron": "",
+      "type": "word",
+      "example": "I use “music” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "song",
+      "mean": "song",
+      "pron": "",
+      "type": "word",
+      "example": "I use “song” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "movie",
+      "mean": "movie",
+      "pron": "",
+      "type": "word",
+      "example": "I use “movie” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "film",
+      "mean": "film",
+      "pron": "",
+      "type": "word",
+      "example": "I use “film” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "show",
+      "mean": "show",
+      "pron": "",
+      "type": "word",
+      "example": "I use “show” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "tv",
+      "mean": "TV",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tv” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "video",
+      "mean": "video",
+      "pron": "",
+      "type": "word",
+      "example": "I use “video” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "game",
+      "mean": "game",
+      "pron": "",
+      "type": "word",
+      "example": "I use “game” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "book",
+      "mean": "book",
+      "pron": "",
+      "type": "word",
+      "example": "I use “book” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "story",
+      "mean": "story",
+      "pron": "",
+      "type": "word",
+      "example": "I use “story” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "art",
+      "mean": "art",
+      "pron": "",
+      "type": "word",
+      "example": "I use “art” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "artist",
+      "mean": "artist",
+      "pron": "",
+      "type": "word",
+      "example": "I use “artist” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "actor",
+      "mean": "actor",
+      "pron": "",
+      "type": "word",
+      "example": "I use “actor” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "actress",
+      "mean": "actress",
+      "pron": "",
+      "type": "word",
+      "example": "I use “actress” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "singer",
+      "mean": "singer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “singer” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "band",
+      "mean": "band",
+      "pron": "",
+      "type": "word",
+      "example": "I use “band” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "concert",
+      "mean": "concert",
+      "pron": "",
+      "type": "word",
+      "example": "I use “concert” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "theater",
+      "mean": "theater",
+      "pron": "",
+      "type": "word",
+      "example": "I use “theater” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "museum",
+      "mean": "museum",
+      "pron": "",
+      "type": "word",
+      "example": "I use “museum” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "dance",
+      "mean": "dance",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dance” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "painting",
+      "mean": "painting",
+      "pron": "",
+      "type": "word",
+      "example": "I use “painting” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "photo",
+      "mean": "photo",
+      "pron": "",
+      "type": "word",
+      "example": "I use “photo” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "culture",
+      "mean": "culture",
+      "pron": "",
+      "type": "word",
+      "example": "I use “culture” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "festival",
+      "mean": "festival",
+      "pron": "",
+      "type": "word",
+      "example": "I use “festival” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "holiday",
+      "mean": "holiday",
+      "pron": "",
+      "type": "word",
+      "example": "I use “holiday” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "party",
+      "mean": "party",
+      "pron": "",
+      "type": "word",
+      "example": "I use “party” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "fun",
+      "mean": "fun",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fun” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "funny",
+      "mean": "funny",
+      "pron": "",
+      "type": "word",
+      "example": "I use “funny” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "play",
+      "mean": "play",
+      "pron": "",
+      "type": "word",
+      "example": "I use “play” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "watch",
+      "mean": "watch",
+      "pron": "",
+      "type": "word",
+      "example": "I use “watch” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "listen",
+      "mean": "listen",
+      "pron": "",
+      "type": "word",
+      "example": "I use “listen” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "read",
+      "mean": "read",
+      "pron": "",
+      "type": "word",
+      "example": "I use “read” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "sing",
+      "mean": "sing",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sing” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "draw",
+      "mean": "draw",
+      "pron": "",
+      "type": "word",
+      "example": "I use “draw” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "perform",
+      "mean": "perform",
+      "pron": "",
+      "type": "word",
+      "example": "I use “perform” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "stage",
+      "mean": "stage",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stage” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "ticket",
+      "mean": "ticket",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ticket” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "audience",
+      "mean": "audience",
+      "pron": "",
+      "type": "word",
+      "example": "I use “audience” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "fan",
+      "mean": "fan",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fan” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "star",
+      "mean": "star",
+      "pron": "",
+      "type": "word",
+      "example": "I use “star” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "famous",
+      "mean": "famous",
+      "pron": "",
+      "type": "word",
+      "example": "I use “famous” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "popular",
+      "mean": "popular",
+      "pron": "",
+      "type": "word",
+      "example": "I use “popular” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "scene",
+      "mean": "scene",
+      "pron": "",
+      "type": "word",
+      "example": "I use “scene” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "character",
+      "mean": "character",
+      "pron": "",
+      "type": "word",
+      "example": "I use “character” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "comedy",
+      "mean": "comedy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “comedy” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "drama",
+      "mean": "drama",
+      "pron": "",
+      "type": "word",
+      "example": "I use “drama” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "news",
+      "mean": "news",
+      "pron": "",
+      "type": "word",
+      "example": "I use “news” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "radio",
+      "mean": "radio",
+      "pron": "",
+      "type": "word",
+      "example": "I use “radio” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "podcast",
+      "mean": "podcast",
+      "pron": "",
+      "type": "word",
+      "example": "I use “podcast” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    },
+    {
+      "word": "entertainment",
+      "mean": "entertainment",
+      "pron": "",
+      "type": "word",
+      "example": "I use “entertainment” in everyday life.",
+      "note": "Everyday entertainment culture vocabulary."
+    }
+  ]
+}
