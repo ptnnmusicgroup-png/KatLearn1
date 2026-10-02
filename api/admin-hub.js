@@ -302,8 +302,54 @@ async function syncAllPersonalPacks(db,decoded){
 
   const userPacksSnap=await db.collectionGroup("personalPacks").get();
   const writes=[];
+  const mirrorWrites=[];
   const seen=new Set();
   let skipped=0;
+  let totalWords=0;
+
+  function queuePack({docId,data,ownerUid,accountCode,accountInfo,source}){
+    const payload={
+      ...serialize(data),
+      kind:"personalPack",
+      ownerUid,
+      ownerAccountCode:accountCode,
+      ownerEmail:String(data.ownerEmail||accountInfo?.email||""),
+      ownerDisplayName:String(data.ownerDisplayName||accountInfo?.displayName||""),
+      words:Array.isArray(data.words)?data.words.map(serialize):[],
+      wordCount:Array.isArray(data.words)?data.words.length:Number(data.wordCount||0)||0
+    };
+    const key="account:"+accountCode+"/"+docId;
+    if(seen.has(key))return false;
+    seen.add(key);
+
+    writes.push({
+      ref:db.collection("accounts").doc(accountCode).collection("memory").doc(docId),
+      data:payload
+    });
+
+    // The Admin Sync Vault keeps the COMPLETE learning payload, not just
+    // pack metadata, so the synced pack can be inspected/recovered intact.
+    mirrorWrites.push({
+      ref:db.collection(ADMIN_SYNC_COLLECTION).doc("personalPacks").collection("items").doc(accountCode+"__"+docId),
+      data:{
+        sourceId:docId,
+        sourceCollection:source,
+        accountCode,
+        ownerUid,
+        ownerEmail:payload.ownerEmail,
+        ownerDisplayName:payload.ownerDisplayName,
+        name:String(payload.name||""),
+        description:String(payload.description||""),
+        kind:"personalPack",
+        words:payload.words,
+        wordCount:payload.wordCount,
+        syncedAt:Date.now()
+      }
+    });
+
+    totalWords+=payload.wordCount;
+    return true;
+  }
 
   for(const doc of userPacksSnap.docs){
     const data=doc.data()||{};
@@ -313,22 +359,7 @@ async function syncAllPersonalPacks(db,decoded){
     const accountCode=clean(data.ownerAccountCode||accountByUid.get(ownerUid)||"",180);
     if(!accountCode){skipped++;continue;}
     const accountInfo=accountByCode.get(accountCode)||{};
-    const payload={
-      ...serialize(data),
-      kind:"personalPack",
-      ownerUid,
-      ownerAccountCode:accountCode,
-      ownerEmail:String(data.ownerEmail||accountInfo.email||""),
-      ownerDisplayName:String(data.ownerDisplayName||accountInfo.displayName||"")
-    };
-    const packId=doc.id;
-    const key="account:"+accountCode+"/"+packId;
-    if(seen.has(key))continue;
-    seen.add(key);
-    writes.push({
-      ref:db.collection("accounts").doc(accountCode).collection("memory").doc(packId),
-      data:payload
-    });
+    queuePack({docId:doc.id,data,ownerUid,accountCode,accountInfo,source:"users/{uid}/personalPacks"});
   }
 
   // Repair legacy account-only packs back into the user's canonical namespace.
@@ -345,34 +376,55 @@ async function syncAllPersonalPacks(db,decoded){
     const ownerUid=String(data.ownerUid||"").trim();
     const accountCode=clean(data.ownerAccountCode||"",180);
     if(!ownerUid||!accountCode||String(accountByUid.get(ownerUid)||"")!==accountCode)continue;
-    const key="user:"+ownerUid+"/"+doc.id;
-    if(seen.has(key))continue;
-    seen.add(key);
+
+    const userKey="user:"+ownerUid+"/"+doc.id;
+    if(seen.has(userKey))continue;
+    seen.add(userKey);
+
+    const payload={
+      ...serialize(data),
+      kind:"personalPack",
+      ownerUid,
+      ownerAccountCode:accountCode,
+      words:Array.isArray(data.words)?data.words.map(serialize):[],
+      wordCount:Array.isArray(data.words)?data.words.length:Number(data.wordCount||0)||0
+    };
+
     writes.push({
       ref:db.collection("users").doc(ownerUid).collection("personalPacks").doc(doc.id),
-      data:{...serialize(data),kind:"personalPack",ownerUid,ownerAccountCode:accountCode}
+      data:payload
     });
     reverseRepaired++;
   }
 
-  const now=Date.now();
-  for(let i=0;i<writes.length;i+=400){
-    const chunk=writes.slice(i,i+400);
+  // Write canonical account mirrors and the complete Admin Sync Vault in
+  // chunks so a larger personal-pack library does not exceed one batch.
+  const allWrites=[
+    ...writes.map(item=>({target:"data",...item})),
+    ...mirrorWrites.map(item=>({target:"mirror",...item}))
+  ];
+  for(let i=0;i<allWrites.length;i+=400){
+    const chunk=allWrites.slice(i,i+400);
     if(!chunk.length)continue;
     const batch=db.batch();
     chunk.forEach(item=>batch.set(item.ref,item.data,{merge:true}));
     await batch.commit();
   }
 
+  const now=Date.now();
   await db.collection(ADMIN_SYNC_COLLECTION).doc("personalPacks").set({
     sourceCollectionGroup:"personalPacks",
     reverseSourceCollectionGroup:"memory",
+    mirrorCollection:"personalPacks/items",
     totalUserPacks:userPacksSnap.size,
     totalAccountPacks:accountOnlySnap.size,
-    totalWrites:writes.length,
+    totalPacks:mirrorWrites.length,
+    totalWords,
+    totalCanonicalWrites:writes.length,
+    totalWrites:writes.length+mirrorWrites.length,
     reverseRepaired,
     skipped,
-    processed:writes.length,
+    processed:mirrorWrites.length,
     done:true,
     updatedAt:now
   },{merge:true});
@@ -380,17 +432,26 @@ async function syncAllPersonalPacks(db,decoded){
   await audit(db,decoded,"sync.complete","personalPacks",{
     totalUserPacks:userPacksSnap.size,
     totalAccountPacks:accountOnlySnap.size,
-    totalWrites:writes.length,
+    totalPacks:mirrorWrites.length,
+    totalWords,
+    totalCanonicalWrites:writes.length,
+    totalWrites:writes.length+mirrorWrites.length,
     reverseRepaired,
     skipped,
-    mirror:"accounts/{accountCode}/memory/{packId}",
-    userNamespace:"users/{uid}/personalPacks/{packId}"
+    mirror:ADMIN_SYNC_COLLECTION+"/personalPacks/items",
+    learningPayload:"full pack + words[]",
+    userNamespace:"users/{uid}/personalPacks/{packId}",
+    accountNamespace:"accounts/{accountCode}/memory/{packId}"
   });
 
   return{
     entity:"personalPacks",
     total:userPacksSnap.size,
-    processed:writes.length,
+    totalPacks:mirrorWrites.length,
+    totalWords,
+    processed:mirrorWrites.length,
+    canonicalWrites:writes.length,
+    totalWrites:writes.length+mirrorWrites.length,
     skipped,
     reverseRepaired,
     done:true
