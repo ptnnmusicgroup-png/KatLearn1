@@ -1,0 +1,391 @@
+{
+  "id": "clothes-fashion",
+  "name": "Clothes_Fashion_Topic_Dùng hằng ngày",
+  "description": "48 từ vựng cốt lõi theo chủ đề.",
+  "words": [
+    {
+      "word": "clothes",
+      "mean": "clothes",
+      "pron": "",
+      "type": "word",
+      "example": "I use “clothes” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "clothing",
+      "mean": "clothing",
+      "pron": "",
+      "type": "word",
+      "example": "I use “clothing” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "shirt",
+      "mean": "shirt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shirt” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "t-shirt",
+      "mean": "T-shirt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “t-shirt” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "blouse",
+      "mean": "blouse",
+      "pron": "",
+      "type": "word",
+      "example": "I use “blouse” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "sweater",
+      "mean": "sweater",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sweater” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "jacket",
+      "mean": "jacket",
+      "pron": "",
+      "type": "word",
+      "example": "I use “jacket” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "coat",
+      "mean": "coat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “coat” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "dress",
+      "mean": "dress",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dress” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "skirt",
+      "mean": "skirt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “skirt” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "jeans",
+      "mean": "jeans",
+      "pron": "",
+      "type": "word",
+      "example": "I use “jeans” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "pants",
+      "mean": "pants",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pants” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "shorts",
+      "mean": "shorts",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shorts” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "suit",
+      "mean": "suit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “suit” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "uniform",
+      "mean": "uniform",
+      "pron": "",
+      "type": "word",
+      "example": "I use “uniform” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "sock",
+      "mean": "sock",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sock” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "shoe",
+      "mean": "shoe",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shoe” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "sneaker",
+      "mean": "sneaker",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sneaker” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "boot",
+      "mean": "boot",
+      "pron": "",
+      "type": "word",
+      "example": "I use “boot” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "hat",
+      "mean": "hat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hat” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "cap",
+      "mean": "cap",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cap” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "scarf",
+      "mean": "scarf",
+      "pron": "",
+      "type": "word",
+      "example": "I use “scarf” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "glove",
+      "mean": "glove",
+      "pron": "",
+      "type": "word",
+      "example": "I use “glove” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "belt",
+      "mean": "belt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “belt” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "bag",
+      "mean": "bag",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bag” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "pocket",
+      "mean": "pocket",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pocket” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "button",
+      "mean": "button",
+      "pron": "",
+      "type": "word",
+      "example": "I use “button” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "zipper",
+      "mean": "zipper",
+      "pron": "",
+      "type": "word",
+      "example": "I use “zipper” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "size",
+      "mean": "size",
+      "pron": "",
+      "type": "word",
+      "example": "I use “size” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "style",
+      "mean": "style",
+      "pron": "",
+      "type": "word",
+      "example": "I use “style” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "fashion",
+      "mean": "fashion",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fashion” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "color",
+      "mean": "color",
+      "pron": "",
+      "type": "word",
+      "example": "I use “color” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "black",
+      "mean": "black",
+      "pron": "",
+      "type": "word",
+      "example": "I use “black” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "white",
+      "mean": "white",
+      "pron": "",
+      "type": "word",
+      "example": "I use “white” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "blue",
+      "mean": "blue",
+      "pron": "",
+      "type": "word",
+      "example": "I use “blue” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "red",
+      "mean": "red",
+      "pron": "",
+      "type": "word",
+      "example": "I use “red” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "green",
+      "mean": "green",
+      "pron": "",
+      "type": "word",
+      "example": "I use “green” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "wear",
+      "mean": "wear",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wear” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "fit",
+      "mean": "fit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fit” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "match",
+      "mean": "match",
+      "pron": "",
+      "type": "word",
+      "example": "I use “match” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "comfortable",
+      "mean": "comfortable",
+      "pron": "",
+      "type": "word",
+      "example": "I use “comfortable” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "casual",
+      "mean": "casual",
+      "pron": "",
+      "type": "word",
+      "example": "I use “casual” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "formal",
+      "mean": "formal",
+      "pron": "",
+      "type": "word",
+      "example": "I use “formal” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "clean",
+      "mean": "clean",
+      "pron": "",
+      "type": "word",
+      "example": "I use “clean” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "dirty",
+      "mean": "dirty",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dirty” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "wash",
+      "mean": "wash",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wash” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "dry",
+      "mean": "dry",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dry” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    },
+    {
+      "word": "iron",
+      "mean": "iron",
+      "pron": "",
+      "type": "word",
+      "example": "I use “iron” in everyday life.",
+      "note": "Everyday clothes fashion vocabulary."
+    }
+  ]
+}
