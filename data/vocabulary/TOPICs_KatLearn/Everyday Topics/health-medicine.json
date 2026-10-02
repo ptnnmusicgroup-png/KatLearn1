@@ -1,0 +1,407 @@
+{
+  "id": "health-medicine",
+  "name": "Health_Medicine_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for health medicine.",
+  "words": [
+    {
+      "word": "health",
+      "mean": "health",
+      "pron": "",
+      "type": "word",
+      "example": "I use “health” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "doctor",
+      "mean": "doctor",
+      "pron": "",
+      "type": "word",
+      "example": "I use “doctor” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "nurse",
+      "mean": "nurse",
+      "pron": "",
+      "type": "word",
+      "example": "I use “nurse” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "hospital",
+      "mean": "hospital",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hospital” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "clinic",
+      "mean": "clinic",
+      "pron": "",
+      "type": "word",
+      "example": "I use “clinic” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "patient",
+      "mean": "patient",
+      "pron": "",
+      "type": "word",
+      "example": "I use “patient” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "medicine",
+      "mean": "medicine",
+      "pron": "",
+      "type": "word",
+      "example": "I use “medicine” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "drug",
+      "mean": "drug",
+      "pron": "",
+      "type": "word",
+      "example": "I use “drug” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "tablet",
+      "mean": "tablet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tablet” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "pill",
+      "mean": "pill",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pill” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "treatment",
+      "mean": "treatment",
+      "pron": "",
+      "type": "word",
+      "example": "I use “treatment” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "disease",
+      "mean": "disease",
+      "pron": "",
+      "type": "word",
+      "example": "I use “disease” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "illness",
+      "mean": "illness",
+      "pron": "",
+      "type": "word",
+      "example": "I use “illness” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "pain",
+      "mean": "pain",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pain” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "fever",
+      "mean": "fever",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fever” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "cough",
+      "mean": "cough",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cough” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "cold",
+      "mean": "cold",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cold” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "flu",
+      "mean": "flu",
+      "pron": "",
+      "type": "word",
+      "example": "I use “flu” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "headache",
+      "mean": "headache",
+      "pron": "",
+      "type": "word",
+      "example": "I use “headache” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "stomach",
+      "mean": "stomach",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stomach” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "heart",
+      "mean": "heart",
+      "pron": "",
+      "type": "word",
+      "example": "I use “heart” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "blood",
+      "mean": "blood",
+      "pron": "",
+      "type": "word",
+      "example": "I use “blood” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "skin",
+      "mean": "skin",
+      "pron": "",
+      "type": "word",
+      "example": "I use “skin” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "tooth",
+      "mean": "tooth",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tooth” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "eye",
+      "mean": "eye",
+      "pron": "",
+      "type": "word",
+      "example": "I use “eye” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "ear",
+      "mean": "ear",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ear” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "sleep",
+      "mean": "sleep",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sleep” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "exercise",
+      "mean": "exercise",
+      "pron": "",
+      "type": "word",
+      "example": "I use “exercise” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "diet",
+      "mean": "diet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “diet” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "food",
+      "mean": "food",
+      "pron": "",
+      "type": "word",
+      "example": "I use “food” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "water",
+      "mean": "water",
+      "pron": "",
+      "type": "word",
+      "example": "I use “water” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "stress",
+      "mean": "stress",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stress” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "rest",
+      "mean": "rest",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rest” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "checkup",
+      "mean": "checkup",
+      "pron": "",
+      "type": "word",
+      "example": "I use “checkup” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "appointment",
+      "mean": "appointment",
+      "pron": "",
+      "type": "word",
+      "example": "I use “appointment” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "emergency",
+      "mean": "emergency",
+      "pron": "",
+      "type": "word",
+      "example": "I use “emergency” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "injury",
+      "mean": "injury",
+      "pron": "",
+      "type": "word",
+      "example": "I use “injury” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "accident",
+      "mean": "accident",
+      "pron": "",
+      "type": "word",
+      "example": "I use “accident” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "healthy",
+      "mean": "healthy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “healthy” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "sick",
+      "mean": "sick",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sick” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "strong",
+      "mean": "strong",
+      "pron": "",
+      "type": "word",
+      "example": "I use “strong” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "weak",
+      "mean": "weak",
+      "pron": "",
+      "type": "word",
+      "example": "I use “weak” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "symptom",
+      "mean": "symptom",
+      "pron": "",
+      "type": "word",
+      "example": "I use “symptom” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "care",
+      "mean": "care",
+      "pron": "",
+      "type": "word",
+      "example": "I use “care” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "help",
+      "mean": "help",
+      "pron": "",
+      "type": "word",
+      "example": "I use “help” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "recovery",
+      "mean": "recovery",
+      "pron": "",
+      "type": "word",
+      "example": "I use “recovery” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "surgery",
+      "mean": "surgery",
+      "pron": "",
+      "type": "word",
+      "example": "I use “surgery” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "medical",
+      "mean": "medical",
+      "pron": "",
+      "type": "word",
+      "example": "I use “medical” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "body",
+      "mean": "body",
+      "pron": "",
+      "type": "word",
+      "example": "I use “body” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    },
+    {
+      "word": "healthcare",
+      "mean": "healthcare",
+      "pron": "",
+      "type": "word",
+      "example": "I use “healthcare” in everyday life.",
+      "note": "Everyday health medicine vocabulary."
+    }
+  ]
+}
