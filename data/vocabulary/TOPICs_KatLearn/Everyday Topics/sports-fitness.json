@@ -1,0 +1,407 @@
+{
+  "id": "sports-fitness",
+  "name": "Sports_Fitness_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for sports fitness.",
+  "words": [
+    {
+      "word": "sport",
+      "mean": "sport",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sport” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "game",
+      "mean": "game",
+      "pron": "",
+      "type": "word",
+      "example": "I use “game” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "team",
+      "mean": "team",
+      "pron": "",
+      "type": "word",
+      "example": "I use “team” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "player",
+      "mean": "player",
+      "pron": "",
+      "type": "word",
+      "example": "I use “player” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "coach",
+      "mean": "coach",
+      "pron": "",
+      "type": "word",
+      "example": "I use “coach” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "match",
+      "mean": "match",
+      "pron": "",
+      "type": "word",
+      "example": "I use “match” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "ball",
+      "mean": "ball",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ball” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "football",
+      "mean": "football",
+      "pron": "",
+      "type": "word",
+      "example": "I use “football” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "basketball",
+      "mean": "basketball",
+      "pron": "",
+      "type": "word",
+      "example": "I use “basketball” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "tennis",
+      "mean": "tennis",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tennis” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "badminton",
+      "mean": "badminton",
+      "pron": "",
+      "type": "word",
+      "example": "I use “badminton” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "swimming",
+      "mean": "swimming",
+      "pron": "",
+      "type": "word",
+      "example": "I use “swimming” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "running",
+      "mean": "running",
+      "pron": "",
+      "type": "word",
+      "example": "I use “running” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "cycling",
+      "mean": "cycling",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cycling” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "gym",
+      "mean": "gym",
+      "pron": "",
+      "type": "word",
+      "example": "I use “gym” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "exercise",
+      "mean": "exercise",
+      "pron": "",
+      "type": "word",
+      "example": "I use “exercise” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "fitness",
+      "mean": "fitness",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fitness” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "training",
+      "mean": "training",
+      "pron": "",
+      "type": "word",
+      "example": "I use “training” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "practice",
+      "mean": "practice",
+      "pron": "",
+      "type": "word",
+      "example": "I use “practice” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "race",
+      "mean": "race",
+      "pron": "",
+      "type": "word",
+      "example": "I use “race” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "win",
+      "mean": "win",
+      "pron": "",
+      "type": "word",
+      "example": "I use “win” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "lose",
+      "mean": "lose",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lose” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "score",
+      "mean": "score",
+      "pron": "",
+      "type": "word",
+      "example": "I use “score” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "goal",
+      "mean": "goal",
+      "pron": "",
+      "type": "word",
+      "example": "I use “goal” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "point",
+      "mean": "point",
+      "pron": "",
+      "type": "word",
+      "example": "I use “point” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "court",
+      "mean": "court",
+      "pron": "",
+      "type": "word",
+      "example": "I use “court” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "field",
+      "mean": "field",
+      "pron": "",
+      "type": "word",
+      "example": "I use “field” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "track",
+      "mean": "track",
+      "pron": "",
+      "type": "word",
+      "example": "I use “track” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "pool",
+      "mean": "pool",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pool” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "club",
+      "mean": "club",
+      "pron": "",
+      "type": "word",
+      "example": "I use “club” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "competition",
+      "mean": "competition",
+      "pron": "",
+      "type": "word",
+      "example": "I use “competition” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "tournament",
+      "mean": "tournament",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tournament” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "champion",
+      "mean": "champion",
+      "pron": "",
+      "type": "word",
+      "example": "I use “champion” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "medal",
+      "mean": "medal",
+      "pron": "",
+      "type": "word",
+      "example": "I use “medal” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "strong",
+      "mean": "strong",
+      "pron": "",
+      "type": "word",
+      "example": "I use “strong” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "fast",
+      "mean": "fast",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fast” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "fit",
+      "mean": "fit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fit” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "healthy",
+      "mean": "healthy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “healthy” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "muscle",
+      "mean": "muscle",
+      "pron": "",
+      "type": "word",
+      "example": "I use “muscle” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "weight",
+      "mean": "weight",
+      "pron": "",
+      "type": "word",
+      "example": "I use “weight” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "stretch",
+      "mean": "stretch",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stretch” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "jump",
+      "mean": "jump",
+      "pron": "",
+      "type": "word",
+      "example": "I use “jump” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "throw",
+      "mean": "throw",
+      "pron": "",
+      "type": "word",
+      "example": "I use “throw” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "kick",
+      "mean": "kick",
+      "pron": "",
+      "type": "word",
+      "example": "I use “kick” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "hit",
+      "mean": "hit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hit” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "move",
+      "mean": "move",
+      "pron": "",
+      "type": "word",
+      "example": "I use “move” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "rest",
+      "mean": "rest",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rest” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "energy",
+      "mean": "energy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “energy” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "workout",
+      "mean": "workout",
+      "pron": "",
+      "type": "word",
+      "example": "I use “workout” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    },
+    {
+      "word": "athlete",
+      "mean": "athlete",
+      "pron": "",
+      "type": "word",
+      "example": "I use “athlete” in everyday life.",
+      "note": "Everyday sports fitness vocabulary."
+    }
+  ]
+}
