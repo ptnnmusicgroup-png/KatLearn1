@@ -1,0 +1,407 @@
+{
+  "id": "internet-social-media",
+  "name": "Internet_Social_Media_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for internet social media.",
+  "words": [
+    {
+      "word": "internet",
+      "mean": "internet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “internet” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "website",
+      "mean": "website",
+      "pron": "",
+      "type": "word",
+      "example": "I use “website” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "browser",
+      "mean": "browser",
+      "pron": "",
+      "type": "word",
+      "example": "I use “browser” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "search",
+      "mean": "search",
+      "pron": "",
+      "type": "word",
+      "example": "I use “search” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "account",
+      "mean": "account",
+      "pron": "",
+      "type": "word",
+      "example": "I use “account” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "profile",
+      "mean": "profile",
+      "pron": "",
+      "type": "word",
+      "example": "I use “profile” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "post",
+      "mean": "post",
+      "pron": "",
+      "type": "word",
+      "example": "I use “post” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "comment",
+      "mean": "comment",
+      "pron": "",
+      "type": "word",
+      "example": "I use “comment” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "like",
+      "mean": "like",
+      "pron": "",
+      "type": "word",
+      "example": "I use “like” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "share",
+      "mean": "share",
+      "pron": "",
+      "type": "word",
+      "example": "I use “share” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "follow",
+      "mean": "follow",
+      "pron": "",
+      "type": "word",
+      "example": "I use “follow” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "friend",
+      "mean": "friend",
+      "pron": "",
+      "type": "word",
+      "example": "I use “friend” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "message",
+      "mean": "message",
+      "pron": "",
+      "type": "word",
+      "example": "I use “message” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "chat",
+      "mean": "chat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “chat” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "video",
+      "mean": "video",
+      "pron": "",
+      "type": "word",
+      "example": "I use “video” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "photo",
+      "mean": "photo",
+      "pron": "",
+      "type": "word",
+      "example": "I use “photo” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "story",
+      "mean": "story",
+      "pron": "",
+      "type": "word",
+      "example": "I use “story” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "feed",
+      "mean": "feed",
+      "pron": "",
+      "type": "word",
+      "example": "I use “feed” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "channel",
+      "mean": "channel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “channel” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "creator",
+      "mean": "creator",
+      "pron": "",
+      "type": "word",
+      "example": "I use “creator” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "content",
+      "mean": "content",
+      "pron": "",
+      "type": "word",
+      "example": "I use “content” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "live",
+      "mean": "live",
+      "pron": "",
+      "type": "word",
+      "example": "I use “live” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "stream",
+      "mean": "stream",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stream” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "online",
+      "mean": "online",
+      "pron": "",
+      "type": "word",
+      "example": "I use “online” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "offline",
+      "mean": "offline",
+      "pron": "",
+      "type": "word",
+      "example": "I use “offline” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "privacy",
+      "mean": "privacy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “privacy” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "security",
+      "mean": "security",
+      "pron": "",
+      "type": "word",
+      "example": "I use “security” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "password",
+      "mean": "password",
+      "pron": "",
+      "type": "word",
+      "example": "I use “password” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "username",
+      "mean": "username",
+      "pron": "",
+      "type": "word",
+      "example": "I use “username” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "email",
+      "mean": "email",
+      "pron": "",
+      "type": "word",
+      "example": "I use “email” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "link",
+      "mean": "link",
+      "pron": "",
+      "type": "word",
+      "example": "I use “link” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "click",
+      "mean": "click",
+      "pron": "",
+      "type": "word",
+      "example": "I use “click” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "upload",
+      "mean": "upload",
+      "pron": "",
+      "type": "word",
+      "example": "I use “upload” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "download",
+      "mean": "download",
+      "pron": "",
+      "type": "word",
+      "example": "I use “download” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "block",
+      "mean": "block",
+      "pron": "",
+      "type": "word",
+      "example": "I use “block” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "report",
+      "mean": "report",
+      "pron": "",
+      "type": "word",
+      "example": "I use “report” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "subscribe",
+      "mean": "subscribe",
+      "pron": "",
+      "type": "word",
+      "example": "I use “subscribe” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "notification",
+      "mean": "notification",
+      "pron": "",
+      "type": "word",
+      "example": "I use “notification” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "trend",
+      "mean": "trend",
+      "pron": "",
+      "type": "word",
+      "example": "I use “trend” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "viral",
+      "mean": "viral",
+      "pron": "",
+      "type": "word",
+      "example": "I use “viral” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "social",
+      "mean": "social",
+      "pron": "",
+      "type": "word",
+      "example": "I use “social” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "media",
+      "mean": "media",
+      "pron": "",
+      "type": "word",
+      "example": "I use “media” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "platform",
+      "mean": "platform",
+      "pron": "",
+      "type": "word",
+      "example": "I use “platform” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "group",
+      "mean": "group",
+      "pron": "",
+      "type": "word",
+      "example": "I use “group” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "community",
+      "mean": "community",
+      "pron": "",
+      "type": "word",
+      "example": "I use “community” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "forum",
+      "mean": "forum",
+      "pron": "",
+      "type": "word",
+      "example": "I use “forum” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "blog",
+      "mean": "blog",
+      "pron": "",
+      "type": "word",
+      "example": "I use “blog” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "news",
+      "mean": "news",
+      "pron": "",
+      "type": "word",
+      "example": "I use “news” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "influencer",
+      "mean": "influencer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “influencer” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    },
+    {
+      "word": "hashtag",
+      "mean": "hashtag",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hashtag” in everyday life.",
+      "note": "Everyday internet social media vocabulary."
+    }
+  ]
+}
