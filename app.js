@@ -125,20 +125,36 @@ async function openCoreTopic(topicId){
   try{openVocabularyPack(await loadCoreTopic(topicId))}
   catch(e){toast('Không tải được kho từ KatLearn: '+(e.message||'Lỗi không xác định'))}
 }
+function renderCoreTopicGroups(core=[]){
+  const groups=new Map();
+  core.forEach(topic=>{
+    const key=topic.category||'KatLearn Library';
+    if(!groups.has(key))groups.set(key,[]);
+    groups.get(key).push(topic);
+  });
+  return [...groups.entries()].map(([category,topics])=>{
+    const heading='<div style="grid-column:1/-1;margin:18px 2px 2px"><p class="eyebrow" style="margin:0">'+esc(category.toUpperCase())+'</p></div>';
+    const cards=topics.map(topic=>'<article class="pack-tile"><div class="tile-icon">🧠</div><h3>'+esc(topic.name)+'</h3><p>Kho từ KatLearn · '+esc(category)+'</p><button data-core-topic="'+esc(topic.id)+'">Học bộ từ →</button></article>').join('');
+    return heading+cards;
+  }).join('');
+}
 function renderPackLibrary(packs=[],assigned=[]){
   const library=$('#packLibrary');
   if(!library)return;
   const signedIn=!!window.studyStore?.user;
   const core=window.katlearnCoreVocabulary?.topics||[];
-  const coreCards=core.map(t=>({id:'core:'+t.id,name:t.name,words:[],core:true,topicId:t.id}));
   const current=signedIn&&vocab.length?[{id:'current',name:'Bộ từ đang học',words:vocab,current:true},...assigned,...packs]:[...assigned,...packs];
-  const seen=new Set();const all=[...coreCards,...current].filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true});
-  library.innerHTML=all.length?all.map(pack=>{
-    const count=pack.core?'':(Array.isArray(pack.words)?pack.words.length:0);
-    const label=pack.current?'Đang học':pack.core?'Kho từ KatLearn':pack.assigned?'Bài được giao':'Cộng đồng KatLearn';
-    const action=pack.core?`data-core-topic="${esc(pack.topicId)}"`:`data-pack="${esc(pack.id)}"`;
-    return `<article class="pack-tile"><div class="tile-icon">${pack.current?'🐱':pack.core?'🧠':pack.assigned?'📩':'📚'}</div><h3>${esc(pack.name)}</h3><p>${count?count+' từ vựng · ':''}${label}</p><button ${action}>${pack.current?'Tiếp tục học':pack.core?'Học topic':'Mở pack'} →</button></article>`;
-  }).join(''):'<div class="empty-state">Chưa có pack. 🐱</div>';
+  const seen=new Set();const all=current.filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true});
+  const coreHtml=renderCoreTopicGroups(core);
+  const otherHtml=all.length?all.map(pack=>{
+    const count=Array.isArray(pack.words)?pack.words.length:0;
+    const label=pack.current?'Đang học':pack.assigned?'Bài được giao':'Cộng đồng KatLearn';
+    const action='data-pack="'+esc(pack.id)+'"';
+    const icon=pack.current?'🐱':pack.assigned?'📩':'📚';
+    const button=pack.current?'Tiếp tục học':'Mở pack';
+    return '<article class="pack-tile"><div class="tile-icon">'+icon+'</div><h3>'+esc(pack.name)+'</h3><p>'+(count?count+' từ vựng · ':'')+label+'</p><button '+action+'>'+button+' →</button></article>';
+  }).join(''):'';
+  library.innerHTML=coreHtml+(otherHtml?'<div style="grid-column:1/-1;margin:18px 2px 2px"><p class="eyebrow" style="margin:0">PACK CÔNG KHAI & BÀI ĐƯỢC GIAO</p></div>'+otherHtml:'');
   $$('[data-pack]').forEach(btn=>btn.onclick=()=>{const pack=all.find(p=>p.id===btn.dataset.pack);if(pack)openVocabularyPack(pack)});
   $$('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
 }
@@ -158,7 +174,7 @@ async function renderPublicPacks(){
       if(String(window.studyStore?.user?.uid||'guest')!==uid)return;
       const core=window.katlearnCoreVocabulary?.topics||[];
       const publicBody=packs.length?packs.map(pack=>`<div class="published-pack"><span>📚</span><div><b>${esc(pack.name)}</b><small>${Array.isArray(pack.words)?pack.words.length:0} từ vựng</small></div><button data-public-pack="${esc(pack.id)}">Học pack</button></div>`).join(''):'<div class="empty-state">Chưa có pack công khai.</div>';
-      const coreBody=core.length?core.map(topic=>`<div class="published-pack"><span>🧠</span><div><b>${esc(topic.name)}</b><small>Từ cốt lõi · Kho từ KatLearn</small></div><button data-core-topic="${esc(topic.id)}">Học topic</button></div>`).join(''):'';
+      const coreBody=renderCoreTopicGroups(core);
       target.innerHTML=`<b>Kho từ vựng KatLearn</b>${coreBody}<b style="display:block;margin-top:16px">Pack từ vựng công khai</b>${publicBody}`;
       if(adminList)adminList.innerHTML=publicBody;
       renderPackLibrary(packs,[]);
