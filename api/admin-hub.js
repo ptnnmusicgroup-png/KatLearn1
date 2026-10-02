@@ -117,10 +117,17 @@ async function syncAuthAccounts(db,auth,decoded){
     const email=String(user.email||"").trim().toLowerCase();
     const existingProfile=profiles.get(uid)||{};
     let accountCode=String(existingProfile.accountCode||"").trim();
-    let existingAccount=accountCode?null:null;
+    let existingAccount=null;
 
     if(accountCode){
       existingAccount=accountsSnap.docs.find(doc=>String(doc.id)===accountCode)?.data()||null;
+      const accountOwner=String(existingAccount?.uid||"").trim();
+      if(accountOwner&&accountOwner!==uid){
+        // Never reassign an account namespace that already belongs to another
+        // Firebase Auth UID. Fall back to UID/email matching or allocate a new code.
+        accountCode="";
+        existingAccount=null;
+      }
     }
     if(!existingAccount){
       existingAccount=accountsByUid.get(uid)||null;
