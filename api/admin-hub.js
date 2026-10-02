@@ -45,7 +45,7 @@ const PROVINCES=[
   ["96","Tỉnh Cà Mau",593,"province-96.json"]
 ];
 const PROVINCE_MAP=new Map(PROVINCES.map(([code,name,total,file])=>[code,{code,name,total,file}]));
-const USER_FIELDS=["displayName","name","email","role","schoolName","className","accountCode","coins","energy","streak","province","ward","teacherVerification","createdAt","updatedAt","disabled","schoolId","classIds","catalogClassId","studentAccountType"];
+const USER_FIELDS=["uid","displayName","name","email","role","schoolName","className","accountCode","coins","energy","streak","province","ward","teacherVerification","createdAt","updatedAt","disabled","schoolId","classIds","catalogClassId","studentAccountType"];
 const CLASS_FIELDS=["name","grade","description","teacherEmail","teacherUid","schoolName","schoolId","joinCode","studentCount","createdAt","updatedAt","province","ward","catalogClassId","deletingAt"];
 const PACK_FIELDS=["name","createdBy","createdByEmail","createdByUid","createdAt","updatedAt","wordCount"];
 const SCHOOL_FIELDS=["name","province","ward","schoolId","schoolLevel","createdAt","updatedAt","source","provinceId","wardId"];
@@ -85,6 +85,9 @@ async function syncDirectoryChunk(db,decoded,entity,cursor,requestedLimit){
     const data=config.fields
       ? Object.fromEntries(config.fields.filter(key=>Object.prototype.hasOwnProperty.call(raw,key)).map(key=>[key,serialize(raw[key])]))
       : serialize(raw);
+    if(String(entity||"").toLowerCase()==="users"){
+      data.uid=String(data.uid||doc.id);
+    }
     batch.set(mirror.doc(doc.id),{
       sourceId:doc.id,
       sourceCollection:config.source,
