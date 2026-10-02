@@ -22,7 +22,15 @@ function updateDailyGoal(count){
 }
 function updateCoins(){['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=format(coins)});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
 async function syncProfile(extra={}){const user=window.studyStore?.user;if(!window.studyStore?.connected()||!user)return;const uid=user.uid;try{if(window.studyStore?.user?.uid!==uid)return;const data={...extra};if(!['core','public','assigned'].includes(String(activeVocabSource?.kind||'')))Object.assign(data,{knownWords:known,totalWords:vocab.length,vocab});if(window.studyStore?.user?.uid!==uid)return;await window.studyStore.saveProfile(data)}catch(e){if(window.studyStore?.user?.uid===uid)console.warn('Firebase sync:',e)}}
-function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
+function toast(msg){const t=$('#toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
+(function showTestReturnError(){
+  const params=new URLSearchParams(location.search);
+  if(params.get('testError')!=='fullscreen-exit')return;
+  setTimeout(()=>toast('Bạn đã thoát ra khỏi chế độ toàn màn hình. Muốn làm bài tiếp? Vui lòng tạo lại bài test mới'),180);
+  params.delete('testError');
+  const next=params.toString();
+  history.replaceState(null,document.title,location.pathname+(next?'?'+next:'')+location.hash);
+})();
 function updateHomeHeader(profile=null){
   const now=new Date(),days=['CHỦ NHẬT','THỨ HAI','THỨ BA','THỨ TƯ','THỨ NĂM','THỨ SÁU','THỨ BẢY'],month=now.getMonth()+1;
   const eyebrow=$('.greeting-row .eyebrow'),title=$('.greeting-row h1'),streak=$('.streak-card b');
@@ -38,8 +46,8 @@ function updateHomeHeader(profile=null){
 updateHomeHeader();
 setInterval(()=>updateHomeHeader(),30000);
 updateDailyGoal(0);
-const PAGE_ALIASES={vocabulary:'words',words:'words',home:'home',packs:'packs',personalPacks:'personalPacks',personal:'personalPacks',learn:'learn',practice:'practice',shop:'shop',ranking:'ranking',progress:'progress',studentClasses:'studentClasses'};
-function showPage(rawId,updateHash=true){const id=PAGE_ALIASES[rawId]||rawId;const page=$('#'+id);if(!page)return;$$('.page').forEach(p=>p.classList.remove('active-page'));page.classList.add('active-page');$$('.nav-item').forEach(b=>b.classList.toggle('active',(PAGE_ALIASES[b.dataset.page]||b.dataset.page)===id));$('.sidebar')?.classList.remove('open');if(updateHash){const hash=id==='words'?'vocabulary':id;history.replaceState(null,'','#'+hash)}if(id==='ranking')renderLeaderboard();if(id==='packs')renderPublicPacks();if(id==='personalPacks')window.renderStudentPersonalPacks?.();if(id==='words')renderVocabularyViews();if(id==='studentClasses')window.katlearnStudentClasses?.render();window.scrollTo({top:0,behavior:'smooth'})}
+const PAGE_ALIASES={vocabulary:'words',words:'words',home:'home',packs:'packs',personalPacks:'personalPacks',personal:'personalPacks',learn:'learn',practice:'practice',test:'test',shop:'shop',ranking:'ranking',progress:'progress',studentClasses:'studentClasses'};
+function showPage(rawId,updateHash=true){if(String(rawId||'')==='test'){location.href='/test.html';return}const id=PAGE_ALIASES[rawId]||rawId;const page=$('#'+id);if(!page)return;$$('.page').forEach(p=>p.classList.remove('active-page'));page.classList.add('active-page');$$('.nav-item').forEach(b=>b.classList.toggle('active',(PAGE_ALIASES[b.dataset.page]||b.dataset.page)===id));$('.sidebar')?.classList.remove('open');if(updateHash){const hash=id==='words'?'vocabulary':id;history.replaceState(null,'','#'+hash)}if(id==='ranking')renderLeaderboard();if(id==='packs')renderPublicPacks();if(id==='personalPacks')window.renderStudentPersonalPacks?.();if(id==='words')renderVocabularyViews();if(id==='studentClasses')window.katlearnStudentClasses?.render();window.scrollTo({top:0,behavior:'smooth'})}
 function openInitialPage(){const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();showPage(hash&&PAGE_ALIASES[hash]?hash:'home',false)}
 $$('.nav-item').forEach(b=>b.onclick=()=>showPage(b.dataset.page));$$('[data-go]').forEach(b=>b.onclick=()=>showPage(b.dataset.go));if($('.start-lesson'))$('.start-lesson').onclick=()=>showPage('learn');if($('.menu-toggle'))$('.menu-toggle').onclick=()=>$('.sidebar')?.classList.toggle('open');window.addEventListener('hashchange',()=>{const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();if(hash&&PAGE_ALIASES[hash])showPage(hash,false)});
 function renderWordList(){const list=$('#wordList');list.innerHTML=vocab.length?vocab.map((v,i)=>`<button class="word-item ${i===cardIndex?'selected':''}" data-index="${i}">${esc(v.word)}<small>${esc(v.pron||'Chưa có phiên âm')}</small>${knownWordKeys.has(vocabKey(v))?'<i>✓</i>':''}</button>`).join(''):'<p class="empty-state">Chưa có từ nào.</p>';$$('.word-item').forEach(b=>b.onclick=()=>{cardIndex=+b.dataset.index;renderCard()});['#wordListCount','#totalWords','#cardTotal'].forEach(s=>$(s).textContent=vocab.length)}
