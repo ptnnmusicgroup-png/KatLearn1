@@ -26,7 +26,7 @@ function toast(msg){const t=$('#toast');if(!t)return;t.textContent=msg;t.classLi
 (function showTestReturnError(){
   const params=new URLSearchParams(location.search);
   if(params.get('testError')!=='fullscreen-exit')return;
-  setTimeout(()=>toast('Bạn đã thoát ra khỏi chế độ toàn màn hình. Muốn làm bài tiếp? Vui lòng tạo lại bài test mới'),180);
+  setTimeout(()=>toast('⚠️ Bạn đã rời khỏi chế độ toàn màn hình, đã đưa về Home để cảnh cáo. Muốn làm bài tiếp? Vui lòng tạo lại bài test mới.'),180);
   params.delete('testError');
   const next=params.toString();
   history.replaceState(null,document.title,location.pathname+(next?'?'+next:'')+location.hash);
