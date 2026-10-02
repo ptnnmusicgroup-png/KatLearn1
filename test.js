@@ -49,18 +49,34 @@
     if(wordCount)wordCount.textContent=String(ws.length);
     if(start){start.disabled=rows.length===0||ws.length<4;start.textContent=ws.length<4&&rows.length?'Cần ít nhất 4 từ':'🔒 Vào chế độ thi toàn màn hình';}
   }
+  let loadPromise=null;
   async function load(){
-    try{
-      await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG);
-      await window.studyStore.waitForAuth();
-      if(!window.studyStore.user){showLocked('🔐 Đăng nhập để làm bài kiểm tra','Bài test dùng trực tiếp các bộ từ riêng trong tài khoản của bạn.','/login.html','Đăng nhập →');return;}
-      if(window.studyStore.isClassStudent&&await window.studyStore.isClassStudent()){showLocked('🏫 Tài khoản lớp học đang được quản lý','Tài khoản lớp học không có kho bộ từ cá nhân để tự tạo đề.','/index.html','← Về KatLearn');return;}
-      packs=(await window.studyStore.personalPacks()).map(cleanPack).filter(p=>p.words.length>=2);
-      renderPackList();
-    }catch(e){
-      showLocked('Không tải được bộ từ','KatLearn chưa thể đồng bộ bộ từ cá nhân lúc này. Hãy thử tải lại trang.','','↻ Tải lại');
-      $('#lockedAction')?.addEventListener('click',()=>location.reload());
-    }
+    if(loadPromise)return loadPromise;
+    loadPromise=(async()=>{
+      try{
+        await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG);
+        const user=await window.studyStore.waitForAuth();
+        if(!user){showLocked('🔐 Đăng nhập để làm bài kiểm tra','Bài test dùng trực tiếp các bộ từ riêng trong tài khoản của bạn.','/login.html','Đăng nhập →');return;}
+        try{
+          if(window.studyStore.isClassStudent&&await window.studyStore.isClassStudent()){
+            showLocked('🏫 Tài khoản lớp học đang được quản lý','Tài khoản lớp học không có kho bộ từ cá nhân để tự tạo đề.','/index.html','← Về KatLearn');
+            return;
+          }
+        }catch(profileError){
+          // A missing/temporary Firestore profile must not hide personal packs.
+          console.warn('[KatLearn Test] Could not read account type; loading UID-owned packs anyway.',profileError);
+        }
+        packs=(await window.studyStore.personalPacks()).map(cleanPack).filter(p=>p.words.length>=2);
+        renderPackList();
+      }catch(e){
+        console.warn('[KatLearn Test] Personal pack loading failed:',e);
+        showLocked('Không tải được bộ từ','KatLearn chưa thể đồng bộ bộ từ cá nhân lúc này. Hãy thử tải lại trang.','','↻ Tải lại');
+        $('#lockedAction')?.addEventListener('click',()=>location.reload());
+      }finally{
+        loadPromise=null;
+      }
+    })();
+    return loadPromise;
   }
   function showLocked(title,body,href,label){
     const setup=$('#packSetup');if(!setup)return;
@@ -171,10 +187,18 @@
     location.replace('/index.html?testError=fullscreen-exit');
   }
   function mount(){
-    $('#selectAll').onclick=()=>{$$('#packList input[type="checkbox"]').forEach(x=>x.checked=true);updateConfig()};
-    $('#clearAll').onclick=()=>{$$('#packList input[type="checkbox"]').forEach(x=>x.checked=false);updateConfig()};
+    $('#selectAll').onclick=()=>{$('#packList input[type="checkbox"]').forEach(x=>x.checked=true);updateConfig()};
+    $('#clearAll').onclick=()=>{$('#packList input[type="checkbox"]').forEach(x=>x.checked=false);updateConfig()};
     $('#startTest').onclick=start;$('#submitAnswer').onclick=()=>checkAnswer($('#testInput').value.trim());$('#testNext').onclick=next;
-    $('#retryTest').onclick=restart;$('#homeFromResult').onclick=leaveToHome;document.addEventListener('fullscreenchange',handleFullscreenChange);load();
+    $('#retryTest').onclick=restart;$('#homeFromResult').onclick=leaveToHome;document.addEventListener('fullscreenchange',handleFullscreenChange);
+    window.addEventListener('8b1-auth-change',e=>{
+      if(testActive)return;
+      if(e.detail)void load();
+      else{
+        packs=[];selectedPacks=[];renderPackList();
+      }
+    });
+    load();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
