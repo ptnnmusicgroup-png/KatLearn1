@@ -188,7 +188,7 @@ function renderPackLibrary(packs=[],assigned=[]){
   const current=signedIn&&vocab.length?[{id:'current',name:'Bộ từ đang học',words:vocab,current:true},...assigned,...packs]:[...assigned,...packs];
   const seen=new Set();
   const all=current.filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true});
-  renderKatLibraryFolderView(core,all.filter(p=>!p.current),assigned);
+  renderKatLibraryFolderView(core,packs,assigned);
 }
 let publicPackRenderPromise=null;
 let publicPackRenderUid='';
