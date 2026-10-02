@@ -1,0 +1,415 @@
+{
+  "id": "animals-nature",
+  "name": "Animals_Nature_Topic_Dùng hằng ngày",
+  "description": "51 từ vựng cốt lõi theo chủ đề.",
+  "words": [
+    {
+      "word": "animal",
+      "mean": "animal",
+      "pron": "",
+      "type": "word",
+      "example": "I use “animal” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "nature",
+      "mean": "nature",
+      "pron": "",
+      "type": "word",
+      "example": "I use “nature” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "wildlife",
+      "mean": "wildlife",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wildlife” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "dog",
+      "mean": "dog",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dog” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "cat",
+      "mean": "cat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cat” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "bird",
+      "mean": "bird",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bird” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "fish",
+      "mean": "fish",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fish” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "horse",
+      "mean": "horse",
+      "pron": "",
+      "type": "word",
+      "example": "I use “horse” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "cow",
+      "mean": "cow",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cow” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "pig",
+      "mean": "pig",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pig” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "sheep",
+      "mean": "sheep",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sheep” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "goat",
+      "mean": "goat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “goat” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "chicken",
+      "mean": "chicken",
+      "pron": "",
+      "type": "word",
+      "example": "I use “chicken” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "duck",
+      "mean": "duck",
+      "pron": "",
+      "type": "word",
+      "example": "I use “duck” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "rabbit",
+      "mean": "rabbit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rabbit” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "mouse",
+      "mean": "mouse",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mouse” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "lion",
+      "mean": "lion",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lion” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "tiger",
+      "mean": "tiger",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tiger” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "elephant",
+      "mean": "elephant",
+      "pron": "",
+      "type": "word",
+      "example": "I use “elephant” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "monkey",
+      "mean": "monkey",
+      "pron": "",
+      "type": "word",
+      "example": "I use “monkey” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "bear",
+      "mean": "bear",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bear” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "wolf",
+      "mean": "wolf",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wolf” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "fox",
+      "mean": "fox",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fox” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "deer",
+      "mean": "deer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “deer” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "snake",
+      "mean": "snake",
+      "pron": "",
+      "type": "word",
+      "example": "I use “snake” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "frog",
+      "mean": "frog",
+      "pron": "",
+      "type": "word",
+      "example": "I use “frog” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "bee",
+      "mean": "bee",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bee” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "butterfly",
+      "mean": "butterfly",
+      "pron": "",
+      "type": "word",
+      "example": "I use “butterfly” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "insect",
+      "mean": "insect",
+      "pron": "",
+      "type": "word",
+      "example": "I use “insect” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "tree",
+      "mean": "tree",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tree” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "flower",
+      "mean": "flower",
+      "pron": "",
+      "type": "word",
+      "example": "I use “flower” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "grass",
+      "mean": "grass",
+      "pron": "",
+      "type": "word",
+      "example": "I use “grass” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "forest",
+      "mean": "forest",
+      "pron": "",
+      "type": "word",
+      "example": "I use “forest” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "river",
+      "mean": "river",
+      "pron": "",
+      "type": "word",
+      "example": "I use “river” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "lake",
+      "mean": "lake",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lake” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "mountain",
+      "mean": "mountain",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mountain” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "sea",
+      "mean": "sea",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sea” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "ocean",
+      "mean": "ocean",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ocean” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "island",
+      "mean": "island",
+      "pron": "",
+      "type": "word",
+      "example": "I use “island” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "farm",
+      "mean": "farm",
+      "pron": "",
+      "type": "word",
+      "example": "I use “farm” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "zoo",
+      "mean": "zoo",
+      "pron": "",
+      "type": "word",
+      "example": "I use “zoo” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "pet",
+      "mean": "pet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pet” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "wild",
+      "mean": "wild",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wild” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "baby",
+      "mean": "baby",
+      "pron": "",
+      "type": "word",
+      "example": "I use “baby” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "male",
+      "mean": "male",
+      "pron": "",
+      "type": "word",
+      "example": "I use “male” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "female",
+      "mean": "female",
+      "pron": "",
+      "type": "word",
+      "example": "I use “female” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "feed",
+      "mean": "feed",
+      "pron": "",
+      "type": "word",
+      "example": "I use “feed” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "hunt",
+      "mean": "hunt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hunt” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "protect",
+      "mean": "protect",
+      "pron": "",
+      "type": "word",
+      "example": "I use “protect” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "grow",
+      "mean": "grow",
+      "pron": "",
+      "type": "word",
+      "example": "I use “grow” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    },
+    {
+      "word": "live",
+      "mean": "live",
+      "pron": "",
+      "type": "word",
+      "example": "I use “live” in everyday life.",
+      "note": "Everyday animals nature vocabulary."
+    }
+  ]
+}
