@@ -1,0 +1,673 @@
+{
+  "id": "ielts-reading",
+  "name": "IELTS Reading Academic Vocabulary",
+  "description": "Từ vựng học thuật cốt lõi thường gặp trong văn bản nghiên cứu và văn phong học thuật. Nội dung tập trung vào suy luận, mô tả nghiên cứu, quan hệ nguyên nhân–kết quả, so sánh và khoa học tổng quát.",
+  "words": [
+    {
+      "word": "derive",
+      "mean": "bắt nguồn; suy ra",
+      "pron": "",
+      "type": "verb",
+      "example": "Many medicines are derived from plants.",
+      "note": "Common in academic texts about origins and sources.",
+      "category": "origins"
+    },
+    {
+      "word": "acquire",
+      "mean": "tiếp thu; đạt được",
+      "pron": "",
+      "type": "verb",
+      "example": "Children acquire language through interaction.",
+      "note": "Common in education and psychology texts.",
+      "category": "learning"
+    },
+    {
+      "word": "reveal",
+      "mean": "tiết lộ; cho thấy",
+      "pron": "",
+      "type": "verb",
+      "example": "The study revealed a clear difference between the groups.",
+      "note": "Useful when research produces a finding.",
+      "category": "research"
+    },
+    {
+      "word": "assess",
+      "mean": "đánh giá",
+      "pron": "",
+      "type": "verb",
+      "example": "Researchers assessed participants before and after the trial.",
+      "note": "Core academic verb in studies and reports.",
+      "category": "research"
+    },
+    {
+      "word": "evaluate",
+      "mean": "đánh giá",
+      "pron": "",
+      "type": "verb",
+      "example": "The researchers evaluated the effectiveness of the programme.",
+      "note": "Formal alternative to assess when judging quality or impact.",
+      "category": "research"
+    },
+    {
+      "word": "estimate",
+      "mean": "ước tính",
+      "pron": "",
+      "type": "verb",
+      "example": "The population is estimated to exceed two million.",
+      "note": "Common with numbers, quantities, and future projections.",
+      "category": "data"
+    },
+    {
+      "word": "approximate",
+      "mean": "xấp xỉ; gần đúng",
+      "pron": "",
+      "type": "verb",
+      "example": "The figure approximates the original estimate.",
+      "note": "Useful in quantitative and scientific contexts.",
+      "category": "data"
+    },
+    {
+      "word": "interpret",
+      "mean": "diễn giải",
+      "pron": "",
+      "type": "verb",
+      "example": "Scientists must interpret the results carefully.",
+      "note": "Common with data, findings, and evidence.",
+      "category": "research"
+    },
+    {
+      "word": "infer",
+      "mean": "suy luận",
+      "pron": "",
+      "type": "verb",
+      "example": "Readers can infer the author's attitude from the final paragraph.",
+      "note": "Important reading-skill verb.",
+      "category": "reasoning"
+    },
+    {
+      "word": "attribute",
+      "mean": "quy cho; cho là do",
+      "pron": "",
+      "type": "verb",
+      "example": "The decline was attributed to rising costs.",
+      "note": "Common in cause-and-effect research writing.",
+      "category": "causes"
+    },
+    {
+      "word": "emerge",
+      "mean": "xuất hiện; nổi lên",
+      "pron": "",
+      "type": "verb",
+      "example": "A new pattern emerged from the data.",
+      "note": "Useful for patterns, trends, species, and ideas becoming visible.",
+      "category": "patterns"
+    },
+    {
+      "word": "subsequent",
+      "mean": "tiếp theo; xảy ra sau",
+      "pron": "",
+      "type": "adjective",
+      "example": "Subsequent experiments produced similar results.",
+      "note": "Often appears in chronological research descriptions.",
+      "category": "time"
+    },
+    {
+      "word": "preceding",
+      "mean": "trước đó",
+      "pron": "",
+      "type": "adjective",
+      "example": "The preceding section outlines the main theory.",
+      "note": "Useful for referencing earlier text.",
+      "category": "text"
+    },
+    {
+      "word": "underlying",
+      "mean": "nằm bên dưới; tiềm ẩn",
+      "pron": "",
+      "type": "adjective",
+      "example": "The study explored the underlying causes of migration.",
+      "note": "Common for hidden causes, assumptions, or mechanisms.",
+      "category": "causes"
+    },
+    {
+      "word": "inherent",
+      "mean": "vốn có; nội tại",
+      "pron": "",
+      "type": "adjective",
+      "example": "The system has inherent limitations.",
+      "note": "Useful for properties that naturally belong to something.",
+      "category": "description"
+    },
+    {
+      "word": "adjacent",
+      "mean": "liền kề",
+      "pron": "",
+      "type": "adjective",
+      "example": "The laboratory is adjacent to the main research centre.",
+      "note": "Useful for spatial descriptions and diagrams.",
+      "category": "space"
+    },
+    {
+      "word": "albeit",
+      "mean": "mặc dù; dù rằng",
+      "pron": "",
+      "type": "conjunction",
+      "example": "The method was effective, albeit expensive.",
+      "note": "Formal concessive linker common in academic prose.",
+      "category": "contrast"
+    },
+    {
+      "word": "widespread",
+      "mean": "phổ biến rộng rãi",
+      "pron": "",
+      "type": "adjective",
+      "example": "The species is widespread across northern regions.",
+      "note": "Useful for describing large geographical prevalence.",
+      "category": "distribution"
+    },
+    {
+      "word": "scarce",
+      "mean": "khan hiếm",
+      "pron": "",
+      "type": "adjective",
+      "example": "Fresh water is scarce in many arid regions.",
+      "note": "Common with resources and supplies.",
+      "category": "resources"
+    },
+    {
+      "word": "abundant",
+      "mean": "phong phú; dồi dào",
+      "pron": "",
+      "type": "adjective",
+      "example": "The region has abundant solar energy.",
+      "note": "Opposite of scarce.",
+      "category": "resources"
+    },
+    {
+      "word": "robust",
+      "mean": "vững chắc; mạnh mẽ",
+      "pron": "",
+      "type": "adjective",
+      "example": "The study provides robust evidence for the theory.",
+      "note": "Common for evidence, methods, and models.",
+      "category": "research"
+    },
+    {
+      "word": "plausible",
+      "mean": "hợp lý; có vẻ đúng",
+      "pron": "",
+      "type": "adjective",
+      "example": "The researchers proposed a plausible explanation.",
+      "note": "Useful when an explanation seems reasonable but is not proven.",
+      "category": "reasoning"
+    },
+    {
+      "word": "empirical",
+      "mean": "thực nghiệm; dựa trên quan sát",
+      "pron": "",
+      "type": "adjective",
+      "example": "The theory is supported by empirical evidence.",
+      "note": "Core academic adjective for evidence based on observation or experiment.",
+      "category": "research"
+    },
+    {
+      "word": "theoretical",
+      "mean": "mang tính lý thuyết",
+      "pron": "",
+      "type": "adjective",
+      "example": "The article examines a theoretical framework for learning.",
+      "note": "Useful for distinguishing theory from practice.",
+      "category": "research"
+    },
+    {
+      "word": "conventional",
+      "mean": "truyền thống; thông thường",
+      "pron": "",
+      "type": "adjective",
+      "example": "The researchers compared the new method with conventional practice.",
+      "note": "Useful for established or traditional approaches.",
+      "category": "comparison"
+    },
+    {
+      "word": "contemporary",
+      "mean": "đương đại; hiện nay",
+      "pron": "",
+      "type": "adjective",
+      "example": "The paper discusses contemporary approaches to urban design.",
+      "note": "Useful for modern practices and current scholarship.",
+      "category": "time"
+    },
+    {
+      "word": "preliminary",
+      "mean": "sơ bộ; ban đầu",
+      "pron": "",
+      "type": "adjective",
+      "example": "The preliminary findings require further investigation.",
+      "note": "Common in early-stage research.",
+      "category": "research"
+    },
+    {
+      "word": "controversial",
+      "mean": "gây tranh cãi",
+      "pron": "",
+      "type": "adjective",
+      "example": "The hypothesis remains controversial among scientists.",
+      "note": "Useful for disputed ideas or evidence.",
+      "category": "evaluation"
+    },
+    {
+      "word": "ambiguous",
+      "mean": "mơ hồ; đa nghĩa",
+      "pron": "",
+      "type": "adjective",
+      "example": "The wording of the questionnaire was ambiguous.",
+      "note": "Common when meaning is unclear or open to interpretation.",
+      "category": "language"
+    },
+    {
+      "word": "equivalent",
+      "mean": "tương đương",
+      "pron": "",
+      "type": "adjective",
+      "example": "The two measures are broadly equivalent.",
+      "note": "Useful for comparing values, functions, or meanings.",
+      "category": "comparison"
+    },
+    {
+      "word": "cumulative",
+      "mean": "tích lũy; cộng dồn",
+      "pron": "",
+      "type": "adjective",
+      "example": "The cumulative effects of pollution are difficult to reverse.",
+      "note": "Common with effects, evidence, and totals.",
+      "category": "effects"
+    },
+    {
+      "word": "negligible",
+      "mean": "không đáng kể",
+      "pron": "",
+      "type": "adjective",
+      "example": "The difference was negligible.",
+      "note": "Useful for very small effects or quantities.",
+      "category": "degree"
+    },
+    {
+      "word": "substantial",
+      "mean": "đáng kể",
+      "pron": "",
+      "type": "adjective",
+      "example": "The project required substantial financial support.",
+      "note": "Formal adjective for a large amount or effect.",
+      "category": "degree"
+    },
+    {
+      "word": "prominent",
+      "mean": "nổi bật; quan trọng",
+      "pron": "",
+      "type": "adjective",
+      "example": "The study identifies several prominent factors.",
+      "note": "Useful for important or easily noticed features.",
+      "category": "importance"
+    },
+    {
+      "word": "distinct",
+      "mean": "khác biệt rõ ràng",
+      "pron": "",
+      "type": "adjective",
+      "example": "The two species have distinct characteristics.",
+      "note": "Useful for clear differences between groups or features.",
+      "category": "comparison"
+    },
+    {
+      "word": "analogous",
+      "mean": "tương tự",
+      "pron": "",
+      "type": "adjective",
+      "example": "The process is analogous to that observed in other species.",
+      "note": "Useful in comparisons between similar systems.",
+      "category": "comparison"
+    },
+    {
+      "word": "facilitate",
+      "mean": "tạo điều kiện; làm cho dễ hơn",
+      "pron": "",
+      "type": "verb",
+      "example": "Technology can facilitate communication between researchers.",
+      "note": "Common academic verb meaning enable or make easier.",
+      "category": "process"
+    },
+    {
+      "word": "hinder",
+      "mean": "cản trở",
+      "pron": "",
+      "type": "verb",
+      "example": "Poor lighting can hinder reading performance.",
+      "note": "Useful for barriers and negative effects.",
+      "category": "effects"
+    },
+    {
+      "word": "undergo",
+      "mean": "trải qua",
+      "pron": "",
+      "type": "verb",
+      "example": "The materials undergo several chemical changes.",
+      "note": "Common in process descriptions and scientific texts.",
+      "category": "process"
+    },
+    {
+      "word": "generate",
+      "mean": "tạo ra",
+      "pron": "",
+      "type": "verb",
+      "example": "The solar panels generate enough electricity for the building.",
+      "note": "Useful for energy, ideas, data, and economic activity.",
+      "category": "production"
+    },
+    {
+      "word": "attain",
+      "mean": "đạt được",
+      "pron": "",
+      "type": "verb",
+      "example": "The species can attain a length of two metres.",
+      "note": "Formal alternative to reach or achieve.",
+      "category": "degree"
+    },
+    {
+      "word": "retain",
+      "mean": "duy trì; giữ lại",
+      "pron": "",
+      "type": "verb",
+      "example": "The material can retain heat for several hours.",
+      "note": "Common in science, memory, and storage contexts.",
+      "category": "properties"
+    },
+    {
+      "word": "exceed",
+      "mean": "vượt quá",
+      "pron": "",
+      "type": "verb",
+      "example": "The number of participants exceeded expectations.",
+      "note": "Useful for quantities, limits, and targets.",
+      "category": "data"
+    },
+    {
+      "word": "comprise",
+      "mean": "bao gồm",
+      "pron": "",
+      "type": "verb",
+      "example": "The sample comprises three distinct groups.",
+      "note": "Formal way to describe components of a whole.",
+      "category": "structure"
+    },
+    {
+      "word": "constitute",
+      "mean": "cấu thành",
+      "pron": "",
+      "type": "verb",
+      "example": "These three elements constitute the main framework.",
+      "note": "Useful for formal descriptions of components.",
+      "category": "structure"
+    },
+    {
+      "word": "encompass",
+      "mean": "bao quát; bao gồm",
+      "pron": "",
+      "type": "verb",
+      "example": "The survey encompasses several areas of public policy.",
+      "note": "Formal alternative to include.",
+      "category": "scope"
+    },
+    {
+      "word": "alter",
+      "mean": "thay đổi",
+      "pron": "",
+      "type": "verb",
+      "example": "Climate change may alter migration patterns.",
+      "note": "Useful for significant changes to a condition or system.",
+      "category": "change"
+    },
+    {
+      "word": "adapt",
+      "mean": "thích nghi; điều chỉnh",
+      "pron": "",
+      "type": "verb",
+      "example": "Species must adapt to changing conditions.",
+      "note": "Common in biology, technology, and society texts.",
+      "category": "change"
+    },
+    {
+      "word": "persist",
+      "mean": "tiếp diễn; tồn tại",
+      "pron": "",
+      "type": "verb",
+      "example": "The problem persisted despite repeated interventions.",
+      "note": "Useful for something continuing over time.",
+      "category": "time"
+    },
+    {
+      "word": "enhance",
+      "mean": "nâng cao; tăng cường",
+      "pron": "",
+      "type": "verb",
+      "example": "Exercise can enhance cognitive performance.",
+      "note": "Formal alternative to improve or strengthen.",
+      "category": "effects"
+    },
+    {
+      "word": "inhibit",
+      "mean": "ức chế; kìm hãm",
+      "pron": "",
+      "type": "verb",
+      "example": "The chemical inhibits bacterial growth.",
+      "note": "Common in biology, medicine, and scientific writing.",
+      "category": "effects"
+    },
+    {
+      "word": "trigger",
+      "mean": "kích hoạt; gây ra",
+      "pron": "",
+      "type": "verb",
+      "example": "A rise in temperature can trigger rapid melting.",
+      "note": "Useful for immediate causes and responses.",
+      "category": "causes"
+    },
+    {
+      "word": "prompt",
+      "mean": "thúc đẩy; khiến",
+      "pron": "",
+      "type": "verb",
+      "example": "The discovery prompted further investigation.",
+      "note": "Common in research narratives.",
+      "category": "causes"
+    },
+    {
+      "word": "ubiquitous",
+      "mean": "hiện diện khắp nơi",
+      "pron": "",
+      "type": "adjective",
+      "example": "Smartphones have become ubiquitous in many societies.",
+      "note": "Advanced word for something widespread or almost universal.",
+      "category": "distribution"
+    },
+    {
+      "word": "predominantly",
+      "mean": "chủ yếu",
+      "pron": "",
+      "type": "adverb",
+      "example": "The sample was predominantly female.",
+      "note": "Useful for describing the main characteristic of a group.",
+      "category": "distribution"
+    },
+    {
+      "word": "respectively",
+      "mean": "lần lượt",
+      "pron": "",
+      "type": "adverb",
+      "example": "The two groups contained 40 and 60 participants, respectively.",
+      "note": "Important for matching values to previously listed categories.",
+      "category": "data"
+    },
+    {
+      "word": "fundamentally",
+      "mean": "về cơ bản",
+      "pron": "",
+      "type": "adverb",
+      "example": "The two approaches are fundamentally different.",
+      "note": "Useful for describing essential differences.",
+      "category": "comparison"
+    },
+    {
+      "word": "notably",
+      "mean": "đáng chú ý là",
+      "pron": "",
+      "type": "adverb",
+      "example": "The region is notably warmer in winter.",
+      "note": "Useful for highlighting an important feature.",
+      "category": "emphasis"
+    },
+    {
+      "word": "nevertheless",
+      "mean": "tuy nhiên; dù vậy",
+      "pron": "",
+      "type": "adverb",
+      "example": "The method was expensive; nevertheless, it was effective.",
+      "note": "Formal contrast linker common in academic prose.",
+      "category": "contrast"
+    },
+    {
+      "word": "whereas",
+      "mean": "trong khi",
+      "pron": "",
+      "type": "conjunction",
+      "example": "The first group improved, whereas the second showed little change.",
+      "note": "Useful for direct comparison in complex sentences.",
+      "category": "contrast"
+    },
+    {
+      "word": "thereby",
+      "mean": "qua đó; nhờ đó",
+      "pron": "",
+      "type": "adverb",
+      "example": "The device reduces heat loss, thereby improving efficiency.",
+      "note": "Useful for showing a result or consequence.",
+      "category": "cause"
+    },
+    {
+      "word": "consequently",
+      "mean": "do đó; vì vậy",
+      "pron": "",
+      "type": "adverb",
+      "example": "The roads were flooded, and consequently the event was cancelled.",
+      "note": "Formal result linker.",
+      "category": "cause"
+    },
+    {
+      "word": "hence",
+      "mean": "do đó",
+      "pron": "",
+      "type": "adverb",
+      "example": "The sample was too small, hence the cautious conclusion.",
+      "note": "Formal and concise way to signal a result.",
+      "category": "cause"
+    },
+    {
+      "word": "evidence",
+      "mean": "bằng chứng",
+      "pron": "",
+      "type": "noun",
+      "example": "The article presents evidence from several experiments.",
+      "note": "Core academic noun.",
+      "category": "research"
+    },
+    {
+      "word": "hypothesis",
+      "mean": "giả thuyết",
+      "pron": "",
+      "type": "noun",
+      "example": "The researchers tested the hypothesis in two trials.",
+      "note": "Core research term.",
+      "category": "research"
+    },
+    {
+      "word": "framework",
+      "mean": "khung lý thuyết; khuôn khổ",
+      "pron": "",
+      "type": "noun",
+      "example": "The study uses a theoretical framework.",
+      "note": "Common in social science and academic argument.",
+      "category": "research"
+    },
+    {
+      "word": "mechanism",
+      "mean": "cơ chế",
+      "pron": "",
+      "type": "noun",
+      "example": "The paper examines the mechanism behind the reaction.",
+      "note": "Useful for explaining how a process works.",
+      "category": "science"
+    },
+    {
+      "word": "phenomenon",
+      "mean": "hiện tượng",
+      "pron": "",
+      "type": "noun",
+      "example": "Climate migration is a complex social phenomenon.",
+      "note": "Common academic noun for an observed event or process.",
+      "category": "description"
+    },
+    {
+      "word": "species",
+      "mean": "loài",
+      "pron": "",
+      "type": "noun",
+      "example": "The region is home to several rare species.",
+      "note": "Common in biology and environmental texts.",
+      "category": "biology"
+    },
+    {
+      "word": "habitat",
+      "mean": "môi trường sống",
+      "pron": "",
+      "type": "noun",
+      "example": "Habitat loss threatens many species.",
+      "note": "High-value environmental and biology word.",
+      "category": "environment"
+    },
+    {
+      "word": "cognitive",
+      "mean": "thuộc nhận thức",
+      "pron": "",
+      "type": "adjective",
+      "example": "Sleep can affect cognitive performance.",
+      "note": "Common in psychology, education, and neuroscience.",
+      "category": "psychology"
+    },
+    {
+      "word": "dietary",
+      "mean": "thuộc chế độ ăn",
+      "pron": "",
+      "type": "adjective",
+      "example": "The study examined dietary habits among adolescents.",
+      "note": "Common in health and nutrition texts.",
+      "category": "health"
+    },
+    {
+      "word": "genetic",
+      "mean": "thuộc di truyền",
+      "pron": "",
+      "type": "adjective",
+      "example": "The researchers identified a possible genetic factor.",
+      "note": "Common in biology and medicine.",
+      "category": "biology"
+    },
+    {
+      "word": "archaeological",
+      "mean": "thuộc khảo cổ học",
+      "pron": "",
+      "type": "adjective",
+      "example": "Archaeological evidence suggests that the settlement was ancient.",
+      "note": "Useful in history and archaeology passages.",
+      "category": "history"
+    }
+  ]
+}
