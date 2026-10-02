@@ -63,9 +63,8 @@
     }
   }
   function showLocked(title,body,href,label){
-    $('#packSetup')?.setAttribute('hidden','');
-    const l=$('#packEmpty');
-    if(l){l.hidden=false;l.innerHTML='<div class="lock-state"><div class="lock-state-icon">🔐</div><b>'+esc(title)+'</b><p>'+esc(body)+'</p>'+(href?'<a id="lockedAction" href="'+esc(href)+'">'+esc(label)+'</a>':'<button id="lockedAction" class="ghost-btn" type="button">'+esc(label)+'</button>')+'</div>';}
+    const setup=$('#packSetup');if(!setup)return;
+    setup.innerHTML='<div class="lock-state"><div class="lock-state-icon">🔐</div><b>'+esc(title)+'</b><p>'+esc(body)+'</p>'+(href?'<a id="lockedAction" href="'+esc(href)+'">'+esc(label)+'</a>':'<button id="lockedAction" class="ghost-btn" type="button">'+esc(label)+'</button>')+'</div>';
   }
   function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
   function buildQuestions(pool,count){
