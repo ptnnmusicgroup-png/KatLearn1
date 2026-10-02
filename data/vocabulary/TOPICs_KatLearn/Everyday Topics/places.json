@@ -1,0 +1,407 @@
+{
+  "id": "places",
+  "name": "Places Topic – Dùng hằng ngày",
+  "description": "KatLearn core everyday vocabulary",
+  "words": [
+    {
+      "word": "place",
+      "mean": "place",
+      "pron": "",
+      "type": "word",
+      "example": "I use “place” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "home",
+      "mean": "home",
+      "pron": "",
+      "type": "word",
+      "example": "I use “home” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "house",
+      "mean": "house",
+      "pron": "",
+      "type": "word",
+      "example": "I use “house” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "school",
+      "mean": "school",
+      "pron": "",
+      "type": "word",
+      "example": "I use “school” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "office",
+      "mean": "office",
+      "pron": "",
+      "type": "word",
+      "example": "I use “office” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "shop",
+      "mean": "shop",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shop” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "store",
+      "mean": "store",
+      "pron": "",
+      "type": "word",
+      "example": "I use “store” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "market",
+      "mean": "market",
+      "pron": "",
+      "type": "word",
+      "example": "I use “market” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "mall",
+      "mean": "mall",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mall” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "restaurant",
+      "mean": "restaurant",
+      "pron": "",
+      "type": "word",
+      "example": "I use “restaurant” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "cafe",
+      "mean": "cafe",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cafe” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "hospital",
+      "mean": "hospital",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hospital” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "clinic",
+      "mean": "clinic",
+      "pron": "",
+      "type": "word",
+      "example": "I use “clinic” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "bank",
+      "mean": "bank",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bank” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "library",
+      "mean": "library",
+      "pron": "",
+      "type": "word",
+      "example": "I use “library” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "museum",
+      "mean": "museum",
+      "pron": "",
+      "type": "word",
+      "example": "I use “museum” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "park",
+      "mean": "park",
+      "pron": "",
+      "type": "word",
+      "example": "I use “park” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "station",
+      "mean": "station",
+      "pron": "",
+      "type": "word",
+      "example": "I use “station” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "airport",
+      "mean": "airport",
+      "pron": "",
+      "type": "word",
+      "example": "I use “airport” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "hotel",
+      "mean": "hotel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hotel” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "beach",
+      "mean": "beach",
+      "pron": "",
+      "type": "word",
+      "example": "I use “beach” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "mountain",
+      "mean": "mountain",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mountain” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "river",
+      "mean": "river",
+      "pron": "",
+      "type": "word",
+      "example": "I use “river” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "lake",
+      "mean": "lake",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lake” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "sea",
+      "mean": "sea",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sea” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "city",
+      "mean": "city",
+      "pron": "",
+      "type": "word",
+      "example": "I use “city” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "town",
+      "mean": "town",
+      "pron": "",
+      "type": "word",
+      "example": "I use “town” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "village",
+      "mean": "village",
+      "pron": "",
+      "type": "word",
+      "example": "I use “village” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "street",
+      "mean": "street",
+      "pron": "",
+      "type": "word",
+      "example": "I use “street” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "road",
+      "mean": "road",
+      "pron": "",
+      "type": "word",
+      "example": "I use “road” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "bridge",
+      "mean": "bridge",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bridge” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "building",
+      "mean": "building",
+      "pron": "",
+      "type": "word",
+      "example": "I use “building” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "room",
+      "mean": "room",
+      "pron": "",
+      "type": "word",
+      "example": "I use “room” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "kitchen",
+      "mean": "kitchen",
+      "pron": "",
+      "type": "word",
+      "example": "I use “kitchen” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "bathroom",
+      "mean": "bathroom",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bathroom” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "classroom",
+      "mean": "classroom",
+      "pron": "",
+      "type": "word",
+      "example": "I use “classroom” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "garden",
+      "mean": "garden",
+      "pron": "",
+      "type": "word",
+      "example": "I use “garden” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "yard",
+      "mean": "yard",
+      "pron": "",
+      "type": "word",
+      "example": "I use “yard” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "center",
+      "mean": "center",
+      "pron": "",
+      "type": "word",
+      "example": "I use “center” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "corner",
+      "mean": "corner",
+      "pron": "",
+      "type": "word",
+      "example": "I use “corner” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "entrance",
+      "mean": "entrance",
+      "pron": "",
+      "type": "word",
+      "example": "I use “entrance” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "exit",
+      "mean": "exit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “exit” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "floor",
+      "mean": "floor",
+      "pron": "",
+      "type": "word",
+      "example": "I use “floor” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "door",
+      "mean": "door",
+      "pron": "",
+      "type": "word",
+      "example": "I use “door” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "window",
+      "mean": "window",
+      "pron": "",
+      "type": "word",
+      "example": "I use “window” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "address",
+      "mean": "address",
+      "pron": "",
+      "type": "word",
+      "example": "I use “address” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "area",
+      "mean": "area",
+      "pron": "",
+      "type": "word",
+      "example": "I use “area” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "nearby",
+      "mean": "nearby",
+      "pron": "",
+      "type": "word",
+      "example": "I use “nearby” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "outside",
+      "mean": "outside",
+      "pron": "",
+      "type": "word",
+      "example": "I use “outside” in everyday life.",
+      "note": "Everyday places vocabulary."
+    },
+    {
+      "word": "inside",
+      "mean": "inside",
+      "pron": "",
+      "type": "word",
+      "example": "I use “inside” in everyday life.",
+      "note": "Everyday places vocabulary."
+    }
+  ]
+}
