@@ -56,6 +56,174 @@ const SYNC_CONFIG={
   packs:{source:"publicPacks",limit:20,fields:null}
 };
 
+async function syncAuthAccounts(db,auth,decoded){
+  const authUsers=await listAllAuthUsers(auth);
+  const [profilesSnap,accountsSnap]=await Promise.all([
+    db.collection("users").get(),
+    db.collection("accounts").select("uid","email","accountCode","displayName","loginName","createdAt").get()
+  ]);
+
+  const profiles=new Map(profilesSnap.docs.map(doc=>[doc.id,{id:doc.id,...(doc.data()||{})}]));
+  const accountsByUid=new Map();
+  const accountsByEmail=new Map();
+
+  for(const doc of accountsSnap.docs){
+    const data=doc.data()||{};
+    const accountCode=String(data.accountCode||doc.id||"").trim();
+    if(!accountCode)continue;
+    const uid=String(data.uid||"").trim();
+    const email=String(data.email||"").trim().toLowerCase();
+    const item={id:doc.id,...serialize(data)};
+    if(uid&&!accountsByUid.has(uid))accountsByUid.set(uid,item);
+    if(email&&!accountsByEmail.has(email))accountsByEmail.set(email,item);
+  }
+
+  const accountCodeOwner=new Map();
+  accountsSnap.docs.forEach(doc=>{
+    const data=doc.data()||{};
+    const code=String(data.accountCode||doc.id||"").trim();
+    const uid=String(data.uid||"").trim();
+    if(code&&uid)accountCodeOwner.set(code,uid);
+  });
+
+  function prefixFor(user){
+    const strip=value=>String(value||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"");
+    const part=(value,fallback)=>strip(value).trim().replace(/[^a-zA-Z0-9.@_-]+/g,"")||fallback;
+    const displayPart=(value,fallback)=>strip(value).trim().replace(/[^a-zA-Z0-9]+/g,"")||fallback;
+    const login=part(String(user?.email||"").split("@")[0],"katlearn");
+    const display=displayPart(user?.displayName||String(user?.email||"").split("@")[0]||"student","Student");
+    return{login,display};
+  }
+
+  async function allocateAccountCode(user){
+    const sequenceRef=db.collection("system").doc("accountSequence");
+    return db.runTransaction(async tx=>{
+      const seqSnap=await tx.get(sequenceRef);
+      const next=Number(seqSnap.exists?seqSnap.data()?.lastIssued:0)+1;
+      const prefix=prefixFor(user);
+      const code=prefix.login+"_"+prefix.display+"_"+String(next).padStart(3,"0");
+      tx.set(sequenceRef,{lastIssued:next,updatedAt:new Date()},{merge:true});
+      return code;
+    });
+  }
+
+  const mirror=db.collection(ADMIN_SYNC_COLLECTION).doc("users").collection("items");
+  const now=Date.now();
+  const stats={total:authUsers.length,processed:0,accountsCreated:0,uidsRepaired:0,profilesCreated:0,profilesUpdated:0,skipped:0};
+
+  for(const user of authUsers){
+    const uid=String(user.uid||"").trim();
+    if(!uid){stats.skipped++;continue;}
+    const email=String(user.email||"").trim().toLowerCase();
+    const existingProfile=profiles.get(uid)||{};
+    let accountCode=String(existingProfile.accountCode||"").trim();
+    let existingAccount=accountCode?null:null;
+
+    if(accountCode){
+      existingAccount=accountsSnap.docs.find(doc=>String(doc.id)===accountCode)?.data()||null;
+    }
+    if(!existingAccount){
+      existingAccount=accountsByUid.get(uid)||null;
+      if(!accountCode&&existingAccount)accountCode=String(existingAccount.accountCode||existingAccount.id||"").trim();
+    }
+    if(!existingAccount&&email){
+      const candidate=accountsByEmail.get(email);
+      const candidateUid=String(candidate?.uid||"").trim();
+      if(candidate&&(!candidateUid||candidateUid===uid)){
+        existingAccount=candidate;
+        if(!accountCode)accountCode=String(candidate.accountCode||candidate.id||"").trim();
+      }
+    }
+
+    if(!accountCode){
+      accountCode=await allocateAccountCode(user);
+      stats.accountsCreated++;
+    }else if(String(existingAccount?.uid||"")!==uid){
+      stats.uidsRepaired++;
+    }
+
+    const profileRef=db.collection("users").doc(uid);
+    const roleFromAuth=String(
+      email==="katlearn.admin@gmail.com" ? "admin" :
+      user.customClaims?.teacherAccess===true ? "teacher" :
+      existingProfile.role || ""
+    ).trim();
+
+    const profilePatch={
+      uid,
+      accountCode,
+      email:String(user.email||existingProfile.email||""),
+      displayName:String(user.displayName||existingProfile.displayName||existingProfile.name||""),
+      updatedAt:new Date()
+    };
+    if(roleFromAuth&&!existingProfile.role)profilePatch.role=roleFromAuth;
+    if(!existingProfile.createdAt)profilePatch.createdAt=new Date();
+    await profileRef.set(profilePatch,{merge:true});
+
+    const accountRef=db.collection("accounts").doc(accountCode);
+    await accountRef.set({
+      accountCode,
+      uid,
+      email:String(user.email||existingProfile.email||""),
+      displayName:String(user.displayName||existingProfile.displayName||existingProfile.name||""),
+      loginName:prefixFor(user).login,
+      createdAt:existingAccount?.createdAt||existingProfile.createdAt||new Date(),
+      updatedAt:new Date()
+    },{merge:true});
+
+    await accountRef.collection("memory").doc("meta").set({
+      accountCode,uid,
+      email:String(user.email||existingProfile.email||""),
+      displayName:String(user.displayName||existingProfile.displayName||existingProfile.name||""),
+      updatedAt:new Date()
+    },{merge:true});
+
+    const authRow=authUserRow(user);
+    const mirrorData={
+      ...serialize(existingProfile),
+      ...authRow,
+      uid,
+      accountCode,
+      email:String(user.email||existingProfile.email||""),
+      displayName:String(user.displayName||existingProfile.displayName||existingProfile.name||""),
+      name:String(existingProfile.name||user.displayName||user.email||"")
+    };
+    await mirror.doc(uid).set({
+      sourceId:uid,
+      sourceCollection:"users + firebase_auth",
+      data:serialize(mirrorData),
+      syncedAt:now
+    },{merge:true});
+
+    if(profiles.has(uid))stats.profilesUpdated++;else stats.profilesCreated++;
+    stats.processed++;
+  }
+
+  await db.collection(ADMIN_SYNC_COLLECTION).doc("users").set({
+    sourceCollection:"firebase_auth + users",
+    total:authUsers.length,
+    processed:stats.processed,
+    accountsCreated:stats.accountsCreated,
+    uidsRepaired:stats.uidsRepaired,
+    profilesCreated:stats.profilesCreated,
+    profilesUpdated:stats.profilesUpdated,
+    skipped:stats.skipped,
+    done:true,
+    updatedAt:now
+  },{merge:true});
+
+  await audit(db,decoded,"sync.complete","users",{
+    source:"firebase_auth",
+    total:stats.total,
+    processed:stats.processed,
+    accountsCreated:stats.accountsCreated,
+    uidsRepaired:stats.uidsRepaired,
+    profilesCreated:stats.profilesCreated
+  });
+
+  return{entity:"users",...stats,done:true};
+}
+
 async function syncDirectoryChunk(db,decoded,entity,cursor,requestedLimit){
   const config=SYNC_CONFIG[String(entity||"").toLowerCase()];
   if(!config)throw fail(new Error("Loại dữ liệu đồng bộ không hợp lệ."),400,"bad_sync_entity");
@@ -1390,6 +1558,7 @@ module.exports=async(req,res)=>{
     if(action==="reject-teacher")return writeJson(res,200,{ok:true,...await teacherChange(db,decoded,body.uid,"reject")},origin);
     if(action==="delete-pack")return writeJson(res,200,{ok:true,...await deletePack(db,decoded,body.packId)},origin);
     if(action==="update-pack")return writeJson(res,200,{ok:true,...await updatePublicPack(db,decoded,body.packId,body.name,body.words)},origin);
+    if(action==="sync-auth-accounts")return writeJson(res,200,{ok:true,...await syncAuthAccounts(db,auth,decoded)},origin);
     if(action==="sync-directory-chunk")return writeJson(res,200,{ok:true,...await syncDirectoryChunk(db,decoded,body.entity,body.cursor,body.limit)},origin);
      if(action==="sync-all-personal-packs")return writeJson(res,200,{ok:true,...await syncAllPersonalPacks(db,decoded)},origin);
     if(action==="sync-code-public-packs")return writeJson(res,200,{ok:true,...await syncCodePublicPacks(db,decoded)},origin);
