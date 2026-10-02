@@ -129,59 +129,101 @@ function renderCoreTopicGroups(core=[]){
   return core.map(topic=>'<div class="published-pack"><span>🧠</span><div><b>'+esc(topic.name)+'</b><small>Kho từ KatLearn</small></div><button data-core-topic="'+esc(topic.id)+'">Học</button></div>').join('');
 }
 
-let katLibraryFolder='';
+let katLibraryPath=[];
 
-function katLibraryFolderIcon(category){
-  const key=String(category||'').toLowerCase();
-  if(key.includes('everyday'))return '🌷';
-  if(key.includes('ielts'))return '🎓';
-  if(key.includes('school'))return '🏫';
-  if(key.includes('cefr'))return '📈';
-  if(key.includes('academic'))return '✍️';
-  if(key.includes('skill'))return '🧩';
-  if(key.includes('exam'))return '📝';
-  if(key.includes('foundation'))return '🧱';
-  if(key.includes('toeic')||key.includes('workplace'))return '💼';
-  if(key.includes('specialized'))return '🛠️';
-  if(key.includes('community'))return '🌐';
-  return '📁';
+function katLibraryTree(core=[],packs=[],assigned=[]){
+  const base=(window.katlearnCoreVocabulary?.library||[]).map(node=>({
+    ...node,
+    children:Array.isArray(node.children)?node.children.map(child=>({...child,children:Array.isArray(child.children)?child.children:[]})):[],
+  }));
+  const everyday=base.find(x=>x.id==='everyday');
+  const everydayTopics=everyday?.children?.find(x=>x.id==='everyday-topics');
+  if(everydayTopics){
+    everydayTopics.children=core.filter(x=>x.category==='Everyday Topics').map(x=>({
+      id:'topic:'+x.id,name:x.name,icon:'📘',packId:x.id
+    }));
+  }
+  if(assigned.length)base.push({id:'assigned',name:'Bài được giao',icon:'📩',children:assigned.map(p=>({id:'assigned:'+p.id,name:p.name,icon:'📩',packId:p.id,assigned:true}))});
+  if(packs.length)base.push({id:'community',name:'Cộng đồng KatLearn',icon:'🌐',children:packs.map(p=>({id:'community:'+p.id,name:p.name,icon:'📚',packId:p.id,community:true}))});
+  return base;
 }
 
-function katLibraryFolderGroups(core=[],packs=[],assigned=[]){
-  const groups=new Map();
-  const add=(category,items)=>{const key=category||'KatLearn Library';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(...items)};
-  core.forEach(topic=>add(topic.category,[{type:'core',...topic}]));
-  assigned.forEach(pack=>add('Bài được giao',[{type:'pack',pack}]));
-  packs.forEach(pack=>add('Cộng đồng KatLearn',[{type:'pack',pack}]));
-  return [...groups.entries()].map(([name,items])=>({name,items}));
+function katLibraryFolderCount(node){
+  if(Array.isArray(node.children)&&node.children.length)return node.children.length+' mục';
+  if(Array.isArray(node.words))return node.words.length+' từ';
+  return '';
 }
 
-function renderKatLibraryFolderView(core=[],packs=[],assigned=[]){
+function katLibraryFindNode(tree,path=[]){
+  let level=tree,node=null;
+  for(const id of path){
+    node=level.find(x=>x.id===id);
+    if(!node)return null;
+    level=Array.isArray(node.children)?node.children:[];
+  }
+  return node;
+}
+
+async function katLibraryOpenLeaf(node,core=[],packs=[],assigned=[]){
+  if(!node?.packId)return;
+  const coreTopic=core.find(x=>x.id===node.packId);
+  let pack;
+  if(coreTopic){
+    pack=await loadCoreTopic(node.packId);
+  }else{
+    pack=packs.concat(assigned).find(x=>x.id===node.packId);
+  }
+  if(!pack)throw new Error('Không tìm thấy bộ từ '+node.name);
+  let words=Array.isArray(pack.words)?pack.words.slice():[];
+  if(Array.isArray(node.words)) {
+    const wanted=new Set(node.words.map(String));
+    words=words.filter(w=>wanted.has(String(w.word)));
+  } else if(Array.isArray(node.categories)) {
+    const wanted=new Set(node.categories.map(String));
+    words=words.filter(w=>wanted.has(String(w.category||'')));
+  }
+  if(!words.length)throw new Error(node.name+' chưa có dữ liệu phù hợp.');
+  openVocabularyPack({...pack,name:node.name,words});
+}
+
+function renderKatLibraryHierarchy(core=[],packs=[],assigned=[]){
   const library=$('#packLibrary');
   if(!library)return;
-  const folders=katLibraryFolderGroups(core,packs,assigned);
-  if(katLibraryFolder){
-    const folder=folders.find(x=>x.name===katLibraryFolder);
-    if(!folder){katLibraryFolder='';return renderKatLibraryFolderView(core,packs,assigned)}
-    const items=folder.items;
-    const cards=items.map(item=>{
-      if(item.type==='core'){
-        return '<article class="pack-tile"><div class="tile-icon">🧠</div><h3>'+esc(item.name)+'</h3><p>Kho từ KatLearn · '+esc(folder.name)+'</p><button data-core-topic="'+esc(item.id)+'">Học bộ từ →</button></article>';
-      }
-      const pack=item.pack;
-      const count=Array.isArray(pack.words)?pack.words.length:0;
-      const icon=pack.assigned?'📩':'📚';
-      return '<article class="pack-tile"><div class="tile-icon">'+icon+'</div><h3>'+esc(pack.name)+'</h3><p>'+(count?count+' từ vựng · ':'')+(pack.assigned?'Bài được giao':'Cộng đồng KatLearn')+'</p><button data-pack="'+esc(pack.id)+'">'+(pack.assigned?'Học':'Mở pack')+' →</button></article>';
-    }).join('');
-    library.innerHTML='<div class="kat-library-toolbar"><button type="button" class="kat-library-back" id="katLibraryBack">← Thư viện</button><div><b>'+esc(folder.name)+'</b><small>'+items.length+' bộ từ</small></div></div><div class="pack-library-grid">'+(cards||'<div class="empty-state">Thư mục này chưa có bộ từ. 🐱</div>')+'</div>';
-    $('#katLibraryBack')?.addEventListener('click',()=>{katLibraryFolder='';renderKatLibraryFolderView(core,packs,assigned)});
-    $$('[data-pack]').forEach(btn=>btn.onclick=()=>{const pack=packs.concat(assigned).find(p=>p.id===btn.dataset.pack);if(pack)openVocabularyPack(pack)});
-    $$('[data-core-topic]').forEach(btn=>btn.onclick=()=>void openCoreTopic(btn.dataset.coreTopic));
+  const tree=katLibraryTree(core,packs,assigned);
+  const node=katLibraryFindNode(tree,katLibraryPath);
+  const level=node?node.children||[]:tree;
+
+  if(node?.packId&&!level.length){
+    const count=node.words?.length||node.categories?.length||'';
+    library.innerHTML='<div class="kat-library-toolbar"><button type="button" class="kat-library-back" id="katLibraryBack">← Quay lại</button><div><b>'+esc(node.name)+'</b><small>'+(count?(count+' từ chọn lọc'):'Bộ từ KatLearn')+'</small></div></div><div class="kat-library-leaf-card"><span>'+esc(node.icon||'📘')+'</span><div><h3>'+esc(node.name)+'</h3><p>Nhóm từ được KatLearn chọn lọc theo mục tiêu học tập.</p></div><button type="button" id="katLibraryOpenLeaf">Học bộ từ →</button></div>';
+    $('#katLibraryBack')?.addEventListener('click',()=>{katLibraryPath.pop();renderKatLibraryHierarchy(core,packs,assigned)});
+    $('#katLibraryOpenLeaf')?.addEventListener('click',()=>void katLibraryOpenLeaf(node,core,packs,assigned).catch(err=>toast('Không tải được bộ từ: '+(err.message||'Lỗi'))));
     return;
   }
-  const folderCards=folders.map((folder,index)=>'<button type="button" class="kat-library-folder" data-library-folder="'+esc(folder.name)+'"><span class="kat-library-folder-icon">'+katLibraryFolderIcon(folder.name)+'</span><span class="kat-library-folder-copy"><b>'+esc(folder.name)+'</b><small>'+folder.items.length+' bộ từ</small></span><span class="kat-library-folder-arrow">›</span></button>').join('');
-  library.innerHTML='<div class="kat-library-folder-head"><div><p class="eyebrow">KATLEARN VOCABULARY LIBRARY</p><h2>Thư viện từ vựng</h2><p>Chọn một thư mục để khám phá các bộ từ được KatLearn tổng hợp và chuẩn hóa.</p></div><span class="kat-library-folder-count">'+folders.length+' thư mục</span></div><div class="kat-library-folder-grid">'+(folderCards||'<div class="empty-state">Chưa có dữ liệu thư viện. 🐱</div>')+'</div>';
-  $$('[data-library-folder]').forEach(btn=>btn.onclick=()=>{katLibraryFolder=btn.dataset.libraryFolder;renderKatLibraryFolderView(core,packs,assigned)});
+
+  const parentLabel=node?.name||'Thư viện từ vựng';
+  const cards=level.map(child=>{
+    const count=katLibraryFolderCount(child);
+    const icon=child.icon||'📁';
+    return '<button type="button" class="kat-library-folder" data-library-node="'+esc(child.id)+'"><span class="kat-library-folder-icon">'+icon+'</span><span class="kat-library-folder-copy"><b>'+esc(child.name)+'</b><small>'+(count||'Khám phá bộ từ')+'</small></span><span class="kat-library-folder-arrow">›</span></button>';
+  }).join('');
+  library.innerHTML=(node?'<div class="kat-library-toolbar"><button type="button" class="kat-library-back" id="katLibraryBack">← Quay lại</button><div><b>'+esc(parentLabel)+'</b><small>'+level.length+' mục</small></div></div>':'<div class="kat-library-folder-head"><div><p class="eyebrow">KATLEARN VOCABULARY LIBRARY</p><h2>Thư viện từ vựng</h2><p>Khám phá từ vựng theo mục tiêu, kỹ năng và nhóm sử dụng.</p></div><span class="kat-library-folder-count">'+level.length+' mục lớn</span></div>')+'<div class="kat-library-folder-grid">'+(cards||'<div class="empty-state">Thư mục này đang được Kat bổ sung. 🐱</div>')+'</div>';
+  $('#katLibraryBack')?.addEventListener('click',()=>{katLibraryPath.pop();renderKatLibraryHierarchy(core,packs,assigned)});
+  $$('[data-library-node]').forEach(btn=>btn.onclick=()=>{
+    const child=level.find(x=>x.id===btn.dataset.libraryNode);
+    if(!child)return;
+    if(Array.isArray(child.children)&&child.children.length){
+      katLibraryPath.push(child.id);
+      renderKatLibraryHierarchy(core,packs,assigned);
+    }else{
+      katLibraryPath.push(child.id);
+      renderKatLibraryHierarchy(core,packs,assigned);
+    }
+  });
+}
+
+function renderCoreTopicGroups(core=[]){
+  return core.map(topic=>'<div class="published-pack"><span>🧠</span><div><b>'+esc(topic.name)+'</b><small>Kho từ KatLearn</small></div><button data-core-topic="'+esc(topic.id)+'">Học</button></div>').join('');
 }
 
 function renderPackLibrary(packs=[],assigned=[]){
@@ -189,10 +231,12 @@ function renderPackLibrary(packs=[],assigned=[]){
   if(!library)return;
   const signedIn=!!window.studyStore?.user;
   const core=window.katlearnCoreVocabulary?.topics||[];
-  const current=signedIn&&vocab.length?[{id:'current',name:'Bộ từ đang học',words:vocab,current:true},...assigned,...packs]:[...assigned,...packs];
-  const seen=new Set();
-  const all=current.filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true});
-  renderKatLibraryFolderView(core,packs,assigned);
+  const safePacks=packs||[];
+  const safeAssigned=assigned||[];
+  if(!signedIn&&katLibraryPath.length===0){
+    // Public core library remains visible even before login; community packs still follow existing auth behavior.
+  }
+  renderKatLibraryHierarchy(core,safePacks,safeAssigned);
 }
 let publicPackRenderPromise=null;
 let publicPackRenderUid='';
