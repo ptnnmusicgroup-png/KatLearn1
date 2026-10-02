@@ -1,0 +1,399 @@
+{
+  "id": "technology",
+  "name": "Technology_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for technology.",
+  "words": [
+    {
+      "word": "computer",
+      "mean": "computer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “computer” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "laptop",
+      "mean": "laptop",
+      "pron": "",
+      "type": "word",
+      "example": "I use “laptop” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "phone",
+      "mean": "phone",
+      "pron": "",
+      "type": "word",
+      "example": "I use “phone” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "tablet",
+      "mean": "tablet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tablet” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "screen",
+      "mean": "screen",
+      "pron": "",
+      "type": "word",
+      "example": "I use “screen” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "keyboard",
+      "mean": "keyboard",
+      "pron": "",
+      "type": "word",
+      "example": "I use “keyboard” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "mouse",
+      "mean": "mouse",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mouse” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "printer",
+      "mean": "printer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “printer” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "camera",
+      "mean": "camera",
+      "pron": "",
+      "type": "word",
+      "example": "I use “camera” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "battery",
+      "mean": "battery",
+      "pron": "",
+      "type": "word",
+      "example": "I use “battery” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "charger",
+      "mean": "charger",
+      "pron": "",
+      "type": "word",
+      "example": "I use “charger” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "cable",
+      "mean": "cable",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cable” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "device",
+      "mean": "device",
+      "pron": "",
+      "type": "word",
+      "example": "I use “device” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "software",
+      "mean": "software",
+      "pron": "",
+      "type": "word",
+      "example": "I use “software” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "hardware",
+      "mean": "hardware",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hardware” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "app",
+      "mean": "app",
+      "pron": "",
+      "type": "word",
+      "example": "I use “app” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "program",
+      "mean": "program",
+      "pron": "",
+      "type": "word",
+      "example": "I use “program” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "file",
+      "mean": "file",
+      "pron": "",
+      "type": "word",
+      "example": "I use “file” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "folder",
+      "mean": "folder",
+      "pron": "",
+      "type": "word",
+      "example": "I use “folder” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "cloud",
+      "mean": "cloud",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cloud” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "internet",
+      "mean": "internet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “internet” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "wifi",
+      "mean": "wifi",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wifi” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "network",
+      "mean": "network",
+      "pron": "",
+      "type": "word",
+      "example": "I use “network” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "password",
+      "mean": "password",
+      "pron": "",
+      "type": "word",
+      "example": "I use “password” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "account",
+      "mean": "account",
+      "pron": "",
+      "type": "word",
+      "example": "I use “account” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "website",
+      "mean": "website",
+      "pron": "",
+      "type": "word",
+      "example": "I use “website” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "browser",
+      "mean": "browser",
+      "pron": "",
+      "type": "word",
+      "example": "I use “browser” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "search",
+      "mean": "search",
+      "pron": "",
+      "type": "word",
+      "example": "I use “search” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "download",
+      "mean": "download",
+      "pron": "",
+      "type": "word",
+      "example": "I use “download” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "upload",
+      "mean": "upload",
+      "pron": "",
+      "type": "word",
+      "example": "I use “upload” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "update",
+      "mean": "update",
+      "pron": "",
+      "type": "word",
+      "example": "I use “update” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "install",
+      "mean": "install",
+      "pron": "",
+      "type": "word",
+      "example": "I use “install” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "delete",
+      "mean": "delete",
+      "pron": "",
+      "type": "word",
+      "example": "I use “delete” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "save",
+      "mean": "save",
+      "pron": "",
+      "type": "word",
+      "example": "I use “save” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "open",
+      "mean": "open",
+      "pron": "",
+      "type": "word",
+      "example": "I use “open” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "close",
+      "mean": "close",
+      "pron": "",
+      "type": "word",
+      "example": "I use “close” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "click",
+      "mean": "click",
+      "pron": "",
+      "type": "word",
+      "example": "I use “click” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "type",
+      "mean": "type",
+      "pron": "",
+      "type": "word",
+      "example": "I use “type” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "copy",
+      "mean": "copy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “copy” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "paste",
+      "mean": "paste",
+      "pron": "",
+      "type": "word",
+      "example": "I use “paste” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "share",
+      "mean": "share",
+      "pron": "",
+      "type": "word",
+      "example": "I use “share” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "message",
+      "mean": "message",
+      "pron": "",
+      "type": "word",
+      "example": "I use “message” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "video",
+      "mean": "video",
+      "pron": "",
+      "type": "word",
+      "example": "I use “video” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "photo",
+      "mean": "photo",
+      "pron": "",
+      "type": "word",
+      "example": "I use “photo” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "audio",
+      "mean": "audio",
+      "pron": "",
+      "type": "word",
+      "example": "I use “audio” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "digital",
+      "mean": "digital",
+      "pron": "",
+      "type": "word",
+      "example": "I use “digital” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "online",
+      "mean": "online",
+      "pron": "",
+      "type": "word",
+      "example": "I use “online” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "smart",
+      "mean": "smart",
+      "pron": "",
+      "type": "word",
+      "example": "I use “smart” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    },
+    {
+      "word": "technology",
+      "mean": "technology",
+      "pron": "",
+      "type": "word",
+      "example": "I use “technology” in everyday life.",
+      "note": "Everyday technology vocabulary."
+    }
+  ]
+}
