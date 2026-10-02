@@ -17,51 +17,8 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       <select class="sp-type"><option value="">LOẠI TỪ</option><option>noun</option><option>verb</option><option>adjective</option><option>adverb</option><option>phrase</option><option>other</option></select>
       <input class="sp-example" value="${esc(data.example||'')}" placeholder="VÍ DỤ">
       <input class="sp-note" value="${esc(data.note||'')}" placeholder="GHI CHÚ">
-      <button type="button" class="sp-ai" title="AI tự điền nghĩa + phiên âm">✨</button>
       <button type="button" class="sp-remove" title="Xóa dòng">×</button>`;
     el.querySelector('.sp-type').value=normalizeType(data.type);
-    const wordInput=el.querySelector('.sp-word');
-    const aiBtn=el.querySelector('.sp-ai');
-
-    async function aiAssist(force=false){
-      const word=wordInput.value.trim();
-      if(!word)return toast('Nhập từ tiếng Anh trước nhé! ✨');
-      if(!force && el.dataset.aiWord===word && (el.querySelector('.sp-mean').value||el.querySelector('.sp-pron').value))return;
-
-      const old=aiBtn.textContent;
-      aiBtn.disabled=true;
-      aiBtn.textContent='…';
-
-      try{
-        const res=await fetch(aiEndpoint('vocab-assist'),{
-          method:'POST',
-          headers:await aiHeaders(),
-          body:JSON.stringify({word})
-        });
-        const data=await res.json();
-        if(!res.ok)throw new Error(data.error||'Kat AI chưa sẵn sàng.');
-
-        const mean=el.querySelector('.sp-mean');
-        const pron=el.querySelector('.sp-pron');
-        if(!mean.value.trim()||force)mean.value=String(data.meaning||'').trim();
-        if(!pron.value.trim()||force)pron.value=String(data.pronunciation||'').trim();
-        el.dataset.aiWord=word;
-      }catch(e){
-        toast('AI chưa điền được: '+(e.message||'Lỗi không xác định'));
-      }finally{
-        aiBtn.disabled=false;
-        aiBtn.textContent=old;
-      }
-    }
-
-    aiBtn.onclick=()=>aiAssist(true);
-    wordInput.addEventListener('blur',()=>{void aiAssist(false)});
-    wordInput.addEventListener('keydown',e=>{
-      if(e.key==='Enter'){
-        e.preventDefault();
-        void aiAssist(true);
-      }
-    });
     el.querySelector('.sp-remove').onclick=()=>{
       if($$('.student-pack-row').length<=1)return toast('Bộ từ cần ít nhất một từ nhé!');
       el.remove();
@@ -87,55 +44,51 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     return 'other';
   }
 
-  async function generateWithAI(){
-    const prompt=$('#studentPackAiPrompt')?.value.trim();
-    const wordCount=Math.min(100,Math.max(5,Number($('#studentPackAiCount')?.value)||50));
-    const difficulty=$('#studentPackAiDifficulty')?.value||'intermediate';
+  async function generateEnteredWordsWithAI(){
+    const rows=[...$('.student-pack-row')];
+    const words=[];
+    const seen=new Set();
+    for(const row of rows){
+      const input=row.querySelector('.sp-word');
+      const word=String(input?.value||'').trim().replace(/\s+/g,' ');
+      if(!word)continue;
+      const key=word.toLowerCase();
+      if(seen.has(key))continue;
+      seen.add(key);
+      words.push(word);
+    }
     const btn=$('#studentPackAiBtn');
     const status=$('#studentPackAiStatus');
-
-    if(!prompt)return toast('Nhập chủ đề hoặc yêu cầu cho Kat AI trước nhé! ✨');
-
+    const difficulty=$('#studentPackAiDifficulty')?.value||'intermediate';
+    if(!words.length)return toast('Hãy nhập ít nhất một từ tiếng Anh trước nhé! ✨');
+    if(words.length>100)return toast('Mỗi bộ từ tối đa 100 từ nhé!');
     btn.disabled=true;
-    btn.textContent='🤖 Đang tạo...';
-    if(status)status.textContent=`Kat AI đang xử lý ${wordCount} từ trong 1 lần gọi...`;
-
+    btn.textContent='🤖 Đang hoàn thiện...';
+    if(status)status.textContent=`Kat AI đang hoàn thiện ${words.length} từ trong 1 request duy nhất...`;
     try{
       const res=await fetch(aiEndpoint('ai-pack'),{
         method:'POST',
         headers:await aiHeaders(),
-        body:JSON.stringify({prompt,wordCount,difficulty,purpose:'personal vocabulary pack',wordTypes:'mixed'})
+        body:JSON.stringify({mode:'enrich',words,difficulty})
       });
       const data=await res.json();
       if(!res.ok)throw new Error(data.error||'Kat AI chưa sẵn sàng.');
-
-      const words=Array.isArray(data.words)?data.words:[];
-      if(!words.length)throw new Error('Kat AI không trả về từ vựng.');
-
-      const rows=$('#studentPackRows');
-      rows.innerHTML='';
-      words.forEach(w=>rows.append(row({
-        word:w.word,
-        pron:w.ipa,
-        mean:w.meaning_vi,
-        type:w.part_of_speech,
-        example:w.example,
-        note:w.notes
-      })));
+      const result=Array.isArray(data.words)?data.words:[];
+      if(result.length!==words.length)throw new Error('Kat AI chưa hoàn thiện đủ các từ trong một lần gọi.');
+      const rowsBox=$('#studentPackRows');
+      rowsBox.innerHTML='';
+      result.forEach(w=>rowsBox.append(row({word:w.word,pron:w.ipa,mean:w.meaning_vi,type:w.part_of_speech,example:w.example,note:w.notes})));
       renumber();
-
-      const suggested=String(data.pack?.suggested_title||'').trim();
       const name=$('#studentPackName');
-      if(name && !name.value.trim())name.value=suggested||prompt.slice(0,80);
-
-      if(status)status.textContent=`✓ Đã tạo ${words.length} từ bằng 1 request. Kiểm tra lại rồi bấm “Tạo bộ từ”.`;
-      toast(`✨ Kat AI đã tạo ${words.length} từ trong 1 lần gọi!`);
+      if(name&&!name.value.trim()&&data.pack?.suggested_title)name.value=String(data.pack.suggested_title).slice(0,80);
+      if(status)status.textContent=`✓ Đã hoàn thiện ${result.length} từ bằng đúng 1 request. Kiểm tra rồi bấm “Tạo bộ từ”.`;
+      toast(`✨ Kat AI đã hoàn thiện ${result.length} từ trong 1 lần gọi!`);
     }catch(e){
-      if(status)status.textContent='Kat AI chưa tạo được bộ từ.';
-      toast('Không tạo được bộ từ bằng AI: '+(e.message||'Lỗi không xác định'));
+      if(status)status.textContent='Kat AI chưa hoàn thiện được bộ từ.';
+      toast('Không hoàn thiện được bộ từ: '+(e.message||'Lỗi không xác định'));
     }finally{
       btn.disabled=false;
-      btn.textContent='✨ Tạo cả bộ bằng Kat AI';
+      btn.textContent='✨ Generate AI';
     }
   }
 
@@ -220,17 +173,17 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       <div class="modal-card student-pack-modal">
         <button class="modal-close" id="studentPackClose">×</button>
         <div class="student-pack-head">
-          <div class="student-pack-head-main"><div class="student-pack-title-icon">📚</div><div><p class="eyebrow">BỘ TỪ CÁ NHÂN</p><h2 id="studentPackTitle">Tạo bộ từ của bạn</h2><p id="studentPackSubtitle">Tự thêm từ, dùng Kat AI hoặc kết hợp cả hai cách.</p></div></div>
+          <div class="student-pack-head-main"><div class="student-pack-title-icon">📚</div><div><p class="eyebrow">BỘ TỪ CÁ NHÂN</p><h2 id="studentPackTitle">Tạo bộ từ của bạn</h2><p id="studentPackSubtitle">Nhập các từ tiếng Anh của bạn, rồi để Kat AI hoàn thiện cả bộ chỉ bằng 1 request.</p></div></div>
           <div class="student-pack-flow"><span class="active"><b>1</b> Tên bộ</span><i>→</i><span><b>2</b> Từ vựng</span><i>→</i><span><b>3</b> Lưu</span></div>
         </div>
         <section class="student-pack-create-panel"><div class="student-pack-section-label"><span>⚡</span><div><b>Tạo từ nhanh</b><small>Chọn cách bạn muốn xây bộ từ này.</small></div></div>
-          <div class="student-pack-mode-switch"><button type="button" id="studentPackModeManual" class="primary-btn">✨ Kat AI</button><button type="button" id="studentPackModeQuick" class="secondary-btn">⚡ Theo chủ đề</button></div>
+          <div class="student-pack-mode-switch"><button type="button" id="studentPackModeManual" class="primary-btn">✨ Nhập từ + AI</button><button type="button" id="studentPackModeQuick" class="secondary-btn">⚡ Theo chủ đề</button></div>
 
           <div id="studentPackManualAi" class="student-pack-mode-panel">
-            <label class="student-pack-field student-pack-ai-prompt">Yêu cầu cho Kat AI<textarea id="studentPackAiPrompt" rows="2" maxlength="600" placeholder="Ví dụ: Tạo 50 từ vựng về môi trường, phù hợp học sinh lớp 8, ưu tiên từ thường gặp trong IELTS."></textarea>
+            <label class="student-pack-field student-pack-ai-prompt">Vui lòng nhập từ tiếng Anh của bạn
+              <small style="display:block;margin:5px 0 9px;color:#8b8498">Mỗi dòng một từ · thêm dòng nếu cần · tối đa 100 từ.</small>
             </label>
             <div class="student-pack-ai-controls">
-              <label>Số từ <input id="studentPackAiCount" type="number" min="5" max="100" value="50"></label>
               <label>Trình độ
                 <select id="studentPackAiDifficulty">
                   <option value="beginner">beginner</option>
@@ -240,9 +193,9 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
                   <option value="advanced">advanced</option>
                 </select>
               </label>
-              <button type="button" id="studentPackAiBtn" class="primary-btn">✨ Tạo cả bộ bằng Kat AI</button>
+              <button type="button" id="studentPackAiBtn" class="primary-btn">✨ Generate AI</button>
             </div>
-            <small id="studentPackAiStatus" class="student-pack-status">Một lần gọi AI sẽ trả về toàn bộ dữ liệu của bộ từ.</small>
+            <small id="studentPackAiStatus" class="student-pack-status">Kat AI sẽ hoàn thiện toàn bộ các từ bạn nhập bằng đúng 1 request.</small>
           </div>
 
           <div id="studentPackQuick" class="student-pack-mode-panel" hidden>
@@ -255,7 +208,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         </div></section>
 
         <section class="student-pack-name-block"><div class="student-pack-step-kicker"><span>1</span><div><b>Đặt tên bộ từ</b><small>Tên này sẽ xuất hiện trong “Bộ từ của tôi”.</small></div></div><label class="student-pack-field"><span>Tên bộ từ</span><input id="studentPackName" maxlength="80" placeholder="Ví dụ: IELTS Unit 7"></label></section>
-        <section class="student-pack-words-section"><div class="student-pack-step-kicker"><span>2</span><div><b>Thêm và chỉnh sửa từ vựng</b><small>✨ = AI điền nghĩa + phiên âm · * = bắt buộc</small></div></div><div class="student-pack-columns"><span>#</span><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span>AI</span><span></span></div>
+        <section class="student-pack-words-section"><div class="student-pack-step-kicker"><span>2</span><div><b>Nhập từ tiếng Anh</b><small>Mỗi dòng một từ · bấm “Generate AI” để hoàn thiện cả bộ.</small></div></div><div class="student-pack-columns"><span>#</span><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span>AI</span><span></span></div>
         <div id="studentPackRows"></div>
         <button type="button" id="studentPackAddRow" class="add-word-btn">＋ Thêm một dòng</button></section>
         <div class="student-pack-footer"><div class="student-pack-count"><b id="studentPackCount">3</b><span> từ vựng</span></div><div class="student-pack-actions"><button type="button" class="secondary-btn" id="studentPackCancel">Hủy</button><button type="button" class="secondary-btn danger-action" id="studentPackDelete" hidden>Xóa bộ từ</button><button type="button" class="primary-btn student-pack-save-btn" id="studentPackSave">Tạo bộ từ <span>→</span></button></div></div>
@@ -270,7 +223,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       $('#studentPackRows').append(next);
       renumber();
     };
-    $('#studentPackAiBtn').onclick=generateWithAI;
+    $('#studentPackAiBtn').onclick=generateEnteredWordsWithAI;
     $('#studentPackQuickBtn').onclick=generateQuickWithAI;
 
     const manualMode=$('#studentPackModeManual');
@@ -299,7 +252,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     const rows=$('#studentPackRows');
     if(!rows)return;
     rows.innerHTML='';
-    const words=Array.isArray(pack?.words)&&pack.words.length?pack.words:[{}, {}, {}];
+    const words=Array.isArray(pack?.words)&&pack.words.length?pack.words:[{}, {}, {}, {}];
     words.forEach(word=>rows.append(row(word)));
     renumber();
     $('#studentPackName').value=pack?.name||'';
@@ -310,7 +263,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     if(subtitle)subtitle.textContent=pack?'Chỉnh sửa từ vựng rồi lưu lại vào bộ từ của bạn.':'Tự thêm từ, dùng Kat AI hoặc kết hợp cả hai cách.';
     if(deleteBtn)deleteBtn.hidden=!pack;
     if($('#studentPackAiPrompt'))$('#studentPackAiPrompt').value='';
-    if($('#studentPackAiStatus'))$('#studentPackAiStatus').textContent=pack?'Bạn có thể thêm dòng, chỉnh sửa hoặc xóa từ rồi bấm “Lưu thay đổi”.':'Một lần gọi AI sẽ trả về toàn bộ dữ liệu của bộ từ.';
+    if($('#studentPackAiStatus'))$('#studentPackAiStatus').textContent=pack?'Chỉnh sửa danh sách từ rồi bấm “Generate AI” để hoàn thiện lại cả bộ.':'Kat AI sẽ hoàn thiện toàn bộ các từ bạn nhập bằng đúng 1 request.';
   }
 
   async function save(){
