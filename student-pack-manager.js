@@ -5,6 +5,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   const $$=s=>document.querySelectorAll(s);
   const esc=t=>String(t??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   let editingPack=null;
+  let renderMinePromise=null,renderMineUid='';
   
   function row(data={}){
     const el=document.createElement('div');
@@ -347,50 +348,76 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   async function renderMine(){
     const box=$('#studentPersonalPacks');
     if(!box)return;
-    const uid=String(window.studyStore?.user?.uid||'');
+
+    const authUser=await window.studyStore?.waitForAuth?.();
+    const uid=String(authUser?.uid||window.studyStore?.user?.uid||'');
     if(!uid){
       box.innerHTML='';
+      $('#personalPackCount').textContent='0';
+      const wordStat=$('#personalWordCount');if(wordStat)wordStat.textContent='0';
+      const knownStat=$('#personalKnownCount');if(knownStat)knownStat.textContent='0';
       return;
     }
 
-    try{
-      if(await isManagedStudent()){
+    if(renderMinePromise&&renderMineUid===uid)return renderMinePromise;
+    renderMineUid=uid;
+    renderMinePromise=(async()=>{
+      try{
         if(String(window.studyStore?.user?.uid||'')!==uid)return;
-        $('#personalPackCount').textContent='0';
-        box.innerHTML='<div class="personal-pack-empty">🔒 Bộ từ cá nhân bị khóa vì tài khoản này đang thuộc lớp do giáo viên quản lý.</div>';
-        return;
+        box.innerHTML='<div class="personal-pack-empty">🔐 Đang xác thực tài khoản và tải bộ từ của bạn…</div>';
+
+        if(await isManagedStudent()){
+          if(String(window.studyStore?.user?.uid||'')!==uid)return;
+          $('#personalPackCount').textContent='0';
+          box.innerHTML='<div class="personal-pack-empty">🔒 Bộ từ cá nhân bị khóa vì tài khoản này đang thuộc lớp do giáo viên quản lý.</div>';
+          return;
+        }
+
+        if(String(window.studyStore?.user?.uid||'')!==uid)return;
+
+        // Firebase Auth is the identity source. Firestore personal packs are
+        // loaded only from the authenticated UID's canonical namespace.
+        const packs=await window.studyStore.personalPacks();
+
+        if(String(window.studyStore?.user?.uid||'')!==uid)return;
+        const safePacks=packs.filter(p=>String(p?.ownerUid||uid)===uid);
+        const totalWords=safePacks.reduce((sum,p)=>sum+(Array.isArray(p.words)?p.words.length:0),0);
+        const knownWords=safePacks.reduce((sum,p)=>{
+          const raw=localStorage.getItem('katlearn-known:'+uid+':personal:'+String(p.id||''));
+          try{const parsed=JSON.parse(raw||'[]');return sum+(Array.isArray(parsed)?parsed.filter(Boolean).length:0)}catch(_){return sum}
+        },0);
+
+        $('#personalPackCount').textContent=safePacks.length;
+        const wordStat=$('#personalWordCount');if(wordStat)wordStat.textContent=totalWords;
+        const knownStat=$('#personalKnownCount');if(knownStat)knownStat.textContent=Math.min(knownWords,totalWords);
+
+        box.innerHTML=safePacks.length
+          ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>${safePacks.length} bộ từ · ${totalWords} từ · đồng bộ riêng theo tài khoản.</p></div><span class="personal-pack-account-pill">🔐 ${esc(String(safePacks[0]?.ownerAccountCode||safePacks[0]?.accountCode||'').trim()||'Mã tài khoản đang đồng bộ')}</span></div><div class="personal-pack-grid">${safePacks.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng · bộ riêng</p></div><div style="display:flex;gap:7px;align-items:center"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn">⋮</button></div></article>`).join('')}</div>`
+          : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Tạo bộ từ đầu tiên →</a> 🐾</div>';
+
+        $$('[data-my-pack-menu]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openPersonalPackMenu(btn,safePacks.find(x=>x.id===btn.dataset.myPackMenu))});
+        $$('[data-my-pack]').forEach(btn=>btn.onclick=async()=>{
+          const p=safePacks.find(x=>x.id===btn.dataset.myPack);
+          if(!p)return;
+          const words=Array.isArray(p.words)?p.words:[];
+          window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:p.id,name:p.name||''}}));
+          if(typeof showPage==='function')showPage('learn');
+          toast(`Đã mở “${p.name}”.`);
+        });
+      }catch(e){
+        console.warn('[KatLearn] Personal pack UI load failed:',e);
+        if(String(window.studyStore?.user?.uid||'')===uid){
+          box.innerHTML='<div class="personal-pack-empty">Chưa thể tải bộ từ riêng lúc này. Hãy thử mở lại mục này nhé.</div>';
+        }
+      }finally{
+        if(renderMineUid===uid){
+          renderMinePromise=null;
+          renderMineUid='';
+        }
       }
-      if(String(window.studyStore?.user?.uid||'')!==uid)return;
-      const packs=await window.studyStore.personalPacks();
-      if(String(window.studyStore?.user?.uid||'')!==uid)return;
-      const safePacks=packs.filter(p=>String(p?.ownerUid||uid)===uid);
-      const totalWords=safePacks.reduce((sum,p)=>sum+(Array.isArray(p.words)?p.words.length:0),0);
-      const knownWords=safePacks.reduce((sum,p)=>{
-        const raw=localStorage.getItem('katlearn-known:'+uid+':personal:'+String(p.id||''));
-        try{const parsed=JSON.parse(raw||'[]');return sum+(Array.isArray(parsed)?parsed.filter(Boolean).length:0)}catch(_){return sum}
-      },0);
-      $('#personalPackCount').textContent=safePacks.length;
-      const wordStat=$('#personalWordCount');if(wordStat)wordStat.textContent=totalWords;
-      const knownStat=$('#personalKnownCount');if(knownStat)knownStat.textContent=Math.min(knownWords,totalWords);
-      box.innerHTML=safePacks.length
-        ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>${safePacks.length} bộ từ · ${totalWords} từ · đồng bộ riêng theo tài khoản.</p></div><span class="personal-pack-account-pill">🔐 ${esc(String(safePacks[0]?.ownerAccountCode||safePacks[0]?.accountCode||'').trim()||'Mã tài khoản đang đồng bộ')}</span></div><div class="personal-pack-grid">${safePacks.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng · bộ riêng</p></div><div style="display:flex;gap:7px;align-items:center"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn">⋮</button></div></article>`).join('')}</div>`
-        : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Tạo bộ từ đầu tiên →</a> 🐾</div>';
-
-      $$('[data-my-pack-menu]').forEach(b=>b.onclick=e=>{e.stopPropagation();openPersonalPackMenu(b,packs.find(x=>x.id===b.dataset.myPackMenu))});
-      $$('[data-edit-pack]').forEach(b=>b.onclick=()=>{const p=packs.find(x=>x.id===b.dataset.editPack);if(p)open(p)});
-      $$('[data-my-pack]').forEach(b=>b.onclick=async()=>{
-        const p=safePacks.find(x=>x.id===b.dataset.myPack);
-        if(!p)return;
-        const words=Array.isArray(p.words)?p.words:[];
-        window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:p.id,name:p.name||''}}));
-        if(typeof showPage==='function')showPage('learn');
-        toast(`Đã mở “${p.name}”.`);
-      });
-    }catch(e){
-      box.innerHTML='<div class="personal-pack-empty">Chưa thể tải bộ từ riêng lúc này.</div>';
-    }
+    })();
+    return renderMinePromise;
   }
-
   window.renderStudentPersonalPacks=renderMine;
 
   function closePersonalPackMenu(){document.querySelector('.personal-pack-action-menu')?.remove()}
