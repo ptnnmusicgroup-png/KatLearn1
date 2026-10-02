@@ -1,0 +1,407 @@
+{
+  "id": "feelings-personality",
+  "name": "Feelings_Personality_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for feelings personality.",
+  "words": [
+    {
+      "word": "happy",
+      "mean": "happy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “happy” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "sad",
+      "mean": "sad",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sad” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "angry",
+      "mean": "angry",
+      "pron": "",
+      "type": "word",
+      "example": "I use “angry” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "afraid",
+      "mean": "afraid",
+      "pron": "",
+      "type": "word",
+      "example": "I use “afraid” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "worried",
+      "mean": "worried",
+      "pron": "",
+      "type": "word",
+      "example": "I use “worried” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "excited",
+      "mean": "excited",
+      "pron": "",
+      "type": "word",
+      "example": "I use “excited” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "tired",
+      "mean": "tired",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tired” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "bored",
+      "mean": "bored",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bored” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "surprised",
+      "mean": "surprised",
+      "pron": "",
+      "type": "word",
+      "example": "I use “surprised” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "proud",
+      "mean": "proud",
+      "pron": "",
+      "type": "word",
+      "example": "I use “proud” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "shy",
+      "mean": "shy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shy” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "kind",
+      "mean": "kind",
+      "pron": "",
+      "type": "word",
+      "example": "I use “kind” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "friendly",
+      "mean": "friendly",
+      "pron": "",
+      "type": "word",
+      "example": "I use “friendly” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "quiet",
+      "mean": "quiet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “quiet” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "loud",
+      "mean": "loud",
+      "pron": "",
+      "type": "word",
+      "example": "I use “loud” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "funny",
+      "mean": "funny",
+      "pron": "",
+      "type": "word",
+      "example": "I use “funny” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "serious",
+      "mean": "serious",
+      "pron": "",
+      "type": "word",
+      "example": "I use “serious” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "honest",
+      "mean": "honest",
+      "pron": "",
+      "type": "word",
+      "example": "I use “honest” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "brave",
+      "mean": "brave",
+      "pron": "",
+      "type": "word",
+      "example": "I use “brave” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "calm",
+      "mean": "calm",
+      "pron": "",
+      "type": "word",
+      "example": "I use “calm” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "careful",
+      "mean": "careful",
+      "pron": "",
+      "type": "word",
+      "example": "I use “careful” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "lazy",
+      "mean": "lazy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lazy” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "active",
+      "mean": "active",
+      "pron": "",
+      "type": "word",
+      "example": "I use “active” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "smart",
+      "mean": "smart",
+      "pron": "",
+      "type": "word",
+      "example": "I use “smart” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "polite",
+      "mean": "polite",
+      "pron": "",
+      "type": "word",
+      "example": "I use “polite” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "rude",
+      "mean": "rude",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rude” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "patient",
+      "mean": "patient",
+      "pron": "",
+      "type": "word",
+      "example": "I use “patient” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "impatient",
+      "mean": "impatient",
+      "pron": "",
+      "type": "word",
+      "example": "I use “impatient” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "strong",
+      "mean": "strong",
+      "pron": "",
+      "type": "word",
+      "example": "I use “strong” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "weak",
+      "mean": "weak",
+      "pron": "",
+      "type": "word",
+      "example": "I use “weak” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "beautiful",
+      "mean": "beautiful",
+      "pron": "",
+      "type": "word",
+      "example": "I use “beautiful” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "ugly",
+      "mean": "ugly",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ugly” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "nice",
+      "mean": "nice",
+      "pron": "",
+      "type": "word",
+      "example": "I use “nice” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "bad",
+      "mean": "bad",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bad” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "good",
+      "mean": "good",
+      "pron": "",
+      "type": "word",
+      "example": "I use “good” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "love",
+      "mean": "love",
+      "pron": "",
+      "type": "word",
+      "example": "I use “love” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "hate",
+      "mean": "hate",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hate” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "like",
+      "mean": "like",
+      "pron": "",
+      "type": "word",
+      "example": "I use “like” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "dislike",
+      "mean": "dislike",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dislike” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "hope",
+      "mean": "hope",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hope” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "fear",
+      "mean": "fear",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fear” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "trust",
+      "mean": "trust",
+      "pron": "",
+      "type": "word",
+      "example": "I use “trust” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "respect",
+      "mean": "respect",
+      "pron": "",
+      "type": "word",
+      "example": "I use “respect” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "feel",
+      "mean": "feel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “feel” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "think",
+      "mean": "think",
+      "pron": "",
+      "type": "word",
+      "example": "I use “think” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "want",
+      "mean": "want",
+      "pron": "",
+      "type": "word",
+      "example": "I use “want” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "need",
+      "mean": "need",
+      "pron": "",
+      "type": "word",
+      "example": "I use “need” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "enjoy",
+      "mean": "enjoy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “enjoy” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "personality",
+      "mean": "personality",
+      "pron": "",
+      "type": "word",
+      "example": "I use “personality” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    },
+    {
+      "word": "feeling",
+      "mean": "feeling",
+      "pron": "",
+      "type": "word",
+      "example": "I use “feeling” in everyday life.",
+      "note": "Everyday feelings personality vocabulary."
+    }
+  ]
+}
