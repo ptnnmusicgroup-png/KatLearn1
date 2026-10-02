@@ -1,0 +1,399 @@
+{
+  "id": "money-finance",
+  "name": "Money Finance Topic – Dùng hằng ngày",
+  "description": "KatLearn core everyday vocabulary",
+  "words": [
+    {
+      "word": "money",
+      "mean": "money",
+      "pron": "",
+      "type": "word",
+      "example": "I use “money” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "cash",
+      "mean": "cash",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cash” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "coin",
+      "mean": "coin",
+      "pron": "",
+      "type": "word",
+      "example": "I use “coin” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "bank",
+      "mean": "bank",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bank” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "account",
+      "mean": "account",
+      "pron": "",
+      "type": "word",
+      "example": "I use “account” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "card",
+      "mean": "card",
+      "pron": "",
+      "type": "word",
+      "example": "I use “card” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "payment",
+      "mean": "payment",
+      "pron": "",
+      "type": "word",
+      "example": "I use “payment” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "price",
+      "mean": "price",
+      "pron": "",
+      "type": "word",
+      "example": "I use “price” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "cost",
+      "mean": "cost",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cost” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "sale",
+      "mean": "sale",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sale” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "discount",
+      "mean": "discount",
+      "pron": "",
+      "type": "word",
+      "example": "I use “discount” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "budget",
+      "mean": "budget",
+      "pron": "",
+      "type": "word",
+      "example": "I use “budget” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "save",
+      "mean": "save",
+      "pron": "",
+      "type": "word",
+      "example": "I use “save” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "spend",
+      "mean": "spend",
+      "pron": "",
+      "type": "word",
+      "example": "I use “spend” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "earn",
+      "mean": "earn",
+      "pron": "",
+      "type": "word",
+      "example": "I use “earn” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "pay",
+      "mean": "pay",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pay” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "buy",
+      "mean": "buy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “buy” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "sell",
+      "mean": "sell",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sell” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "cheap",
+      "mean": "cheap",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cheap” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "expensive",
+      "mean": "expensive",
+      "pron": "",
+      "type": "word",
+      "example": "I use “expensive” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "rich",
+      "mean": "rich",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rich” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "poor",
+      "mean": "poor",
+      "pron": "",
+      "type": "word",
+      "example": "I use “poor” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "salary",
+      "mean": "salary",
+      "pron": "",
+      "type": "word",
+      "example": "I use “salary” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "wage",
+      "mean": "wage",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wage” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "income",
+      "mean": "income",
+      "pron": "",
+      "type": "word",
+      "example": "I use “income” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "tax",
+      "mean": "tax",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tax” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "bill",
+      "mean": "bill",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bill” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "rent",
+      "mean": "rent",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rent” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "loan",
+      "mean": "loan",
+      "pron": "",
+      "type": "word",
+      "example": "I use “loan” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "debt",
+      "mean": "debt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “debt” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "credit",
+      "mean": "credit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “credit” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "interest",
+      "mean": "interest",
+      "pron": "",
+      "type": "word",
+      "example": "I use “interest” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "cashier",
+      "mean": "cashier",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cashier” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "receipt",
+      "mean": "receipt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “receipt” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "change",
+      "mean": "change",
+      "pron": "",
+      "type": "word",
+      "example": "I use “change” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "wallet",
+      "mean": "wallet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wallet” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "online banking",
+      "mean": "online banking",
+      "pron": "",
+      "type": "word",
+      "example": "I use “online banking” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "transfer",
+      "mean": "transfer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “transfer” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "deposit",
+      "mean": "deposit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “deposit” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "withdraw",
+      "mean": "withdraw",
+      "pron": "",
+      "type": "word",
+      "example": "I use “withdraw” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "finance",
+      "mean": "finance",
+      "pron": "",
+      "type": "word",
+      "example": "I use “finance” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "financial",
+      "mean": "financial",
+      "pron": "",
+      "type": "word",
+      "example": "I use “financial” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "business",
+      "mean": "business",
+      "pron": "",
+      "type": "word",
+      "example": "I use “business” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "company",
+      "mean": "company",
+      "pron": "",
+      "type": "word",
+      "example": "I use “company” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "market",
+      "mean": "market",
+      "pron": "",
+      "type": "word",
+      "example": "I use “market” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "stock",
+      "mean": "stock",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stock” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "value",
+      "mean": "value",
+      "pron": "",
+      "type": "word",
+      "example": "I use “value” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "profit",
+      "mean": "profit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “profit” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    },
+    {
+      "word": "loss",
+      "mean": "loss",
+      "pron": "",
+      "type": "word",
+      "example": "I use “loss” in everyday life.",
+      "note": "Everyday money finance vocabulary."
+    }
+  ]
+}
