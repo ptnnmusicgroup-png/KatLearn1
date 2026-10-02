@@ -1,0 +1,727 @@
+{
+  "id": "ielts-writing-task-2",
+  "name": "IELTS Writing Task 2 Vocabulary",
+  "description": "Từ và cụm từ học thuật cốt lõi cho IELTS Writing Task 2: lập luận, nguyên nhân, hệ quả, giải pháp, chính sách, xã hội, kinh tế, sức khỏe và môi trường. Bộ được thiết kế theo nhu cầu Lexical Resource và Coherence/Cohesion.",
+  "words": [
+    {
+      "word": "argue",
+      "mean": "lập luận; cho rằng",
+      "pron": "",
+      "type": "verb",
+      "example": "Many people argue that public transport should be subsidised.",
+      "note": "Use to introduce a position or line of reasoning.",
+      "category": "argument"
+    },
+    {
+      "word": "assert",
+      "mean": "khẳng định",
+      "pron": "",
+      "type": "verb",
+      "example": "Some commentators assert that technology improves productivity.",
+      "note": "More formal than say or claim.",
+      "category": "argument"
+    },
+    {
+      "word": "contend",
+      "mean": "lập luận; cho rằng",
+      "pron": "",
+      "type": "verb",
+      "example": "Critics contend that the policy would increase inequality.",
+      "note": "Formal academic alternative to argue.",
+      "category": "argument"
+    },
+    {
+      "word": "claim",
+      "mean": "cho rằng; khẳng định",
+      "pron": "",
+      "type": "verb",
+      "example": "The government claims that the reform will reduce costs.",
+      "note": "Use carefully when presenting a claim that may need evidence.",
+      "category": "argument"
+    },
+    {
+      "word": "maintain",
+      "mean": "cho rằng; duy trì quan điểm",
+      "pron": "",
+      "type": "verb",
+      "example": "Supporters maintain that the measure is necessary.",
+      "note": "Formal way to describe a sustained position.",
+      "category": "argument"
+    },
+    {
+      "word": "suggest",
+      "mean": "gợi ý; cho rằng",
+      "pron": "",
+      "type": "verb",
+      "example": "The evidence suggests that early education has long-term benefits.",
+      "note": "Useful for cautious academic claims.",
+      "category": "evidence"
+    },
+    {
+      "word": "imply",
+      "mean": "hàm ý",
+      "pron": "",
+      "type": "verb",
+      "example": "The findings imply that demand may continue to rise.",
+      "note": "Stronger than suggest but still indirect.",
+      "category": "evidence"
+    },
+    {
+      "word": "indicate",
+      "mean": "chỉ ra",
+      "pron": "",
+      "type": "verb",
+      "example": "Recent research indicates a link between sleep and concentration.",
+      "note": "Common academic verb for evidence.",
+      "category": "evidence"
+    },
+    {
+      "word": "demonstrate",
+      "mean": "chứng minh; cho thấy",
+      "pron": "",
+      "type": "verb",
+      "example": "The study demonstrates the value of regular exercise.",
+      "note": "Use when evidence clearly supports a point.",
+      "category": "evidence"
+    },
+    {
+      "word": "highlight",
+      "mean": "nhấn mạnh; làm nổi bật",
+      "pron": "",
+      "type": "verb",
+      "example": "The report highlights the risks of excessive screen time.",
+      "note": "Useful for introducing an important issue.",
+      "category": "argument"
+    },
+    {
+      "word": "emphasize",
+      "mean": "nhấn mạnh",
+      "pron": "",
+      "type": "verb",
+      "example": "Experts emphasize the importance of preventive healthcare.",
+      "note": "Formal spelling is emphasize in American English and emphasise in British English.",
+      "category": "argument"
+    },
+    {
+      "word": "acknowledge",
+      "mean": "thừa nhận",
+      "pron": "",
+      "type": "verb",
+      "example": "It is important to acknowledge the disadvantages of the proposal.",
+      "note": "Useful for presenting a balanced argument.",
+      "category": "balance"
+    },
+    {
+      "word": "challenge",
+      "mean": "thách thức; phản bác",
+      "pron": "",
+      "type": "verb",
+      "example": "Some researchers challenge the assumption that bigger schools are better.",
+      "note": "Useful for discussing opposing evidence or views.",
+      "category": "balance"
+    },
+    {
+      "word": "justify",
+      "mean": "biện minh; chứng minh là hợp lý",
+      "pron": "",
+      "type": "verb",
+      "example": "Governments should justify major increases in public spending.",
+      "note": "Useful when discussing reasons for a policy or decision.",
+      "category": "argument"
+    },
+    {
+      "word": "advocate",
+      "mean": "ủng hộ; đề xuất",
+      "pron": "",
+      "type": "verb",
+      "example": "Many experts advocate stricter controls on air pollution.",
+      "note": "Common in formal discussions of policy.",
+      "category": "solutions"
+    },
+    {
+      "word": "oppose",
+      "mean": "phản đối",
+      "pron": "",
+      "type": "verb",
+      "example": "Residents opposed the construction of a new airport.",
+      "note": "Useful for presenting disagreement with a proposal.",
+      "category": "balance"
+    },
+    {
+      "word": "benefit",
+      "mean": "lợi ích; mang lại lợi ích",
+      "pron": "",
+      "type": "noun",
+      "example": "One major benefit is improved access to healthcare.",
+      "note": "Common collocation: benefit from, mutual benefit.",
+      "category": "effects"
+    },
+    {
+      "word": "drawback",
+      "mean": "hạn chế; nhược điểm",
+      "pron": "",
+      "type": "noun",
+      "example": "A major drawback is the cost of implementation.",
+      "note": "Useful alternative to disadvantage.",
+      "category": "effects"
+    },
+    {
+      "word": "consequence",
+      "mean": "hậu quả",
+      "pron": "",
+      "type": "noun",
+      "example": "One possible consequence is increased pressure on housing.",
+      "note": "Common collocations include serious, unintended, and long-term consequences.",
+      "category": "effects"
+    },
+    {
+      "word": "implication",
+      "mean": "hệ quả; hàm ý",
+      "pron": "",
+      "type": "noun",
+      "example": "The decision has significant implications for young workers.",
+      "note": "Useful for discussing wider effects of an issue.",
+      "category": "effects"
+    },
+    {
+      "word": "feasible",
+      "mean": "khả thi",
+      "pron": "",
+      "type": "adjective",
+      "example": "Building more cycle lanes is a feasible solution.",
+      "note": "Use for ideas or plans that can realistically be implemented.",
+      "category": "solutions"
+    },
+    {
+      "word": "viable",
+      "mean": "khả thi; có thể duy trì",
+      "pron": "",
+      "type": "adjective",
+      "example": "The proposal is financially viable in the long term.",
+      "note": "Useful for practical and economic feasibility.",
+      "category": "solutions"
+    },
+    {
+      "word": "sustainable",
+      "mean": "bền vững",
+      "pron": "",
+      "type": "adjective",
+      "example": "Cities need more sustainable forms of transport.",
+      "note": "A core word for environment, development, and policy topics.",
+      "category": "environment"
+    },
+    {
+      "word": "detrimental",
+      "mean": "gây hại",
+      "pron": "",
+      "type": "adjective",
+      "example": "Excessive stress can be detrimental to mental well-being.",
+      "note": "Formal alternative to harmful.",
+      "category": "effects"
+    },
+    {
+      "word": "beneficial",
+      "mean": "có lợi",
+      "pron": "",
+      "type": "adjective",
+      "example": "Regular exercise is beneficial for both physical and mental health.",
+      "note": "Formal alternative to helpful or good for.",
+      "category": "effects"
+    },
+    {
+      "word": "prevalent",
+      "mean": "phổ biến",
+      "pron": "",
+      "type": "adjective",
+      "example": "Obesity is prevalent in many developed countries.",
+      "note": "Useful for describing a widespread problem.",
+      "category": "society"
+    },
+    {
+      "word": "controversial",
+      "mean": "gây tranh cãi",
+      "pron": "",
+      "type": "adjective",
+      "example": "The use of facial recognition remains controversial.",
+      "note": "Useful for topics with divided public opinion.",
+      "category": "balance"
+    },
+    {
+      "word": "compelling",
+      "mean": "thuyết phục; có sức nặng",
+      "pron": "",
+      "type": "adjective",
+      "example": "The report presents compelling evidence for the reform.",
+      "note": "Use for strong reasons or evidence.",
+      "category": "evidence"
+    },
+    {
+      "word": "crucial",
+      "mean": "then chốt; cực kỳ quan trọng",
+      "pron": "",
+      "type": "adjective",
+      "example": "Access to clean water is crucial to public health.",
+      "note": "Formal alternative to very important.",
+      "category": "argument"
+    },
+    {
+      "word": "significant",
+      "mean": "đáng kể; quan trọng",
+      "pron": "",
+      "type": "adjective",
+      "example": "The policy could have a significant economic impact.",
+      "note": "Useful for both scale and importance.",
+      "category": "degree"
+    },
+    {
+      "word": "inevitable",
+      "mean": "không thể tránh khỏi",
+      "pron": "",
+      "type": "adjective",
+      "example": "Some level of change may be inevitable in a growing city.",
+      "note": "Useful when discussing unavoidable outcomes.",
+      "category": "effects"
+    },
+    {
+      "word": "mitigate",
+      "mean": "giảm nhẹ",
+      "pron": "",
+      "type": "verb",
+      "example": "Governments can mitigate the effects of climate change.",
+      "note": "Formal verb for reducing harm or severity.",
+      "category": "solutions"
+    },
+    {
+      "word": "alleviate",
+      "mean": "làm giảm; giảm bớt",
+      "pron": "",
+      "type": "verb",
+      "example": "Better public services could alleviate pressure on hospitals.",
+      "note": "Useful for reducing a problem rather than eliminating it.",
+      "category": "solutions"
+    },
+    {
+      "word": "exacerbate",
+      "mean": "làm trầm trọng thêm",
+      "pron": "",
+      "type": "verb",
+      "example": "Poor planning can exacerbate traffic congestion.",
+      "note": "Strong formal alternative to make worse.",
+      "category": "effects"
+    },
+    {
+      "word": "tackle",
+      "mean": "giải quyết; đối phó",
+      "pron": "",
+      "type": "verb",
+      "example": "Authorities must tackle the causes of youth unemployment.",
+      "note": "Common with social and environmental problems.",
+      "category": "solutions"
+    },
+    {
+      "word": "address",
+      "mean": "giải quyết; xử lý",
+      "pron": "",
+      "type": "verb",
+      "example": "The policy aims to address inequality in access to education.",
+      "note": "Extremely useful for formal essays.",
+      "category": "solutions"
+    },
+    {
+      "word": "curb",
+      "mean": "kiềm chế; hạn chế",
+      "pron": "",
+      "type": "verb",
+      "example": "Higher taxes may curb excessive consumption.",
+      "note": "Useful for reducing undesirable behaviour or trends.",
+      "category": "solutions"
+    },
+    {
+      "word": "foster",
+      "mean": "thúc đẩy; nuôi dưỡng",
+      "pron": "",
+      "type": "verb",
+      "example": "Schools can foster creativity and independent thinking.",
+      "note": "Common with innovation, skills, cooperation, and development.",
+      "category": "solutions"
+    },
+    {
+      "word": "promote",
+      "mean": "thúc đẩy; khuyến khích",
+      "pron": "",
+      "type": "verb",
+      "example": "Governments should promote healthier lifestyles.",
+      "note": "Common policy verb with health, education, and sustainability.",
+      "category": "solutions"
+    },
+    {
+      "word": "encourage",
+      "mean": "khuyến khích",
+      "pron": "",
+      "type": "verb",
+      "example": "Financial incentives can encourage companies to recycle.",
+      "note": "Useful for policies that aim to change behaviour positively.",
+      "category": "solutions"
+    },
+    {
+      "word": "deter",
+      "mean": "ngăn cản; răn đe",
+      "pron": "",
+      "type": "verb",
+      "example": "Higher fines may deter people from breaking the law.",
+      "note": "Useful for crime and regulation topics.",
+      "category": "solutions"
+    },
+    {
+      "word": "regulate",
+      "mean": "điều tiết; quản lý bằng quy định",
+      "pron": "",
+      "type": "verb",
+      "example": "Governments need to regulate online advertising aimed at children.",
+      "note": "Common in technology, business, health, and environmental essays.",
+      "category": "policy"
+    },
+    {
+      "word": "impose",
+      "mean": "áp đặt; áp dụng",
+      "pron": "",
+      "type": "verb",
+      "example": "Authorities may impose stricter limits on emissions.",
+      "note": "Common collocations include impose a tax, ban, fine, or restriction.",
+      "category": "policy"
+    },
+    {
+      "word": "allocate",
+      "mean": "phân bổ",
+      "pron": "",
+      "type": "verb",
+      "example": "Governments should allocate more funds to public healthcare.",
+      "note": "Common with resources, budgets, and funding.",
+      "category": "policy"
+    },
+    {
+      "word": "invest",
+      "mean": "đầu tư",
+      "pron": "",
+      "type": "verb",
+      "example": "Cities should invest in reliable public transport.",
+      "note": "Common with money, infrastructure, education, and technology.",
+      "category": "economy"
+    },
+    {
+      "word": "subsidise",
+      "mean": "trợ cấp",
+      "pron": "",
+      "type": "verb",
+      "example": "Governments could subsidise renewable energy projects.",
+      "note": "British spelling used in IELTS contexts; American spelling is subsidize.",
+      "category": "policy"
+    },
+    {
+      "word": "prioritise",
+      "mean": "ưu tiên",
+      "pron": "",
+      "type": "verb",
+      "example": "Policy makers should prioritise preventive healthcare.",
+      "note": "British spelling used in IELTS contexts; American spelling is prioritize.",
+      "category": "policy"
+    },
+    {
+      "word": "implement",
+      "mean": "thực hiện; triển khai",
+      "pron": "",
+      "type": "verb",
+      "example": "The government should implement the reform gradually.",
+      "note": "Common with policy, strategy, measure, and programme.",
+      "category": "policy"
+    },
+    {
+      "word": "enforce",
+      "mean": "thực thi; buộc tuân thủ",
+      "pron": "",
+      "type": "verb",
+      "example": "Authorities must enforce environmental regulations consistently.",
+      "note": "Useful when discussing laws and compliance.",
+      "category": "policy"
+    },
+    {
+      "word": "legislation",
+      "mean": "pháp luật; đạo luật",
+      "pron": "",
+      "type": "noun",
+      "example": "New legislation could improve workplace safety.",
+      "note": "Useful for formal discussion of legal measures.",
+      "category": "policy"
+    },
+    {
+      "word": "policy",
+      "mean": "chính sách",
+      "pron": "",
+      "type": "noun",
+      "example": "The policy aims to reduce household energy use.",
+      "note": "Core word for government action.",
+      "category": "policy"
+    },
+    {
+      "word": "infrastructure",
+      "mean": "cơ sở hạ tầng",
+      "pron": "",
+      "type": "noun",
+      "example": "Modern infrastructure is essential for economic growth.",
+      "note": "Common with transport, digital networks, and utilities.",
+      "category": "economy"
+    },
+    {
+      "word": "inequality",
+      "mean": "bất bình đẳng",
+      "pron": "",
+      "type": "noun",
+      "example": "Income inequality remains a major social issue.",
+      "note": "Often paired with reduce, widen, address, or tackle.",
+      "category": "society"
+    },
+    {
+      "word": "accessibility",
+      "mean": "khả năng tiếp cận",
+      "pron": "",
+      "type": "noun",
+      "example": "Improving accessibility to higher education should be a priority.",
+      "note": "Useful for education, healthcare, transport, and services.",
+      "category": "society"
+    },
+    {
+      "word": "affordability",
+      "mean": "khả năng chi trả",
+      "pron": "",
+      "type": "noun",
+      "example": "Housing affordability is a serious concern for young adults.",
+      "note": "Common in housing, healthcare, and education discussions.",
+      "category": "economy"
+    },
+    {
+      "word": "productivity",
+      "mean": "năng suất",
+      "pron": "",
+      "type": "noun",
+      "example": "Flexible working can improve employee productivity.",
+      "note": "Useful for work, technology, and economic topics.",
+      "category": "economy"
+    },
+    {
+      "word": "innovation",
+      "mean": "đổi mới; sáng tạo",
+      "pron": "",
+      "type": "noun",
+      "example": "Technological innovation can transform many industries.",
+      "note": "Common in technology, education, and business essays.",
+      "category": "technology"
+    },
+    {
+      "word": "employment",
+      "mean": "việc làm; tình trạng có việc làm",
+      "pron": "",
+      "type": "noun",
+      "example": "The project could create employment in rural areas.",
+      "note": "Useful economic noun for jobs and labour topics.",
+      "category": "economy"
+    },
+    {
+      "word": "consumption",
+      "mean": "sự tiêu thụ",
+      "pron": "",
+      "type": "noun",
+      "example": "Excessive consumption puts pressure on natural resources.",
+      "note": "Common with energy, water, food, and goods.",
+      "category": "environment"
+    },
+    {
+      "word": "exploitation",
+      "mean": "sự khai thác; bóc lột",
+      "pron": "",
+      "type": "noun",
+      "example": "The exploitation of natural resources can damage ecosystems.",
+      "note": "Useful in environmental and social justice contexts.",
+      "category": "environment"
+    },
+    {
+      "word": "discrimination",
+      "mean": "sự phân biệt đối xử",
+      "pron": "",
+      "type": "noun",
+      "example": "Stronger laws are needed to prevent discrimination in the workplace.",
+      "note": "Common collocations include racial, gender, and age discrimination.",
+      "category": "society"
+    },
+    {
+      "word": "awareness",
+      "mean": "nhận thức",
+      "pron": "",
+      "type": "noun",
+      "example": "Public awareness of healthy eating has increased.",
+      "note": "Common with raise, increase, improve, and public awareness.",
+      "category": "society"
+    },
+    {
+      "word": "resilience",
+      "mean": "khả năng phục hồi; sức chống chịu",
+      "pron": "",
+      "type": "noun",
+      "example": "Communities need resilience in the face of natural disasters.",
+      "note": "Useful for climate, society, and personal development topics.",
+      "category": "society"
+    },
+    {
+      "word": "well-being",
+      "mean": "hạnh phúc; sức khỏe tổng thể",
+      "pron": "",
+      "type": "noun",
+      "example": "Urban planning should support residents' well-being.",
+      "note": "Useful for health, work, education, and quality-of-life topics.",
+      "category": "health"
+    },
+    {
+      "word": "public health",
+      "mean": "sức khỏe cộng đồng",
+      "pron": "",
+      "type": "noun phrase",
+      "example": "Preventive medicine can improve public health.",
+      "note": "High-value phrase for health policy essays.",
+      "category": "health"
+    },
+    {
+      "word": "economic growth",
+      "mean": "tăng trưởng kinh tế",
+      "pron": "",
+      "type": "noun phrase",
+      "example": "Education can contribute to long-term economic growth.",
+      "note": "Useful for economy and development topics.",
+      "category": "economy"
+    },
+    {
+      "word": "social cohesion",
+      "mean": "gắn kết xã hội",
+      "pron": "",
+      "type": "noun phrase",
+      "example": "Inclusive education can strengthen social cohesion.",
+      "note": "Useful for multiculturalism, inequality, and community topics.",
+      "category": "society"
+    },
+    {
+      "word": "quality of life",
+      "mean": "chất lượng cuộc sống",
+      "pron": "",
+      "type": "noun phrase",
+      "example": "Reliable public transport can improve quality of life.",
+      "note": "Useful for evaluating broader social outcomes.",
+      "category": "society"
+    },
+    {
+      "word": "long-term",
+      "mean": "dài hạn",
+      "pron": "",
+      "type": "adjective",
+      "example": "The policy requires a long-term strategy.",
+      "note": "Common with effects, solution, investment, and planning.",
+      "category": "time"
+    },
+    {
+      "word": "short-term",
+      "mean": "ngắn hạn",
+      "pron": "",
+      "type": "adjective",
+      "example": "Short-term savings should not undermine long-term benefits.",
+      "note": "Useful for evaluating trade-offs.",
+      "category": "time"
+    },
+    {
+      "word": "evidence-based",
+      "mean": "dựa trên bằng chứng",
+      "pron": "",
+      "type": "adjective",
+      "example": "Policy decisions should be evidence-based.",
+      "note": "Useful for formal recommendations and public policy arguments.",
+      "category": "evidence"
+    },
+    {
+      "word": "cost-effective",
+      "mean": "tiết kiệm chi phí; hiệu quả về chi phí",
+      "pron": "",
+      "type": "adjective",
+      "example": "Improving bus networks can be a cost-effective measure.",
+      "note": "Useful for comparing policy options.",
+      "category": "solutions"
+    },
+    {
+      "word": "environmentally friendly",
+      "mean": "thân thiện với môi trường",
+      "pron": "",
+      "type": "adjective phrase",
+      "example": "Governments should encourage environmentally friendly transport.",
+      "note": "Useful for environmental solutions.",
+      "category": "environment"
+    },
+    {
+      "word": "unintended consequences",
+      "mean": "hệ quả ngoài dự kiến",
+      "pron": "",
+      "type": "noun phrase",
+      "example": "Rapid reform can create unintended consequences.",
+      "note": "Useful for balanced discussion of policies.",
+      "category": "effects"
+    },
+    {
+      "word": "play a role",
+      "mean": "đóng vai trò",
+      "pron": "",
+      "type": "phrase",
+      "example": "Schools play a role in shaping healthy habits.",
+      "note": "Flexible phrase for discussing causes and influences.",
+      "category": "argument"
+    },
+    {
+      "word": "pose a threat",
+      "mean": "đe dọa; gây nguy cơ",
+      "pron": "",
+      "type": "phrase",
+      "example": "Air pollution poses a serious threat to public health.",
+      "note": "Useful for discussing risks.",
+      "category": "effects"
+    },
+    {
+      "word": "exert pressure",
+      "mean": "gây áp lực",
+      "pron": "",
+      "type": "phrase",
+      "example": "Population growth can exert pressure on housing supply.",
+      "note": "Useful for cause-and-effect arguments.",
+      "category": "effects"
+    },
+    {
+      "word": "in terms of",
+      "mean": "xét về; về mặt",
+      "pron": "",
+      "type": "phrase",
+      "example": "The proposal is effective in terms of cost and accessibility.",
+      "note": "Useful for precise comparison of criteria.",
+      "category": "structure"
+    },
+    {
+      "word": "from my perspective",
+      "mean": "theo quan điểm của tôi",
+      "pron": "",
+      "type": "phrase",
+      "example": "From my perspective, public transport should be prioritised.",
+      "note": "Useful for opinion essays; keep use limited and natural.",
+      "category": "opinion"
+    },
+    {
+      "word": "to a large extent",
+      "mean": "ở mức độ lớn",
+      "pron": "",
+      "type": "phrase",
+      "example": "To a large extent, technology has changed how people work.",
+      "note": "Useful for nuanced agreement or partial evaluation.",
+      "category": "opinion"
+    }
+  ]
+}
