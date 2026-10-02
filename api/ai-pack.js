@@ -1,8 +1,25 @@
 const{requireUser,rateLimit,generateGemini,parseJson,modelText,send,method}=require("./_kat-ai");
 function clean(value,max=1000){return String(value??"").trim().slice(0,max)}
-const PACK_INSTRUCTIONS=`Bạn là Kat AI, trợ lý tạo bộ từ vựng tiếng Anh cho học sinh Việt Nam.
-Tạo toàn bộ bộ từ trong một lần. Không lặp từ, không bịa từ hoặc IPA. Ưu tiên từ thực sự liên quan đến chủ đề và trình độ.
-FORMAT BẮT BUỘC: meaning_vi phải là nghĩa tiếng Việt rõ ràng, tự nhiên, có dấu câu khi cần (ví dụ: nhiều nghĩa ngăn bằng dấu phẩy hoặc chấm phẩy). notes phải là một ghi chú hữu ích, có dấu câu đầy đủ và kết thúc bằng dấu chấm nếu là câu hoàn chỉnh. example phải là một câu tiếng Anh hoàn chỉnh, viết hoa đầu câu và có dấu câu cuối câu. Không trả về chuỗi bị cụt, không bỏ toàn bộ dấu câu.`;
+const PACK_INSTRUCTIONS=`Bạn là Kat AI, chuyên gia xây dựng bộ từ vựng tiếng Anh chất lượng cao cho học sinh Việt Nam.
+Hãy coi mỗi bộ từ là một tài liệu học tập hoàn chỉnh, có chọn lọc, không phải danh sách từ ngẫu nhiên.
+
+QUY TẮC CHẤT LƯỢNG BẮT BUỘC:
+1. ĐÚNG CHỦ ĐỀ: mỗi từ phải có liên hệ rõ ràng với topic. Ưu tiên từ thực sự dùng trong ngữ cảnh của topic; loại bỏ từ quá chung chung, từ chỉ “cho đủ số lượng”, hoặc từ lệch chủ đề.
+2. ĐỦ ĐỘ PHỦ: phân bố từ trên nhiều khía cạnh/subtopic/collocation quan trọng của chủ đề thay vì dồn vào một ý duy nhất. Nếu topic có process, cause, effect, solution, people, places, objects, actions, problems... thì phủ các nhóm phù hợp.
+3. ĐÚNG TRÌNH ĐỘ: bám sát CEFR được yêu cầu. Beginner/elementary dùng từ phổ biến và dễ học; intermediate trở lên có thêm từ học thuật/thực dụng phù hợp. Không nhét từ hiếm chỉ để làm bộ từ “xịn”.
+4. KHÔNG TRÙNG: không lặp từ, không lặp biến thể cùng từ một cách vô nghĩa, hạn chế tối đa cùng một word family nếu không có giá trị học tập rõ ràng.
+5. ĐÚNG TỪ LOẠI + IPA: xác định part of speech chính xác; IPA phải là IPA Anh-Anh hợp lệ, không bịa.
+6. NGHĨA TIẾNG VIỆT: viết nghĩa tự nhiên, ngắn gọn nhưng đủ dùng; nếu có nhiều nghĩa phù hợp topic thì nêu 1–3 nghĩa quan trọng, ngăn cách rõ bằng dấu phẩy hoặc chấm phẩy. Không dùng định nghĩa kiểu máy móc, không lặp lại chính từ tiếng Anh.
+7. GHI CHÚ: notes phải hữu ích cho việc học, tối thiểu nêu usage/collocation/common mistake/context/nuance khi phù hợp. Không được dùng filler như “đây là từ vựng hữu ích”, “liên quan đến chủ đề”, “thường được sử dụng” mà không có thông tin cụ thể.
+8. VÍ DỤ: example phải là câu tiếng Anh tự nhiên, đúng ngữ pháp, có liên hệ trực tiếp với topic và thể hiện đúng nghĩa của từ. Tránh câu vô nghĩa, quá chung chung hoặc chỉ để nhét từ vào.
+9. KHÔNG BỊA: không tự tạo tên riêng, thuật ngữ, collocation hoặc nghĩa không chắc chắn chỉ để đủ số lượng.
+10. ĐẦU RA SẠCH: không giải thích ngoài JSON, không markdown, không đánh số ngoài schema, không bỏ trống field bắt buộc.
+
+FORMAT BẮT BUỘC:
+- meaning_vi: nghĩa tiếng Việt rõ ràng, tự nhiên, có dấu câu.
+- notes: ghi chú cụ thể, hữu ích, có dấu câu đầy đủ; nếu là câu hoàn chỉnh phải kết thúc bằng dấu chấm.
+- example: một câu hoàn chỉnh, viết hoa đầu câu và có dấu câu cuối câu.
+- Mọi field phải có nội dung có giá trị; tuyệt đối không dùng nội dung mẫu/filler để lấp chỗ trống.`;
 const WORD_PROPERTIES={
   word:{type:"string",description:"Từ tiếng Anh."},
   meaning_vi:{type:"string",description:"Nghĩa tiếng Việt rõ ràng, tự nhiên. Nếu có nhiều nghĩa, ngăn cách bằng dấu phẩy hoặc chấm phẩy; kết thúc bằng dấu chấm."},
@@ -70,8 +87,13 @@ module.exports=async(req,res)=>{
     const wordCount=Math.min(100,Math.max(5,Number(body.wordCount)||50));
     const difficulty=clean(body.difficulty,40)||"intermediate",purpose=clean(body.purpose,60)||"general",wordTypes=clean(body.wordTypes,80)||"mixed";
     if(!prompt)throw Object.assign(new Error("Hãy nhập chủ đề hoặc yêu cầu cho Kat AI."),{status:400,code:"prompt_missing"});
-    const contents="Yêu cầu: "+prompt+"\nSố lượng chính xác: "+wordCount+"\nTrình độ: "+difficulty+"\nMục đích: "+purpose+"\nLoại từ: "+wordTypes+(instructions?"\nHướng dẫn bổ sung: "+instructions:"")+"\nPhải trả về đúng "+wordCount+" mục từ, không ít hơn."+
-      "\nFORMAT BẮT BUỘC: meaning_vi phải có nghĩa tiếng Việt tự nhiên và dùng dấu phẩy/chấm phẩy khi liệt kê nhiều nghĩa; notes phải có nội dung hữu ích và dấu câu đầy đủ; example phải là câu hoàn chỉnh, viết hoa đầu câu và có dấu chấm/hỏi/thán cuối câu.";
+    const contents="Yêu cầu: "+prompt+"\nSố lượng chính xác: "+wordCount+"\nTrình độ: "+difficulty+"\nMục đích: "+purpose+"\nLoại từ: "+wordTypes+(instructions?"\nHướng dẫn bổ sung: "+instructions:"")+
+      "\n\nHÃY TUÂN THỦ QUALITY CONTRACT: chọn đúng từ cho topic, phủ nhiều subtopic phù hợp, bám trình độ, không dùng filler để đủ số lượng, không trùng từ/word family vô nghĩa."+
+      "\nMỗi mục bắt buộc phải có: word + part_of_speech + IPA Anh-Anh + meaning_vi tự nhiên + notes hữu ích/cụ thể + example tự nhiên đúng ngữ cảnh topic."+
+      "\nmeaning_vi phải là nghĩa tiếng Việt dùng được ngay, không được chỉ dịch máy từng chữ."+
+      "\nnotes phải nói điều người học thực sự có thể học thêm (cách dùng, collocation, nuance, lỗi hay gặp hoặc context), không được viết câu sáo rỗng."+
+      "\nexample phải chứng minh đúng cách dùng của từ trong topic."+
+      "\nPhải trả về đúng "+wordCount+" mục chất lượng cao; thà chọn từ ít phổ biến hơn nhưng thật sự phù hợp còn hơn thêm từ vô nghĩa.";
     let response=await generateGemini({maxOutputTokens:Math.min(16000,Math.max(7000,wordCount*140)),temperature:.35,systemInstruction:PACK_INSTRUCTIONS,contents,responseSchema:SCHEMA});
     let result=parseJson(modelText(response));
     const normalizeWord=value=>String(value??"").trim().toLowerCase().replace(/\s+/g," ");
@@ -120,11 +142,15 @@ module.exports=async(req,res)=>{
         topic:String(item.topic||prompt)
       };
     });
+    const fillerPattern=/^(?:đây là|đây là một|một từ vựng|từ vựng này|từ này|thường được sử dụng|thường dùng|rất hữu ích|hữu ích trong|liên quan đến chủ đề|được sử dụng trong).*$/i;
     const malformed=words.some(item=>{
       if(!item||!item.word||!item.meaning_vi||!item.notes||!item.example)return true;
-      return !/[.!?…]$/.test(item.meaning_vi)||!/[.!?…]$/.test(item.notes)||!/[.!?…]$/.test(item.example);
+      if(!/[.!?…]$/.test(item.meaning_vi)||!/[.!?…]$/.test(item.notes)||!/[.!?…]$/.test(item.example))return true;
+      if(fillerPattern.test(tidyText(item.notes))&&tidyText(item.notes).length<90)return true;
+      if(tidyText(item.meaning_vi).toLowerCase() ===tidyText(item.word).toLowerCase())return true;
+      return false;
     });
-    if(malformed)throw Object.assign(new Error("Kat AI trả về dữ liệu định dạng không đạt yêu cầu. Hãy thử lại."),{status:502,code:"gemini_bad_word_format"});
+    if(malformed)throw Object.assign(new Error("Kat AI trả về bộ từ chưa đạt chất lượng yêu cầu. Hãy thử lại với topic cụ thể hơn."),{status:502,code:"gemini_bad_word_format"});
     result.pack=result.pack||{};result.pack.topic=prompt;result.pack.difficulty=difficulty;result.pack.purpose=purpose;result.words=words;
     return send(res,200,result);
   }catch(error){return send(res,error.status||500,{error:String(error.message||"Kat AI không thể tạo bộ từ."),code:error.code||"ai_pack_failed"},error.retryAfter?{"Retry-After":String(error.retryAfter)}:{})}
