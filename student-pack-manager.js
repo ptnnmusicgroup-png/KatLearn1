@@ -147,7 +147,14 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     }
   }
 
-  async function isManagedStudent(){return !!window.studyStore?.user&&await window.studyStore.isClassStudent?.()}
+  async function isManagedStudent(){
+    if(!window.studyStore?.user)return false;
+    try{return !!(await window.studyStore.isClassStudent?.())}
+    catch(error){
+      console.warn('[KatLearn] Could not check student account type; allowing personal-pack read.',error);
+      return false;
+    }
+  }
 
   function open(pack=null){
     if(!window.studyStore?.user){toast('Hãy đăng nhập để tạo bộ từ riêng nhé! 🐱');location.href='/login.html';return;}
