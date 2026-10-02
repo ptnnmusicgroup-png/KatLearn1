@@ -356,66 +356,50 @@
     },
     async personalPacks(){
       if(!db||!currentUser)return[];
-      const uid=currentUser.uid;
-      const accountCode=await this.ensureAccountCode();
-      if(String(window.studyStore?.user?.uid||'')!==uid)return[];
-
-      const merged=new Map();
-      const userSnap=await api.getDocs(api.query(
-        api.collection(db,'users',uid,'personalPacks')
-      ));
-      for(const doc of userSnap.docs){
-        const data=doc.data()||{};
-        if(data.kind&&data.kind!=='personalPack')continue;
-        if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
-        if(data.ownerAccountCode&&String(data.ownerAccountCode)!==accountCode)continue;
-        merged.set(doc.id,{id:doc.id,...data,accountCode:String(data.ownerAccountCode||accountCode),source:'users'});
-      }
-
-      // Read older account-only packs and transparently mirror them into the
-      // user's own subcollection so the user path remains complete.
-      let accountSnap={docs:[]};
+      const uid=String(currentUser.uid||'');
+      if(!uid)return[];
       try{
-        accountSnap=await api.getDocs(api.query(
-          api.collection(db,'accounts',accountCode,'memory'),
-          api.where('kind','==','personalPack')
+        // Canonical read source for the UI. Personal packs live under the
+        // authenticated Firebase UID; account memory is only a mirror/Admin source.
+        const snap=await api.getDocs(api.query(
+          api.collection(db,'users',uid,'personalPacks')
         ));
-      }catch(accountError){
-        console.warn('[KatLearn] Account personal pack mirror read failed:',accountError);
-      }
-      const accountDocs=new Map(accountSnap.docs.map(doc=>[doc.id,doc]));
-      for(const doc of userSnap.docs){
-        const data=doc.data()||{};
-        if(data.kind&&data.kind!=='personalPack')continue;
-        if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
-        if(data.ownerAccountCode&&String(data.ownerAccountCode)!==accountCode)continue;
-        const mirror=accountDocs.get(doc.id);
-        const userUpdated=Number(data.updatedAt?.seconds||data.updatedAt||0);
-        const mirrorUpdated=Number(mirror?.data()?.updatedAt?.seconds||mirror?.data()?.updatedAt||0);
-        if(!mirror||userUpdated>mirrorUpdated){
-          await api.setDoc(
-            api.doc(db,'accounts',accountCode,'memory',doc.id),
-            {...data,kind:'personalPack',ownerUid:uid,ownerAccountCode:accountCode},
-            {merge:true}
-          );
+        return snap.docs.map(doc=>{
+          const data=doc.data()||{};
+          return {
+            id:doc.id,
+            ...data,
+            kind:'personalPack',
+            ownerUid:String(data.ownerUid||uid),
+            accountCode:String(data.ownerAccountCode||''),
+            source:'users'
+          };
+        }).filter(pack=>!pack.ownerUid||String(pack.ownerUid)===uid).sort((a,b)=>{
+          const ta=Number(a.createdAt?.seconds||a.createdAt||0);
+          const tb=Number(b.createdAt?.seconds||b.createdAt||0);
+          return tb-ta;
+        });
+      }catch(directError){
+        // Fallback through the protected server reader when Firestore client
+        // rules/index/session state prevent a direct collection read.
+        try{
+          const token=await this.getIdToken(true);
+          if(!token)throw directError;
+          const res=await fetch('/api/personal-packs',{method:'GET',cache:'no-store',headers:{Authorization:'Bearer '+token,Accept:'application/json'}});
+          const data=await res.json().catch(()=>({}));
+          if(!res.ok)throw new Error(data.error||directError.message||'Không thể tải bộ từ.');
+          return (Array.isArray(data.packs)?data.packs:[]).map(pack=>({
+            ...pack,
+            kind:'personalPack',
+            ownerUid:String(pack.ownerUid||uid),
+            accountCode:String(pack.ownerAccountCode||data.accountCode||''),
+            source:String(pack.source||'users')
+          })).filter(pack=>String(pack.ownerUid||uid)===uid);
+        }catch(serverError){
+          console.warn('[KatLearn] Personal packs load failed (client + server fallback):',directError,serverError);
+          throw serverError;
         }
       }
-
-      for(const doc of accountSnap.docs){
-        const data=doc.data()||{};
-        if(String(data.ownerUid||uid)!==uid)continue;
-        if(data.ownerAccountCode&&String(data.ownerAccountCode)!==accountCode)continue;
-        if(merged.has(doc.id))continue;
-        const payload={...data,ownerUid:uid,ownerAccountCode:accountCode};
-        merged.set(doc.id,{id:doc.id,...payload,accountCode,source:'users'});
-        await api.setDoc(api.doc(db,'users',uid,'personalPacks',doc.id),payload,{merge:true});
-      }
-
-      return [...merged.values()].sort((a,b)=>{
-        const ta=Number(a.createdAt?.seconds||a.createdAt||0);
-        const tb=Number(b.createdAt?.seconds||b.createdAt||0);
-        return tb-ta;
-      });
     },
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
