@@ -362,8 +362,7 @@
 
       const merged=new Map();
       const userSnap=await api.getDocs(api.query(
-        api.collection(db,'users',uid,'personalPacks'),
-        api.limit(100)
+        api.collection(db,'users',uid,'personalPacks')
       ));
       for(const doc of userSnap.docs){
         const data=doc.data()||{};
@@ -379,12 +378,29 @@
       try{
         accountSnap=await api.getDocs(api.query(
           api.collection(db,'accounts',accountCode,'memory'),
-          api.where('kind','==','personalPack'),
-          api.limit(100)
+          api.where('kind','==','personalPack')
         ));
       }catch(accountError){
         console.warn('[KatLearn] Account personal pack mirror read failed:',accountError);
       }
+      const accountDocs=new Map(accountSnap.docs.map(doc=>[doc.id,doc]));
+      for(const doc of userSnap.docs){
+        const data=doc.data()||{};
+        if(data.kind&&data.kind!=='personalPack')continue;
+        if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
+        if(data.ownerAccountCode&&String(data.ownerAccountCode)!==accountCode)continue;
+        const mirror=accountDocs.get(doc.id);
+        const userUpdated=Number(data.updatedAt?.seconds||data.updatedAt||0);
+        const mirrorUpdated=Number(mirror?.data()?.updatedAt?.seconds||mirror?.data()?.updatedAt||0);
+        if(!mirror||userUpdated>mirrorUpdated){
+          await api.setDoc(
+            api.doc(db,'accounts',accountCode,'memory',doc.id),
+            {...data,kind:'personalPack',ownerUid:uid,ownerAccountCode:accountCode},
+            {merge:true}
+          );
+        }
+      }
+
       for(const doc of accountSnap.docs){
         const data=doc.data()||{};
         if(String(data.ownerUid||uid)!==uid)continue;
