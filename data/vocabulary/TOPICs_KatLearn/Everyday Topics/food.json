@@ -1,0 +1,407 @@
+{
+  "id": "food",
+  "name": "Food_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for food.",
+  "words": [
+    {
+      "word": "food",
+      "mean": "food",
+      "pron": "",
+      "type": "word",
+      "example": "I use “food” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "meal",
+      "mean": "meal",
+      "pron": "",
+      "type": "word",
+      "example": "I use “meal” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "breakfast",
+      "mean": "breakfast",
+      "pron": "",
+      "type": "word",
+      "example": "I use “breakfast” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "lunch",
+      "mean": "lunch",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lunch” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "dinner",
+      "mean": "dinner",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dinner” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "snack",
+      "mean": "snack",
+      "pron": "",
+      "type": "word",
+      "example": "I use “snack” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "bread",
+      "mean": "bread",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bread” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "rice",
+      "mean": "rice",
+      "pron": "",
+      "type": "word",
+      "example": "I use “rice” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "noodle",
+      "mean": "noodle",
+      "pron": "",
+      "type": "word",
+      "example": "I use “noodle” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "pasta",
+      "mean": "pasta",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pasta” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "soup",
+      "mean": "soup",
+      "pron": "",
+      "type": "word",
+      "example": "I use “soup” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "salad",
+      "mean": "salad",
+      "pron": "",
+      "type": "word",
+      "example": "I use “salad” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "meat",
+      "mean": "meat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “meat” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "beef",
+      "mean": "beef",
+      "pron": "",
+      "type": "word",
+      "example": "I use “beef” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "pork",
+      "mean": "pork",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pork” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "chicken",
+      "mean": "chicken",
+      "pron": "",
+      "type": "word",
+      "example": "I use “chicken” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "fish",
+      "mean": "fish",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fish” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "egg",
+      "mean": "egg",
+      "pron": "",
+      "type": "word",
+      "example": "I use “egg” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "cheese",
+      "mean": "cheese",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cheese” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "milk",
+      "mean": "milk",
+      "pron": "",
+      "type": "word",
+      "example": "I use “milk” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "yogurt",
+      "mean": "yogurt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “yogurt” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "butter",
+      "mean": "butter",
+      "pron": "",
+      "type": "word",
+      "example": "I use “butter” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "fruit",
+      "mean": "fruit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fruit” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "apple",
+      "mean": "apple",
+      "pron": "",
+      "type": "word",
+      "example": "I use “apple” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "banana",
+      "mean": "banana",
+      "pron": "",
+      "type": "word",
+      "example": "I use “banana” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "orange",
+      "mean": "orange",
+      "pron": "",
+      "type": "word",
+      "example": "I use “orange” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "grape",
+      "mean": "grape",
+      "pron": "",
+      "type": "word",
+      "example": "I use “grape” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "vegetable",
+      "mean": "vegetable",
+      "pron": "",
+      "type": "word",
+      "example": "I use “vegetable” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "potato",
+      "mean": "potato",
+      "pron": "",
+      "type": "word",
+      "example": "I use “potato” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "tomato",
+      "mean": "tomato",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tomato” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "onion",
+      "mean": "onion",
+      "pron": "",
+      "type": "word",
+      "example": "I use “onion” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "carrot",
+      "mean": "carrot",
+      "pron": "",
+      "type": "word",
+      "example": "I use “carrot” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "bean",
+      "mean": "bean",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bean” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "sugar",
+      "mean": "sugar",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sugar” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "salt",
+      "mean": "salt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “salt” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "pepper",
+      "mean": "pepper",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pepper” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "water",
+      "mean": "water",
+      "pron": "",
+      "type": "word",
+      "example": "I use “water” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "juice",
+      "mean": "juice",
+      "pron": "",
+      "type": "word",
+      "example": "I use “juice” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "tea",
+      "mean": "tea",
+      "pron": "",
+      "type": "word",
+      "example": "I use “tea” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "coffee",
+      "mean": "coffee",
+      "pron": "",
+      "type": "word",
+      "example": "I use “coffee” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "cake",
+      "mean": "cake",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cake” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "cookie",
+      "mean": "cookie",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cookie” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "chocolate",
+      "mean": "chocolate",
+      "pron": "",
+      "type": "word",
+      "example": "I use “chocolate” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "ice cream",
+      "mean": "ice cream",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ice cream” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "sandwich",
+      "mean": "sandwich",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sandwich” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "pizza",
+      "mean": "pizza",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pizza” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "burger",
+      "mean": "burger",
+      "pron": "",
+      "type": "word",
+      "example": "I use “burger” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "restaurant",
+      "mean": "restaurant",
+      "pron": "",
+      "type": "word",
+      "example": "I use “restaurant” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "menu",
+      "mean": "menu",
+      "pron": "",
+      "type": "word",
+      "example": "I use “menu” in everyday life.",
+      "note": "Everyday food vocabulary."
+    },
+    {
+      "word": "taste",
+      "mean": "taste",
+      "pron": "",
+      "type": "word",
+      "example": "I use “taste” in everyday life.",
+      "note": "Everyday food vocabulary."
+    }
+  ]
+}
