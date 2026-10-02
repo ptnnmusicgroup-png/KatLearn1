@@ -1,0 +1,391 @@
+{
+  "id": "people-relationships",
+  "name": "People Relationships Topic – Dùng hằng ngày",
+  "description": "KatLearn core everyday vocabulary",
+  "words": [
+    {
+      "word": "person",
+      "mean": "person",
+      "pron": "",
+      "type": "word",
+      "example": "I use “person” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "people",
+      "mean": "people",
+      "pron": "",
+      "type": "word",
+      "example": "I use “people” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "friend",
+      "mean": "friend",
+      "pron": "",
+      "type": "word",
+      "example": "I use “friend” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "classmate",
+      "mean": "classmate",
+      "pron": "",
+      "type": "word",
+      "example": "I use “classmate” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "teacher",
+      "mean": "teacher",
+      "pron": "",
+      "type": "word",
+      "example": "I use “teacher” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "student",
+      "mean": "student",
+      "pron": "",
+      "type": "word",
+      "example": "I use “student” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "neighbor",
+      "mean": "neighbor",
+      "pron": "",
+      "type": "word",
+      "example": "I use “neighbor” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "parent",
+      "mean": "parent",
+      "pron": "",
+      "type": "word",
+      "example": "I use “parent” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "child",
+      "mean": "child",
+      "pron": "",
+      "type": "word",
+      "example": "I use “child” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "brother",
+      "mean": "brother",
+      "pron": "",
+      "type": "word",
+      "example": "I use “brother” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "sister",
+      "mean": "sister",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sister” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "partner",
+      "mean": "partner",
+      "pron": "",
+      "type": "word",
+      "example": "I use “partner” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "husband",
+      "mean": "husband",
+      "pron": "",
+      "type": "word",
+      "example": "I use “husband” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "wife",
+      "mean": "wife",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wife” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "family",
+      "mean": "family",
+      "pron": "",
+      "type": "word",
+      "example": "I use “family” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "relative",
+      "mean": "relative",
+      "pron": "",
+      "type": "word",
+      "example": "I use “relative” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "colleague",
+      "mean": "colleague",
+      "pron": "",
+      "type": "word",
+      "example": "I use “colleague” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "boss",
+      "mean": "boss",
+      "pron": "",
+      "type": "word",
+      "example": "I use “boss” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "customer",
+      "mean": "customer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “customer” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "guest",
+      "mean": "guest",
+      "pron": "",
+      "type": "word",
+      "example": "I use “guest” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "host",
+      "mean": "host",
+      "pron": "",
+      "type": "word",
+      "example": "I use “host” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "stranger",
+      "mean": "stranger",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stranger” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "group",
+      "mean": "group",
+      "pron": "",
+      "type": "word",
+      "example": "I use “group” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "team",
+      "mean": "team",
+      "pron": "",
+      "type": "word",
+      "example": "I use “team” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "member",
+      "mean": "member",
+      "pron": "",
+      "type": "word",
+      "example": "I use “member” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "relationship",
+      "mean": "relationship",
+      "pron": "",
+      "type": "word",
+      "example": "I use “relationship” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "friendship",
+      "mean": "friendship",
+      "pron": "",
+      "type": "word",
+      "example": "I use “friendship” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "love",
+      "mean": "love",
+      "pron": "",
+      "type": "word",
+      "example": "I use “love” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "care",
+      "mean": "care",
+      "pron": "",
+      "type": "word",
+      "example": "I use “care” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "help",
+      "mean": "help",
+      "pron": "",
+      "type": "word",
+      "example": "I use “help” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "trust",
+      "mean": "trust",
+      "pron": "",
+      "type": "word",
+      "example": "I use “trust” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "respect",
+      "mean": "respect",
+      "pron": "",
+      "type": "word",
+      "example": "I use “respect” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "support",
+      "mean": "support",
+      "pron": "",
+      "type": "word",
+      "example": "I use “support” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "meet",
+      "mean": "meet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “meet” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "visit",
+      "mean": "visit",
+      "pron": "",
+      "type": "word",
+      "example": "I use “visit” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "call",
+      "mean": "call",
+      "pron": "",
+      "type": "word",
+      "example": "I use “call” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "invite",
+      "mean": "invite",
+      "pron": "",
+      "type": "word",
+      "example": "I use “invite” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "share",
+      "mean": "share",
+      "pron": "",
+      "type": "word",
+      "example": "I use “share” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "talk",
+      "mean": "talk",
+      "pron": "",
+      "type": "word",
+      "example": "I use “talk” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "listen",
+      "mean": "listen",
+      "pron": "",
+      "type": "word",
+      "example": "I use “listen” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "agree",
+      "mean": "agree",
+      "pron": "",
+      "type": "word",
+      "example": "I use “agree” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "disagree",
+      "mean": "disagree",
+      "pron": "",
+      "type": "word",
+      "example": "I use “disagree” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "kind",
+      "mean": "kind",
+      "pron": "",
+      "type": "word",
+      "example": "I use “kind” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "nice",
+      "mean": "nice",
+      "pron": "",
+      "type": "word",
+      "example": "I use “nice” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "friendly",
+      "mean": "friendly",
+      "pron": "",
+      "type": "word",
+      "example": "I use “friendly” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "close",
+      "mean": "close",
+      "pron": "",
+      "type": "word",
+      "example": "I use “close” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "together",
+      "mean": "together",
+      "pron": "",
+      "type": "word",
+      "example": "I use “together” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    },
+    {
+      "word": "alone",
+      "mean": "alone",
+      "pron": "",
+      "type": "word",
+      "example": "I use “alone” in everyday life.",
+      "note": "Everyday people relationships vocabulary."
+    }
+  ]
+}
