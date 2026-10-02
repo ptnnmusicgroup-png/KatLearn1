@@ -1,0 +1,391 @@
+{
+  "id": "work-career",
+  "name": "Work_Career_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for work career.",
+  "words": [
+    {
+      "word": "work",
+      "mean": "work",
+      "pron": "",
+      "type": "word",
+      "example": "I use “work” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "job",
+      "mean": "job",
+      "pron": "",
+      "type": "word",
+      "example": "I use “job” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "career",
+      "mean": "career",
+      "pron": "",
+      "type": "word",
+      "example": "I use “career” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "office",
+      "mean": "office",
+      "pron": "",
+      "type": "word",
+      "example": "I use “office” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "company",
+      "mean": "company",
+      "pron": "",
+      "type": "word",
+      "example": "I use “company” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "business",
+      "mean": "business",
+      "pron": "",
+      "type": "word",
+      "example": "I use “business” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "worker",
+      "mean": "worker",
+      "pron": "",
+      "type": "word",
+      "example": "I use “worker” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "employee",
+      "mean": "employee",
+      "pron": "",
+      "type": "word",
+      "example": "I use “employee” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "manager",
+      "mean": "manager",
+      "pron": "",
+      "type": "word",
+      "example": "I use “manager” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "boss",
+      "mean": "boss",
+      "pron": "",
+      "type": "word",
+      "example": "I use “boss” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "team",
+      "mean": "team",
+      "pron": "",
+      "type": "word",
+      "example": "I use “team” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "meeting",
+      "mean": "meeting",
+      "pron": "",
+      "type": "word",
+      "example": "I use “meeting” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "project",
+      "mean": "project",
+      "pron": "",
+      "type": "word",
+      "example": "I use “project” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "task",
+      "mean": "task",
+      "pron": "",
+      "type": "word",
+      "example": "I use “task” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "deadline",
+      "mean": "deadline",
+      "pron": "",
+      "type": "word",
+      "example": "I use “deadline” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "salary",
+      "mean": "salary",
+      "pron": "",
+      "type": "word",
+      "example": "I use “salary” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "pay",
+      "mean": "pay",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pay” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "job interview",
+      "mean": "job interview",
+      "pron": "",
+      "type": "word",
+      "example": "I use “job interview” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "application",
+      "mean": "application",
+      "pron": "",
+      "type": "word",
+      "example": "I use “application” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "resume",
+      "mean": "resume",
+      "pron": "",
+      "type": "word",
+      "example": "I use “resume” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "skill",
+      "mean": "skill",
+      "pron": "",
+      "type": "word",
+      "example": "I use “skill” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "experience",
+      "mean": "experience",
+      "pron": "",
+      "type": "word",
+      "example": "I use “experience” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "training",
+      "mean": "training",
+      "pron": "",
+      "type": "word",
+      "example": "I use “training” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "position",
+      "mean": "position",
+      "pron": "",
+      "type": "word",
+      "example": "I use “position” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "role",
+      "mean": "role",
+      "pron": "",
+      "type": "word",
+      "example": "I use “role” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "department",
+      "mean": "department",
+      "pron": "",
+      "type": "word",
+      "example": "I use “department” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "customer",
+      "mean": "customer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “customer” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "client",
+      "mean": "client",
+      "pron": "",
+      "type": "word",
+      "example": "I use “client” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "email",
+      "mean": "email",
+      "pron": "",
+      "type": "word",
+      "example": "I use “email” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "phone",
+      "mean": "phone",
+      "pron": "",
+      "type": "word",
+      "example": "I use “phone” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "computer",
+      "mean": "computer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “computer” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "desk",
+      "mean": "desk",
+      "pron": "",
+      "type": "word",
+      "example": "I use “desk” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "report",
+      "mean": "report",
+      "pron": "",
+      "type": "word",
+      "example": "I use “report” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "plan",
+      "mean": "plan",
+      "pron": "",
+      "type": "word",
+      "example": "I use “plan” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "goal",
+      "mean": "goal",
+      "pron": "",
+      "type": "word",
+      "example": "I use “goal” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "success",
+      "mean": "success",
+      "pron": "",
+      "type": "word",
+      "example": "I use “success” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "failure",
+      "mean": "failure",
+      "pron": "",
+      "type": "word",
+      "example": "I use “failure” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "promotion",
+      "mean": "promotion",
+      "pron": "",
+      "type": "word",
+      "example": "I use “promotion” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "leave",
+      "mean": "leave",
+      "pron": "",
+      "type": "word",
+      "example": "I use “leave” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "holiday",
+      "mean": "holiday",
+      "pron": "",
+      "type": "word",
+      "example": "I use “holiday” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "full-time",
+      "mean": "full-time",
+      "pron": "",
+      "type": "word",
+      "example": "I use “full-time” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "part-time",
+      "mean": "part-time",
+      "pron": "",
+      "type": "word",
+      "example": "I use “part-time” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "busy",
+      "mean": "busy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “busy” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "professional",
+      "mean": "professional",
+      "pron": "",
+      "type": "word",
+      "example": "I use “professional” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "colleague",
+      "mean": "colleague",
+      "pron": "",
+      "type": "word",
+      "example": "I use “colleague” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "workplace",
+      "mean": "workplace",
+      "pron": "",
+      "type": "word",
+      "example": "I use “workplace” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "industry",
+      "mean": "industry",
+      "pron": "",
+      "type": "word",
+      "example": "I use “industry” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    },
+    {
+      "word": "future",
+      "mean": "future",
+      "pron": "",
+      "type": "word",
+      "example": "I use “future” in everyday life.",
+      "note": "Everyday work career vocabulary."
+    }
+  ]
+}
