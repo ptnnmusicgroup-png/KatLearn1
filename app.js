@@ -125,6 +125,10 @@ async function openCoreTopic(topicId){
   try{openVocabularyPack(await loadCoreTopic(topicId))}
   catch(e){toast('Không tải được kho từ KatLearn: '+(e.message||'Lỗi không xác định'))}
 }
+function renderCoreTopicGroups(core=[]){
+  return core.map(topic=>'<div class="published-pack"><span>🧠</span><div><b>'+esc(topic.name)+'</b><small>Kho từ KatLearn</small></div><button data-core-topic="'+esc(topic.id)+'">Học</button></div>').join('');
+}
+
 let katLibraryFolder='';
 
 function katLibraryFolderIcon(category){
