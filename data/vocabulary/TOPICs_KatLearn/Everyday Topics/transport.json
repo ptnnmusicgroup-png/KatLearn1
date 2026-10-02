@@ -1,0 +1,391 @@
+{
+  "id": "transport",
+  "name": "Transport_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for transport.",
+  "words": [
+    {
+      "word": "car",
+      "mean": "car",
+      "pron": "",
+      "type": "word",
+      "example": "I use “car” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "bus",
+      "mean": "bus",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bus” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "train",
+      "mean": "train",
+      "pron": "",
+      "type": "word",
+      "example": "I use “train” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "plane",
+      "mean": "plane",
+      "pron": "",
+      "type": "word",
+      "example": "I use “plane” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "taxi",
+      "mean": "taxi",
+      "pron": "",
+      "type": "word",
+      "example": "I use “taxi” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "bike",
+      "mean": "bike",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bike” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "bicycle",
+      "mean": "bicycle",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bicycle” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "motorbike",
+      "mean": "motorbike",
+      "pron": "",
+      "type": "word",
+      "example": "I use “motorbike” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "ship",
+      "mean": "ship",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ship” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "boat",
+      "mean": "boat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “boat” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "road",
+      "mean": "road",
+      "pron": "",
+      "type": "word",
+      "example": "I use “road” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "street",
+      "mean": "street",
+      "pron": "",
+      "type": "word",
+      "example": "I use “street” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "bridge",
+      "mean": "bridge",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bridge” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "station",
+      "mean": "station",
+      "pron": "",
+      "type": "word",
+      "example": "I use “station” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "airport",
+      "mean": "airport",
+      "pron": "",
+      "type": "word",
+      "example": "I use “airport” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "stop",
+      "mean": "stop",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stop” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "traffic",
+      "mean": "traffic",
+      "pron": "",
+      "type": "word",
+      "example": "I use “traffic” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "driver",
+      "mean": "driver",
+      "pron": "",
+      "type": "word",
+      "example": "I use “driver” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "passenger",
+      "mean": "passenger",
+      "pron": "",
+      "type": "word",
+      "example": "I use “passenger” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "ticket",
+      "mean": "ticket",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ticket” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "map",
+      "mean": "map",
+      "pron": "",
+      "type": "word",
+      "example": "I use “map” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "route",
+      "mean": "route",
+      "pron": "",
+      "type": "word",
+      "example": "I use “route” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "trip",
+      "mean": "trip",
+      "pron": "",
+      "type": "word",
+      "example": "I use “trip” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "journey",
+      "mean": "journey",
+      "pron": "",
+      "type": "word",
+      "example": "I use “journey” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "travel",
+      "mean": "travel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “travel” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "drive",
+      "mean": "drive",
+      "pron": "",
+      "type": "word",
+      "example": "I use “drive” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "ride",
+      "mean": "ride",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ride” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "walk",
+      "mean": "walk",
+      "pron": "",
+      "type": "word",
+      "example": "I use “walk” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "cross",
+      "mean": "cross",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cross” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "turn",
+      "mean": "turn",
+      "pron": "",
+      "type": "word",
+      "example": "I use “turn” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "arrive",
+      "mean": "arrive",
+      "pron": "",
+      "type": "word",
+      "example": "I use “arrive” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "leave",
+      "mean": "leave",
+      "pron": "",
+      "type": "word",
+      "example": "I use “leave” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "park",
+      "mean": "park",
+      "pron": "",
+      "type": "word",
+      "example": "I use “park” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "parking",
+      "mean": "parking",
+      "pron": "",
+      "type": "word",
+      "example": "I use “parking” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "speed",
+      "mean": "speed",
+      "pron": "",
+      "type": "word",
+      "example": "I use “speed” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "slow",
+      "mean": "slow",
+      "pron": "",
+      "type": "word",
+      "example": "I use “slow” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "fast",
+      "mean": "fast",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fast” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "safe",
+      "mean": "safe",
+      "pron": "",
+      "type": "word",
+      "example": "I use “safe” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "danger",
+      "mean": "danger",
+      "pron": "",
+      "type": "word",
+      "example": "I use “danger” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "seat",
+      "mean": "seat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “seat” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "wheel",
+      "mean": "wheel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wheel” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "engine",
+      "mean": "engine",
+      "pron": "",
+      "type": "word",
+      "example": "I use “engine” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "fuel",
+      "mean": "fuel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fuel” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "petrol",
+      "mean": "petrol",
+      "pron": "",
+      "type": "word",
+      "example": "I use “petrol” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "battery",
+      "mean": "battery",
+      "pron": "",
+      "type": "word",
+      "example": "I use “battery” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "helmet",
+      "mean": "helmet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “helmet” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "traffic light",
+      "mean": "traffic light",
+      "pron": "",
+      "type": "word",
+      "example": "I use “traffic light” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    },
+    {
+      "word": "sign",
+      "mean": "sign",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sign” in everyday life.",
+      "note": "Everyday transport vocabulary."
+    }
+  ]
+}
