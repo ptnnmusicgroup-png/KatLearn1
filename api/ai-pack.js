@@ -3,7 +3,14 @@ function clean(value,max=1000){return String(value??"").trim().slice(0,max)}
 const PACK_INSTRUCTIONS=`Bạn là Kat AI, trợ lý tạo bộ từ vựng tiếng Anh cho học sinh Việt Nam.
 Tạo toàn bộ bộ từ trong một lần. Không lặp từ, không bịa từ hoặc IPA. Ưu tiên từ thực sự liên quan đến chủ đề và trình độ.
 FORMAT BẮT BUỘC: meaning_vi phải là nghĩa tiếng Việt rõ ràng, tự nhiên, có dấu câu khi cần (ví dụ: nhiều nghĩa ngăn bằng dấu phẩy hoặc chấm phẩy). notes phải là một ghi chú hữu ích, có dấu câu đầy đủ và kết thúc bằng dấu chấm nếu là câu hoàn chỉnh. example phải là một câu tiếng Anh hoàn chỉnh, viết hoa đầu câu và có dấu câu cuối câu. Không trả về chuỗi bị cụt, không bỏ toàn bộ dấu câu.`;
-const WORD_PROPERTIES={word:{type:"string"},meaning_vi:{type:"string"},part_of_speech:{type:"string"},ipa:{type:"string"},example:{type:"string"},notes:{type:"string"}};
+const WORD_PROPERTIES={
+  word:{type:"string",description:"Từ tiếng Anh."},
+  meaning_vi:{type:"string",description:"Nghĩa tiếng Việt rõ ràng, tự nhiên. Nếu có nhiều nghĩa, ngăn cách bằng dấu phẩy hoặc chấm phẩy; kết thúc bằng dấu chấm."},
+  part_of_speech:{type:"string",description:"Từ loại bằng tiếng Anh."},
+  ipa:{type:"string",description:"IPA Anh-Anh."},
+  example:{type:"string",description:"Một câu tiếng Anh hoàn chỉnh, viết hoa đầu câu và có dấu câu cuối câu."},
+  notes:{type:"string",description:"Một ghi chú hữu ích bằng tiếng Việt, không được chỉ là vài từ rời rạc; phải có dấu câu đầy đủ và kết thúc bằng dấu chấm."}
+};
 const REQUIRED_WORD=["word","meaning_vi","part_of_speech","ipa","example","notes"];
 const WORD_SCHEMA={type:"object",additionalProperties:false,properties:WORD_PROPERTIES,required:REQUIRED_WORD};
 const SCHEMA={type:"object",additionalProperties:false,properties:{pack:{type:"object",additionalProperties:false,properties:{suggested_title:{type:"string"},description:{type:"string"},topic:{type:"string"},difficulty:{type:"string"},purpose:{type:"string"}},required:["suggested_title","description","topic","difficulty","purpose"]},words:{type:"array",items:WORD_SCHEMA}},required:["pack","words"]};
@@ -77,29 +84,48 @@ module.exports=async(req,res)=>{
       const retryResult=parseJson(modelText(response));words=uniqueWords([...words,...(Array.isArray(retryResult.words)?retryResult.words:[])]);result={...result,pack:result.pack||{}};
     }
     if(words.length<wordCount)throw Object.assign(new Error("Gemini chưa tạo đủ "+wordCount+" từ. Hãy thử lại với topic cụ thể hơn."),{status:502,code:"gemini_not_enough_words"});
-    const tidyText=value=>String(value??"").replace(/\\s+/g," ").trim();
+    const tidyText=value=>String(value??"").replace(/\s+/g," ").trim();
+    const punctuationCount=value=>(String(value??"").match(/[,.!?;:…]/g)||[]).length;
     const ensureSentence=value=>{
-      const text=tidyText(value);
+      const text=tidyText(value).replace(/^[-–—•]+\s*/,"");
       if(!text)return "";
-      return /[.!?…:;]$/.test(text)?text:text+".";
+      if(/[.!?…]$/.test(text))return text;
+      return text+".";
     };
     const ensureVietnameseMeaning=value=>{
-      const text=tidyText(value);
+      let text=tidyText(value).replace(/^[-–—•]+\s*/,"");
       if(!text)return "";
-      return /[.!?…]$/.test(text)?text:text+".";
+      // Means/definitions should not be a bare label; at minimum close the
+      // definition as a complete phrase/sentence for clean UI presentation.
+      if(/[.!?…]$/.test(text))return text;
+      return text+".";
     };
-    words=words.slice(0,wordCount).map(item=>({
-      ...item,
-      word:tidyText(item.word),
-      meaning_vi:ensureVietnameseMeaning(item.meaning_vi),
-      translation_vi:ensureVietnameseMeaning(item.translation_vi||item.meaning_vi||""),
-      notes:ensureSentence(item.notes),
-      example:ensureSentence(item.example),
-      synonyms:Array.isArray(item.synonyms)?item.synonyms:[],
-      antonyms:Array.isArray(item.antonyms)?item.antonyms:[],
-      difficulty:String(item.difficulty||difficulty),
-      topic:String(item.topic||prompt)
-    }));result.pack=result.pack||{};result.pack.topic=prompt;result.pack.difficulty=difficulty;result.pack.purpose=purpose;result.words=words;
+    const cleanNotes=(value,word)=>{
+      const text=ensureSentence(value);
+      if(text&&punctuationCount(text)>0)return text;
+      return "Ghi chú: “"+word+"” là từ vựng liên quan đến chủ đề này.";
+    };
+    words=words.slice(0,wordCount).map(item=>{
+      const word=tidyText(item.word);
+      return {
+        ...item,
+        word,
+        meaning_vi:ensureVietnameseMeaning(item.meaning_vi),
+        translation_vi:ensureVietnameseMeaning(item.translation_vi||item.meaning_vi||""),
+        notes:cleanNotes(item.notes,word),
+        example:ensureSentence(item.example),
+        synonyms:Array.isArray(item.synonyms)?item.synonyms:[],
+        antonyms:Array.isArray(item.antonyms)?item.antonyms:[],
+        difficulty:String(item.difficulty||difficulty),
+        topic:String(item.topic||prompt)
+      };
+    });
+    const malformed=words.some(item=>{
+      if(!item||!item.word||!item.meaning_vi||!item.notes||!item.example)return true;
+      return !/[.!?…]$/.test(item.meaning_vi)||!/[.!?…]$/.test(item.notes)||!/[.!?…]$/.test(item.example);
+    });
+    if(malformed)throw Object.assign(new Error("Kat AI trả về dữ liệu định dạng không đạt yêu cầu. Hãy thử lại."),{status:502,code:"gemini_bad_word_format"});
+    result.pack=result.pack||{};result.pack.topic=prompt;result.pack.difficulty=difficulty;result.pack.purpose=purpose;result.words=words;
     return send(res,200,result);
   }catch(error){return send(res,error.status||500,{error:String(error.message||"Kat AI không thể tạo bộ từ."),code:error.code||"ai_pack_failed"},error.retryAfter?{"Retry-After":String(error.retryAfter)}:{})}
 };
