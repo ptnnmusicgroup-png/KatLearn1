@@ -1,18 +1,26 @@
 # TOPICs_KatLearn
 
-Thư viện bộ từ công khai của KatLearn.
+## KatLearn Vocabulary Library
 
-## Everyday Topics
-Chứa toàn bộ các topic cốt lõi hiện có của KatLearn:
-Daily Life, Family, Home, Food, Cooking, Shopping, Clothes & Fashion, School & Education, Work & Career, Technology, Internet & Social Media, Health & Medicine, Sports & Fitness, Travel & Tourism, Transport, Weather & Seasons, Environment, Animals & Nature, Feelings & Personality, Entertainment & Culture, City & Community, Money & Finance, Communication, People & Relationships, Places.
+Đây là kho từ vựng công khai thống nhất của KatLearn.
 
-## IELTS Vocabulary
-Các bộ từ phục vụ học IELTS:
-- IELTS Writing Task 1 Vocabulary
-- IELTS Writing Task 2 Vocabulary
-- IELTS Reading Academic Vocabulary
-- IELTS Speaking Vocabulary
+Oxford, Cambridge, ETS, tài liệu IELTS/TOEIC, SGK và tài liệu luyện thi được xem như **nguồn tham khảo định hướng**, không phải các collection riêng trong giao diện. KatLearn chọn lọc và chuẩn hóa nội dung thành các pack mang taxonomy của chính KatLearn.
 
-Các bộ IELTS ở đây là nội dung học tập do KatLearn biên soạn/chọn lọc, không phải danh sách từ vựng chính thức do IELTS phát hành. Cấu trúc và mục tiêu của các bộ được thiết kế theo format và tiêu chí công khai của IELTS.
+### Các lớp nội dung
 
-Nguồn tham khảo cho cấu trúc kỳ thi và tiêu chí đánh giá: IELTS.org.
+- **Everyday Topics**: chủ đề giao tiếp và đời sống.
+- **IELTS**: Writing Task 1, Writing Task 2, Reading, Speaking.
+- **KatLearn Library · General & Academic**: từ nền tảng có tính chuyển giao cao.
+- **KatLearn Library · CEFR**: vùng năng lực B1–B2.
+- **KatLearn Library · Academic**: từ học thuật và ngôn ngữ lập luận.
+- **KatLearn Library · Skills**: collocations và phrasal verbs.
+- **KatLearn Library · Exam & Specialized**: giao thoa ôn thi, TOEIC, công việc và ngành nghề.
+- **KatLearn Library · School English**: từ vựng tổng hợp theo chủ đề xuyên suốt tiếng Anh phổ thông.
+- **KatLearn Library · Foundations**: động từ bất quy tắc.
+
+### Nguyên tắc biên tập
+
+Mỗi mục từ ưu tiên nghĩa tiếng Việt tự nhiên, tính ứng dụng cao, đúng loại từ và đúng ngữ cảnh. Collocation, phrasal verb, idiom và phrase được ghi rõ loại để có thể tái sử dụng trong flashcard, luyện tập và bài kiểm tra.
+
+Các file topic cũ vẫn được giữ nguyên đường dẫn để không làm hỏng tham chiếu cũ; lớp **KatLearn Library** mới là phần tổng hợp trung tâm.
+
