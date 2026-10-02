@@ -105,8 +105,15 @@ async function loadAssignedPacks(){
   }catch(e){if(String(window.studyStore?.user?.uid||'')===uid)console.warn('[KatLearn] assigned packs:',e);return[]}
 }
 function setVocabSource(source){activeVocabSource=source||{kind:'legacy'};if(activeVocabSource.kind==='personal'&&!activeVocabSource.uid)activeVocabSource.uid=window.studyStore?.userId||'';localStorage.setItem('katlearn-vocab-source',JSON.stringify(activeVocabSource));loadKnownState()}
-function openVocabularyPack(pack){
+async function openVocabularyPack(pack){
   if(!pack)return;
+  // Firebase Auth can still be hydrating when the library is clicked immediately
+  // after page load. Wait for the authoritative auth state before gating access.
+  try{
+    await window.studyStore?.waitForAuth?.();
+  }catch(error){
+    console.warn('[KatLearn] Auth readiness while opening vocabulary:',error);
+  }
   if(!window.studyStore?.user){
     toast('🔒 Hãy đăng nhập để học bộ từ này nhé!');
     document.body.classList.add('pack-auth-gate');
