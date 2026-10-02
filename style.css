@@ -111,19 +111,6 @@
   box-shadow:0 0 0 3px #9388f918;
 }
 .student-pack-row select{cursor:pointer;color:#748196}
-.sp-ai{
-  width:30px;
-  height:30px;
-  border:1px solid #ddd8ff;
-  border-radius:8px;
-  background:#f6f4ff;
-  color:#6d5efc;
-  font-size:14px;
-  cursor:pointer;
-  transition:.18s;
-}
-.sp-ai:hover:not(:disabled){background:#ebe7ff;transform:scale(1.04)}
-.sp-ai:disabled{opacity:.6;cursor:wait}
 .sp-remove{
   width:30px;
   height:30px;
