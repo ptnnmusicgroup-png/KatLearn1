@@ -112,6 +112,116 @@ async function syncDirectoryChunk(db,decoded,entity,cursor,requestedLimit){
   return{entity,total,processed:snapshot.size,nextCursor,done};
 }
 
+async function syncAllPersonalPacks(db,decoded){
+  const usersSnap=await db.collection("users").select("accountCode","email","displayName").get();
+  const accountByUid=new Map();
+  const accountByCode=new Map();
+  usersSnap.docs.forEach(doc=>{
+    const data=doc.data()||{};
+    const accountCode=clean(data.accountCode||"",180);
+    if(accountCode){
+      accountByUid.set(doc.id,accountCode);
+      accountByCode.set(accountCode,{uid:doc.id,email:String(data.email||""),displayName:String(data.displayName||data.name||"")});
+    }
+  });
+
+  const userPacksSnap=await db.collectionGroup("personalPacks").get();
+  const writes=[];
+  const seen=new Set();
+  let skipped=0;
+
+  for(const doc of userPacksSnap.docs){
+    const data=doc.data()||{};
+    if(data.kind&&data.kind!=="personalPack")continue;
+    const ownerUid=String(data.ownerUid||"").trim();
+    if(!ownerUid){skipped++;continue;}
+    const accountCode=clean(data.ownerAccountCode||accountByUid.get(ownerUid)||"",180);
+    if(!accountCode){skipped++;continue;}
+    const accountInfo=accountByCode.get(accountCode)||{};
+    const payload={
+      ...serialize(data),
+      kind:"personalPack",
+      ownerUid,
+      ownerAccountCode:accountCode,
+      ownerEmail:String(data.ownerEmail||accountInfo.email||""),
+      ownerDisplayName:String(data.ownerDisplayName||accountInfo.displayName||"")
+    };
+    const packId=doc.id;
+    const key="account:"+accountCode+"/"+packId;
+    if(seen.has(key))continue;
+    seen.add(key);
+    writes.push({
+      ref:db.collection("accounts").doc(accountCode).collection("memory").doc(packId),
+      data:payload
+    });
+  }
+
+  // Repair legacy account-only packs back into the user's canonical namespace.
+  let accountOnlySnap={docs:[]};
+  try{
+    accountOnlySnap=await db.collectionGroup("memory").where("kind","==","personalPack").get();
+  }catch(error){
+    console.warn("[KatLearn admin personal-pack reverse sync]",messageOf(error));
+  }
+
+  let reverseRepaired=0;
+  for(const doc of accountOnlySnap.docs){
+    const data=doc.data()||{};
+    const ownerUid=String(data.ownerUid||"").trim();
+    const accountCode=clean(data.ownerAccountCode||"",180);
+    if(!ownerUid||!accountCode||String(accountByUid.get(ownerUid)||"")!==accountCode)continue;
+    const key="user:"+ownerUid+"/"+doc.id;
+    if(seen.has(key))continue;
+    seen.add(key);
+    writes.push({
+      ref:db.collection("users").doc(ownerUid).collection("personalPacks").doc(doc.id),
+      data:{...serialize(data),kind:"personalPack",ownerUid,ownerAccountCode:accountCode}
+    });
+    reverseRepaired++;
+  }
+
+  const now=Date.now();
+  for(let i=0;i<writes.length;i+=400){
+    const chunk=writes.slice(i,i+400);
+    if(!chunk.length)continue;
+    const batch=db.batch();
+    chunk.forEach(item=>batch.set(item.ref,item.data,{merge:true}));
+    await batch.commit();
+  }
+
+  await db.collection(ADMIN_SYNC_COLLECTION).doc("personalPacks").set({
+    sourceCollectionGroup:"personalPacks",
+    reverseSourceCollectionGroup:"memory",
+    totalUserPacks:userPacksSnap.size,
+    totalAccountPacks:accountOnlySnap.size,
+    totalWrites:writes.length,
+    reverseRepaired,
+    skipped,
+    processed:writes.length,
+    done:true,
+    updatedAt:now
+  },{merge:true});
+
+  await audit(db,decoded,"sync.complete","personalPacks",{
+    totalUserPacks:userPacksSnap.size,
+    totalAccountPacks:accountOnlySnap.size,
+    totalWrites:writes.length,
+    reverseRepaired,
+    skipped,
+    mirror:"accounts/{accountCode}/memory/{packId}",
+    userNamespace:"users/{uid}/personalPacks/{packId}"
+  });
+
+  return{
+    entity:"personalPacks",
+    total:userPacksSnap.size,
+    processed:writes.length,
+    skipped,
+    reverseRepaired,
+    done:true
+  };
+}
+
 async function updatePublicPack(db,decoded,packId,name,words){
   packId=clean(packId,160);
   name=clean(name,200);
@@ -1281,6 +1391,7 @@ module.exports=async(req,res)=>{
     if(action==="delete-pack")return writeJson(res,200,{ok:true,...await deletePack(db,decoded,body.packId)},origin);
     if(action==="update-pack")return writeJson(res,200,{ok:true,...await updatePublicPack(db,decoded,body.packId,body.name,body.words)},origin);
     if(action==="sync-directory-chunk")return writeJson(res,200,{ok:true,...await syncDirectoryChunk(db,decoded,body.entity,body.cursor,body.limit)},origin);
+     if(action==="sync-all-personal-packs")return writeJson(res,200,{ok:true,...await syncAllPersonalPacks(db,decoded)},origin);
     if(action==="sync-code-public-packs")return writeJson(res,200,{ok:true,...await syncCodePublicPacks(db,decoded)},origin);
     if(action==="catalog-plan")return writeJson(res,200,{ok:true,...plan()},origin);
     if(action==="catalog-chunk"){
