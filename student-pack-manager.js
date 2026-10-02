@@ -208,10 +208,10 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         </div></section>
 
         <section class="student-pack-name-block"><div class="student-pack-step-kicker"><span>1</span><div><b>Đặt tên bộ từ</b><small>Tên này sẽ xuất hiện trong “Bộ từ của tôi”.</small></div></div><label class="student-pack-field"><span>Tên bộ từ</span><input id="studentPackName" maxlength="80" placeholder="Ví dụ: IELTS Unit 7"></label></section>
-        <section class="student-pack-words-section"><div class="student-pack-step-kicker"><span>2</span><div><b>Nhập từ tiếng Anh</b><small>Mỗi dòng một từ · bấm “Generate AI” để hoàn thiện cả bộ.</small></div></div><div class="student-pack-columns"><span>#</span><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span>AI</span><span></span></div>
+        <section class="student-pack-words-section"><div class="student-pack-step-kicker"><span>2</span><div><b>Nhập từ tiếng Anh</b><small>Mỗi dòng một từ · bấm “Generate AI” để hoàn thiện cả bộ.</small></div></div><div class="student-pack-columns"><span>#</span><span>TỪ VỰNG</span><span>PHIÊN ÂM</span><span>NGHĨA*</span><span>LOẠI TỪ</span><span>VÍ DỤ</span><span>GHI CHÚ</span><span></span></div>
         <div id="studentPackRows"></div>
         <button type="button" id="studentPackAddRow" class="add-word-btn">＋ Thêm một dòng</button></section>
-        <div class="student-pack-footer"><div class="student-pack-count"><b id="studentPackCount">3</b><span> từ vựng</span></div><div class="student-pack-actions"><button type="button" class="secondary-btn" id="studentPackCancel">Hủy</button><button type="button" class="secondary-btn danger-action" id="studentPackDelete" hidden>Xóa bộ từ</button><button type="button" class="primary-btn student-pack-save-btn" id="studentPackSave">Tạo bộ từ <span>→</span></button></div></div>
+        <div class="student-pack-footer"><div class="student-pack-count"><b id="studentPackCount">4</b><span> từ vựng</span></div><div class="student-pack-actions"><button type="button" class="secondary-btn" id="studentPackCancel">Hủy</button><button type="button" class="secondary-btn danger-action" id="studentPackDelete" hidden>Xóa bộ từ</button><button type="button" class="primary-btn student-pack-save-btn" id="studentPackSave">Tạo bộ từ <span>→</span></button></div></div>
       </div>`;
     document.body.appendChild(modal);
     $('#studentPackClose').onclick=close;
