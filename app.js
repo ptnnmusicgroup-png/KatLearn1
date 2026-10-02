@@ -22,11 +22,11 @@ function updateDailyGoal(count){
 }
 function updateCoins(){['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=format(coins)});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
 async function syncProfile(extra={}){const user=window.studyStore?.user;if(!window.studyStore?.connected()||!user)return;const uid=user.uid;try{if(window.studyStore?.user?.uid!==uid)return;const data={...extra};if(!['core','public','assigned'].includes(String(activeVocabSource?.kind||'')))Object.assign(data,{knownWords:known,totalWords:vocab.length,vocab});if(window.studyStore?.user?.uid!==uid)return;await window.studyStore.saveProfile(data)}catch(e){if(window.studyStore?.user?.uid===uid)console.warn('Firebase sync:',e)}}
-function toast(msg){const t=$('#toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
+function toast(msg,kind=''){const t=$('#toast');if(!t)return;clearTimeout(window.__katToastTimer);t.className=''+(kind?' '+kind:'');t.textContent=msg;t.classList.add('show');window.__katToastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
 (function showTestReturnError(){
   const params=new URLSearchParams(location.search);
   if(params.get('testError')!=='fullscreen-exit')return;
-  setTimeout(()=>toast('Đang làm mà thoát full screen, biết Kat buồn lắm hummm ._.'),180);
+  setTimeout(()=>toast('🐱 Đang làm mà thoát full screen, biết Kat buồn lắm hummm ._.','kat-warning'),180);
   params.delete('testError');
   const next=params.toString();
   history.replaceState(null,document.title,location.pathname+(next?'?'+next:'')+location.hash);
