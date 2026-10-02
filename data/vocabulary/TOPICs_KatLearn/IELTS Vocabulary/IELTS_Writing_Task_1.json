@@ -1,0 +1,682 @@
+{
+  "id": "ielts-writing-task-1",
+  "name": "IELTS Writing Task 1 Vocabulary",
+  "description": "Từ vựng cốt lõi do KatLearn tuyển chọn để mô tả biểu đồ, bảng, số liệu, so sánh và quy trình trong IELTS Academic Writing Task 1. Đây là bộ học tập do KatLearn biên soạn, không phải danh sách từ vựng chính thức của IELTS.",
+  "words": [
+    {
+      "word": "rise",
+      "mean": "tăng; sự gia tăng",
+      "pron": "",
+      "type": "verb",
+      "example": "The number of visitors rose steadily over the period.",
+      "note": "Useful with sharply, gradually, steadily, slightly, and significantly.",
+      "category": "trends"
+    },
+    {
+      "word": "increase",
+      "mean": "tăng; sự gia tăng",
+      "pron": "",
+      "type": "verb",
+      "example": "The percentage increased from 20% to 35%.",
+      "note": "Use as a verb or noun; common collocations include a significant increase.",
+      "category": "trends"
+    },
+    {
+      "word": "climb",
+      "mean": "tăng; leo lên",
+      "pron": "",
+      "type": "verb",
+      "example": "The figure climbed to a peak of 75%.",
+      "note": "Often used for gradual upward movement in charts.",
+      "category": "trends"
+    },
+    {
+      "word": "grow",
+      "mean": "tăng trưởng; tăng lên",
+      "pron": "",
+      "type": "verb",
+      "example": "The population grew steadily during the decade.",
+      "note": "Useful for long-term changes, especially population and economic data.",
+      "category": "trends"
+    },
+    {
+      "word": "surge",
+      "mean": "tăng vọt; sự tăng vọt",
+      "pron": "",
+      "type": "verb",
+      "example": "Online sales surged in the final quarter.",
+      "note": "A strong increase; stronger than a simple rise or increase.",
+      "category": "trends"
+    },
+    {
+      "word": "soar",
+      "mean": "tăng vọt",
+      "pron": "",
+      "type": "verb",
+      "example": "The price of housing soared after 2020.",
+      "note": "Use for a very rapid or dramatic increase.",
+      "category": "trends"
+    },
+    {
+      "word": "jump",
+      "mean": "tăng mạnh; nhảy vọt",
+      "pron": "",
+      "type": "verb",
+      "example": "The rate jumped from 12% to 28%.",
+      "note": "Common in less formal chart descriptions; use cautiously in formal writing.",
+      "category": "trends"
+    },
+    {
+      "word": "peak",
+      "mean": "đạt đỉnh; đỉnh",
+      "pron": "",
+      "type": "verb",
+      "example": "The figure peaked at 82% in July.",
+      "note": "Useful for the highest point in a time series.",
+      "category": "trends"
+    },
+    {
+      "word": "reach a peak",
+      "mean": "đạt mức cao nhất",
+      "pron": "",
+      "type": "phrase",
+      "example": "The proportion reached a peak of 64% in 2019.",
+      "note": "Follow with the highest value and, where useful, the time.",
+      "category": "trends"
+    },
+    {
+      "word": "plateau",
+      "mean": "chững lại; đạt trạng thái ổn định",
+      "pron": "",
+      "type": "verb",
+      "example": "The number of users plateaued at around 50,000.",
+      "note": "Useful when growth stops and the figure becomes stable.",
+      "category": "trends"
+    },
+    {
+      "word": "level off",
+      "mean": "ổn định; chững lại",
+      "pron": "",
+      "type": "phrasal verb",
+      "example": "The rate levelled off at about 40%.",
+      "note": "Common for a figure that stops rising or falling after a period of change.",
+      "category": "trends"
+    },
+    {
+      "word": "remain stable",
+      "mean": "duy trì ổn định",
+      "pron": "",
+      "type": "phrase",
+      "example": "The percentage remained stable throughout the period.",
+      "note": "Useful alternative to stayed the same.",
+      "category": "stability"
+    },
+    {
+      "word": "remain constant",
+      "mean": "không thay đổi",
+      "pron": "",
+      "type": "phrase",
+      "example": "The figure remained constant at 25%.",
+      "note": "Best when a value shows essentially no change.",
+      "category": "stability"
+    },
+    {
+      "word": "fluctuate",
+      "mean": "dao động",
+      "pron": "",
+      "type": "verb",
+      "example": "The price fluctuated between $40 and $60.",
+      "note": "Use for repeated rises and falls rather than one clear trend.",
+      "category": "fluctuation"
+    },
+    {
+      "word": "vary",
+      "mean": "thay đổi; dao động",
+      "pron": "",
+      "type": "verb",
+      "example": "The figures varied considerably across the five regions.",
+      "note": "Useful for differences across categories as well as over time.",
+      "category": "variation"
+    },
+    {
+      "word": "decline",
+      "mean": "giảm; sự suy giảm",
+      "pron": "",
+      "type": "verb",
+      "example": "The number of households declined gradually.",
+      "note": "A formal, useful alternative to fall or decrease.",
+      "category": "trends"
+    },
+    {
+      "word": "decrease",
+      "mean": "giảm; sự giảm",
+      "pron": "",
+      "type": "verb",
+      "example": "The proportion decreased slightly in 2018.",
+      "note": "Can be used as both a verb and a noun.",
+      "category": "trends"
+    },
+    {
+      "word": "drop",
+      "mean": "giảm; sự sụt giảm",
+      "pron": "",
+      "type": "verb",
+      "example": "The figure dropped sharply after 2015.",
+      "note": "Useful for a noticeable fall, especially in line graphs.",
+      "category": "trends"
+    },
+    {
+      "word": "fall",
+      "mean": "giảm; sự giảm",
+      "pron": "",
+      "type": "verb",
+      "example": "The unemployment rate fell to 6%.",
+      "note": "A basic but highly useful Task 1 trend verb.",
+      "category": "trends"
+    },
+    {
+      "word": "dip",
+      "mean": "giảm nhẹ; sự sụt nhẹ",
+      "pron": "",
+      "type": "verb",
+      "example": "The percentage dipped briefly in May.",
+      "note": "Use for a small or temporary fall.",
+      "category": "trends"
+    },
+    {
+      "word": "plummet",
+      "mean": "giảm mạnh",
+      "pron": "",
+      "type": "verb",
+      "example": "The value plummeted in the second half of the year.",
+      "note": "Very strong language for an extremely rapid decrease.",
+      "category": "trends"
+    },
+    {
+      "word": "halve",
+      "mean": "giảm còn một nửa",
+      "pron": "",
+      "type": "verb",
+      "example": "The figure halved between 2010 and 2020.",
+      "note": "Use when a value becomes approximately 50% of its original level.",
+      "category": "trends"
+    },
+    {
+      "word": "double",
+      "mean": "tăng gấp đôi",
+      "pron": "",
+      "type": "verb",
+      "example": "The number of applicants doubled over the decade.",
+      "note": "Use when the final value is twice the starting value.",
+      "category": "comparisons"
+    },
+    {
+      "word": "triple",
+      "mean": "tăng gấp ba",
+      "pron": "",
+      "type": "verb",
+      "example": "The amount of waste tripled over the period.",
+      "note": "Use when the final value is three times the initial value.",
+      "category": "comparisons"
+    },
+    {
+      "word": "account for",
+      "mean": "chiếm; tạo thành",
+      "pron": "",
+      "type": "phrase",
+      "example": "Private cars accounted for 45% of journeys.",
+      "note": "Essential for proportions and percentages.",
+      "category": "proportions"
+    },
+    {
+      "word": "comprise",
+      "mean": "bao gồm; chiếm thành phần",
+      "pron": "",
+      "type": "verb",
+      "example": "The sample comprised four age groups.",
+      "note": "Use to describe what a whole is made up of.",
+      "category": "proportions"
+    },
+    {
+      "word": "constitute",
+      "mean": "cấu thành; chiếm",
+      "pron": "",
+      "type": "verb",
+      "example": "Older residents constituted 18% of the population.",
+      "note": "Formal alternative for make up.",
+      "category": "proportions"
+    },
+    {
+      "word": "proportion",
+      "mean": "tỷ lệ",
+      "pron": "",
+      "type": "noun",
+      "example": "The proportion of students using buses was 35%.",
+      "note": "Usually followed by of + noun.",
+      "category": "proportions"
+    },
+    {
+      "word": "percentage",
+      "mean": "phần trăm; tỷ lệ phần trăm",
+      "pron": "",
+      "type": "noun",
+      "example": "The percentage of households with internet access reached 90%.",
+      "note": "Use when the chart reports values specifically as percentages.",
+      "category": "data"
+    },
+    {
+      "word": "figure",
+      "mean": "con số; số liệu",
+      "pron": "",
+      "type": "noun",
+      "example": "The figure for France was higher than that for Spain.",
+      "note": "A useful general noun for a reported number.",
+      "category": "data"
+    },
+    {
+      "word": "rate",
+      "mean": "tỷ lệ",
+      "pron": "",
+      "type": "noun",
+      "example": "The unemployment rate fell steadily.",
+      "note": "Common with unemployment, birth, growth, crime, and inflation.",
+      "category": "data"
+    },
+    {
+      "word": "ratio",
+      "mean": "tỷ lệ",
+      "pron": "",
+      "type": "noun",
+      "example": "The ratio of men to women was approximately 2 to 1.",
+      "note": "Use for comparisons between two quantities.",
+      "category": "data"
+    },
+    {
+      "word": "majority",
+      "mean": "đa số",
+      "pron": "",
+      "type": "noun",
+      "example": "The majority of respondents preferred public transport.",
+      "note": "Useful for categorical comparisons when more than half choose an option.",
+      "category": "proportions"
+    },
+    {
+      "word": "minority",
+      "mean": "thiểu số",
+      "pron": "",
+      "type": "noun",
+      "example": "Only a small minority of participants chose cycling.",
+      "note": "Often paired with small, large, or significant.",
+      "category": "proportions"
+    },
+    {
+      "word": "respectively",
+      "mean": "lần lượt",
+      "pron": "",
+      "type": "adverb",
+      "example": "The figures for men and women were 48% and 52%, respectively.",
+      "note": "Place near the end of a sentence when values match the listed categories.",
+      "category": "comparisons"
+    },
+    {
+      "word": "approximately",
+      "mean": "xấp xỉ",
+      "pron": "",
+      "type": "adverb",
+      "example": "Approximately 60% of households owned a car.",
+      "note": "Useful when exact figures are unnecessary or unavailable.",
+      "category": "data"
+    },
+    {
+      "word": "roughly",
+      "mean": "khoảng; xấp xỉ",
+      "pron": "",
+      "type": "adverb",
+      "example": "Roughly one third of the sample lived alone.",
+      "note": "Slightly less formal than approximately but common in Task 1.",
+      "category": "data"
+    },
+    {
+      "word": "just over",
+      "mean": "hơn vừa một chút",
+      "pron": "",
+      "type": "phrase",
+      "example": "Just over half of the participants were under 30.",
+      "note": "Use for a value slightly above a stated number or fraction.",
+      "category": "data"
+    },
+    {
+      "word": "just under",
+      "mean": "thấp hơn vừa một chút",
+      "pron": "",
+      "type": "phrase",
+      "example": "Just under 40% of respondents worked from home.",
+      "note": "Use for a value slightly below a stated figure.",
+      "category": "data"
+    },
+    {
+      "word": "nearly",
+      "mean": "gần; xấp xỉ",
+      "pron": "",
+      "type": "adverb",
+      "example": "Nearly 70% of students owned a laptop.",
+      "note": "Useful for values that are close to a round number.",
+      "category": "data"
+    },
+    {
+      "word": "precisely",
+      "mean": "chính xác",
+      "pron": "",
+      "type": "adverb",
+      "example": "The figure was precisely 50%.",
+      "note": "Use only when the data clearly support exactness.",
+      "category": "data"
+    },
+    {
+      "word": "compared with",
+      "mean": "so với",
+      "pron": "",
+      "type": "phrase",
+      "example": "Compared with 2010, the figure was considerably higher in 2020.",
+      "note": "Useful for direct comparisons between years or groups.",
+      "category": "comparisons"
+    },
+    {
+      "word": "in contrast",
+      "mean": "ngược lại; trái lại",
+      "pron": "",
+      "type": "linker",
+      "example": "In contrast, the figure for rural areas remained stable.",
+      "note": "Use to highlight a clear difference.",
+      "category": "comparisons"
+    },
+    {
+      "word": "whereas",
+      "mean": "trong khi; trái lại",
+      "pron": "",
+      "type": "conjunction",
+      "example": "Car use increased, whereas bus use declined.",
+      "note": "Useful for comparing two trends in one sentence.",
+      "category": "comparisons"
+    },
+    {
+      "word": "from ... to ...",
+      "mean": "từ ... đến ...",
+      "pron": "",
+      "type": "phrase",
+      "example": "The rate rose from 25% to 45%.",
+      "note": "Core structure for reporting a starting and ending value.",
+      "category": "time"
+    },
+    {
+      "word": "over the period",
+      "mean": "trong suốt giai đoạn",
+      "pron": "",
+      "type": "phrase",
+      "example": "The number increased steadily over the period.",
+      "note": "Useful for describing change across the whole time range.",
+      "category": "time"
+    },
+    {
+      "word": "at the beginning",
+      "mean": "ở đầu giai đoạn",
+      "pron": "",
+      "type": "phrase",
+      "example": "At the beginning, the figure stood at 20%.",
+      "note": "Useful when introducing the initial value.",
+      "category": "time"
+    },
+    {
+      "word": "by the end",
+      "mean": "đến cuối giai đoạn",
+      "pron": "",
+      "type": "phrase",
+      "example": "By the end, the figure had reached 65%.",
+      "note": "Useful for the final value in a time series.",
+      "category": "time"
+    },
+    {
+      "word": "thereafter",
+      "mean": "sau đó",
+      "pron": "",
+      "type": "adverb",
+      "example": "The figure declined thereafter.",
+      "note": "Formal way to refer to the period after a stated point.",
+      "category": "time"
+    },
+    {
+      "word": "subsequently",
+      "mean": "sau đó; tiếp theo",
+      "pron": "",
+      "type": "adverb",
+      "example": "The percentage subsequently recovered to 30%.",
+      "note": "Useful for sequencing changes in a timeline.",
+      "category": "time"
+    },
+    {
+      "word": "initially",
+      "mean": "ban đầu",
+      "pron": "",
+      "type": "adverb",
+      "example": "Initially, the figure was just 15%.",
+      "note": "Useful in introductions and descriptions of starting points.",
+      "category": "time"
+    },
+    {
+      "word": "overall",
+      "mean": "nhìn chung; tổng thể",
+      "pron": "",
+      "type": "adverb",
+      "example": "Overall, the figures show an upward trend.",
+      "note": "Essential for a clear Task 1 overview.",
+      "category": "overview"
+    },
+    {
+      "word": "upward trend",
+      "mean": "xu hướng tăng",
+      "pron": "",
+      "type": "noun phrase",
+      "example": "The chart shows a clear upward trend in online shopping.",
+      "note": "Useful for summarising a general rise.",
+      "category": "overview"
+    },
+    {
+      "word": "downward trend",
+      "mean": "xu hướng giảm",
+      "pron": "",
+      "type": "noun phrase",
+      "example": "There was a downward trend in coal consumption.",
+      "note": "Useful for summarising a general fall.",
+      "category": "overview"
+    },
+    {
+      "word": "significant",
+      "mean": "đáng kể",
+      "pron": "",
+      "type": "adjective",
+      "example": "There was a significant increase in demand.",
+      "note": "Use for a change that is clearly large or important.",
+      "category": "degree"
+    },
+    {
+      "word": "marginal",
+      "mean": "rất nhỏ; không đáng kể",
+      "pron": "",
+      "type": "adjective",
+      "example": "The figure showed only a marginal increase.",
+      "note": "Use for very small changes.",
+      "category": "degree"
+    },
+    {
+      "word": "gradual",
+      "mean": "dần dần",
+      "pron": "",
+      "type": "adjective",
+      "example": "The chart shows a gradual decline in the birth rate.",
+      "note": "Useful for slow changes over time.",
+      "category": "degree"
+    },
+    {
+      "word": "steady",
+      "mean": "ổn định; đều đặn",
+      "pron": "",
+      "type": "adjective",
+      "example": "There was a steady rise in the number of visitors.",
+      "note": "Often paired with rise, increase, growth, or decline.",
+      "category": "degree"
+    },
+    {
+      "word": "sharp",
+      "mean": "mạnh; đột ngột",
+      "pron": "",
+      "type": "adjective",
+      "example": "The graph shows a sharp drop in sales.",
+      "note": "Use for a fast and noticeable change.",
+      "category": "degree"
+    },
+    {
+      "word": "dramatic",
+      "mean": "rất mạnh; đáng kể",
+      "pron": "",
+      "type": "adjective",
+      "example": "The region experienced a dramatic increase in prices.",
+      "note": "Stronger than significant; avoid overusing it.",
+      "category": "degree"
+    },
+    {
+      "word": "substantial",
+      "mean": "đáng kể; lớn",
+      "pron": "",
+      "type": "adjective",
+      "example": "There was a substantial fall in energy use.",
+      "note": "Formal adjective for a sizeable change.",
+      "category": "degree"
+    },
+    {
+      "word": "moderate",
+      "mean": "vừa phải",
+      "pron": "",
+      "type": "adjective",
+      "example": "The data indicate a moderate increase in participation.",
+      "note": "Useful for changes that are noticeable but not extreme.",
+      "category": "degree"
+    },
+    {
+      "word": "slight",
+      "mean": "nhẹ; nhỏ",
+      "pron": "",
+      "type": "adjective",
+      "example": "The number experienced a slight decline.",
+      "note": "Useful for small changes.",
+      "category": "degree"
+    },
+    {
+      "word": "considerable",
+      "mean": "đáng kể",
+      "pron": "",
+      "type": "adjective",
+      "example": "A considerable gap can be seen between the two groups.",
+      "note": "Formal way to describe a fairly large difference.",
+      "category": "degree"
+    },
+    {
+      "word": "predominantly",
+      "mean": "chủ yếu",
+      "pron": "",
+      "type": "adverb",
+      "example": "The workforce was predominantly male.",
+      "note": "Useful for describing a category that forms most of a group.",
+      "category": "distribution"
+    },
+    {
+      "word": "distribution",
+      "mean": "sự phân bố",
+      "pron": "",
+      "type": "noun",
+      "example": "The graph shows the distribution of income across regions.",
+      "note": "Useful when data are spread across categories.",
+      "category": "distribution"
+    },
+    {
+      "word": "category",
+      "mean": "hạng mục; nhóm",
+      "pron": "",
+      "type": "noun",
+      "example": "The highest figure was recorded in the youngest category.",
+      "note": "Useful for grouped bar charts and tables.",
+      "category": "charts"
+    },
+    {
+      "word": "segment",
+      "mean": "phân khúc; nhóm",
+      "pron": "",
+      "type": "noun",
+      "example": "The largest segment consisted of households with two children.",
+      "note": "Useful for pie charts and grouped categories.",
+      "category": "charts"
+    },
+    {
+      "word": "axis",
+      "mean": "trục",
+      "pron": "",
+      "type": "noun",
+      "example": "The vertical axis represents the percentage of respondents.",
+      "note": "Useful for describing chart structure precisely.",
+      "category": "charts"
+    },
+    {
+      "word": "unit",
+      "mean": "đơn vị",
+      "pron": "",
+      "type": "noun",
+      "example": "The figures are measured in thousands of dollars.",
+      "note": "Use when explaining what the numerical scale represents.",
+      "category": "charts"
+    },
+    {
+      "word": "process",
+      "mean": "quy trình",
+      "pron": "",
+      "type": "noun",
+      "example": "The diagram illustrates the process of producing bottled water.",
+      "note": "Useful for Task 1 process diagrams.",
+      "category": "process"
+    },
+    {
+      "word": "stage",
+      "mean": "giai đoạn",
+      "pron": "",
+      "type": "noun",
+      "example": "The process consists of five main stages.",
+      "note": "Use to organise descriptions of a process.",
+      "category": "process"
+    },
+    {
+      "word": "consist of",
+      "mean": "bao gồm; gồm có",
+      "pron": "",
+      "type": "phrase",
+      "example": "The process consists of six main stages.",
+      "note": "Useful for introducing the number or nature of process stages.",
+      "category": "process"
+    },
+    {
+      "word": "illustrate",
+      "mean": "minh họa; mô tả",
+      "pron": "",
+      "type": "verb",
+      "example": "The diagram illustrates how recycled paper is produced.",
+      "note": "Useful in Task 1 introductions for diagrams.",
+      "category": "process"
+    },
+    {
+      "word": "compare",
+      "mean": "so sánh",
+      "pron": "",
+      "type": "verb",
+      "example": "The table compares household spending in five countries.",
+      "note": "Common introductory verb for tables and charts.",
+      "category": "charts"
+    }
+  ]
+}
