@@ -1,6 +1,6 @@
 /* Firebase browser data layer. */
 (function(){
-  let db=null,auth=null,api={},currentUser=null,authReady=null,connectPromise=null,lastAuthUid=undefined;
+  let db=null,auth=null,api={},currentUser=null,authReady=null,authStateReady=false,connectPromise=null,lastAuthUid=undefined;
   window.KATLEARN_FIREBASE_CONFIG={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDomain:'elp---katlearn.firebaseapp.com',projectId:'elp---katlearn',storageBucket:'elp---katlearn.firebasestorage.app',messagingSenderId:'344478447672',appId:'1:344478447672:web:4ed109a40303d0b41b0ecd',measurementId:'G-KTW11GD97T'};
   const guestId=localStorage.getItem('8b1-guest-id')||crypto.randomUUID();localStorage.setItem('8b1-guest-id',guestId);
   function stripVietnamese(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
@@ -80,7 +80,7 @@
         const existing=getApps()[0];
         if(existing){
           await deleteApp(existing);
-          db=null;auth=null;api=null;authReady=null;currentUser=null;notifyAuth(null);
+          db=null;auth=null;api=null;authReady=null;authStateReady=false;currentUser=null;notifyAuth(null);
         }
         const app=initializeApp(config);
         db=getFirestore(app);
@@ -88,8 +88,10 @@
         auth=getAuth(app);
         api.auth={GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile};
 
+        authStateReady=false;
         authReady=new Promise(resolve=>api.auth.onAuthStateChanged(auth,user=>{
           currentUser=user;
+          authStateReady=true;
           notifyAuth(user);
           resolve(user);
         }));
@@ -103,9 +105,10 @@
     connected(){return !!db},
     async waitForAuth(){
       if(!authReady&&!auth&&window.KATLEARN_FIREBASE_CONFIG){
-        try{await this.connect(window.KATLEARN_FIREBASE_CONFIG)}catch(_){return null}
+        try{await this.connect(window.KATLEARN_FIREBASE_CONFIG)}catch(_){return currentUser}
       }
-      return authReady?await authReady:currentUser;
+      if(authReady&&!authStateReady)await authReady;
+      return currentUser;
     },
     async loadProfile(){if(!db||!currentUser)return null;const snap=await api.getDoc(api.doc(db,'users',this.userId));return snap.exists()?{id:snap.id,...snap.data()}:null},
     async ensureAccountNamespace(){
