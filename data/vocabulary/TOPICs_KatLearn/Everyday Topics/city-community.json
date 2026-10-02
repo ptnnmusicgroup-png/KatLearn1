@@ -1,0 +1,391 @@
+{
+  "id": "city-community",
+  "name": "City Community Topic – Dùng hằng ngày",
+  "description": "48 từ vựng cốt lõi theo chủ đề.",
+  "words": [
+    {
+      "word": "city",
+      "mean": "city",
+      "pron": "",
+      "type": "word",
+      "example": "I use “city” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "town",
+      "mean": "town",
+      "pron": "",
+      "type": "word",
+      "example": "I use “town” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "village",
+      "mean": "village",
+      "pron": "",
+      "type": "word",
+      "example": "I use “village” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "street",
+      "mean": "street",
+      "pron": "",
+      "type": "word",
+      "example": "I use “street” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "road",
+      "mean": "road",
+      "pron": "",
+      "type": "word",
+      "example": "I use “road” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "building",
+      "mean": "building",
+      "pron": "",
+      "type": "word",
+      "example": "I use “building” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "house",
+      "mean": "house",
+      "pron": "",
+      "type": "word",
+      "example": "I use “house” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "school",
+      "mean": "school",
+      "pron": "",
+      "type": "word",
+      "example": "I use “school” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "hospital",
+      "mean": "hospital",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hospital” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "library",
+      "mean": "library",
+      "pron": "",
+      "type": "word",
+      "example": "I use “library” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "park",
+      "mean": "park",
+      "pron": "",
+      "type": "word",
+      "example": "I use “park” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "market",
+      "mean": "market",
+      "pron": "",
+      "type": "word",
+      "example": "I use “market” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "shop",
+      "mean": "shop",
+      "pron": "",
+      "type": "word",
+      "example": "I use “shop” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "restaurant",
+      "mean": "restaurant",
+      "pron": "",
+      "type": "word",
+      "example": "I use “restaurant” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "cafe",
+      "mean": "cafe",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cafe” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "bank",
+      "mean": "bank",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bank” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "office",
+      "mean": "office",
+      "pron": "",
+      "type": "word",
+      "example": "I use “office” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "station",
+      "mean": "station",
+      "pron": "",
+      "type": "word",
+      "example": "I use “station” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "airport",
+      "mean": "airport",
+      "pron": "",
+      "type": "word",
+      "example": "I use “airport” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "police",
+      "mean": "police",
+      "pron": "",
+      "type": "word",
+      "example": "I use “police” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "fire station",
+      "mean": "fire station",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fire station” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "community",
+      "mean": "community",
+      "pron": "",
+      "type": "word",
+      "example": "I use “community” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "neighbor",
+      "mean": "neighbor",
+      "pron": "",
+      "type": "word",
+      "example": "I use “neighbor” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "people",
+      "mean": "people",
+      "pron": "",
+      "type": "word",
+      "example": "I use “people” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "citizen",
+      "mean": "citizen",
+      "pron": "",
+      "type": "word",
+      "example": "I use “citizen” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "government",
+      "mean": "government",
+      "pron": "",
+      "type": "word",
+      "example": "I use “government” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "service",
+      "mean": "service",
+      "pron": "",
+      "type": "word",
+      "example": "I use “service” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "public",
+      "mean": "public",
+      "pron": "",
+      "type": "word",
+      "example": "I use “public” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "local",
+      "mean": "local",
+      "pron": "",
+      "type": "word",
+      "example": "I use “local” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "area",
+      "mean": "area",
+      "pron": "",
+      "type": "word",
+      "example": "I use “area” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "center",
+      "mean": "center",
+      "pron": "",
+      "type": "word",
+      "example": "I use “center” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "square",
+      "mean": "square",
+      "pron": "",
+      "type": "word",
+      "example": "I use “square” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "bridge",
+      "mean": "bridge",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bridge” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "traffic",
+      "mean": "traffic",
+      "pron": "",
+      "type": "word",
+      "example": "I use “traffic” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "bus",
+      "mean": "bus",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bus” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "train",
+      "mean": "train",
+      "pron": "",
+      "type": "word",
+      "example": "I use “train” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "car",
+      "mean": "car",
+      "pron": "",
+      "type": "word",
+      "example": "I use “car” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "bike",
+      "mean": "bike",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bike” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "job",
+      "mean": "job",
+      "pron": "",
+      "type": "word",
+      "example": "I use “job” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "home",
+      "mean": "home",
+      "pron": "",
+      "type": "word",
+      "example": "I use “home” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "event",
+      "mean": "event",
+      "pron": "",
+      "type": "word",
+      "example": "I use “event” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "meeting",
+      "mean": "meeting",
+      "pron": "",
+      "type": "word",
+      "example": "I use “meeting” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "festival",
+      "mean": "festival",
+      "pron": "",
+      "type": "word",
+      "example": "I use “festival” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "clean",
+      "mean": "clean",
+      "pron": "",
+      "type": "word",
+      "example": "I use “clean” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "safe",
+      "mean": "safe",
+      "pron": "",
+      "type": "word",
+      "example": "I use “safe” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "busy",
+      "mean": "busy",
+      "pron": "",
+      "type": "word",
+      "example": "I use “busy” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "quiet",
+      "mean": "quiet",
+      "pron": "",
+      "type": "word",
+      "example": "I use “quiet” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    },
+    {
+      "word": "crowded",
+      "mean": "crowded",
+      "pron": "",
+      "type": "word",
+      "example": "I use “crowded” in everyday life.",
+      "note": "Everyday city community vocabulary."
+    }
+  ]
+}
