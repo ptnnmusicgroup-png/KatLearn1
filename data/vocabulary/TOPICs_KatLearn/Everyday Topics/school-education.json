@@ -1,0 +1,399 @@
+{
+  "id": "school-education",
+  "name": "School_Education_Topic_Dùng hằng ngày",
+  "description": "500-item KatLearn core vocabulary for school education.",
+  "words": [
+    {
+      "word": "school",
+      "mean": "school",
+      "pron": "",
+      "type": "word",
+      "example": "I use “school” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "student",
+      "mean": "student",
+      "pron": "",
+      "type": "word",
+      "example": "I use “student” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "teacher",
+      "mean": "teacher",
+      "pron": "",
+      "type": "word",
+      "example": "I use “teacher” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "class",
+      "mean": "class",
+      "pron": "",
+      "type": "word",
+      "example": "I use “class” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "lesson",
+      "mean": "lesson",
+      "pron": "",
+      "type": "word",
+      "example": "I use “lesson” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "subject",
+      "mean": "subject",
+      "pron": "",
+      "type": "word",
+      "example": "I use “subject” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "homework",
+      "mean": "homework",
+      "pron": "",
+      "type": "word",
+      "example": "I use “homework” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "test",
+      "mean": "test",
+      "pron": "",
+      "type": "word",
+      "example": "I use “test” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "exam",
+      "mean": "exam",
+      "pron": "",
+      "type": "word",
+      "example": "I use “exam” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "quiz",
+      "mean": "quiz",
+      "pron": "",
+      "type": "word",
+      "example": "I use “quiz” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "book",
+      "mean": "book",
+      "pron": "",
+      "type": "word",
+      "example": "I use “book” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "notebook",
+      "mean": "notebook",
+      "pron": "",
+      "type": "word",
+      "example": "I use “notebook” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "pen",
+      "mean": "pen",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pen” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "pencil",
+      "mean": "pencil",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pencil” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "desk",
+      "mean": "desk",
+      "pron": "",
+      "type": "word",
+      "example": "I use “desk” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "board",
+      "mean": "board",
+      "pron": "",
+      "type": "word",
+      "example": "I use “board” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "library",
+      "mean": "library",
+      "pron": "",
+      "type": "word",
+      "example": "I use “library” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "classroom",
+      "mean": "classroom",
+      "pron": "",
+      "type": "word",
+      "example": "I use “classroom” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "course",
+      "mean": "course",
+      "pron": "",
+      "type": "word",
+      "example": "I use “course” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "study",
+      "mean": "study",
+      "pron": "",
+      "type": "word",
+      "example": "I use “study” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "learn",
+      "mean": "learn",
+      "pron": "",
+      "type": "word",
+      "example": "I use “learn” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "read",
+      "mean": "read",
+      "pron": "",
+      "type": "word",
+      "example": "I use “read” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "write",
+      "mean": "write",
+      "pron": "",
+      "type": "word",
+      "example": "I use “write” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "listen",
+      "mean": "listen",
+      "pron": "",
+      "type": "word",
+      "example": "I use “listen” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "speak",
+      "mean": "speak",
+      "pron": "",
+      "type": "word",
+      "example": "I use “speak” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "answer",
+      "mean": "answer",
+      "pron": "",
+      "type": "word",
+      "example": "I use “answer” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "question",
+      "mean": "question",
+      "pron": "",
+      "type": "word",
+      "example": "I use “question” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "project",
+      "mean": "project",
+      "pron": "",
+      "type": "word",
+      "example": "I use “project” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "group",
+      "mean": "group",
+      "pron": "",
+      "type": "word",
+      "example": "I use “group” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "team",
+      "mean": "team",
+      "pron": "",
+      "type": "word",
+      "example": "I use “team” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "grade",
+      "mean": "grade",
+      "pron": "",
+      "type": "word",
+      "example": "I use “grade” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "score",
+      "mean": "score",
+      "pron": "",
+      "type": "word",
+      "example": "I use “score” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "mark",
+      "mean": "mark",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mark” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "result",
+      "mean": "result",
+      "pron": "",
+      "type": "word",
+      "example": "I use “result” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "practice",
+      "mean": "practice",
+      "pron": "",
+      "type": "word",
+      "example": "I use “practice” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "exercise",
+      "mean": "exercise",
+      "pron": "",
+      "type": "word",
+      "example": "I use “exercise” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "break",
+      "mean": "break",
+      "pron": "",
+      "type": "word",
+      "example": "I use “break” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "holiday",
+      "mean": "holiday",
+      "pron": "",
+      "type": "word",
+      "example": "I use “holiday” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "schoolbag",
+      "mean": "schoolbag",
+      "pron": "",
+      "type": "word",
+      "example": "I use “schoolbag” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "uniform",
+      "mean": "uniform",
+      "pron": "",
+      "type": "word",
+      "example": "I use “uniform” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "science",
+      "mean": "science",
+      "pron": "",
+      "type": "word",
+      "example": "I use “science” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "math",
+      "mean": "math",
+      "pron": "",
+      "type": "word",
+      "example": "I use “math” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "history",
+      "mean": "history",
+      "pron": "",
+      "type": "word",
+      "example": "I use “history” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "geography",
+      "mean": "geography",
+      "pron": "",
+      "type": "word",
+      "example": "I use “geography” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "english",
+      "mean": "English",
+      "pron": "",
+      "type": "word",
+      "example": "I use “english” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "art",
+      "mean": "art",
+      "pron": "",
+      "type": "word",
+      "example": "I use “art” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "music",
+      "mean": "music",
+      "pron": "",
+      "type": "word",
+      "example": "I use “music” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "technology",
+      "mean": "technology",
+      "pron": "",
+      "type": "word",
+      "example": "I use “technology” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    },
+    {
+      "word": "education",
+      "mean": "education",
+      "pron": "",
+      "type": "word",
+      "example": "I use “education” in everyday life.",
+      "note": "Everyday school education vocabulary."
+    }
+  ]
+}
