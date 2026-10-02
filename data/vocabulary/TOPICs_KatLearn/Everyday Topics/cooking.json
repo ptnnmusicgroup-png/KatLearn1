@@ -1,0 +1,399 @@
+{
+  "id": "cooking",
+  "name": "Cooking_Topic_Dùng hằng ngày",
+  "description": "49 từ vựng cốt lõi theo chủ đề.",
+  "words": [
+    {
+      "word": "cook",
+      "mean": "cook",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cook” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "bake",
+      "mean": "bake",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bake” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "boil",
+      "mean": "boil",
+      "pron": "",
+      "type": "word",
+      "example": "I use “boil” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "fry",
+      "mean": "fry",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fry” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "grill",
+      "mean": "grill",
+      "pron": "",
+      "type": "word",
+      "example": "I use “grill” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "steam",
+      "mean": "steam",
+      "pron": "",
+      "type": "word",
+      "example": "I use “steam” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "roast",
+      "mean": "roast",
+      "pron": "",
+      "type": "word",
+      "example": "I use “roast” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "mix",
+      "mean": "mix",
+      "pron": "",
+      "type": "word",
+      "example": "I use “mix” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "stir",
+      "mean": "stir",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stir” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "pour",
+      "mean": "pour",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pour” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "cut",
+      "mean": "cut",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cut” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "chop",
+      "mean": "chop",
+      "pron": "",
+      "type": "word",
+      "example": "I use “chop” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "slice",
+      "mean": "slice",
+      "pron": "",
+      "type": "word",
+      "example": "I use “slice” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "peel",
+      "mean": "peel",
+      "pron": "",
+      "type": "word",
+      "example": "I use “peel” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "wash",
+      "mean": "wash",
+      "pron": "",
+      "type": "word",
+      "example": "I use “wash” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "add",
+      "mean": "add",
+      "pron": "",
+      "type": "word",
+      "example": "I use “add” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "remove",
+      "mean": "remove",
+      "pron": "",
+      "type": "word",
+      "example": "I use “remove” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "heat",
+      "mean": "heat",
+      "pron": "",
+      "type": "word",
+      "example": "I use “heat” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "cool",
+      "mean": "cool",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cool” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "serve",
+      "mean": "serve",
+      "pron": "",
+      "type": "word",
+      "example": "I use “serve” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "recipe",
+      "mean": "recipe",
+      "pron": "",
+      "type": "word",
+      "example": "I use “recipe” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "ingredient",
+      "mean": "ingredient",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ingredient” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "kitchen",
+      "mean": "kitchen",
+      "pron": "",
+      "type": "word",
+      "example": "I use “kitchen” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "pan",
+      "mean": "pan",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pan” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "pot",
+      "mean": "pot",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pot” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "knife",
+      "mean": "knife",
+      "pron": "",
+      "type": "word",
+      "example": "I use “knife” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "spoon",
+      "mean": "spoon",
+      "pron": "",
+      "type": "word",
+      "example": "I use “spoon” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "fork",
+      "mean": "fork",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fork” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "plate",
+      "mean": "plate",
+      "pron": "",
+      "type": "word",
+      "example": "I use “plate” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "bowl",
+      "mean": "bowl",
+      "pron": "",
+      "type": "word",
+      "example": "I use “bowl” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "oven",
+      "mean": "oven",
+      "pron": "",
+      "type": "word",
+      "example": "I use “oven” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "stove",
+      "mean": "stove",
+      "pron": "",
+      "type": "word",
+      "example": "I use “stove” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "salt",
+      "mean": "salt",
+      "pron": "",
+      "type": "word",
+      "example": "I use “salt” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "pepper",
+      "mean": "pepper",
+      "pron": "",
+      "type": "word",
+      "example": "I use “pepper” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "sugar",
+      "mean": "sugar",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sugar” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "oil",
+      "mean": "oil",
+      "pron": "",
+      "type": "word",
+      "example": "I use “oil” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "butter",
+      "mean": "butter",
+      "pron": "",
+      "type": "word",
+      "example": "I use “butter” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "sauce",
+      "mean": "sauce",
+      "pron": "",
+      "type": "word",
+      "example": "I use “sauce” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "flour",
+      "mean": "flour",
+      "pron": "",
+      "type": "word",
+      "example": "I use “flour” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "dough",
+      "mean": "dough",
+      "pron": "",
+      "type": "word",
+      "example": "I use “dough” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "taste",
+      "mean": "taste",
+      "pron": "",
+      "type": "word",
+      "example": "I use “taste” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "smell",
+      "mean": "smell",
+      "pron": "",
+      "type": "word",
+      "example": "I use “smell” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "ready",
+      "mean": "ready",
+      "pron": "",
+      "type": "word",
+      "example": "I use “ready” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "raw",
+      "mean": "raw",
+      "pron": "",
+      "type": "word",
+      "example": "I use “raw” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "fresh",
+      "mean": "fresh",
+      "pron": "",
+      "type": "word",
+      "example": "I use “fresh” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "hot",
+      "mean": "hot",
+      "pron": "",
+      "type": "word",
+      "example": "I use “hot” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "cold",
+      "mean": "cold",
+      "pron": "",
+      "type": "word",
+      "example": "I use “cold” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "delicious",
+      "mean": "delicious",
+      "pron": "",
+      "type": "word",
+      "example": "I use “delicious” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    },
+    {
+      "word": "burn",
+      "mean": "burn",
+      "pron": "",
+      "type": "word",
+      "example": "I use “burn” in everyday life.",
+      "note": "Everyday cooking vocabulary."
+    }
+  ]
+}
