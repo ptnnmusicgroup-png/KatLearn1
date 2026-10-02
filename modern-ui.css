@@ -856,3 +856,128 @@ body{
 /* Home account profile editor */
 .account-edit-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}.account-edit-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#fff0ea,#f0ecff);font-size:24px;flex:none}.account-edit-head h2{margin:3px 0 4px}.account-edit-head .subtext{margin:0}.account-code-field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid #ececf4;border-radius:10px;background:#fafafe;color:#69758a;font-size:11px}.account-code-field b{color:#6757d5;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:620px){.account-edit-head{gap:10px}.account-edit-icon{width:40px;height:40px;font-size:21px}.account-edit-head h2{font-size:20px}}
+
+
+
+/* KatLearn Vocabulary Library — folder view */
+.kat-library-folder-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin:4px 2px 18px;
+}
+.kat-library-folder-head h2{
+  margin:0 0 5px;
+  font:700 26px Fredoka,sans-serif;
+  color:#2f2940;
+}
+.kat-library-folder-head p:not(.eyebrow){
+  margin:0;
+  max-width:680px;
+  color:var(--kl-muted);
+  font-size:12px;
+  line-height:1.6;
+}
+.kat-library-folder-count{
+  flex:0 0 auto;
+  padding:9px 12px;
+  border:1px solid var(--kl-line);
+  border-radius:999px;
+  background:rgba(255,255,255,.82);
+  color:#776d89;
+  font-size:11px;
+  font-weight:800;
+}
+.kat-library-folder-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:13px;
+}
+.kat-library-folder{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  width:100%;
+  min-height:92px;
+  padding:15px 16px;
+  border:1px solid var(--kl-line);
+  border-radius:20px;
+  background:rgba(255,255,255,.94);
+  box-shadow:var(--kl-shadow-sm);
+  text-align:left;
+  cursor:pointer;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.kat-library-folder:hover{
+  transform:translateY(-2px);
+  border-color:#dcd4fa;
+  box-shadow:0 16px 34px rgba(45,38,74,.09);
+}
+.kat-library-folder-icon{
+  flex:0 0 52px;
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:16px;
+  background:linear-gradient(135deg,#f1edff,#fff7fb);
+  font-size:26px;
+}
+.kat-library-folder-copy{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.kat-library-folder-copy b{
+  font-size:13px;
+  color:#3b3447;
+}
+.kat-library-folder-copy small{
+  color:#9a92a5;
+  font-size:10px;
+  font-weight:700;
+}
+.kat-library-folder-arrow{
+  margin-left:auto;
+  color:#a49aae;
+  font-size:24px;
+  line-height:1;
+}
+.kat-library-toolbar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0 0 15px;
+}
+.kat-library-back{
+  border:1px solid var(--kl-line);
+  border-radius:12px;
+  background:rgba(255,255,255,.92);
+  color:#675a78;
+  padding:9px 12px;
+  font:800 11px "Be Vietnam Pro",sans-serif;
+  cursor:pointer;
+}
+.kat-library-back:hover{background:#faf8ff}
+.kat-library-toolbar>div{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.kat-library-toolbar b{font-size:16px;color:#342c42}
+.kat-library-toolbar small{font-size:10px;color:#9a92a5;font-weight:700}
+.pack-library-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:13px;
+}
+@media (max-width:1000px){
+  .kat-library-folder-grid,.pack-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:680px){
+  .kat-library-folder-head{align-items:flex-start;flex-direction:column}
+  .kat-library-folder-grid,.pack-library-grid{grid-template-columns:1fr}
+}
