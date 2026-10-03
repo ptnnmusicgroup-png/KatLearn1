@@ -4,7 +4,44 @@ const path=require("path");
 const{init}=require("./_admin");
 const{FieldValue}=require("firebase-admin/firestore");
 const buckets=new Map();
-const CORE_TOPICS=new Set(['daily-life','family','home','food','cooking','shopping','clothes-fashion','school-education','work-career','technology','internet-social-media','health-medicine','sports-fitness','travel-tourism','transport','weather-seasons','environment','animals-nature','feelings-personality','entertainment-culture','city-community','money-finance','communication','people-relationships','places']);
+const CORE_PACK_PATHS={
+  'daily-life':'TOPICs_KatLearn/Everyday Topics/daily-life.json',
+  'family':'TOPICs_KatLearn/Everyday Topics/family.json',
+  'home':'TOPICs_KatLearn/Everyday Topics/home.json',
+  'food':'TOPICs_KatLearn/Everyday Topics/food.json',
+  'cooking':'TOPICs_KatLearn/Everyday Topics/cooking.json',
+  'shopping':'TOPICs_KatLearn/Everyday Topics/shopping.json',
+  'clothes-fashion':'TOPICs_KatLearn/Everyday Topics/clothes-fashion.json',
+  'school-education':'TOPICs_KatLearn/Everyday Topics/school-education.json',
+  'work-career':'TOPICs_KatLearn/Everyday Topics/work-career.json',
+  'technology':'TOPICs_KatLearn/Everyday Topics/technology.json',
+  'internet-social-media':'TOPICs_KatLearn/Everyday Topics/internet-social-media.json',
+  'health-medicine':'TOPICs_KatLearn/Everyday Topics/health-medicine.json',
+  'sports-fitness':'TOPICs_KatLearn/Everyday Topics/sports-fitness.json',
+  'travel-tourism':'TOPICs_KatLearn/Everyday Topics/travel-tourism.json',
+  'transport':'TOPICs_KatLearn/Everyday Topics/transport.json',
+  'weather-seasons':'TOPICs_KatLearn/Everyday Topics/weather-seasons.json',
+  'environment':'TOPICs_KatLearn/Everyday Topics/environment.json',
+  'animals-nature':'TOPICs_KatLearn/Everyday Topics/animals-nature.json',
+  'feelings-personality':'TOPICs_KatLearn/Everyday Topics/feelings-personality.json',
+  'entertainment-culture':'TOPICs_KatLearn/Everyday Topics/entertainment-culture.json',
+  'city-community':'TOPICs_KatLearn/Everyday Topics/city-community.json',
+  'money-finance':'TOPICs_KatLearn/Everyday Topics/money-finance.json',
+  'communication':'TOPICs_KatLearn/Everyday Topics/communication.json',
+  'people-relationships':'TOPICs_KatLearn/Everyday Topics/people-relationships.json',
+  'places':'TOPICs_KatLearn/Everyday Topics/places.json',
+  'ielts-writing-task-1':'TOPICs_KatLearn/IELTS Vocabulary/IELTS_Writing_Task_1.json',
+  'ielts-writing-task-2':'TOPICs_KatLearn/IELTS Vocabulary/IELTS_Writing_Task_2.json',
+  'ielts-reading':'TOPICs_KatLearn/IELTS Vocabulary/IELTS_Reading.json',
+  'ielts-speaking':'TOPICs_KatLearn/IELTS Vocabulary/IELTS_Speaking.json',
+  'katlearn-synthesis':'TOPICs_KatLearn/KatLearn_Synthesis_Core.json',
+  'katlearn-cefr-builder':'TOPICs_KatLearn/KatLearn_CEFR_Builder.json',
+  'katlearn-academic-writing':'TOPICs_KatLearn/KatLearn_Academic_Writing.json',
+  'katlearn-collocations-phrasal':'TOPICs_KatLearn/KatLearn_Collocations_Phrasal.json',
+  'katlearn-exam-workplace-specialized':'TOPICs_KatLearn/KatLearn_Exam_Workplace_Specialized.json',
+  'katlearn-school-english':'TOPICs_KatLearn/KatLearn_School_English.json',
+  'katlearn-irregular-verbs':'TOPICs_KatLearn/KatLearn_Irregular_Verbs.json'
+};
 const SHOP_ITEMS={
   'theme-night':{name:'Night Study',price:120},
   'theme-sky':{name:'Sky Day',price:150},
@@ -53,9 +90,15 @@ function findWord(words,word,meaning){
 }
 function rewardClaimId(sourceKind,sourceId,word,meaning,mode,day){return crypto.createHash("sha256").update([sourceKind,sourceId,word,meaning,mode,day].map(norm).join("\0")).digest("hex").slice(0,64)}
 function loadCoreWords(topicId){
-  if(!CORE_TOPICS.has(topicId))throw Object.assign(new Error("Topic KatLearn không hợp lệ."),{status:400});
-  const file=path.join(__dirname,"..","data","vocabulary",topicId+".json");
-  try{const data=JSON.parse(fs.readFileSync(file,"utf8"));return Array.isArray(data.words)?data.words:[]}catch(_){throw Object.assign(new Error("Không tải được kho từ KatLearn."),{status:503})}
+  const relative=CORE_PACK_PATHS[String(topicId||'').trim()];
+  if(!relative)throw Object.assign(new Error("Topic KatLearn không hợp lệ."),{status:400});
+  const file=path.join(__dirname,"..","data","vocabulary",relative);
+  try{
+    const data=JSON.parse(fs.readFileSync(file,"utf8"));
+    return Array.isArray(data.words)?data.words:[];
+  }catch(_){
+    throw Object.assign(new Error("Không tải được kho từ KatLearn."),{status:503});
+  }
 }
 async function validateQuizSource(db,uid,source,word,meaning,profile){
   const kind=norm(source?.kind);
