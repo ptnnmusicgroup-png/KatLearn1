@@ -5,235 +5,264 @@
   "words": [
     {
       "word": "environment",
-      "mean": "environment",
+      "mean": "môi trường",
       "pron": "",
       "type": "word",
       "example": "I use “environment” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "môi trường"
     },
     {
       "word": "nature",
-      "mean": "nature",
+      "mean": "thiên nhiên",
       "pron": "",
       "type": "word",
       "example": "I use “nature” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "thiên nhiên"
     },
     {
       "word": "air",
-      "mean": "air",
+      "mean": "không khí",
       "pron": "",
       "type": "word",
       "example": "I use “air” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "không khí"
     },
     {
       "word": "water",
-      "mean": "water",
+      "mean": "nước",
       "pron": "",
       "type": "word",
       "example": "I use “water” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "nước"
     },
     {
       "word": "soil",
-      "mean": "soil",
+      "mean": "đất",
       "pron": "",
       "type": "word",
       "example": "I use “soil” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "đất"
     },
     {
       "word": "land",
-      "mean": "land",
+      "mean": "đất đai",
       "pron": "",
       "type": "word",
       "example": "I use “land” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "đất đai"
     },
     {
       "word": "forest",
-      "mean": "forest",
+      "mean": "rừng",
       "pron": "",
       "type": "word",
       "example": "I use “forest” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "rừng"
     },
     {
       "word": "tree",
-      "mean": "tree",
+      "mean": "cây",
       "pron": "",
       "type": "word",
       "example": "I use “tree” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "cây"
     },
     {
       "word": "plant",
-      "mean": "plant",
+      "mean": "thực vật",
       "pron": "",
       "type": "word",
       "example": "I use “plant” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "thực vật"
     },
     {
       "word": "flower",
-      "mean": "flower",
+      "mean": "hoa",
       "pron": "",
       "type": "word",
       "example": "I use “flower” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "hoa"
     },
     {
       "word": "river",
-      "mean": "river",
+      "mean": "sông",
       "pron": "",
       "type": "word",
       "example": "I use “river” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "sông"
     },
     {
       "word": "lake",
-      "mean": "lake",
+      "mean": "hồ",
       "pron": "",
       "type": "word",
       "example": "I use “lake” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "hồ"
     },
     {
       "word": "sea",
-      "mean": "sea",
+      "mean": "biển",
       "pron": "",
       "type": "word",
       "example": "I use “sea” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "biển"
     },
     {
       "word": "ocean",
-      "mean": "ocean",
+      "mean": "đại dương",
       "pron": "",
       "type": "word",
       "example": "I use “ocean” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "đại dương"
     },
     {
       "word": "beach",
-      "mean": "beach",
+      "mean": "bãi biển",
       "pron": "",
       "type": "word",
       "example": "I use “beach” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "bãi biển"
     },
     {
       "word": "mountain",
-      "mean": "mountain",
+      "mean": "núi",
       "pron": "",
       "type": "word",
       "example": "I use “mountain” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "núi"
     },
     {
       "word": "animal",
-      "mean": "animal",
+      "mean": "động vật",
       "pron": "",
       "type": "word",
       "example": "I use “animal” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "động vật"
     },
     {
       "word": "wildlife",
-      "mean": "wildlife",
+      "mean": "động vật hoang dã",
       "pron": "",
       "type": "word",
       "example": "I use “wildlife” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "động vật hoang dã"
     },
     {
       "word": "pollution",
-      "mean": "pollution",
+      "mean": "ô nhiễm",
       "pron": "",
       "type": "word",
       "example": "I use “pollution” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "ô nhiễm"
     },
     {
       "word": "waste",
-      "mean": "waste",
+      "mean": "chất thải",
       "pron": "",
       "type": "word",
       "example": "I use “waste” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "chất thải"
     },
     {
       "word": "trash",
-      "mean": "trash",
+      "mean": "rác",
       "pron": "",
       "type": "word",
       "example": "I use “trash” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "rác"
     },
     {
       "word": "plastic",
-      "mean": "plastic",
+      "mean": "nhựa",
       "pron": "",
       "type": "word",
       "example": "I use “plastic” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "nhựa"
     },
     {
       "word": "recycle",
-      "mean": "recycle",
+      "mean": "tái chế",
       "pron": "",
       "type": "word",
       "example": "I use “recycle” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "tái chế"
     },
     {
       "word": "recycling",
-      "mean": "recycling",
+      "mean": "việc tái chế",
       "pron": "",
       "type": "word",
       "example": "I use “recycling” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "việc tái chế"
     },
     {
       "word": "energy",
-      "mean": "energy",
+      "mean": "năng lượng",
       "pron": "",
       "type": "word",
       "example": "I use “energy” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "năng lượng"
     },
     {
       "word": "solar",
-      "mean": "solar",
+      "mean": "năng lượng mặt trời",
       "pron": "",
       "type": "word",
       "example": "I use “solar” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "năng lượng mặt trời"
     },
     {
       "word": "wind",
-      "mean": "wind",
+      "mean": "gió",
       "pron": "",
       "type": "word",
       "example": "I use “wind” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "gió"
     },
     {
       "word": "climate",
-      "mean": "climate",
+      "mean": "khí hậu",
       "pron": "",
       "type": "word",
       "example": "I use “climate” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "khí hậu"
     },
     {
       "word": "global warming",
-      "mean": "global warming",
+      "mean": "sự nóng lên toàn cầu",
       "pron": "",
       "type": "word",
       "example": "I use “global warming” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "sự nóng lên toàn cầu"
     },
     {
       "word": "carbon",
@@ -241,167 +270,188 @@
       "pron": "",
       "type": "word",
       "example": "I use “carbon” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "carbon"
     },
     {
       "word": "emission",
-      "mean": "emission",
+      "mean": "khí thải",
       "pron": "",
       "type": "word",
       "example": "I use “emission” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "khí thải"
     },
     {
       "word": "green",
-      "mean": "green",
+      "mean": "xanh",
       "pron": "",
       "type": "word",
       "example": "I use “green” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "xanh"
     },
     {
       "word": "clean",
-      "mean": "clean",
+      "mean": "sạch",
       "pron": "",
       "type": "word",
       "example": "I use “clean” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "sạch"
     },
     {
       "word": "dirty",
-      "mean": "dirty",
+      "mean": "bẩn",
       "pron": "",
       "type": "word",
       "example": "I use “dirty” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "bẩn"
     },
     {
       "word": "protect",
-      "mean": "protect",
+      "mean": "bảo vệ",
       "pron": "",
       "type": "word",
       "example": "I use “protect” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "bảo vệ"
     },
     {
       "word": "save",
-      "mean": "save",
+      "mean": "tiết kiệm",
       "pron": "",
       "type": "word",
       "example": "I use “save” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "tiết kiệm"
     },
     {
       "word": "reduce",
-      "mean": "reduce",
+      "mean": "giảm",
       "pron": "",
       "type": "word",
       "example": "I use “reduce” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "giảm"
     },
     {
       "word": "reuse",
-      "mean": "reuse",
+      "mean": "tái sử dụng",
       "pron": "",
       "type": "word",
       "example": "I use “reuse” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "tái sử dụng"
     },
     {
       "word": "resource",
-      "mean": "resource",
+      "mean": "tài nguyên",
       "pron": "",
       "type": "word",
       "example": "I use “resource” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "tài nguyên"
     },
     {
       "word": "earth",
-      "mean": "earth",
+      "mean": "Trái Đất",
       "pron": "",
       "type": "word",
       "example": "I use “earth” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "Trái Đất"
     },
     {
       "word": "planet",
-      "mean": "planet",
+      "mean": "hành tinh",
       "pron": "",
       "type": "word",
       "example": "I use “planet” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "hành tinh"
     },
     {
       "word": "natural",
-      "mean": "natural",
+      "mean": "tự nhiên",
       "pron": "",
       "type": "word",
       "example": "I use “natural” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "tự nhiên"
     },
     {
       "word": "electric",
-      "mean": "electric",
+      "mean": "điện",
       "pron": "",
       "type": "word",
       "example": "I use “electric” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "điện"
     },
     {
       "word": "fuel",
-      "mean": "fuel",
+      "mean": "nhiên liệu",
       "pron": "",
       "type": "word",
       "example": "I use “fuel” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "nhiên liệu"
     },
     {
       "word": "factory",
-      "mean": "factory",
+      "mean": "nhà máy",
       "pron": "",
       "type": "word",
       "example": "I use “factory” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "nhà máy"
     },
     {
       "word": "smoke",
-      "mean": "smoke",
+      "mean": "khói",
       "pron": "",
       "type": "word",
       "example": "I use “smoke” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "khói"
     },
     {
       "word": "noise",
-      "mean": "noise",
+      "mean": "tiếng ồn",
       "pron": "",
       "type": "word",
       "example": "I use “noise” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "tiếng ồn"
     },
     {
       "word": "damage",
-      "mean": "damage",
+      "mean": "thiệt hại",
       "pron": "",
       "type": "word",
       "example": "I use “damage” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "thiệt hại"
     },
     {
       "word": "future",
-      "mean": "future",
+      "mean": "tương lai",
       "pron": "",
       "type": "word",
       "example": "I use “future” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "tương lai"
     },
     {
       "word": "sustainable",
-      "mean": "sustainable",
+      "mean": "bền vững",
       "pron": "",
       "type": "word",
       "example": "I use “sustainable” in everyday life.",
-      "note": "Everyday environment vocabulary."
+      "note": "Everyday environment vocabulary.",
+      "meaning_vi": "bền vững"
     }
   ]
 }
