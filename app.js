@@ -108,15 +108,41 @@ function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answ
     $('#questionHint').textContent='Bạn cần thêm từ vựng trước khi luyện tập.';$('#questionWord').textContent='Chưa có bộ từ';$('#questionPronounce').textContent='';
     $('#answers').innerHTML='<button class="answer" id="goAddWords"><b>＋</b> Thêm từ vựng ngay</button>';$('#goAddWords').onclick=()=>showPage('learn');$('#feedback').textContent='';updateReflexHud(reflexTimeLimit);return
   }
-  const v=vocab[(question-1)%vocab.length];let correct,answers,hint,word,pron='';
-  if(mode==='engvi'){hint='Chọn nghĩa tiếng Việt của từ:';word=v.word;pron=vocabPronunciation(v);correct=vocabMeaning(v);answers=shuffle(vocab.map(x=>vocabMeaning(x)))}
-  else if(mode==='vieng'){hint='Chọn từ tiếng Anh phù hợp với nghĩa:';word=vocabMeaning(v);correct=v.word;answers=shuffle(vocab.map(x=>x.word))}
-  else{hint='Từ in đậm trong ngữ cảnh có nghĩa là gì?';word=`The word <b>${esc(v.word)}</b> is useful to learn in context.`;correct=vocabMeaning(v);answers=shuffle(vocab.map(x=>vocabMeaning(x)))}
+  const v=vocab[(question-1)%vocab.length];let correct,hint,word,pron='',candidateLabels=[];
+  if(mode==='engvi'){
+    hint='Chọn nghĩa tiếng Việt của từ:';
+    word=v.word;pron=vocabPronunciation(v);correct=vocabMeaning(v);
+    candidateLabels=vocab.map(x=>vocabMeaning(x));
+  }else if(mode==='vieng'){
+    hint='Chọn từ tiếng Anh phù hợp với nghĩa:';
+    word=vocabMeaning(v);correct=v.word;
+    candidateLabels=vocab.map(x=>x.word);
+  }else{
+    hint='Từ in đậm trong ngữ cảnh có nghĩa là gì?';
+    word=`The word <b>${esc(v.word)}</b> is useful to learn in context.`;
+    correct=vocabMeaning(v);
+    candidateLabels=vocab.map(x=>vocabMeaning(x));
+  }
   $('#questionHint').textContent=hint;$('#questionWord').innerHTML=mode==='context'?word:esc(word);$('#questionPronounce').textContent=pron;$('#questionNumber').textContent=question;
   $('#reflexQuestionTotal').textContent=reflexSessionLength;$('#reflexSessionLabel').textContent=reflexSessionLength+' câu';$('#feedback').textContent='';
-  const labels=['A','B','C','D'];const uniqueAnswers=[...new Set(answers.map(a=>String(a??'').trim()).filter(Boolean))].filter(a=>a!==String(correct??'').trim());
-  const quizAnswers=shuffle([String(correct??'').trim(),...uniqueAnswers]).slice(0,4);
-  $('#answers').innerHTML=quizAnswers.map((a,i)=>`<button class="answer" data-answer="${esc(a)}" data-right="${a===String(correct??'').trim()}"><b>${labels[i]}</b><span>${esc(a)}</span></button>`).join('');
+
+  // Always build choices around the current target:
+  // 1) lock the correct answer in;
+  // 2) select up to three UNIQUE distractors that are different from it;
+  // 3) shuffle only after the four-choice set is complete.
+  const normalizedCorrect=String(correct??'').trim();
+  const uniqueDistractors=[...new Set(candidateLabels.map(a=>String(a??'').trim()).filter(Boolean))]
+    .filter(a=>a.toLowerCase()!==normalizedCorrect.toLowerCase());
+  const distractors=shuffle(uniqueDistractors).slice(0,3);
+  let quizAnswers=shuffle([normalizedCorrect,...distractors]);
+
+  // Final guard: the target answer must never disappear from A/B/C/D.
+  if(!quizAnswers.some(a=>a.toLowerCase()===normalizedCorrect.toLowerCase())){
+    quizAnswers=shuffle([normalizedCorrect,...quizAnswers.filter(a=>a.toLowerCase()!==normalizedCorrect.toLowerCase()).slice(0,3)]);
+  }
+
+  const labels=['A','B','C','D'];
+  $('#answers').innerHTML=quizAnswers.map((a,i)=>`<button class="answer" data-answer="${esc(a)}" data-right="${a.toLowerCase()===normalizedCorrect.toLowerCase()}"><b>${labels[i]}</b><span>${esc(a)}</span></button>`).join('');
   $$('.answer').forEach(btn=>btn.onclick=()=>answer(btn,correct));
   updateReflexHud(reflexTimeLimit);startReflexTimer();
   if(mode==='context')loadAiContext(v,contextId);
