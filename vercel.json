@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/game-action.js": {
-      "includeFiles": "data/vocabulary/*.json"
+      "includeFiles": "data/vocabulary/**/*.json"
     },
     "api/admin-hub.js": {
       "includeFiles": "data/**/*.json",
