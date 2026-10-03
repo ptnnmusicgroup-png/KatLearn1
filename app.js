@@ -131,14 +131,34 @@ function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answ
   // 2) select up to three UNIQUE distractors that are different from it;
   // 3) shuffle only after the four-choice set is complete.
   const normalizedCorrect=String(correct??'').trim();
+  const targetIndex=Math.max(0,vocab.indexOf(v));
   const uniqueDistractors=[...new Set(candidateLabels.map(a=>String(a??'').trim()).filter(Boolean))]
     .filter(a=>a.toLowerCase()!==normalizedCorrect.toLowerCase());
-  const distractors=shuffle(uniqueDistractors).slice(0,3);
+
+  // Prefer distractors close to the target inside the SAME vocabulary pack.
+  // This keeps choices semantically related instead of mixing in random words
+  // such as transport terms for an environment question.
+  const nearbyIndices=[];
+  for(let distance=1;distance<vocab.length;distance++){
+    const left=targetIndex-distance,right=targetIndex+distance;
+    if(left>=0)nearbyIndices.push(left);
+    if(right<vocab.length)nearbyIndices.push(right);
+    if(nearbyIndices.length>=12)break;
+  }
+  const nearbyCandidates=nearbyIndices
+    .map(i=>candidateLabels[i])
+    .map(a=>String(a??'').trim())
+    .filter(Boolean)
+    .filter(a=>a.toLowerCase()!==normalizedCorrect.toLowerCase());
+  const orderedDistractors=[...new Set([...nearbyCandidates,...shuffle(uniqueDistractors)])];
+  const distractors=orderedDistractors.slice(0,3);
   let quizAnswers=shuffle([normalizedCorrect,...distractors]);
 
-  // Final guard: the target answer must never disappear from A/B/C/D.
-  if(!quizAnswers.some(a=>a.toLowerCase()===normalizedCorrect.toLowerCase())){
-    quizAnswers=shuffle([normalizedCorrect,...quizAnswers.filter(a=>a.toLowerCase()!==normalizedCorrect.toLowerCase()).slice(0,3)]);
+  // Hard invariant: exactly one correct answer must be present.
+  const correctCount=quizAnswers.filter(a=>a.toLowerCase()===normalizedCorrect.toLowerCase()).length;
+  if(correctCount!==1){
+    const filtered=quizAnswers.filter(a=>a.toLowerCase()!==normalizedCorrect.toLowerCase()).slice(0,3);
+    quizAnswers=shuffle([normalizedCorrect,...filtered]);
   }
 
   const labels=['A','B','C','D'];
