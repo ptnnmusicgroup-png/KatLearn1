@@ -105,7 +105,7 @@ async function loadAssignedPacks(){
   }catch(e){if(String(window.studyStore?.user?.uid||'')===uid)console.warn('[KatLearn] assigned packs:',e);return[]}
 }
 function setVocabSource(source){activeVocabSource=source||{kind:'legacy'};if(activeVocabSource.kind==='personal'&&!activeVocabSource.uid)activeVocabSource.uid=window.studyStore?.userId||'';localStorage.setItem('katlearn-vocab-source',JSON.stringify(activeVocabSource));loadKnownState()}
-async function vocabMeaning(v){return String(v?.mean??v?.meaning_vi??v?.translation_vi??v?.translation??'').trim()}
+function vocabMeaning(v){return String(v?.mean??v?.meaning_vi??v?.translation_vi??v?.translation??'').trim()}
 function vocabPronunciation(v){return String(v?.pron??v?.ipa??v?.pronunciation??'').trim()}
 function normalizeLearningWords(words=[]){
   return (Array.isArray(words)?words:[]).map(v=>({
