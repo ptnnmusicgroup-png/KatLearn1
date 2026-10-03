@@ -735,7 +735,8 @@ async function syncPublicLibraries(db,decoded){
     version:clean(library.manifest.version||"1",50),
     total:library.total,
     totalWords:library.totalWords,
-    groups:library.groups,
+    groups:tree.length,
+    sourceGroups:library.groups,
     tree,
     processed:library.total,
     done:true,
@@ -1783,7 +1784,8 @@ async function section(db,key,queryParams={}){
       rows:library.items.map(({words,...meta})=>meta),
       total:library.total,
       totalWords:library.totalWords,
-      groups:library.groups,
+      groups:publicLibraryTree(library.items).length,
+      sourceGroups:library.groups,
       tree:publicLibraryTree(library.items),
       limited:false
     };
