@@ -5,35 +5,39 @@
   "words": [
     {
       "word": "car",
-      "mean": "car",
+      "mean": "ô tô",
       "pron": "",
       "type": "word",
       "example": "I use “car” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "ô tô"
     },
     {
       "word": "bus",
-      "mean": "bus",
+      "mean": "xe buýt",
       "pron": "",
       "type": "word",
       "example": "I use “bus” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "xe buýt"
     },
     {
       "word": "train",
-      "mean": "train",
+      "mean": "tàu hỏa",
       "pron": "",
       "type": "word",
       "example": "I use “train” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "tàu hỏa"
     },
     {
       "word": "plane",
-      "mean": "plane",
+      "mean": "máy bay",
       "pron": "",
       "type": "word",
       "example": "I use “plane” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "máy bay"
     },
     {
       "word": "taxi",
@@ -41,351 +45,395 @@
       "pron": "",
       "type": "word",
       "example": "I use “taxi” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "taxi"
     },
     {
       "word": "bike",
-      "mean": "bike",
+      "mean": "xe đạp",
       "pron": "",
       "type": "word",
       "example": "I use “bike” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "xe đạp"
     },
     {
       "word": "bicycle",
-      "mean": "bicycle",
+      "mean": "xe đạp",
       "pron": "",
       "type": "word",
       "example": "I use “bicycle” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "xe đạp"
     },
     {
       "word": "motorbike",
-      "mean": "motorbike",
+      "mean": "xe máy",
       "pron": "",
       "type": "word",
       "example": "I use “motorbike” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "xe máy"
     },
     {
       "word": "ship",
-      "mean": "ship",
+      "mean": "tàu thủy",
       "pron": "",
       "type": "word",
       "example": "I use “ship” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "tàu thủy"
     },
     {
       "word": "boat",
-      "mean": "boat",
+      "mean": "thuyền",
       "pron": "",
       "type": "word",
       "example": "I use “boat” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "thuyền"
     },
     {
       "word": "road",
-      "mean": "road",
+      "mean": "đường",
       "pron": "",
       "type": "word",
       "example": "I use “road” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "đường"
     },
     {
       "word": "street",
-      "mean": "street",
+      "mean": "đường phố",
       "pron": "",
       "type": "word",
       "example": "I use “street” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "đường phố"
     },
     {
       "word": "bridge",
-      "mean": "bridge",
+      "mean": "cầu",
       "pron": "",
       "type": "word",
       "example": "I use “bridge” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "cầu"
     },
     {
       "word": "station",
-      "mean": "station",
+      "mean": "nhà ga",
       "pron": "",
       "type": "word",
       "example": "I use “station” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "nhà ga"
     },
     {
       "word": "airport",
-      "mean": "airport",
+      "mean": "sân bay",
       "pron": "",
       "type": "word",
       "example": "I use “airport” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "sân bay"
     },
     {
       "word": "stop",
-      "mean": "stop",
+      "mean": "trạm dừng",
       "pron": "",
       "type": "word",
       "example": "I use “stop” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "trạm dừng"
     },
     {
       "word": "traffic",
-      "mean": "traffic",
+      "mean": "giao thông",
       "pron": "",
       "type": "word",
       "example": "I use “traffic” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "giao thông"
     },
     {
       "word": "driver",
-      "mean": "driver",
+      "mean": "tài xế",
       "pron": "",
       "type": "word",
       "example": "I use “driver” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "tài xế"
     },
     {
       "word": "passenger",
-      "mean": "passenger",
+      "mean": "hành khách",
       "pron": "",
       "type": "word",
       "example": "I use “passenger” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "hành khách"
     },
     {
       "word": "ticket",
-      "mean": "ticket",
+      "mean": "vé",
       "pron": "",
       "type": "word",
       "example": "I use “ticket” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "vé"
     },
     {
       "word": "map",
-      "mean": "map",
+      "mean": "bản đồ",
       "pron": "",
       "type": "word",
       "example": "I use “map” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "bản đồ"
     },
     {
       "word": "route",
-      "mean": "route",
+      "mean": "tuyến đường",
       "pron": "",
       "type": "word",
       "example": "I use “route” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "tuyến đường"
     },
     {
       "word": "trip",
-      "mean": "trip",
+      "mean": "chuyến đi",
       "pron": "",
       "type": "word",
       "example": "I use “trip” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "chuyến đi"
     },
     {
       "word": "journey",
-      "mean": "journey",
+      "mean": "hành trình",
       "pron": "",
       "type": "word",
       "example": "I use “journey” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "hành trình"
     },
     {
       "word": "travel",
-      "mean": "travel",
+      "mean": "du lịch",
       "pron": "",
       "type": "word",
       "example": "I use “travel” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "du lịch"
     },
     {
       "word": "drive",
-      "mean": "drive",
+      "mean": "lái xe",
       "pron": "",
       "type": "word",
       "example": "I use “drive” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "lái xe"
     },
     {
       "word": "ride",
-      "mean": "ride",
+      "mean": "đi xe",
       "pron": "",
       "type": "word",
       "example": "I use “ride” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "đi xe"
     },
     {
       "word": "walk",
-      "mean": "walk",
+      "mean": "đi bộ",
       "pron": "",
       "type": "word",
       "example": "I use “walk” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "đi bộ"
     },
     {
       "word": "cross",
-      "mean": "cross",
+      "mean": "băng qua",
       "pron": "",
       "type": "word",
       "example": "I use “cross” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "băng qua"
     },
     {
       "word": "turn",
-      "mean": "turn",
+      "mean": "rẽ",
       "pron": "",
       "type": "word",
       "example": "I use “turn” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "rẽ"
     },
     {
       "word": "arrive",
-      "mean": "arrive",
+      "mean": "đến nơi",
       "pron": "",
       "type": "word",
       "example": "I use “arrive” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "đến nơi"
     },
     {
       "word": "leave",
-      "mean": "leave",
+      "mean": "rời đi",
       "pron": "",
       "type": "word",
       "example": "I use “leave” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "rời đi"
     },
     {
       "word": "park",
-      "mean": "park",
+      "mean": "đỗ xe",
       "pron": "",
       "type": "word",
       "example": "I use “park” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "đỗ xe"
     },
     {
       "word": "parking",
-      "mean": "parking",
+      "mean": "bãi đỗ xe",
       "pron": "",
       "type": "word",
       "example": "I use “parking” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "bãi đỗ xe"
     },
     {
       "word": "speed",
-      "mean": "speed",
+      "mean": "tốc độ",
       "pron": "",
       "type": "word",
       "example": "I use “speed” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "tốc độ"
     },
     {
       "word": "slow",
-      "mean": "slow",
+      "mean": "chậm",
       "pron": "",
       "type": "word",
       "example": "I use “slow” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "chậm"
     },
     {
       "word": "fast",
-      "mean": "fast",
+      "mean": "nhanh",
       "pron": "",
       "type": "word",
       "example": "I use “fast” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "nhanh"
     },
     {
       "word": "safe",
-      "mean": "safe",
+      "mean": "an toàn",
       "pron": "",
       "type": "word",
       "example": "I use “safe” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "an toàn"
     },
     {
       "word": "danger",
-      "mean": "danger",
+      "mean": "nguy hiểm",
       "pron": "",
       "type": "word",
       "example": "I use “danger” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "nguy hiểm"
     },
     {
       "word": "seat",
-      "mean": "seat",
+      "mean": "ghế ngồi",
       "pron": "",
       "type": "word",
       "example": "I use “seat” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "ghế ngồi"
     },
     {
       "word": "wheel",
-      "mean": "wheel",
+      "mean": "bánh xe",
       "pron": "",
       "type": "word",
       "example": "I use “wheel” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "bánh xe"
     },
     {
       "word": "engine",
-      "mean": "engine",
+      "mean": "động cơ",
       "pron": "",
       "type": "word",
       "example": "I use “engine” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "động cơ"
     },
     {
       "word": "fuel",
-      "mean": "fuel",
+      "mean": "nhiên liệu",
       "pron": "",
       "type": "word",
       "example": "I use “fuel” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "nhiên liệu"
     },
     {
       "word": "petrol",
-      "mean": "petrol",
+      "mean": "xăng",
       "pron": "",
       "type": "word",
       "example": "I use “petrol” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "xăng"
     },
     {
       "word": "battery",
-      "mean": "battery",
+      "mean": "pin",
       "pron": "",
       "type": "word",
       "example": "I use “battery” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "pin"
     },
     {
       "word": "helmet",
-      "mean": "helmet",
+      "mean": "mũ bảo hiểm",
       "pron": "",
       "type": "word",
       "example": "I use “helmet” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "mũ bảo hiểm"
     },
     {
       "word": "traffic light",
-      "mean": "traffic light",
+      "mean": "đèn giao thông",
       "pron": "",
       "type": "word",
       "example": "I use “traffic light” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "đèn giao thông"
     },
     {
       "word": "sign",
-      "mean": "sign",
+      "mean": "biển báo",
       "pron": "",
       "type": "word",
       "example": "I use “sign” in everyday life.",
-      "note": "Everyday transport vocabulary."
+      "note": "Everyday transport vocabulary.",
+      "meaning_vi": "biển báo"
     }
   ]
 }
