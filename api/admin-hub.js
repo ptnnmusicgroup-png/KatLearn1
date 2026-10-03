@@ -29,6 +29,7 @@ function writeJson(res,status,body,origin=""){
 const LIMITS={users:300,teachers:300,classes:300,packs:300,privatePacks:300,schools:300,pending:100,activity:100};
 const DATA_DIR=path.join(__dirname,"../data/national-catalog");
 const VOCAB_DIR=path.join(__dirname,"../data/vocabulary");
+const PUBLIC_LIBRARY_DIR=path.join(VOCAB_DIR,"TOPICs_KatLearn");
 const TOTAL_SCHOOLS=22850;
 const PROVINCES=[
   ["01","Thành phố Hà Nội",2828,"province-01.json"],["04","Tỉnh Cao Bằng",150,"province-04.json"],["08","Tỉnh Tuyên Quang",300,"province-08.json"],
@@ -528,6 +529,114 @@ function readCodePublicPacks(){
   }
   return out;
 }
+function libraryPackId(relativePath,data){
+  const base=clean(data?.id||relativePath||"pack",160).replace(/[^a-zA-Z0-9_-]+/g,"_");
+  return "library_"+crypto.createHash("sha256").update(base).digest("hex").slice(0,24);
+}
+function readPublicLibraries(){
+  let manifest={};
+  try{
+    manifest=JSON.parse(fs.readFileSync(path.join(PUBLIC_LIBRARY_DIR,"library-manifest.json"),"utf8"))||{};
+  }catch(error){
+    throw fail(new Error("Không đọc được library-manifest.json: "+messageOf(error)),500,"public_library_manifest_unavailable");
+  }
+  const files=[];
+  const walk=(dir,relative="")=>{
+    let entries=[];
+    try{entries=fs.readdirSync(dir,{withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name,"en"))}
+    catch(error){throw fail(new Error("Không đọc được thư mục thư viện công khai: "+messageOf(error)),500,"public_library_source_unavailable")}
+    for(const entry of entries){
+      if(entry.name.startsWith("."))continue;
+      const abs=path.join(dir,entry.name);
+      const rel=relative?path.join(relative,entry.name):entry.name;
+      if(entry.isDirectory())walk(abs,rel);
+      else if(entry.isFile()&&entry.name.toLowerCase().endsWith(".json")&&entry.name!=="library-manifest.json")files.push({abs,rel});
+    }
+  };
+  walk(PUBLIC_LIBRARY_DIR);
+  const items=[];
+  for(const file of files){
+    try{
+      const raw=fs.readFileSync(file.abs,"utf8");
+      const data=JSON.parse(raw)||{};
+      const words=Array.isArray(data.words)?data.words.map(serialize):[];
+      const parts=file.rel.split(path.sep);
+      const group=parts.length>1?parts[0]:"KatLearn Library";
+      const relativePath=file.rel.split(path.sep).join("/");
+      const sourceFile="data/vocabulary/TOPICs_KatLearn/"+relativePath;
+      const categories=[...new Set(words.map(word=>String(word?.category||"").trim()).filter(Boolean))];
+      const sourceId=clean(data.id||file.rel.replace(/\.json$/i,""),160);
+      items.push({
+        id:libraryPackId(file.rel,data),
+        sourceId,
+        sourceFile,
+        relativePath,
+        group,
+        name:clean(data.name||sourceId,200),
+        description:clean(data.description||"",600),
+        curation:clean(data.curation||"",300),
+        referenceFamilies:Array.isArray(data.referenceFamilies)?data.referenceFamilies.map(x=>clean(x,200)).filter(Boolean):[],
+        categories,
+        words,
+        wordCount:words.length,
+        sourceHash:crypto.createHash("sha256").update(raw).digest("hex"),
+        syncedAt:Date.now()
+      });
+    }catch(error){
+      throw fail(new Error("Không đọc được thư viện "+file.rel+": "+messageOf(error)),500,"public_library_read_failed");
+    }
+  }
+  items.sort((a,b)=>a.group.localeCompare(b.group,"vi")||a.name.localeCompare(b.name,"vi"));
+  return{
+    manifest:serialize(manifest),
+    items,
+    total:items.length,
+    totalWords:items.reduce((sum,item)=>sum+item.wordCount,0),
+    groups:[...new Set(items.map(item=>item.group))]
+  };
+}
+async function syncPublicLibraries(db,decoded){
+  const library=readPublicLibraries();
+  if(!library.items.length)throw fail(new Error("Kho thư viện công khai đang trống."),500,"public_library_source_empty");
+  const stateRef=db.collection(ADMIN_SYNC_COLLECTION).doc("publicLibraries");
+  const mirror=stateRef.collection("items");
+  const existing=await mirror.select("sourceFile").get();
+  const currentIds=new Set(library.items.map(item=>item.id));
+  const batch=db.batch();
+  const now=Date.now();
+  batch.set(stateRef,{
+    source:"code:data/vocabulary/TOPICs_KatLearn",
+    libraryName:clean(library.manifest.libraryName||"KatLearn Vocabulary Library",200),
+    version:clean(library.manifest.version||"1",50),
+    total:library.total,
+    totalWords:library.totalWords,
+    groups:library.groups,
+    processed:library.total,
+    done:true,
+    updatedAt:now,
+    manifest:library.manifest
+  },{merge:true});
+  for(const item of library.items){
+    batch.set(mirror.doc(item.id),{...item,syncedAt:now},{merge:true});
+  }
+  for(const doc of existing.docs)if(!currentIds.has(doc.id))batch.delete(doc.ref);
+  await batch.commit();
+  await audit(db,decoded,"sync.complete","publicLibraries",{
+    total:library.total,totalWords:library.totalWords,groups:library.groups,
+    mirror:ADMIN_SYNC_COLLECTION+"/publicLibraries"
+  });
+  return{
+    entity:"publicLibraries",
+    total:library.total,
+    totalWords:library.totalWords,
+    groups:library.groups.length,
+    processed:library.total,
+    removed:existing.docs.filter(doc=>!currentIds.has(doc.id)).length,
+    done:true,
+    updatedAt:now
+  };
+}
+
 async function syncCodePublicPacks(db,decoded){
   const packs=readCodePublicPacks();
   if(!packs.length)throw fail(new Error("Kho bộ từ trong code đang trống."),500,"code_pack_source_empty");
@@ -1536,6 +1645,22 @@ async function section(db,key,queryParams={}){
     if(!snap.exists)throw fail(new Error("Không tìm thấy bộ từ."),404,"pack_not_found");
     return{pack:{id:snap.id,...serialize(snap.data()||{})}};
   }
+  if(key==="libraries"){
+    const library=readPublicLibraries();
+    return{
+      libraryName:clean(library.manifest.libraryName||"KatLearn Vocabulary Library",200),
+      version:String(library.manifest.version||""),
+      description:clean(library.manifest.description||"",1000),
+      model:clean(library.manifest.model||"",200),
+      katlearnPacks:Array.isArray(library.manifest.katlearnPacks)?library.manifest.katlearnPacks.map(x=>clean(x,200)).filter(Boolean):[],
+      referenceFamilies:library.manifest.referenceFamilies&&typeof library.manifest.referenceFamilies==="object"?serialize(library.manifest.referenceFamilies):{},
+      rows:library.items.map(({words,...meta})=>meta),
+      total:library.total,
+      totalWords:library.totalWords,
+      groups:library.groups,
+      limited:false
+    };
+  }
   if(key==="packs"){
     const publicRows=await list("bộ từ công khai",db.collection("publicPacks").select(...PACK_FIELDS).limit(LIMITS.packs));
     const codePacks=readCodePublicPacks().map(({words,...meta})=>meta);
@@ -1647,6 +1772,7 @@ module.exports=async(req,res)=>{
     if(action==="sync-auth-accounts")return writeJson(res,200,{ok:true,...await syncAuthAccounts(db,auth,decoded)},origin);
     if(action==="sync-directory-chunk")return writeJson(res,200,{ok:true,...await syncDirectoryChunk(db,decoded,body.entity,body.cursor,body.limit)},origin);
      if(action==="sync-all-personal-packs")return writeJson(res,200,{ok:true,...await syncAllPersonalPacks(db,decoded)},origin);
+    if(action==="sync-code-public-libraries")return writeJson(res,200,{ok:true,...await syncPublicLibraries(db,decoded)},origin);
     if(action==="sync-code-public-packs")return writeJson(res,200,{ok:true,...await syncCodePublicPacks(db,decoded)},origin);
     if(action==="catalog-plan")return writeJson(res,200,{ok:true,...plan()},origin);
     if(action==="catalog-chunk"){
