@@ -509,6 +509,130 @@ async function updatePublicPack(db,decoded,packId,name,words){
   return{packId,name,wordCount:normalized.length,updatedAt:now};
 }
 
+const PUBLIC_LIBRARY_EVERYDAY_NAMES={
+  "daily-life":"Daily Life","family":"Family & Relationships","home":"Home & Household","food":"Food",
+  "cooking":"Cooking","shopping":"Shopping","clothes-fashion":"Clothes & Fashion","school-education":"School & Education",
+  "work-career":"Work & Career","technology":"Technology","internet-social-media":"Internet & Social Media",
+  "health-medicine":"Health & Medicine","sports-fitness":"Sports & Fitness","travel-tourism":"Travel & Tourism",
+  "transport":"Transport","weather-seasons":"Weather & Seasons","environment":"Environment","animals-nature":"Animals & Nature",
+  "feelings-personality":"Feelings & Personality","entertainment-culture":"Entertainment & Culture","city-community":"City & Community",
+  "money-finance":"Money & Finance","communication":"Communication","people-relationships":"People & Relationships","places":"Places"
+};
+const PUBLIC_LIBRARY_TREE_DEFS=[
+  {id:"ielts",name:"IELTS",icon:"🎓",children:[
+    {id:"ielts-writing-task-1",name:"IELTS Writing Task 1",icon:"📊",packId:"ielts-writing-task-1",children:[
+      {id:"t1-increase",name:"Các từ diễn tả sự tăng lên",icon:"📈",packId:"ielts-writing-task-1",words:["rise","increase","climb","grow","surge","soar","jump"]},
+      {id:"t1-decrease",name:"Các từ diễn tả sự giảm xuống",icon:"📉",packId:"ielts-writing-task-1",words:["decline","decrease","drop","fall","dip","plummet","halve"]},
+      {id:"t1-fluctuation",name:"Các từ diễn tả sự biến động",icon:"〰️",packId:"ielts-writing-task-1",words:["fluctuate","vary"]},
+      {id:"t1-stability",name:"Các từ diễn tả sự ổn định / chững lại",icon:"➖",packId:"ielts-writing-task-1",words:["remain stable","remain constant","plateau","level off"]},
+      {id:"t1-peak",name:"Các từ diễn tả mức cao nhất / thấp nhất",icon:"🔝",packId:"ielts-writing-task-1",words:["peak","reach a peak"]},
+      {id:"t1-comparison",name:"Các từ dùng để so sánh",icon:"⚖️",packId:"ielts-writing-task-1",categories:["comparisons"]},
+      {id:"t1-proportion",name:"Các từ diễn tả tỷ lệ / thành phần",icon:"🥧",packId:"ielts-writing-task-1",categories:["proportions"]},
+      {id:"t1-degree",name:"Các từ diễn tả mức độ thay đổi",icon:"📐",packId:"ielts-writing-task-1",categories:["degree"]},
+      {id:"t1-data",name:"Từ vựng về số liệu",icon:"🔢",packId:"ielts-writing-task-1",categories:["data"]},
+      {id:"t1-time",name:"Từ vựng về thời gian",icon:"🕒",packId:"ielts-writing-task-1",categories:["time"]},
+      {id:"t1-charts",name:"Từ vựng về biểu đồ",icon:"📊",packId:"ielts-writing-task-1",categories:["charts"]},
+      {id:"t1-process",name:"Từ vựng về quy trình",icon:"🔄",packId:"ielts-writing-task-1",categories:["process"]},
+      {id:"t1-overview",name:"Ngôn ngữ viết Overview",icon:"🧭",packId:"ielts-writing-task-1",categories:["overview"]}
+    ]},
+    {id:"ielts-writing-task-2",name:"IELTS Writing Task 2",icon:"✍️",packId:"ielts-writing-task-2",children:[
+      {id:"t2-argument",name:"Lập luận & quan điểm",icon:"💬",packId:"ielts-writing-task-2",categories:["argument","opinion"]},
+      {id:"t2-evidence",name:"Bằng chứng & dẫn chứng",icon:"🔎",packId:"ielts-writing-task-2",categories:["evidence"]},
+      {id:"t2-balance",name:"Ý kiến đối lập & cân bằng",icon:"⚖️",packId:"ielts-writing-task-2",categories:["balance"]},
+      {id:"t2-causes-effects",name:"Nguyên nhân & hệ quả",icon:"🔗",packId:"ielts-writing-task-2",categories:["effects"]},
+      {id:"t2-solutions",name:"Giải pháp & hành động",icon:"🛠️",packId:"ielts-writing-task-2",categories:["solutions"]},
+      {id:"t2-policy",name:"Chính sách & xã hội",icon:"🏛️",packId:"ielts-writing-task-2",categories:["policy","society"]},
+      {id:"t2-economy",name:"Kinh tế",icon:"💰",packId:"ielts-writing-task-2",categories:["economy"]},
+      {id:"t2-environment",name:"Môi trường",icon:"🌱",packId:"ielts-writing-task-2",categories:["environment"]},
+      {id:"t2-technology",name:"Công nghệ",icon:"💻",packId:"ielts-writing-task-2",categories:["technology"]},
+      {id:"t2-health",name:"Sức khỏe",icon:"🩺",packId:"ielts-writing-task-2",categories:["health"]},
+      {id:"t2-time",name:"Thời gian & thay đổi",icon:"🕒",packId:"ielts-writing-task-2",categories:["time"]},
+      {id:"t2-structure",name:"Cấu trúc bài viết",icon:"🧩",packId:"ielts-writing-task-2",categories:["structure"]}
+    ]},
+    {id:"ielts-reading",name:"IELTS Reading",icon:"📖",packId:"ielts-reading",children:[
+      {id:"r-research",name:"Nghiên cứu & học thuật",icon:"🔬",packId:"ielts-reading",categories:["research","science"]},
+      {id:"r-data",name:"Số liệu & dữ liệu",icon:"📊",packId:"ielts-reading",categories:["data"]},
+      {id:"r-cause",name:"Nguyên nhân & hệ quả",icon:"🔗",packId:"ielts-reading",categories:["causes","cause","effects"]},
+      {id:"r-comparison",name:"So sánh & đối chiếu",icon:"⚖️",packId:"ielts-reading",categories:["comparison","contrast"]},
+      {id:"r-process",name:"Quy trình & cấu trúc",icon:"🔄",packId:"ielts-reading",categories:["process","structure"]},
+      {id:"r-description",name:"Mô tả & đặc điểm",icon:"🔎",packId:"ielts-reading",categories:["description","properties"]},
+      {id:"r-environment-health",name:"Môi trường & sức khỏe",icon:"🌱",packId:"ielts-reading",categories:["environment","health","biology"]},
+      {id:"r-history-language",name:"Lịch sử & ngôn ngữ",icon:"📚",packId:"ielts-reading",categories:["history","language"]}
+    ]},
+    {id:"ielts-speaking",name:"IELTS Speaking",icon:"🗣️",packId:"ielts-speaking",children:[
+      {id:"s-part1",name:"Part 1 · Chủ đề cá nhân",icon:"👤",packId:"ielts-speaking",categories:["part1","preferences","feelings"]},
+      {id:"s-part2",name:"Part 2 · Long Turn",icon:"🎙️",packId:"ielts-speaking",categories:["part2","experience","examples"]},
+      {id:"s-description",name:"Mô tả người / nơi / trải nghiệm",icon:"📝",packId:"ielts-speaking",categories:["description","personality","relationships"]},
+      {id:"s-opinion",name:"Nêu ý kiến & phát triển ý",icon:"💭",packId:"ielts-speaking",categories:["opinion","balance"]},
+      {id:"s-causes-effects",name:"Nguyên nhân & tác động",icon:"🔗",packId:"ielts-speaking",categories:["causes","effects"]},
+      {id:"s-future-society",name:"Tương lai & xã hội",icon:"🌍",packId:"ielts-speaking",categories:["future","society"]},
+      {id:"s-fluency",name:"Cụm từ hỗ trợ độ trôi chảy",icon:"✨",packId:"ielts-speaking",categories:["fluency"]}
+    ]}
+  ]},
+  {id:"everyday",name:"Everyday English",icon:"🌷",children:[
+    {id:"everyday-topics",name:"Everyday Topics",icon:"📁",children:[]}
+  ]},
+  {id:"school",name:"School English",icon:"🏫",children:[
+    {id:"school-core",name:"KatLearn School English",icon:"📚",packId:"katlearn-school-english"}
+  ]},
+  {id:"cefr",name:"CEFR",icon:"📈",children:[
+    {id:"cefr-builder",name:"CEFR B1–B2 Builder",icon:"📈",packId:"katlearn-cefr-builder"}
+  ]},
+  {id:"academic",name:"Academic English",icon:"✍️",children:[
+    {id:"academic-writing",name:"Academic & Writing",icon:"📝",packId:"katlearn-academic-writing"}
+  ]},
+  {id:"skills",name:"English Skills",icon:"🧩",children:[
+    {id:"collocations",name:"Collocations & Phrasal Verbs",icon:"🔗",packId:"katlearn-collocations-phrasal"}
+  ]},
+  {id:"exam-specialized",name:"Exam & Specialized",icon:"📝",children:[
+    {id:"exam-workplace-specialized",name:"Exam · Workplace · Specialized",icon:"🛠️",packId:"katlearn-exam-workplace-specialized"}
+  ]},
+  {id:"foundations",name:"Foundations",icon:"🧱",children:[
+    {id:"irregular-verbs",name:"Irregular Verbs",icon:"🔤",packId:"katlearn-irregular-verbs"}
+  ]}
+];
+
+function publicLibraryTree(items=[]){
+  const byId=new Map(items.map(item=>[String(item.sourceId||""),item]));
+  const cloneNode=(node)=>{
+    const item=node.packId?byId.get(String(node.packId)):null;
+    let wordCount=0;
+    if(item){
+      const words=Array.isArray(item.words)?item.words:[];
+      if(Array.isArray(node.words)) {
+        const wanted=new Set(node.words.map(String));
+        wordCount=words.filter(word=>wanted.has(String(word?.word||""))).length;
+      } else if(Array.isArray(node.categories)) {
+        const wanted=new Set(node.categories.map(String));
+        wordCount=words.filter(word=>wanted.has(String(word?.category||""))).length;
+      } else {
+        wordCount=Number(item.wordCount)||words.length;
+      }
+    } else if(Array.isArray(node.children)) {
+      wordCount=node.children.reduce((sum,child)=>sum+Number(cloneNode(child).wordCount||0),0);
+    }
+    const children=Array.isArray(node.children)?node.children.map(cloneNode):[];
+    return {
+      id:node.id,name:node.name,icon:node.icon||"📁",
+      ...(node.packId?{packId:node.packId}:{}),
+      ...(Array.isArray(node.words)?{words:node.words.slice()} {}),
+      ...(Array.isArray(node.categories)?{categories:node.categories.slice()} {}),
+      wordCount,children
+    };
+  };
+  const tree=PUBLIC_LIBRARY_TREE_DEFS.map(node=>JSON.parse(JSON.stringify(node)));
+  const everyday=tree.find(node=>node.id==="everyday");
+  const folder=everyday?.children?.find(node=>node.id==="everyday-topics");
+  if(folder){
+    folder.children=items.filter(item=>String(item.group)==="Everyday Topics").map(item=>({
+      id:"topic:"+String(item.sourceId||item.id),
+      name:PUBLIC_LIBRARY_EVERYDAY_NAMES[String(item.sourceId||"")]||String(item.name||item.sourceId||"Everyday Topic"),
+      icon:"📘",packId:String(item.sourceId||"")
+    })).sort((a,b)=>a.name.localeCompare(b.name,"vi"));
+  }
+  return tree.map(cloneNode);
+}
+
 function codePublicPackId(id,file){
   const base=clean(id||String(file||"").replace(/\.json$/,""),120).replace(/[^a-zA-Z0-9_-]+/g,"_");
   return "code_"+(base||"pack");
@@ -598,6 +722,7 @@ function readPublicLibraries(){
 async function syncPublicLibraries(db,decoded){
   const library=readPublicLibraries();
   if(!library.items.length)throw fail(new Error("Kho thư viện công khai đang trống."),500,"public_library_source_empty");
+  const tree=publicLibraryTree(library.items);
   const stateRef=db.collection(ADMIN_SYNC_COLLECTION).doc("publicLibraries");
   const mirror=stateRef.collection("items");
   const existing=await mirror.select("sourceFile").get();
@@ -611,6 +736,7 @@ async function syncPublicLibraries(db,decoded){
     total:library.total,
     totalWords:library.totalWords,
     groups:library.groups,
+    tree,
     processed:library.total,
     done:true,
     updatedAt:now,
@@ -1658,6 +1784,7 @@ async function section(db,key,queryParams={}){
       total:library.total,
       totalWords:library.totalWords,
       groups:library.groups,
+      tree:publicLibraryTree(library.items),
       limited:false
     };
   }
