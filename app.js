@@ -1,6 +1,6 @@
 let vocab=[];
 try{const savedVocab=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(Array.isArray(savedVocab))vocab=savedVocab}catch(e){}
-let coins=0,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,knownWordKeys=new Set(),contextRequestId=0;
+let coins=0,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
 let activeVocabSource={kind:'legacy'};try{const raw=localStorage.getItem('katlearn-vocab-source');if(raw)activeVocabSource=JSON.parse(raw)||activeVocabSource}catch(_){}
 function vocabKey(v){return String(v?.word||'').trim().toLowerCase()+'::'+vocabMeaning(v).trim().toLowerCase()}
 function knownStateKey(){const uid=String(window.studyStore?.user?.uid||window.studyStore?.userId||'guest');return 'katlearn-known:'+uid+':'+String(activeVocabSource?.kind||'legacy')+':'+String(activeVocabSource?.id||activeVocabSource?.uid||'legacy')}
@@ -56,10 +56,108 @@ function renderCard(){if(!vocab.length){$('#cardWord').textContent='Chưa có t�
 $('#flashcard').onclick=()=>{if(vocab.length)$('#flashcard').classList.toggle('flipped')};$('#prevCard').onclick=()=>{if(!vocab.length)return;cardIndex=(cardIndex+vocab.length-1)%vocab.length;renderCard()};$('#nextCard').onclick=()=>{if(!vocab.length)return;cardIndex=(cardIndex+1)%vocab.length;renderCard()};$('#knowBtn').onclick=()=>{if(!vocab.length)return toast('Hãy thêm từ vựng trước nhé!');const v=vocab[cardIndex%vocab.length],key=vocabKey(v);knownWordKeys.add(key);saveKnownState();$('#knownCount').textContent=known;syncProfile({knownWords:known});toast('Đã ghi nhận! Bạn đang tiến bộ rất tốt ✨');cardIndex=(cardIndex+1)%vocab.length;renderCard()};
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 async function loadAiContext(v,requestId){const fallback=`The word <b>${esc(v.word)}</b> is useful to learn in context.`;$('#questionWord').innerHTML=fallback;try{const res=await fetch(aiEndpoint('context-example'),{method:'POST',headers:await aiHeaders(),body:JSON.stringify({word:v.word,meaning:vocabMeaning(v)})});const data=await res.json();if(requestId!==contextRequestId)return;if(res.ok&&data.text)$('#questionWord').textContent=data.text;else $('#questionHint').textContent='AI chưa được cấu hình — dùng câu ví dụ mặc định:'}catch(e){if(requestId===contextRequestId)$('#questionHint').textContent='AI chỉ hoạt động khi chạy server — dùng câu ví dụ mặc định:'}}
-function renderQuiz(){const contextId=++contextRequestId;answered=false;if(!vocab.length){$('#questionHint').textContent='Bạn cần thêm từ vựng trước khi luyện tập.';$('#questionWord').textContent='Chưa có bộ từ';$('#questionPronounce').textContent='';$('#answers').innerHTML='<button class="answer" id="goAddWords"><b>＋</b> Thêm từ vựng ngay</button>';$('#goAddWords').onclick=()=>showPage('learn');$('#feedback').textContent='';return}const v=vocab[(question-1)%vocab.length];let correct,answers,hint,word,pron='';if(mode==='engvi'){hint='Chọn nghĩa tiếng Việt của từ:';word=v.word;pron=vocabPronunciation(v);correct=vocabMeaning(v);answers=shuffle(vocab.map(x=>vocabMeaning(x)))}else if(mode==='vieng'){hint='Chọn từ tiếng Anh phù hợp với nghĩa:';word=vocabMeaning(v);correct=v.word;answers=shuffle(vocab.map(x=>x.word))}else{hint='Từ in đậm trong ngữ cảnh có nghĩa là gì?';word=`The word <b>${esc(v.word)}</b> is useful to learn in context.`;correct=vocabMeaning(v);answers=shuffle(vocab.map(x=>vocabMeaning(x)));}
- $('#questionHint').textContent=hint;$('#questionWord').innerHTML=mode==='context'?word:esc(word);$('#questionPronounce').textContent=pron;$('#questionNumber').textContent=question;$('#quizProgress').style.width=question*10+'%';const labels=['A','B','C','D'];const uniqueAnswers=[...new Set(answers.map(a=>String(a??'').trim()).filter(Boolean))].filter(a=>a!==String(correct??'').trim());const quizAnswers=shuffle([String(correct??'').trim(),...uniqueAnswers]).slice(0,4);$('#answers').innerHTML=quizAnswers.map((a,i)=>`<button class="answer" data-answer="${esc(a)}" data-right="${a===String(correct??'').trim()}"><b>${labels[i]}</b>${esc(a)}</button>`).join('');$('#feedback').textContent='';$$('.answer').forEach(btn=>btn.onclick=()=>answer(btn,correct));if(mode==='context')loadAiContext(v,contextId);}
-async function answer(btn,correct){if(answered)return;answered=true;const good=btn.dataset.right==='true',v=vocab[(question-1)%vocab.length];$$('.answer').forEach(b=>{if(b.dataset.right==='true')b.classList.add('correct')});if(!good){btn.classList.add('wrong');$('#feedback').textContent='Đáp án đúng là: '+correct;$('#feedback').style.color='#e36b63'}let awarded=false,rewardError='',serverConfirmed=false;if(window.studyStore?.user){try{const token=await window.studyStore.getIdToken();const payload={action:'answer',word:v.word,meaning:vocabMeaning(v),answer:btn.dataset.answer||'',mode,source:activeVocabSource};const res=await fetch(gameEndpoint(),{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(payload)});const data=await res.json().catch(()=>({}));if(res.ok&&data.ok){if(Number.isFinite(Number(data.dailyQuestions)))updateDailyGoal(data.dailyQuestions);serverConfirmed=typeof data.correct==='boolean';awarded=data.rewarded===true;if(data.correct===true&&data.rewarded===true){sessionCoins+=10;coins=Number(data.coins??coins);energy=Number(data.xp??energy);updateCoins();$('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 xu 🪙'}else if(good&&data.correct===true&&!data.rewarded){$('#feedback').textContent='Chính xác! Lượt này không được cộng KatCoin.'}else if(good){$('#feedback').textContent='Đáp án chưa được máy chủ xác nhận.'}}else{rewardError=data.error||'Máy chủ chưa xác nhận được kết quả.'}}catch(error){rewardError=error?.message||'Không thể kết nối máy chủ kết quả.'}}else if(good){awarded=true;sessionCoins+=10;coins+=10;energy+=10;updateDailyGoal(dailyCount+1);updateCoins();$('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 xu 🪙'}if(good&&!awarded&&!serverConfirmed){$('#feedback').textContent='Chính xác! KatCoin chưa được cộng: '+rewardError}setTimeout(()=>{if(question>=10){const resultContent=$('#resultContent'),earned=sessionCoins;if(resultContent)resultContent.innerHTML='<h2>🎉 Hoàn thành!</h2><p>Bạn vừa hoàn thành 10 câu hỏi.</p><div class="result-reward">+'+earned+' 🪙</div>';$('#resultModal').classList.add('show');question=1;sessionCoins=0;$('#sessionCoins').textContent='0'}else{question++;renderQuiz()}},900)}
-$$('.mode-card').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;$$('.mode-card').forEach(x=>x.classList.toggle('active-mode',x===b));question=1;renderQuiz()});$('#resultModal')?.querySelector('.modal-close')?.addEventListener('click',()=>{$('#resultModal')?.classList.remove('show');renderQuiz()});
+function clearReflexTimer(){if(reflexTimerId){clearInterval(reflexTimerId);reflexTimerId=null}}
+function updateReflexHud(timeLeft=reflexTimeLimit){
+  const set=(id,value)=>{const el=$('#'+id);if(el)el.textContent=String(value)};
+  set('reflexHudQuestion',question+' / '+reflexSessionLength);
+  set('reflexCombo',reflexCombo+'×');
+  set('reflexScore',reflexScore);
+  set('reflexTime',Math.max(0,timeLeft).toFixed(1)+'s');
+  set('reflexAccuracy',(reflexAnswered?Math.round(reflexCorrect/reflexAnswered*100):0)+'%');
+  const total=reflexSessionLength||10;
+  const qp=$('#quizProgress');if(qp)qp.style.width=Math.min(100,((question-1)/total)*100)+'%';
+  const fill=$('#reflexTimeFill');if(fill)fill.style.width=Math.max(0,(timeLeft/reflexTimeLimit)*100)+'%';
+}
+function startReflexTimer(){
+  clearReflexTimer();
+  let left=reflexTimeLimit;
+  updateReflexHud(left);
+  reflexTimerId=setInterval(()=>{
+    left=Math.max(0,left-.1);updateReflexHud(left);
+    if(left<=0){clearReflexTimer();handleReflexTimeout()}
+  },100);
+}
+function finishReflexSession(){
+  clearReflexTimer();
+  const earned=sessionCoins,acc=reflexAnswered?Math.round(reflexCorrect/reflexAnswered*100):0;
+  const resultContent=$('#resultContent');
+  if(resultContent)resultContent.innerHTML='<div class="reflex-result-card"><div class="reflex-result-score">'+acc+'%</div><h2>Phiên phản xạ hoàn tất! ⚡</h2><p>'+reflexCorrect+' / '+reflexAnswered+' câu đúng · Combo cao nhất '+reflexMaxCombo+'×</p><div class="reflex-result-grid"><div class="reflex-result-stat"><b>'+reflexScore+'</b><small>Điểm phiên</small></div><div class="reflex-result-stat"><b>'+reflexMaxCombo+'×</b><small>Best combo</small></div><div class="reflex-result-stat"><b>'+earned+'</b><small>KatCoin nhận</small></div><div class="reflex-result-stat"><b>'+reflexSessionLength+'</b><small>Số câu</small></div></div><p>'+(acc>=80?'🔥 Phản xạ rất tốt!':acc>=60?'✨ Đang vào nhịp rồi!':'🐾 Hãy chơi thêm một lượt để làm nóng phản xạ!')+'</p></div>';
+  $('#resultModal')?.classList.add('show');
+  question=1;sessionCoins=0;
+  if($('#sessionCoins'))$('#sessionCoins').textContent='0';
+  if($('#reflexCombo'))$('#reflexCombo').textContent='0×';
+  updateReflexHud(reflexTimeLimit);
+}
+function advanceReflexRound(){
+  if(question>=reflexSessionLength){finishReflexSession();return}
+  question++;renderQuiz();
+}
+function handleReflexTimeout(){
+  if(answered)return;
+  answered=true;reflexAnswered++;reflexCombo=0;
+  $$('.answer').forEach(b=>b.disabled=true);
+  const correctBtn=$$('.answer').find?.(b=>b.dataset.right==='true') || [...$$('.answer')].find(b=>b.dataset.right==='true');
+  correctBtn?.classList.add('correct');
+  $('#feedback').textContent='⏱ Hết giờ! Phản xạ cần nhanh hơn một chút.';
+  $('#feedback').style.color='#b67d34';
+  updateReflexHud(0);
+  setTimeout(advanceReflexRound,650);
+}
+function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answered=false;
+  if(!vocab.length){
+    $('#questionHint').textContent='Bạn cần thêm từ vựng trước khi luyện tập.';$('#questionWord').textContent='Chưa có bộ từ';$('#questionPronounce').textContent='';
+    $('#answers').innerHTML='<button class="answer" id="goAddWords"><b>＋</b> Thêm từ vựng ngay</button>';$('#goAddWords').onclick=()=>showPage('learn');$('#feedback').textContent='';updateReflexHud(reflexTimeLimit);return
+  }
+  const v=vocab[(question-1)%vocab.length];let correct,answers,hint,word,pron='';
+  if(mode==='engvi'){hint='Chọn nghĩa tiếng Việt của từ:';word=v.word;pron=vocabPronunciation(v);correct=vocabMeaning(v);answers=shuffle(vocab.map(x=>vocabMeaning(x)))}
+  else if(mode==='vieng'){hint='Chọn từ tiếng Anh phù hợp với nghĩa:';word=vocabMeaning(v);correct=v.word;answers=shuffle(vocab.map(x=>x.word))}
+  else{hint='Từ in đậm trong ngữ cảnh có nghĩa là gì?';word=`The word <b>${esc(v.word)}</b> is useful to learn in context.`;correct=vocabMeaning(v);answers=shuffle(vocab.map(x=>vocabMeaning(x)))}
+  $('#questionHint').textContent=hint;$('#questionWord').innerHTML=mode==='context'?word:esc(word);$('#questionPronounce').textContent=pron;$('#questionNumber').textContent=question;
+  $('#reflexQuestionTotal').textContent=reflexSessionLength;$('#reflexSessionLabel').textContent=reflexSessionLength+' câu';$('#feedback').textContent='';
+  const labels=['A','B','C','D'];const uniqueAnswers=[...new Set(answers.map(a=>String(a??'').trim()).filter(Boolean))].filter(a=>a!==String(correct??'').trim());
+  const quizAnswers=shuffle([String(correct??'').trim(),...uniqueAnswers]).slice(0,4);
+  $('#answers').innerHTML=quizAnswers.map((a,i)=>`<button class="answer" data-answer="${esc(a)}" data-right="${a===String(correct??'').trim()}"><b>${labels[i]}</b><span>${esc(a)}</span></button>`).join('');
+  $$('.answer').forEach(btn=>btn.onclick=()=>answer(btn,correct));
+  updateReflexHud(reflexTimeLimit);startReflexTimer();
+  if(mode==='context')loadAiContext(v,contextId);
+}
+async function answer(btn,correct){
+  if(answered)return;
+  answered=true;clearReflexTimer();
+  const good=btn.dataset.right==='true',v=vocab[(question-1)%vocab.length];
+  reflexAnswered++;
+  if(good){reflexCorrect++;reflexCombo++;reflexMaxCombo=Math.max(reflexMaxCombo,reflexCombo);reflexScore+=100+(Math.max(0,reflexCombo-1)*25)}
+  else{reflexCombo=0}
+  updateReflexHud(0);
+  $$('.answer').forEach(b=>{if(b.dataset.right==='true')b.classList.add('correct');b.disabled=true});
+  if(!good){btn.classList.add('wrong');$('#feedback').textContent='Đáp án đúng là: '+correct;$('#feedback').style.color='#e36b63'}
+  let awarded=false,rewardError='',serverConfirmed=false;
+  if(window.studyStore?.user){
+    try{
+      const token=await window.studyStore.getIdToken();
+      const payload={action:'answer',word:v.word,meaning:vocabMeaning(v),answer:btn.dataset.answer||'',mode,source:activeVocabSource};
+      const res=await fetch(gameEndpoint(),{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(payload)});
+      const data=await res.json().catch(()=>({}));
+      if(res.ok&&data.ok){
+        if(Number.isFinite(Number(data.dailyQuestions)))updateDailyGoal(data.dailyQuestions);
+        serverConfirmed=typeof data.correct==='boolean';awarded=data.rewarded===true;
+        if(data.correct===true&&data.rewarded===true){sessionCoins+=10;coins=Number(data.coins??coins);energy=Number(data.xp??energy);updateCoins();$('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙'}
+        else if(good&&data.correct===true&&!data.rewarded){$('#feedback').textContent='Chính xác! Lượt này đã nhận/không đủ điều kiện cộng thêm KatCoin.'}
+        else if(good){$('#feedback').textContent='Đáp án chưa được máy chủ xác nhận.'}
+      }else{rewardError=data.error||'Máy chủ chưa xác nhận được kết quả.'}
+    }catch(error){rewardError=error?.message||'Không thể kết nối máy chủ kết quả.'}
+  }else if(good){
+    awarded=true;sessionCoins+=10;coins+=10;energy+=10;updateDailyGoal(dailyCount+1);updateCoins();$('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙'
+  }
+  if(good&&!awarded&&!serverConfirmed)$('#feedback').textContent='Chính xác! KatCoin chưa được cộng: '+rewardError;
+  updateReflexHud(0);
+  setTimeout(advanceReflexRound,750)
+}
+$$('.mode-card').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;$$('.mode-card').forEach(x=>x.classList.toggle('active-mode',x===b));question=1;reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;sessionCoins=0;if($('#sessionCoins'))$('#sessionCoins').textContent='0';renderQuiz()});
+$$('.reflex-length').forEach(b=>b.onclick=()=>{reflexSessionLength=Math.max(1,Number(b.dataset.reflexLength)||10);$$('.reflex-length').forEach(x=>x.classList.toggle('active',x===b));question=1;reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;sessionCoins=0;if($('#sessionCoins'))$('#sessionCoins').textContent='0';renderQuiz()});
+$('#reflexSkip')?.addEventListener('click',()=>{if(answered)return;answered=true;clearReflexTimer();reflexAnswered++;reflexCombo=0;$$('.answer').forEach(b=>b.disabled=true);$('#feedback').textContent='↷ Đã bỏ qua. Giữ nhịp và bắt câu tiếp theo!';updateReflexHud(0);setTimeout(advanceReflexRound,450)});
+document.addEventListener('keydown',e=>{if(!$('#practice')?.classList.contains('active-page')||answered)return;if(['1','2','3','4'].includes(e.key)){const i=Number(e.key)-1;const btn=[...$$('#answers .answer')][i];btn?.click()}});
+$('#resultModal')?.querySelector('.modal-close')?.addEventListener('click',()=>{$('#resultModal')?.classList.remove('show');renderQuiz()});
 function requireSignedInPersonalService(){
   const user=window.studyStore?.user;
   if(user)return true;
@@ -336,7 +434,7 @@ async function refreshAuthDependentViews(user){
   ]);
 }
 function clearClientLearningState(){
-  vocab=[];coins=0;energy=0;cardIndex=0;known=0;question=1;sessionCoins=0;dailyCount=0;answered=false;contextRequestId++;
+  vocab=[];coins=0;energy=0;cardIndex=0;known=0;question=1;sessionCoins=0;dailyCount=0;answered=false;contextRequestId++;clearReflexTimer();reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;
   knownWordKeys=new Set();
   activeVocabSource={kind:'legacy'};
   for(const key of ['katlearn-vocab','katlearn-vocab-source','katlearn-stats','katlearn-personal-pack-name','katlearn-theme','katlearn-owned-themes','katlearn-account-type'])localStorage.removeItem(key);
