@@ -616,7 +616,7 @@ function publicLibraryTree(items=[]){
       id:node.id,name:node.name,icon:node.icon||"📁",
       ...(node.packId?{packId:node.packId}:{}),
       ...(Array.isArray(node.words)?{words:node.words.slice()}:{}),
-      ...(Array.isArray(node.categories)?{categories:node.categories.slice()} {}),
+      ...(Array.isArray(node.categories)?{categories:node.categories.slice()}:{}),
       wordCount,children
     };
   };
