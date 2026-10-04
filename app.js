@@ -2,6 +2,7 @@ let vocab=[];
 try{const savedVocab=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(Array.isArray(savedVocab))vocab=savedVocab}catch(e){}
 let coins=0,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
 let activeVocabSource={kind:'legacy'};try{const raw=localStorage.getItem('katlearn-vocab-source');if(raw)activeVocabSource=JSON.parse(raw)||activeVocabSource}catch(_){}
+let activeDeckMeta={name:'Flashcard từ vựng',description:'Chọn một bộ từ để bắt đầu học theo nhịp của bạn.',icon:'📚'};
 function vocabKey(v){return String(v?.word||'').trim().toLowerCase()+'::'+vocabMeaning(v).trim().toLowerCase()}
 function knownStateKey(){const uid=String(window.studyStore?.user?.uid||window.studyStore?.userId||'guest');return 'katlearn-known:'+uid+':'+String(activeVocabSource?.kind||'legacy')+':'+String(activeVocabSource?.id||activeVocabSource?.uid||'legacy')}
 function loadKnownState(){try{const raw=localStorage.getItem(knownStateKey());const arr=JSON.parse(raw||'[]');knownWordKeys=new Set(Array.isArray(arr)?arr.filter(Boolean):[])}catch(_){knownWordKeys=new Set()}known=knownWordKeys.size}
@@ -50,10 +51,128 @@ const PAGE_ALIASES={vocabulary:'words',words:'words',home:'home',packs:'packs',p
 function showPage(rawId,updateHash=true){if(String(rawId||'')==='test'){location.href='/test.html';return}const id=PAGE_ALIASES[rawId]||rawId;const page=$('#'+id);if(!page)return;$$('.page').forEach(p=>p.classList.remove('active-page'));page.classList.add('active-page');$$('.nav-item').forEach(b=>b.classList.toggle('active',(PAGE_ALIASES[b.dataset.page]||b.dataset.page)===id));$('.sidebar')?.classList.remove('open');if(updateHash){const hash=id==='words'?'vocabulary':id;history.replaceState(null,'','#'+hash)}if(id==='ranking')renderLeaderboard();if(id==='packs')renderPublicPacks();if(id==='personalPacks')window.renderStudentPersonalPacks?.();if(id==='words')renderVocabularyViews();if(id==='studentClasses')window.katlearnStudentClasses?.render();window.scrollTo({top:0,behavior:'smooth'})}
 function openInitialPage(){const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();showPage(hash&&PAGE_ALIASES[hash]?hash:'home',false)}
 $$('.nav-item').forEach(b=>b.onclick=()=>showPage(b.dataset.page));$$('[data-go]').forEach(b=>b.onclick=()=>showPage(b.dataset.go));if($('.start-lesson'))$('.start-lesson').onclick=()=>showPage('learn');if($('.menu-toggle'))$('.menu-toggle').onclick=()=>$('.sidebar')?.classList.toggle('open');window.addEventListener('hashchange',()=>{const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();if(hash&&PAGE_ALIASES[hash])showPage(hash,false)});
-function renderWordList(){const list=$('#wordList');list.innerHTML=vocab.length?vocab.map((v,i)=>`<button class="word-item ${i===cardIndex?'selected':''}" data-index="${i}">${esc(v.word)}<small>${esc(vocabPronunciation(v)||'Chưa có phiên âm')}</small>${knownWordKeys.has(vocabKey(v))?'<i>✓</i>':''}</button>`).join(''):'<p class="empty-state">Chưa có từ nào.</p>';$$('.word-item').forEach(b=>b.onclick=()=>{cardIndex=+b.dataset.index;renderCard()});['#wordListCount','#totalWords','#cardTotal'].forEach(s=>$(s).textContent=vocab.length)}
-function renderVocabularyViews(filter=''){const q=filter.trim().toLowerCase(),visible=vocab.filter(v=>{const word=String(v?.word||''),mean=vocabMeaning(v);return !q||word.toLowerCase().includes(q)||mean.toLowerCase().includes(q)}),total=vocab.length,done=Math.min(knownWordKeys.size,total),progress=total?Math.round(done/total*100):0;$('#wordTotalStat').textContent=total;$('#wordKnownStat').textContent=done;$('#wordUnknownStat').textContent=Math.max(0,total-done);$('#wordProgressStat').textContent=progress+'%';$('#personalWordCount').textContent=total;$('#personalKnownCount').textContent=done;$('#wordTable').innerHTML=visible.length?visible.map((v,i)=>`<div class="word-table-row"><span><b>${esc(v.word)}</b><small>${i+1}/${total}</small></span><span>${esc(v.mean)}</span><span>${esc(v.pron||'—')}</span><span><i class="word-status ${knownWordKeys.has(vocabKey(v))?'':'new'}">${knownWordKeys.has(vocabKey(v))?'Đã thuộc':'Mới'}</i></span></div>`).join(''):'<div class="empty-state">Chưa có từ phù hợp.</div>'}
-function renderCard(){if(!vocab.length){$('#cardWord').textContent='Chưa có từ vựng';$('#cardPronounce').textContent='Hãy thêm từ đầu tiên của bạn';$('#cardMeaning').innerHTML='Kat đang<br>chờ bạn!';$('.card-front .card-visual').textContent='🐱';$('#cardStep').textContent='00';renderWordList();renderVocabularyViews();return}const v=vocab[cardIndex%vocab.length];$('#cardWord').textContent=v.word;$('#cardPronounce').textContent=vocabPronunciation(v)||'—';$('#cardMeaning').innerHTML=esc(v.mean).replace(/ /g,'<br>');$('.card-front .card-visual').textContent=v.emoji;$('#cardStep').textContent=String(cardIndex+1).padStart(2,'0');$('.flashcard').classList.remove('flipped');renderWordList();renderVocabularyViews()}
-$('#flashcard').onclick=()=>{if(vocab.length)$('#flashcard').classList.toggle('flipped')};$('#prevCard').onclick=()=>{if(!vocab.length)return;cardIndex=(cardIndex+vocab.length-1)%vocab.length;renderCard()};$('#nextCard').onclick=()=>{if(!vocab.length)return;cardIndex=(cardIndex+1)%vocab.length;renderCard()};$('#knowBtn').onclick=()=>{if(!vocab.length)return toast('Hãy thêm từ vựng trước nhé!');const v=vocab[cardIndex%vocab.length],key=vocabKey(v);knownWordKeys.add(key);saveKnownState();$('#knownCount').textContent=known;syncProfile({knownWords:known});toast('Đã ghi nhận! Bạn đang tiến bộ rất tốt ✨');cardIndex=(cardIndex+1)%vocab.length;renderCard()};
+function updateLearnStudySummary(){
+  const total=vocab.length,done=Math.min(knownWordKeys.size,total),remaining=Math.max(0,total-done),percent=total?Math.round(done/total*100):0;
+  const set=(id,value)=>{const el=$('#'+id);if(el)el.textContent=String(value)};
+  set('learnPackTitle',activeDeckMeta.name||'Flashcard từ vựng');
+  set('learnPackSubtitle',activeDeckMeta.description||'Học từng thẻ, tự đánh giá và theo dõi tiến độ của bạn.');
+  set('learnKnownCount',done);set('learnRemainingCount',remaining);set('learnKnownPercent',percent);
+  set('learnKnownCount',done);set('knownCount',done);
+  const bar=$('#learnProgressBar');if(bar)bar.style.width=percent+'%';
+  const status=$('#learnDeckStatus');if(status)status.textContent=percent>=100?'Đã hoàn thành':percent>0?'Đang học':'Sẵn sàng học';
+}
+
+function renderWordList(){
+  const list=$('#wordList'),q=String($('#learnWordSearch')?.value||'').trim().toLowerCase();
+  if(!list)return;
+  const indexed=vocab.map((v,i)=>({v,i})).filter(({v})=>{
+    if(!q)return true;
+    return String(v.word||'').toLowerCase().includes(q)||vocabMeaning(v).toLowerCase().includes(q);
+  });
+  list.innerHTML=indexed.length?indexed.map(({v,i})=>{
+    const isKnown=knownWordKeys.has(vocabKey(v));
+    return '<button class="word-item '+(i===cardIndex?'selected ':'')+(isKnown?'is-known':'')+'" data-index="'+i+'" type="button"><span class="word-item-main"><b>'+esc(v.word)+'</b><small>'+esc(vocabPronunciation(v)||vocabMeaning(v)||'')+'</small></span><span class="word-item-status">'+(isKnown?'✓':'')+'</span></button>';
+  }).join(''):'<p class="empty-state">Không tìm thấy từ phù hợp.</p>';
+  $('#wordListCount').textContent=vocab.length;
+  $('#cardTotal').textContent=vocab.length;
+  indexed.forEach(({i})=>{const b=list.querySelector('[data-index="'+i+'"]');if(b)b.onclick=()=>{cardIndex=i;setCardFlipped(false);renderCard()}});
+}
+
+function renderVocabularyViews(filter=''){
+  const q=String(filter||'').trim().toLowerCase(),visible=vocab.filter(v=>{
+    const word=String(v?.word||''),mean=vocabMeaning(v);
+    return !q||word.toLowerCase().includes(q)||mean.toLowerCase().includes(q);
+  }),total=vocab.length,done=Math.min(knownWordKeys.size,total),progress=total?Math.round(done/total*100):0;
+  $('#wordTotalStat').textContent=total;$('#wordKnownStat').textContent=done;$('#wordUnknownStat').textContent=Math.max(0,total-done);$('#wordProgressStat').textContent=progress+'%';
+  $('#personalWordCount').textContent=total;$('#personalKnownCount').textContent=done;
+  $('#wordTable').innerHTML=visible.length?visible.map((v,i)=>'<div class="word-table-row"><span><b>'+esc(v.word)+'</b><small>'+ (i+1)+'/'+total+'</small></span><span>'+esc(v.mean)+'</span><span>'+esc(v.pron||'—')+'</span><span><i class="word-status '+(knownWordKeys.has(vocabKey(v))?'':'new')+'">'+(knownWordKeys.has(vocabKey(v))?'Đã thuộc':'Mới')+'</i></span></div>').join(''):'<div class="empty-state">Chưa có từ phù hợp.</div>';
+}
+
+function setCardFlipped(flipped){
+  const card=$('#flashcard');if(!card)return;
+  card.classList.toggle('flipped',Boolean(flipped));
+  card.setAttribute('aria-label',Boolean(flipped)?'Flashcard mặt nghĩa. Nhấn để lật lại.':'Flashcard mặt từ. Nhấn để xem nghĩa.');
+}
+function updateCardContent(v){
+  if(!v){
+    $('#cardWord').textContent='Chưa có từ vựng';$('#cardPronounce').textContent='Hãy chọn một bộ từ để bắt đầu';
+    $('#cardPartOfSpeech').textContent='word';$('#cardCardStatus').textContent='Mới';
+    $('#cardMeaning').textContent='Kat đang chờ bạn';$('#cardExample').textContent='Xem ví dụ để hiểu cách dùng từ trong ngữ cảnh.';
+    $('#cardNote').textContent='';return;
+  }
+  const isKnown=knownWordKeys.has(vocabKey(v));
+  $('#cardWord').textContent=v.word;$('#cardPronounce').textContent=vocabPronunciation(v)||'—';
+  $('#cardPartOfSpeech').textContent=v.type||v.part_of_speech||'word';
+  $('#cardCardStatus').textContent=isKnown?'Đã nhớ':'Mới';
+  $('#cardMeaning').textContent=vocabMeaning(v)||'Chưa có nghĩa tiếng Việt';
+  $('#cardExample').textContent=v.example||'Chưa có ví dụ cho từ này.';
+  $('#cardNote').textContent=v.note||v.notes||'';
+}
+function renderCard(){
+  if(!vocab.length){
+    updateCardContent(null);$('#cardStep').textContent='0';$('#cardTotal').textContent='0';
+    updateLearnStudySummary();renderWordList();renderVocabularyViews();setCardFlipped(false);return;
+  }
+  cardIndex=((cardIndex%vocab.length)+vocab.length)%vocab.length;
+  const v=vocab[cardIndex];
+  updateCardContent(v);
+  $('#cardStep').textContent=String(cardIndex+1);
+  $('#cardTotal').textContent=String(vocab.length);
+  updateLearnStudySummary();
+  renderWordList();
+  renderVocabularyViews();
+  setCardFlipped(false);
+}
+
+function markCurrentCard(knownValue){
+  if(!vocab.length)return;
+  const v=vocab[cardIndex],key=vocabKey(v);
+  if(knownValue)knownWordKeys.add(key);else knownWordKeys.delete(key);
+  saveKnownState();
+  syncProfile({knownWords:known});
+  if(knownValue&&known>=vocab.length){
+    renderCard();
+    toast('🎉 Bạn đã nhớ toàn bộ bộ từ này!');
+    return;
+  }
+  cardIndex=(cardIndex+1)%vocab.length;
+  renderCard();
+}
+function speakCurrentCard(){
+  if(!vocab.length||!('speechSynthesis' in window))return toast('Thiết bị này chưa hỗ trợ phát âm tự động.');
+  const v=vocab[cardIndex];const utterance=new SpeechSynthesisUtterance(String(v?.word||''));
+  utterance.lang='en-GB';utterance.rate=.9;window.speechSynthesis.cancel();window.speechSynthesis.speak(utterance);
+}
+function shuffleLearningDeck(){
+  if(vocab.length<2)return;
+  for(let i=vocab.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[vocab[i],vocab[j]]=[vocab[j],vocab[i]]}
+  cardIndex=0;renderCard();toast('🔀 Đã trộn thứ tự thẻ.');
+}
+
+$('#flashcard').onclick=()=>{if(vocab.length)setCardFlipped(!$('#flashcard').classList.contains('flipped'))};
+$('#flashcard').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(vocab.length)setCardFlipped(!$('#flashcard').classList.contains('flipped'))}});
+$('#flipCardBtn')?.addEventListener('click',()=>{if(vocab.length)setCardFlipped(!$('#flashcard').classList.contains('flipped'))});
+$('#cardSpeakBtn')?.addEventListener('click',e=>{e.stopPropagation();speakCurrentCard()});
+$('#speakCardBtn')?.addEventListener('click',speakCurrentCard);
+$('#shuffleCardsBtn')?.addEventListener('click',shuffleLearningDeck);
+$('#learnBackToPacks')?.addEventListener('click',()=>showPage('packs'));
+$('#prevCard').onclick=()=>{if(!vocab.length)return;cardIndex=(cardIndex+vocab.length-1)%vocab.length;renderCard()};
+$('#nextCard').onclick=()=>{if(!vocab.length)return;cardIndex=(cardIndex+1)%vocab.length;renderCard()};
+$('#unsureBtn')?.addEventListener('click',()=>markCurrentCard(false));
+$('#knowBtn').onclick=()=>markCurrentCard(true);
+$('#learnWordSearch')?.addEventListener('input',()=>renderWordList());
+
+document.addEventListener('keydown',e=>{
+  const tag=String(e.target?.tagName||'').toLowerCase();
+  if(['input','textarea','select'].includes(tag))return;
+  if(!document.querySelector('#learn.active-page'))return;
+  if(e.key==='ArrowLeft'){e.preventDefault();if(vocab.length){cardIndex=(cardIndex+vocab.length-1)%vocab.length;renderCard()}}
+  if(e.key==='ArrowRight'){e.preventDefault();if(vocab.length){cardIndex=(cardIndex+1)%vocab.length;renderCard()}}
+  if(e.key===' '){e.preventDefault();if(vocab.length)setCardFlipped(!$('#flashcard').classList.contains('flipped'))}
+  if(e.key==='1'){e.preventDefault();markCurrentCard(false)}
+  if(e.key==='2'){e.preventDefault();markCurrentCard(true)}
+});
+
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 async function loadAiContext(v,requestId){const fallback=`The word <b>${esc(v.word)}</b> is useful to learn in context.`;$('#questionWord').innerHTML=fallback;try{const res=await fetch(aiEndpoint('context-example'),{method:'POST',headers:await aiHeaders(),body:JSON.stringify({word:v.word,meaning:vocabMeaning(v)})});const data=await res.json();if(requestId!==contextRequestId)return;if(res.ok&&data.text)$('#questionWord').textContent=data.text;else $('#questionHint').textContent='AI chưa được cấu hình — dùng câu ví dụ mặc định:'}catch(e){if(requestId===contextRequestId)$('#questionHint').textContent='AI chỉ hoạt động khi chạy server — dùng câu ví dụ mặc định:'}}
 function clearReflexTimer(){if(reflexTimerId){clearInterval(reflexTimerId);reflexTimerId=null}}
@@ -276,6 +395,11 @@ async function openVocabularyPack(pack){
     return;
   }
   vocab=normalizeLearningWords(pack.words);
+  activeDeckMeta={
+    name:String(pack.name||'Flashcard từ vựng'),
+    description:String(pack.description||pack.pack?.description||'Học từng thẻ, tự đánh giá và theo dõi tiến độ của bạn.'),
+    icon:String(pack.icon||'📚')
+  };
   if(!pack.current)setVocabSource(pack.core?{kind:'core',id:pack.topicId}:pack.assigned?{kind:'assigned',id:pack.id}:{kind:'public',id:pack.id});
   else loadKnownState();
   cardIndex=0;
