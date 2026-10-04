@@ -11,8 +11,8 @@
             <div class="preview-brand-mark">🐱</div>
             <div class="preview-title">
               <span class="preview-eyebrow">KATLEARN · PACK STUDIO</span>
-              <h2>Review your pack</h2>
-              <p>Kiểm tra nhanh, tinh chỉnh lần cuối rồi lưu vào thư viện cá nhân.</p>
+              <h2>Kiểm tra bộ từ trước khi lưu</h2>
+              <p>Preview như một deck học thật: chọn thẻ, kiểm tra nội dung, chỉnh sửa rồi lưu.</p>
             </div>
           </div>
           <button type="button" class="modal-close" id="closePreviewModal" aria-label="Đóng preview">×</button>
@@ -21,7 +21,7 @@
         <section class="preview-pack-hero">
           <div class="preview-pack-avatar">📚</div>
           <div class="preview-pack-copy">
-            <span class="preview-mini-label">PACK NAME</span>
+            <span class="preview-mini-label">DECK INFORMATION</span>
             <input type="text" id="previewPackTitle" class="editable-field preview-title-field" placeholder="Tên bộ từ">
             <textarea id="previewPackDesc" class="editable-field preview-desc-field" rows="2" placeholder="Mô tả ngắn cho bộ từ của bạn"></textarea>
             <div class="preview-badges">
@@ -33,36 +33,44 @@
         </section>
 
         <section class="preview-stat-grid" aria-label="Thông tin pack">
-          <div class="preview-stat-card">
-            <span class="preview-stat-icon">🔤</span>
-            <div><b id="previewStatWords">0</b><small>Từ vựng</small></div>
-          </div>
-          <div class="preview-stat-card">
-            <span class="preview-stat-icon">🧠</span>
-            <div><b id="previewStatRich">0</b><small>Đã có dữ liệu AI</small></div>
-          </div>
-          <div class="preview-stat-card">
-            <span class="preview-stat-icon">🪄</span>
-            <div><b>1</b><small>AI request</small></div>
-          </div>
+          <div class="preview-stat-card"><span class="preview-stat-icon">🔤</span><div><b id="previewStatWords">0</b><small>Thẻ từ vựng</small></div></div>
+          <div class="preview-stat-card"><span class="preview-stat-icon">🧠</span><div><b id="previewStatRich">0</b><small>Thẻ đủ dữ liệu</small></div></div>
+          <div class="preview-stat-card"><span class="preview-stat-icon">✓</span><div><b id="previewStatIndex">1 / 0</b><small>Thẻ đang xem</small></div></div>
         </section>
 
-        <section class="preview-vocabulary-list">
-          <div class="list-header">
-            <div>
-              <span class="preview-section-kicker">VOCABULARY</span>
-              <h3>Danh sách từ <span class="preview-count-pill" id="previewWordListCount">0</span></h3>
-              <p class="preview-list-subtitle">Cuộn ngang để xem từng từ. Mỗi thẻ có thể tạo lại hoặc xóa trực tiếp.</p>
+        <section class="preview-study-shell">
+          <div class="preview-focus">
+            <div class="preview-focus-top"><div><span class="preview-section-kicker">FLASHCARD PREVIEW</span><b id="previewFocusCounter">THẺ 1 / 0</b></div><span class="preview-focus-note">Nhấp thẻ để lật</span></div>
+            <div class="preview-focus-card" id="previewFocusCard" tabindex="0" role="button" aria-label="Preview flashcard">
+              <div class="preview-focus-face preview-focus-front">
+                <span class="preview-focus-kind">ENGLISH</span>
+                <div class="preview-focus-center"><small id="previewFocusPos">WORD</small><h3 id="previewFocusWord">—</h3><p id="previewFocusIpa">—</p></div>
+                <span class="preview-focus-hint">Nhấp để xem nghĩa →</span>
+              </div>
+              <div class="preview-focus-face preview-focus-back">
+                <span class="preview-focus-kind">VIETNAMESE</span>
+                <div class="preview-focus-center"><small>MEANING</small><h3 id="previewFocusMeaning">—</h3><p id="previewFocusExample">—</p><div id="previewFocusNote" class="preview-focus-note-box"></div></div>
+                <span class="preview-focus-hint">← Nhấp để quay lại</span>
+              </div>
             </div>
-            <div class="list-actions">
-              <button id="regeneratePackBtn" class="btn-small">🔄 Tạo lại pack</button>
+            <div class="preview-focus-controls">
+              <button type="button" class="btn-small" id="previewPrev">← Thẻ trước</button>
+              <button type="button" class="btn-small preview-focus-flip" id="previewFlip">Lật thẻ</button>
+              <button type="button" class="btn-small" id="previewNext">Thẻ tiếp →</button>
             </div>
           </div>
-          <div id="previewWordsList" class="words-list"></div>
+
+          <div class="preview-deck-list">
+            <div class="list-header preview-list-head">
+              <div><span class="preview-section-kicker">DECK CONTENT</span><h3>Danh sách thẻ <span class="preview-count-pill" id="previewWordListCount">0</span></h3><p class="preview-list-subtitle">Chọn một thẻ để xem trước; mỗi dòng vẫn có thể tạo lại hoặc xóa.</p></div>
+              <div class="list-actions"><button id="regeneratePackBtn" class="btn-small">🔄 Tạo lại pack</button></div>
+            </div>
+            <div class="preview-search-row"><span>⌕</span><input id="previewWordSearch" type="search" placeholder="Tìm từ, nghĩa hoặc loại từ…" autocomplete="off"></div>
+            <div id="previewWordsList" class="words-list"></div>
+          </div>
         </section>
 
         <div class="preview-divider"></div>
-
         <div class="preview-actions">
           <button id="backToEditBtn" class="btn-secondary btn-large">← Quay lại chỉnh sửa</button>
           <button id="savePackBtn" class="btn-primary btn-large">💾 Lưu bộ từ</button>
@@ -77,6 +85,7 @@
   window.packPreviewModal = {
     currentPack: null,
     originalPack: null,
+    previewIndex: 0,
 
     init() {
       if (document.getElementById('packPreviewModal')) return;
@@ -94,6 +103,14 @@
       document.getElementById('backToEditBtn').addEventListener('click', () => this.close());
       document.getElementById('savePackBtn').addEventListener('click', () => this.savePack());
       document.getElementById('regeneratePackBtn').addEventListener('click', () => this.regeneratePack());
+      document.getElementById('previewFocusCard').addEventListener('click', () => this.togglePreviewFlip());
+      document.getElementById('previewFocusCard').addEventListener('keydown', (event) => {
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();this.togglePreviewFlip();}
+      });
+      document.getElementById('previewFlip').addEventListener('click', () => this.togglePreviewFlip());
+      document.getElementById('previewPrev').addEventListener('click', () => this.selectPreviewWord(this.previewIndex-1));
+      document.getElementById('previewNext').addEventListener('click', () => this.selectPreviewWord(this.previewIndex+1));
+      document.getElementById('previewWordSearch').addEventListener('input', () => this.renderWordsList());
 
       // Listen for show-pack-preview event
       window.addEventListener('show-pack-preview', (e) => {
@@ -104,6 +121,7 @@
     open(pack) {
       this.currentPack = JSON.parse(JSON.stringify(pack)); // Deep copy
       this.originalPack = JSON.parse(JSON.stringify(pack));
+      this.previewIndex = 0;
 
       // Populate form
       document.getElementById('previewPackTitle').value = pack.pack.suggested_title || '';
@@ -134,33 +152,69 @@
     },
 
     renderWordsList() {
-      const list = document.getElementById('previewWordsList');
-      const count = document.getElementById('previewWordListCount');
-      const words = this.currentPack.words || [];
+      const list=document.getElementById('previewWordsList');
+      const count=document.getElementById('previewWordListCount');
+      const words=this.currentPack?.words||[];
+      const q=String(document.getElementById('previewWordSearch')?.value||'').trim().toLowerCase();
+      const filtered=words.map((word,idx)=>({word,idx})).filter(({word})=>{
+        if(!q)return true;
+        const hay=[word.word,word.meaning_vi,word.part_of_speech,word.ipa,word.example,word.notes].join(' ').toLowerCase();
+        return hay.includes(q);
+      });
 
-      count.textContent = words.length;
+      count.textContent=words.length;
       this.updatePackMeta();
+      list.innerHTML=filtered.length?filtered.map(({word,idx})=>`
+        <button type="button" class="preview-deck-row ${idx===this.previewIndex?'selected':''}" data-preview-index="${idx}">
+          <span class="preview-row-number">${String(idx+1).padStart(2,'0')}</span>
+          <span class="preview-row-main"><b>${esc(word.word||'Untitled')}</b><small>${esc(word.meaning_vi||'Chưa có nghĩa')} · ${esc(word.part_of_speech||'word')}</small></span>
+          <span class="preview-row-actions"><i class="preview-row-status">${word.example?'✓':'!'}</i><span class="btn-tiny" data-preview-regenerate="${idx}" title="Tạo lại">🔄</span><span class="btn-tiny danger" data-preview-delete="${idx}" title="Xóa">🗑️</span></span>
+        </button>
+      `).join(''):`<div class="empty-state">Không tìm thấy thẻ phù hợp.</div>`;
 
-      list.innerHTML = words.map((word, idx) => `
-        <div class="vocab-preview-item">
-          <div class="vocab-preview-content">
-            <div class="vocab-word">${esc(word.word)}</div>
-            <div class="vocab-meta">
-              <span class="pos">${esc(word.part_of_speech || 'word')}</span>
-              <span class="pron">${esc(word.ipa || '')}</span>
-            </div>
-            <div class="meaning-line">${esc(word.meaning_vi || 'Chưa có nghĩa tiếng Việt')}</div>
-            <div class="vocab-example">
-              <small>${esc(word.example || 'Chưa có ví dụ')}</small>
-            </div>
-            ${word.notes ? '<div class="vocab-note">💡 '+esc(word.notes)+'</div>' : ''}
-          </div>
-          <div class="vocab-preview-actions">
-            <button onclick="window.packPreviewModal.regenerateWord(${idx})" class="btn-tiny">🔄</button>
-            <button onclick="window.packPreviewModal.deleteWord(${idx})" class="btn-tiny danger">🗑️</button>
-          </div>
-        </div>
-      `).join('');
+      list.querySelectorAll('[data-preview-index]').forEach(button=>button.addEventListener('click',(event)=>{
+        if(event.target.closest('[data-preview-regenerate],[data-preview-delete]'))return;
+        this.selectPreviewWord(Number(button.dataset.previewIndex));
+      }));
+      list.querySelectorAll('[data-preview-regenerate]').forEach(button=>button.addEventListener('click',(event)=>{event.preventDefault();event.stopPropagation();this.regenerateWord(Number(button.dataset.previewRegenerate));}));
+      list.querySelectorAll('[data-preview-delete]').forEach(button=>button.addEventListener('click',(event)=>{event.preventDefault();event.stopPropagation();this.deleteWord(Number(button.dataset.previewDelete));}));
+
+      this.renderFocusCard();
+    },
+
+    selectPreviewWord(index){
+      const total=this.currentPack?.words?.length||0;
+      if(!total)return;
+      this.previewIndex=(index+total)%total;
+      this.renderWordsList();
+    },
+
+    togglePreviewFlip(){
+      const card=document.getElementById('previewFocusCard');
+      if(card)card.classList.toggle('flipped');
+    },
+
+    renderFocusCard(){
+      const words=this.currentPack?.words||[],total=words.length;
+      if(!total){
+        document.getElementById('previewFocusCounter').textContent='THẺ 0 / 0';
+        document.getElementById('previewStatIndex').textContent='0 / 0';
+        document.getElementById('previewFocusWord').textContent='Chưa có từ';
+        document.getElementById('previewFocusMeaning').textContent='Chưa có nghĩa';
+        return;
+      }
+      const word=words[this.previewIndex%total];
+      const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value||'—')};
+      set('previewFocusCounter',`THẺ ${this.previewIndex+1} / ${total}`);
+      set('previewStatIndex',`${this.previewIndex+1} / ${total}`);
+      set('previewFocusPos',word.part_of_speech||'word');
+      set('previewFocusWord',word.word||'—');
+      set('previewFocusIpa',word.ipa||'Chưa có phiên âm');
+      set('previewFocusMeaning',word.meaning_vi||'Chưa có nghĩa tiếng Việt');
+      set('previewFocusExample',word.example||'Chưa có ví dụ');
+      set('previewFocusNote',word.notes||'');
+      const card=document.getElementById('previewFocusCard');
+      if(card)card.classList.remove('flipped');
     },
 
     async regenerateWord(idx) {
@@ -181,6 +235,7 @@
     deleteWord(idx) {
       if (confirm('Bạn chắc chắn muốn xóa từ này?')) {
         this.currentPack.words.splice(idx, 1);
+        if(this.previewIndex >= this.currentPack.words.length)this.previewIndex=Math.max(0,this.currentPack.words.length-1);
         this.renderWordsList();
       }
     },
@@ -203,6 +258,7 @@
         );
 
         this.currentPack = newPack;
+        this.previewIndex = 0;
         this.updatePackMeta();
         this.renderWordsList();
         window.dispatchEvent(new CustomEvent('toast', { detail: '✓ Tạo lại pack thành công' }));
