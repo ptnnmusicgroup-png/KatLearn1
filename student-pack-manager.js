@@ -327,7 +327,6 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   }
 
   async function deletePack(){
-    if(await isManagedStudent())return toast('🔒 Tài khoản lớp học không thể quản lý bộ từ cá nhân.');
     if(!editingPack)return;
     if(!confirm(`Xóa bộ từ “${editingPack.name||'này'}”? Thao tác này không thể hoàn tác.`))return;
     const btn=$('#studentPackDelete');
