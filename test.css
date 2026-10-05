@@ -241,3 +241,14 @@ html:fullscreen .test-page{
 @media (prefers-reduced-motion:reduce){
   .test-sidebar{transition:none}
 }
+
+/* ===== Baloo 2 typography for Smart Test ===== */
+:root{--test-display-font:"Baloo 2","Be Vietnam Pro",system-ui,sans-serif}
+.test-brand,.test-brand-name,.test-sidebar-brand,.test-sidebar-brand b,.test-title,
+.test-card h2,.test-question-label,.test-word,.test-submit,.test-next,.result-actions button,
+.test-top-actions a,.test-start,.pack-actions button,.test-sidebar nav a,.test-sidebar-label,
+.lock-state b{
+  font-family:var(--test-display-font)!important;
+}
+.test-title,.test-word{font-weight:700!important;letter-spacing:-.03em!important}
+.test-sidebar nav a,.test-top-actions a,.test-start,.test-submit,.test-next,.result-actions button{font-weight:700!important}

@@ -1,0 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap");
+
+:root{--kat-display-font:"Baloo 2","Be Vietnam Pro",system-ui,sans-serif}
+
+/* Display typography: friendly, rounded and readable without changing body copy. */
+h1,h2,h3,
+.page-intro h1,.greeting-row h1,.hero-content h2,.section-heading h2,
+.learn-title-row h1,.reflex-arena-title h1,.question-wrap h2,
+.card-face h2,.word-list h3,.shop-section-label h2,.shop-theme-card h3,
+.shop-item h3,.personal-packs-title h3,.personal-pack-card h3,
+.account-panel-head b,.modal-card h2,
+.test-title,.test-word,.test-card h2,.result-card h2{
+  font-family:var(--kat-display-font)!important;
+}
+
+.sidebar .brand>span:last-child,
+.sidebar .nav-item,.class-label,.eyebrow,
+button,.test-brand,.test-brand-name,.test-sidebar-brand,.test-sidebar-brand b,
+.test-sidebar nav a,.test-sidebar-label,
+.test-start,.test-submit,.test-next,.test-top-actions a,.result-actions button,
+.pack-actions button{
+  font-family:var(--kat-display-font)!important;
+}
+
+.page-intro h1,.greeting-row h1,.hero-content h2,.learn-title-row h1,
+.reflex-arena-title h1,.test-title,.test-word{
+  font-weight:700!important;
+  letter-spacing:-.025em!important;
+}
+
+.sidebar .nav-item,
+.primary-btn,.add-word-btn,.create-pack-btn,.login-btn,
+.account-trigger,.coin-pill,.account-menu-btn,.learn-tool-btn,
+.flash-main-btn,.flash-result-btn,.reflex-skip,.mode-card,
+.answer,.shop-theme-card button,
+.test-start,.test-submit,.test-next,.result-actions button{
+  font-weight:700!important;
+}
