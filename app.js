@@ -294,26 +294,60 @@ async function answer(btn,correct){
   if(good){reflexCorrect++;reflexCombo++;reflexMaxCombo=Math.max(reflexMaxCombo,reflexCombo);reflexScore+=100+(Math.max(0,reflexCombo-1)*25)}
   else{reflexCombo=0}
   updateReflexHud(0);
-  $$('.answer').forEach(b=>{if(b.dataset.right==='true')b.classList.add('correct');b.disabled=true});
+  $('.answer').forEach(b=>{if(b.dataset.right==='true')b.classList.add('correct');b.disabled=true});
   if(!good){btn.classList.add('wrong');$('#feedback').textContent='Đáp án đúng là: '+correct;$('#feedback').style.color='#e36b63'}
+
   let awarded=false,rewardError='',serverConfirmed=false;
-  if(window.studyStore?.user){
-    try{
-      const token=await window.studyStore.getIdToken();
+  try{
+    // Firebase Auth can restore a signed-in session a moment after the UI is
+    // already visible. Wait for the authoritative Auth state instead of
+    // sampling studyStore.user at click time.
+    const authUser=await window.studyStore?.waitForAuth?.();
+    if(!authUser){
+      rewardError='Phiên đăng nhập chưa sẵn sàng. Hãy đăng nhập rồi chơi để nhận KatCoin.';
+    }else{
+      // getIdToken(true) makes the reward request use a fresh Firebase ID token.
+      const token=await window.studyStore.getIdToken(true);
+      if(!token)throw new Error('Không lấy được phiên xác thực của tài khoản.');
+      // auth-sync normally provisions this profile, but the game must remain
+      // race-safe if the player answers before that background sync finishes.
+      let profile=await window.studyStore.loadProfile();
+      if(!profile){
+        await window.studyStore.saveProfile({
+          displayName:authUser.displayName||authUser.email?.split('@')[0]||'KatLearn Student',
+          email:authUser.email||'',
+          photoURL:authUser.photoURL||'',
+          provider:authUser.providerData?.[0]?.providerId||'password',
+          coins:0,energy:0,streak:0,totalWords:0
+        });
+        profile=await window.studyStore.loadProfile();
+      }
       const payload={action:'answer',word:v.word,meaning:vocabMeaning(v),answer:btn.dataset.answer||'',mode,source:activeVocabSource};
-      const res=await fetch(gameEndpoint(),{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(payload)});
+      const res=await fetch(gameEndpoint(),{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(payload)});
       const data=await res.json().catch(()=>({}));
       if(res.ok&&data.ok){
         if(Number.isFinite(Number(data.dailyQuestions)))updateDailyGoal(data.dailyQuestions);
         serverConfirmed=typeof data.correct==='boolean';awarded=data.rewarded===true;
-        if(data.correct===true&&data.rewarded===true){sessionCoins+=10;coins=Number(data.coins??coins);energy=Number(data.xp??energy);updateCoins();$('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙'}
-        else if(good&&data.correct===true&&!data.rewarded){$('#feedback').textContent='Chính xác! Lượt này đã nhận/không đủ điều kiện cộng thêm KatCoin.'}
-        else if(good){$('#feedback').textContent='Đáp án chưa được máy chủ xác nhận.'}
-      }else{rewardError=data.error||'Máy chủ chưa xác nhận được kết quả.'}
-    }catch(error){rewardError=error?.message||'Không thể kết nối máy chủ kết quả.'}
-  }else if(good){
-    awarded=true;sessionCoins+=10;coins+=10;energy+=10;updateDailyGoal(dailyCount+1);updateCoins();$('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙'
+        if(data.correct===true&&data.rewarded===true){
+          sessionCoins+=10;coins=Number(data.coins??coins);energy=Number(data.xp??energy);
+          updateCoins();$('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙';
+        }else if(good&&data.correct===true&&!data.rewarded){
+          if(Number.isFinite(Number(data.coins)))coins=Number(data.coins);
+          updateCoins();
+          $('#feedback').textContent='Chính xác! Lượt này đã nhận/không đủ điều kiện cộng thêm KatCoin.';
+        }else if(good){
+          $('#feedback').textContent='Đáp án chưa được máy chủ xác nhận.';
+        }
+      }else{
+        rewardError=data.error||'Máy chủ chưa xác nhận được kết quả.';
+      }
+    }
+  }catch(error){
+    rewardError=error?.message||'Không thể kết nối máy chủ kết quả.';
   }
+
+  // Never grant KatCoin only in localStorage. Rewards are authoritative on the
+  // server so students cannot lose coins because Auth was still restoring.
   if(good&&!awarded&&!serverConfirmed)$('#feedback').textContent='Chính xác! KatCoin chưa được cộng: '+rewardError;
   updateReflexHud(0);
   setTimeout(advanceReflexRound,750)
