@@ -372,6 +372,57 @@ if(wordSave)wordSave.onclick=async()=>{const sourceKind=String(activeVocabSource
 $('#addWordFromList').onclick=()=>{if(requireSignedInPersonalService())$('#wordModal').classList.add('show')};
 $('#openFlashcards').onclick=()=>showPage('learn');$('#wordSearch').oninput=e=>renderVocabularyViews(e.target.value);
 function esc(text){return String(text||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+let progressRenderPromise=null;
+async function renderProgressDashboard(){
+  const user=await window.studyStore?.waitForAuth?.().catch(()=>null);
+  const wordsEl=$('#progressWords'),wordsMeta=$('#progressWordsMeta'),accEl=$('#progressAccuracy'),accMeta=$('#progressAccuracyMeta'),streakEl=$('#progressStreak'),streakMeta=$('#progressStreakMeta'),coinsEl=$('#progressCoins'),coinsMeta=$('#progressCoinsMeta');
+  if(!user){
+    if(wordsEl)wordsEl.textContent='0';
+    if(wordsMeta)wordsMeta.textContent='Đăng nhập để xem tiến độ';
+    if(accEl)accEl.textContent='0%';
+    if(accMeta)accMeta.textContent='Chưa có dữ liệu';
+    if(streakEl)streakEl.textContent='0';
+    if(streakMeta)streakMeta.textContent='Đăng nhập để theo dõi chuỗi';
+    if(coinsEl)coinsEl.textContent='0';
+    if(coinsMeta)coinsMeta.textContent='Đăng nhập để xem số dư';
+    return null;
+  }
+  const uid=String(user.uid||'');
+  if(progressRenderPromise)return progressRenderPromise;
+  progressRenderPromise=(async()=>{
+    try{
+      const profile=await window.studyStore.loadProfile();
+      if(String(window.studyStore?.user?.uid||'')!==uid)return null;
+      if(!profile){
+        if(wordsEl)wordsEl.textContent='0';
+        if(wordsMeta)wordsMeta.textContent='Chưa có hồ sơ học tập';
+        return null;
+      }
+      const vocabCount=Math.max(0,Number(profile.totalWords||0));
+      const knownCount=Math.max(0,Number(profile.knownWords||0));
+      const answeredCount=Math.max(0,Number(profile.questionsAnswered||0));
+      const correctCount=Math.max(0,Number(profile.correctAnswers||0));
+      const accuracy=answeredCount?Math.round(Math.min(1,correctCount/answeredCount)*100):0;
+      const streak=Math.max(0,Number(profile.streak||0));
+      const balance=Math.max(0,Number(profile.coins||0));
+      if(wordsEl)wordsEl.textContent=knownCount.toLocaleString('vi-VN');
+      if(wordsMeta)wordsMeta.textContent=vocabCount?knownCount+' / '+vocabCount+' từ trong bộ đang học':'Chưa có bộ từ đang học';
+      if(accEl)accEl.textContent=accuracy+'%';
+      if(accMeta)accMeta.textContent=answeredCount.toLocaleString('vi-VN')+' câu đã trả lời · '+correctCount.toLocaleString('vi-VN')+' câu đúng';
+      if(streakEl)streakEl.textContent=streak.toLocaleString('vi-VN');
+      if(streakMeta)streakMeta.textContent=streak?'Ngày học liên tiếp':'Chưa có chuỗi học';
+      if(coinsEl)coinsEl.textContent=balance.toLocaleString('vi-VN');
+      if(coinsMeta)coinsMeta.textContent='Số dư KatCoin hiện tại';
+      return profile;
+    }catch(error){
+      console.warn('[KatLearn progress]',error);
+      return null;
+    }finally{
+      progressRenderPromise=null;
+    }
+  })();
+  return progressRenderPromise;
+}
 async function renderLeaderboard(){
   const target=$('#rankingContent'),mini=$('#miniRanking');
   try{
