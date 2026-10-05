@@ -441,19 +441,20 @@ async function renderProgressDashboard(){
 }
 async function renderLeaderboard(){
   const target=$('#rankingContent'),mini=$('#miniRanking');
+  if(!target&&!mini)return;
   try{
     const scores=await window.studyStore.leaderboard();
     if(!scores.length){
-      target.textContent='Chưa có điểm công khai. Hãy là người đầu tiên học cùng Kat! 🐾';
-      mini.textContent='Chưa có điểm công khai.';
+      if(target)target.textContent='Chưa có điểm công khai. Hãy là người đầu tiên học cùng Kat! 🐾';
+      if(mini)mini.textContent='Chưa có điểm công khai.';
       return;
     }
     const rows=scores.map((score,index)=>`<div class="rank-list-row"><b>${String(index+1).padStart(2,'0')}</b><strong>${esc(score.displayName||'KatLearner')}</strong><small>⚡ ${Number(score.xp||0).toLocaleString('en-US')} XP</small><i>🪙 ${Number(score.coins||0).toLocaleString('en-US')} KatCoin</i></div>`).join('');
-    target.innerHTML=rows;
-    mini.innerHTML=scores.slice(0,3).map((score,index)=>`<div class="rank-row"><b>${String(index+1).padStart(2,'0')}</b><strong>${esc(score.displayName||'KatLearner')}</strong><span>⚡ ${Number(score.xp||0).toLocaleString('en-US')} XP · 🪙 ${Number(score.coins||0).toLocaleString('en-US')}</span></div>`).join('');
+    if(target)target.innerHTML=rows;
+    if(mini)mini.innerHTML=scores.slice(0,3).map((score,index)=>`<div class="rank-row"><b>${String(index+1).padStart(2,'0')}</b><strong>${esc(score.displayName||'KatLearner')}</strong><span>⚡ ${Number(score.xp||0).toLocaleString('en-US')} XP · 🪙 ${Number(score.coins||0).toLocaleString('en-US')}</span></div>`).join('');
   }catch(error){
-    target.textContent='Chưa thể tải bảng xếp hạng.';
-    mini.textContent='Chưa thể tải bảng xếp hạng.';
+    if(target)target.textContent='Chưa thể tải bảng xếp hạng.';
+    if(mini)mini.textContent='Chưa thể tải bảng xếp hạng.';
   }
 }
 async function loadCoreTopic(topicId){const data=await window.katlearnCoreVocabulary.load(topicId);return{id:'core:'+data.id,name:data.name,words:data.words,core:true,topicId:data.id}}
