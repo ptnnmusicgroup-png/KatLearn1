@@ -129,8 +129,7 @@ function markCurrentCard(knownValue){
   const v=vocab[cardIndex],key=vocabKey(v);
   if(knownValue)knownWordKeys.add(key);else knownWordKeys.delete(key);
   saveKnownState();
-  syncProfile({knownWords:known});
-  void renderProgressDashboard();
+  void syncProfile({knownWords:known}).then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
   if(knownValue&&known>=vocab.length){
     renderCard();
     toast('🎉 Bạn đã nhớ toàn bộ bộ từ này!');
@@ -400,8 +399,14 @@ async function renderProgressDashboard(){
         if(wordsMeta)wordsMeta.textContent='Chưa có hồ sơ học tập';
         return null;
       }
-      const vocabCount=Math.max(0,Number(profile.totalWords||0));
-      const knownCount=Math.max(0,Number(profile.knownWords||0));
+      // Word progress is scoped to the deck the student is currently studying.
+      // This avoids showing personal-pack counts while the user is reviewing a
+      // public/core/assigned pack.
+      const localVocabCount=Math.max(0,Array.isArray(vocab)?vocab.length:0);
+      const localKnownCount=Math.max(0,Number(knownWordKeys?.size||0));
+      const hasLocalDeck=localVocabCount>0;
+      const vocabCount=hasLocalDeck?localVocabCount:Math.max(0,Number(profile.totalWords||0));
+      const knownCount=hasLocalDeck?Math.min(localKnownCount,vocabCount):Math.min(Math.max(0,Number(profile.knownWords||0)),vocabCount);
       const answeredCount=Math.max(0,Number(profile.questionsAnswered||0));
       const correctCount=Math.max(0,Number(profile.correctAnswers||0));
       const accuracy=answeredCount?Math.round(Math.min(1,correctCount/answeredCount)*100):0;
