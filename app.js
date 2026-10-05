@@ -214,7 +214,7 @@ function advanceReflexRound(){
 function handleReflexTimeout(){
   if(answered)return;
   answered=true;reflexAnswered++;reflexCombo=0;
-  $$('.answer').forEach(b=>b.disabled=true);
+  $$$('.answer').forEach(b=>b.disabled=true);
   const correctBtn=$$('.answer').find?.(b=>b.dataset.right==='true') || [...$$('.answer')].find(b=>b.dataset.right==='true');
   correctBtn?.classList.add('correct');
   $('#feedback').textContent='⏱ Hết giờ! Phản xạ cần nhanh hơn một chút.';
@@ -291,7 +291,7 @@ function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answ
 
   const labels=['A','B','C','D'];
   $('#answers').innerHTML=quizAnswers.map((a,i)=>`<button class="answer" data-answer="${esc(a)}" data-right="${a.toLowerCase()===normalizedCorrect.toLowerCase()}"><b>${labels[i]}</b><span>${esc(a)}</span></button>`).join('');
-  $$('.answer').forEach(btn=>btn.onclick=()=>answer(btn,correct));
+  $$$('.answer').forEach(btn=>btn.onclick=()=>answer(btn,correct));
   updateReflexHud(reflexTimeLimit);startReflexTimer();
   if(mode==='context')loadAiContext(v,contextId);
 }
@@ -303,7 +303,7 @@ async function answer(btn,correct){
   if(good){reflexCorrect++;reflexCombo++;reflexMaxCombo=Math.max(reflexMaxCombo,reflexCombo);reflexScore+=100+(Math.max(0,reflexCombo-1)*25)}
   else{reflexCombo=0}
   updateReflexHud(0);
-  $$$('.answer').forEach(b=>{if(b.dataset.right==='true')b.classList.add('correct');b.disabled=true});
+  $$$$('.answer').forEach(b=>{if(b.dataset.right==='true')b.classList.add('correct');b.disabled=true});
   if(!good){btn.classList.add('wrong');$('#feedback').textContent='Đáp án đúng là: '+correct;$('#feedback').style.color='#e36b63'}
 
   let awarded=false,rewardError='',serverConfirmed=false;
@@ -364,7 +364,7 @@ async function answer(btn,correct){
 }
 $$('.mode-card').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;$$('.mode-card').forEach(x=>x.classList.toggle('active-mode',x===b));question=1;reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;sessionCoins=0;if($('#sessionCoins'))$('#sessionCoins').textContent='0';renderQuiz()});
 $$('.reflex-length').forEach(b=>b.onclick=()=>{reflexSessionLength=Math.max(1,Number(b.dataset.reflexLength)||10);$$('.reflex-length').forEach(x=>x.classList.toggle('active',x===b));question=1;reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;sessionCoins=0;if($('#sessionCoins'))$('#sessionCoins').textContent='0';renderQuiz()});
-$('#reflexSkip')?.addEventListener('click',()=>{if(answered)return;answered=true;clearReflexTimer();reflexAnswered++;reflexCombo=0;$$('.answer').forEach(b=>b.disabled=true);$('#feedback').textContent='↷ Đã bỏ qua. Giữ nhịp và bắt câu tiếp theo!';updateReflexHud(0);setTimeout(advanceReflexRound,450)});
+$('#reflexSkip')?.addEventListener('click',()=>{if(answered)return;answered=true;clearReflexTimer();reflexAnswered++;reflexCombo=0;$$$('.answer').forEach(b=>b.disabled=true);$('#feedback').textContent='↷ Đã bỏ qua. Giữ nhịp và bắt câu tiếp theo!';updateReflexHud(0);setTimeout(advanceReflexRound,450)});
 document.addEventListener('keydown',e=>{if(!$('#practice')?.classList.contains('active-page')||answered)return;if(['1','2','3','4'].includes(e.key)){const i=Number(e.key)-1;const btn=[...$$('#answers .answer')][i];btn?.click()}});
 $('#resultModal')?.querySelector('.modal-close')?.addEventListener('click',()=>{$('#resultModal')?.classList.remove('show');renderQuiz()});
 function requireSignedInPersonalService(){
@@ -439,6 +439,7 @@ async function renderProgressDashboard(){
   })();
   return progressRenderPromise;
 }
+if($('#refreshProgressBtn'))$('#refreshProgressBtn').onclick=async()=>{const btn=$('#refreshProgressBtn');if(!btn)return;const old=btn.textContent;btn.disabled=true;btn.textContent='↻ Đang cập nhật...';try{await renderProgressDashboard();toast('✓ Đã cập nhật tiến độ.')}catch(e){toast('Không thể cập nhật tiến độ lúc này.')}finally{btn.disabled=false;btn.textContent=old}};
 async function renderLeaderboard(){
   const target=$('#rankingContent'),mini=$('#miniRanking');
   if(!target&&!mini)return;
