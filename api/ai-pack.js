@@ -1,5 +1,8 @@
 const{requireUser,rateLimit,generateGemini,parseJson,modelText,send,method}=require("./_kat-ai");
 function clean(value,max=1000){return String(value??"").trim().slice(0,max)}
+function hasVietnameseDiacritics(value){
+  return /[ăâđêôơưáàảãạắằẳẵặấầẩẫậéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ]/iu.test(String(value??""));
+}
 const PACK_INSTRUCTIONS=`Bạn là Kat AI, chuyên gia xây dựng bộ từ vựng tiếng Anh chất lượng cao cho học sinh Việt Nam.
 Hãy coi mỗi bộ từ là một tài liệu học tập hoàn chỉnh, có chọn lọc, không phải danh sách từ ngẫu nhiên.
 
@@ -58,7 +61,7 @@ module.exports=async(req,res)=>{
       const response=await generateGemini({
         maxOutputTokens:Math.min(16000,Math.max(3500,uniqueWords.length*125)),
         temperature:.2,
-        systemInstruction:"Bạn là Kat AI, trợ lý hoàn thiện bộ từ vựng tiếng Anh cho học sinh Việt Nam. Nhiệm vụ là BỔ SUNG THÔNG TIN cho các từ người dùng đã nhập, không được tự sinh thêm từ ngoài danh sách.",
+        systemInstruction:"Bạn là Kat AI, trợ lý hoàn thiện bộ từ vựng tiếng Anh cho học sinh Việt Nam. Nhiệm vụ là BỔ SUNG THÔNG TIN cho các từ người dùng đã nhập, không được tự sinh thêm từ ngoài danh sách. NGHĨA TIẾNG VIỆT BẮT BUỘC CÓ DẤU; tuyệt đối không viết tiếng Việt không dấu.",
         contents,
         responseSchema:ENRICH_SCHEMA
       });
@@ -79,7 +82,7 @@ module.exports=async(req,res)=>{
           synonyms:[],antonyms:[],difficulty,topic:"personal vocabulary"
         };
       });
-      if(words.some(item=>!item||!item.meaning_vi||!item.ipa||!item.example)){
+      if(words.some(item=>!item||!item.meaning_vi||!item.ipa||!item.example||!hasVietnameseDiacritics(item.meaning_vi))){
         throw Object.assign(new Error("Kat AI chưa hoàn thiện đủ danh sách từ trong một lần gọi. Bạn có thể bấm Generate AI lại sau."),{status:502,code:"gemini_incomplete_enrichment"});
       }
       return send(res,200,{pack:{suggested_title:"",description:"Bộ từ do bạn nhập và Kat AI hoàn thiện.",topic:"personal vocabulary",difficulty,purpose:"personal vocabulary pack"},words});
@@ -89,8 +92,8 @@ module.exports=async(req,res)=>{
     if(!prompt)throw Object.assign(new Error("Hãy nhập chủ đề hoặc yêu cầu cho Kat AI."),{status:400,code:"prompt_missing"});
     const contents="Yêu cầu: "+prompt+"\nSố lượng chính xác: "+wordCount+"\nTrình độ: "+difficulty+"\nMục đích: "+purpose+"\nLoại từ: "+wordTypes+(instructions?"\nHướng dẫn bổ sung: "+instructions:"")+
       "\n\nHÃY TUÂN THỦ QUALITY CONTRACT: chọn đúng từ cho topic, phủ nhiều subtopic phù hợp, bám trình độ, không dùng filler để đủ số lượng, không trùng từ/word family vô nghĩa."+
-      "\nMỗi mục bắt buộc phải có: word + part_of_speech + IPA Anh-Anh + meaning_vi tự nhiên + notes hữu ích/cụ thể + example tự nhiên đúng ngữ cảnh topic."+
-      "\nmeaning_vi phải là nghĩa tiếng Việt dùng được ngay, không được chỉ dịch máy từng chữ."+
+      "\nMỗi mục bắt buộc phải có: word + part_of_speech + IPA Anh-Anh + meaning_vi tự nhiên có đầy đủ dấu tiếng Việt + notes hữu ích/cụ thể + example tự nhiên đúng ngữ cảnh topic."+
+      "\nmeaning_vi phải là nghĩa tiếng Việt dùng được ngay, không được chỉ dịch máy từng chữ. BẮT BUỘC dùng đầy đủ dấu tiếng Việt (ví dụ: “môi trường”, “học tập”, “động vật”); không chấp nhận nghĩa viết không dấu."+
       "\nnotes phải nói điều người học thực sự có thể học thêm (cách dùng, collocation, nuance, lỗi hay gặp hoặc context), không được viết câu sáo rỗng."+
       "\nexample phải chứng minh đúng cách dùng của từ trong topic."+
       "\nPhải trả về đúng "+wordCount+" mục chất lượng cao; thà chọn từ ít phổ biến hơn nhưng thật sự phù hợp còn hơn thêm từ vô nghĩa.";
@@ -144,7 +147,7 @@ module.exports=async(req,res)=>{
     });
     const fillerPattern=/^(?:đây là|đây là một|một từ vựng|từ vựng này|từ này|thường được sử dụng|thường dùng|rất hữu ích|hữu ích trong|liên quan đến chủ đề|được sử dụng trong).*$/i;
     const malformed=words.some(item=>{
-      if(!item||!item.word||!item.meaning_vi||!item.notes||!item.example)return true;
+      if(!item||!item.word||!item.meaning_vi||!item.notes||!item.example||!hasVietnameseDiacritics(item.meaning_vi))return true;
       if(!/[.!?…]$/.test(item.meaning_vi)||!/[.!?…]$/.test(item.notes)||!/[.!?…]$/.test(item.example))return true;
       if(fillerPattern.test(tidyText(item.notes))&&tidyText(item.notes).length<90)return true;
       if(tidyText(item.meaning_vi).toLowerCase() ===tidyText(item.word).toLowerCase())return true;
