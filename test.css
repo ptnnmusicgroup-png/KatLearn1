@@ -110,3 +110,134 @@ button{cursor:pointer}
 .test-foot{text-align:center;padding:18px 0 0;color:#a097a7;font-size:9px;font-weight:700}
 @media(max-width:820px){.pack-grid{grid-template-columns:1fr}.test-config{grid-template-columns:1fr 1fr}.test-start{grid-column:1/-1}.test-hud{grid-template-columns:auto minmax(0,1fr) auto}.test-hud .test-score{display:none}}
 @media(max-width:620px){.test-page{padding:17px 12px 30px}.test-top{margin-bottom:14px}.test-top-actions a{display:none}.test-hero{padding:22px 19px;border-radius:22px}.test-hero-badge{position:static;display:inline-flex;margin-top:17px}.test-card{padding:16px;border-radius:20px}.test-title{font-size:40px}.test-subtitle{font-size:12px}.test-options{grid-template-columns:1fr}.test-question-card{padding:24px 18px}.test-word{font-size:37px}.test-config{grid-template-columns:1fr}.test-start{grid-column:auto}.result-stats{grid-template-columns:1fr 1fr}.test-hud{gap:8px}.test-toast{right:12px;top:12px}}
+
+/* ===== Sidebar parity for Smart Test ===== */
+.test-sidebar{
+  position:fixed;
+  inset:0 auto 0 0;
+  width:264px;
+  height:100dvh;
+  padding:22px 14px 16px;
+  display:flex;
+  flex-direction:column;
+  box-sizing:border-box;
+  z-index:900;
+  background:rgba(255,255,255,.72);
+  border-right:1px solid rgba(255,255,255,.78);
+  box-shadow:10px 0 34px rgba(40,31,75,.08);
+  backdrop-filter:blur(28px) saturate(155%);
+  -webkit-backdrop-filter:blur(28px) saturate(155%);
+}
+.test-sidebar-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  height:56px;
+  padding:0 12px;
+  border-radius:17px;
+  color:#332c3d;
+  text-decoration:none;
+  background:rgba(255,255,255,.42);
+  border:1px solid rgba(255,255,255,.58);
+}
+.test-sidebar-brand>span{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:linear-gradient(135deg,#efe9ff,#e3ddff);
+  font-size:21px;
+}
+.test-sidebar-brand b{
+  font:700 21px/1 Fredoka,sans-serif;
+}
+.test-sidebar-brand b span{color:var(--test-purple)}
+.test-sidebar-label{
+  flex:0 0 auto;
+  margin:11px 11px 18px;
+  color:#938899;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.test-sidebar nav{
+  min-height:0;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:2px 3px 8px;
+  scrollbar-width:none;
+}
+.test-sidebar nav::-webkit-scrollbar{display:none}
+.test-sidebar nav a{
+  display:flex;
+  align-items:center;
+  min-height:44px;
+  padding:0 12px;
+  gap:4px;
+  border:1px solid transparent;
+  border-radius:14px;
+  color:#6f6678;
+  background:transparent;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:800;
+}
+.test-sidebar nav a span{
+  width:28px;
+  display:inline-grid;
+  place-items:center;
+  font-size:16px;
+}
+.test-sidebar nav a:hover{
+  background:rgba(255,255,255,.52);
+  border-color:rgba(255,255,255,.72);
+}
+.test-sidebar nav a.active{
+  color:#5f4fc8;
+  background:linear-gradient(135deg,rgba(117,98,232,.16),rgba(255,255,255,.58));
+  border-color:rgba(160,146,246,.25);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 8px 20px rgba(102,87,208,.08);
+}
+.test-page{
+  margin-left:264px;
+  min-height:100vh;
+}
+.test-menu-toggle{
+  display:none;
+  width:42px;
+  height:42px;
+  min-width:42px;
+  border:1px solid var(--test-line);
+  border-radius:13px;
+  background:#fff;
+  color:#675d71;
+}
+@media (max-width:820px){
+  .test-sidebar{
+    width:min(282px,88vw);
+    transform:translateX(-106%);
+    transition:transform .24s cubic-bezier(.22,1,.36,1);
+    box-shadow:20px 0 60px rgba(35,28,73,.17);
+  }
+  .test-sidebar.open{transform:translateX(0)}
+  .test-page{margin-left:0}
+  .test-menu-toggle{display:inline-flex;align-items:center;justify-content:center}
+  .test-top{align-items:center}
+}
+@media (min-width:821px){
+  .test-page{padding-left:clamp(18px,2.5vw,36px);padding-right:clamp(18px,2.5vw,36px)}
+}
+html:fullscreen .test-sidebar,
+html:fullscreen .test-menu-toggle{display:none!important}
+html:fullscreen .test-page{
+  margin-left:0!important;
+  padding-left:clamp(16px,4vw,60px)!important;
+  padding-right:clamp(16px,4vw,60px)!important;
+}
+@media (prefers-reduced-motion:reduce){
+  .test-sidebar{transition:none}
+}

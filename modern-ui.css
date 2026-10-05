@@ -1787,3 +1787,23 @@ body{
     display:inline-flex!important;
   }
 }
+
+/* Shop section grouping */
+.shop-section-label{
+  margin:26px 0 12px!important;
+}
+.shop-section-label:first-of-type{margin-top:0!important}
+.shop-section-label h2{
+  margin:2px 0 4px!important;
+  font:700 22px Fredoka,sans-serif!important;
+}
+.shop-section-label p:last-child{
+  margin:0!important;
+  color:var(--kl-muted)!important;
+  font-size:11px!important;
+}
+.shop-grid+.shop-section-label{margin-top:30px!important}
+@media (max-width:620px){
+  .shop-section-label{margin-top:22px!important}
+  .shop-section-label h2{font-size:20px!important}
+}
