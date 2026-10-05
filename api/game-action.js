@@ -145,8 +145,24 @@ module.exports=async(req,res)=>{
       const word=String(body.word||"").trim().slice(0,100),meaning=String(body.meaning||"").trim().slice(0,200),submittedAnswer=String(body.answer||"").trim().slice(0,200),mode=String(body.mode||"").trim().slice(0,40)||"engvi",source=body.source||{};
       if(!word||!meaning||!submittedAnswer)return send(res,400,{error:"Thiếu dữ liệu câu trả lời."});
       if(!["engvi","vieng","context"].includes(mode))return send(res,400,{error:"Chế độ luyện tập không hợp lệ."});
-      const profileSnap=await userRef.get();
-      if(!profileSnap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
+      let profileSnap=await userRef.get();
+      // Firebase Auth is authoritative. A newly created student can reach the
+      // game before background profile hydration finishes, so provision the
+      // minimal user document here instead of rejecting a valid signed-in user.
+      if(!profileSnap.exists){
+        await userRef.set({
+          displayName:String(token.name||token.email?.split('@')[0]||"KatLearn Student").slice(0,80),
+          email:String(token.email||"").slice(0,200),
+          photoURL:String(token.picture||"").slice(0,1000),
+          provider:"firebase-auth",
+          role:"student",
+          coins:0,energy:0,streak:0,lastStudyDay:"",
+          dailyQuestions:0,dailyCorrect:0,questionsAnswered:0,correctAnswers:0,
+          ownedThemes:[],joinedClassIds:[],teacherUid:"",teacherUids:[],totalWords:0,vocab:[],
+          createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()
+        },{merge:true});
+        profileSnap=await userRef.get();
+      }
       const sourceKind=await validateQuizSource(db,token.uid,source,word,meaning,profileSnap.data()||{});
       const rewardable=sourceKind!=="legacy";
       const expectedAnswer=mode==="vieng"?word:meaning;
