@@ -62,7 +62,10 @@
     if(!grid){
       grid=document.createElement('div');
       grid.className='shop-grid katlearn-cute-shop-grid';
-      shop.appendChild(grid);
+      const label=document.createElement('div');
+      label.className='shop-cute-dynamic-label';
+      label.innerHTML="<p class=\"eyebrow\">KAT'S CUTIE DROP</p><h2>🐱 Đồ cute của Kat</h2><p>Một chút đáng yêu cho góc học tập.</p>";
+      shop.append(label,grid);
     }
     const items=[
       ['cat-nap','Cat Nap','Một góc ngủ mềm mềm cho Kat.','https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&q=82'],
