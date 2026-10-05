@@ -78,7 +78,7 @@ function renderWordList(){
   indexed.forEach(({i})=>{const b=list.querySelector('[data-index="'+i+'"]');if(b)b.onclick=()=>{cardIndex=i;setCardFlipped(false);renderCard()}});
 }
 
-function renderVocabularyViews(filter=''){
+function renderVocabularyViews(filter=''){if(!$('#wordTable')&&!$('#wordTotalStat'))return;
   const q=String(filter||'').trim().toLowerCase(),visible=vocab.filter(v=>{
     const word=String(v?.word||''),mean=vocabMeaning(v);
     return !q||word.toLowerCase().includes(q)||mean.toLowerCase().includes(q);
