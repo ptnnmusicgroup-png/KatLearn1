@@ -227,7 +227,16 @@ function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answ
     $('#questionHint').textContent='Bạn cần thêm từ vựng trước khi luyện tập.';$('#questionWord').textContent='Chưa có bộ từ';$('#questionPronounce').textContent='';
     $('#answers').innerHTML='<button class="answer" id="goAddWords"><b>＋</b> Thêm từ vựng ngay</button>';$('#goAddWords').onclick=()=>showPage('learn');$('#feedback').textContent='';updateReflexHud(reflexTimeLimit);return
   }
-  const v=vocab[(question-1)%vocab.length];let correct,hint,word,pron='',candidateLabels=[];
+  const v=vocab[(question-1)%vocab.length];
+  if(vocab.length<4){
+    $('#questionHint').textContent='Bộ từ cần ít nhất 4 từ để tạo đủ 4 đáp án.';
+    $('#questionWord').textContent='Chưa đủ dữ liệu để chơi';
+    $('#questionPronounce').textContent='';
+    $('#answers').innerHTML='<button class="answer" disabled><b>!</b><span>Hãy thêm ít nhất 4 từ vựng có nghĩa.</span></button>';
+    $('#feedback').textContent='Kat không tự bịa đáp án — thêm vài từ nữa nhé 🐱';
+    updateReflexHud(reflexTimeLimit);
+    return
+  }let correct,hint,word,pron='',candidateLabels=[];
   if(mode==='engvi'){
     hint='Chọn nghĩa tiếng Việt của từ:';
     word=v.word;pron=vocabPronunciation(v);correct=vocabMeaning(v);
