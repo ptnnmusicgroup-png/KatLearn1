@@ -734,8 +734,17 @@ function initSidebarScrollControls(){
     window.setTimeout(updateSidebarScrollState,220);
   };
 
+  const resetToTop=()=>{
+    nav.scrollTop=0;
+    updateSidebarScrollState();
+  };
   up.addEventListener('click',()=>moveSidebar(-1));
   down.addEventListener('click',()=>moveSidebar(1));
+  document.querySelector('.menu-toggle')?.addEventListener('click',()=>{
+    window.setTimeout(()=>{
+      if(document.querySelector('.sidebar')?.classList.contains('open'))resetToTop();
+    },0);
+  });
   nav.addEventListener('scroll',updateSidebarScrollState,{passive:true});
   window.addEventListener('resize',updateSidebarScrollState);
   updateSidebarScrollState();
