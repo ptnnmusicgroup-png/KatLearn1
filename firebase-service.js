@@ -346,15 +346,11 @@
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để xóa bộ từ.');
       if(!packId)throw new Error('Không tìm thấy bộ từ cần xóa.');
       const uid=currentUser.uid;
-      const profile=await this.loadProfile();
-      if(String(profile?.studentAccountType||'free').toLowerCase()==='class')throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
 
-      // Deletion is intentionally server-authoritative. The previous client
-      // path deleted the user namespace first, then tried to delete the
-      // account-memory mirror with browser rules. A mirror/account mismatch
-      // could make the UI report a failure after the canonical document was
-      // already removed. The protected endpoint deletes both namespaces in
-      // one Admin SDK batch.
+      // Deletion is intentionally server-authoritative. Do not read the
+      // Firestore profile from the browser before the request: stale or
+      // restrictive client rules can reject that read even though the
+      // authenticated server can safely authorize the operation.
       const token=await this.getIdToken(true);
       if(!token)throw new Error('Không lấy được phiên xác thực của tài khoản.');
       const res=await fetch('/api/personal-pack-action',{
