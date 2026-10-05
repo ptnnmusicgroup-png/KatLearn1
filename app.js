@@ -320,14 +320,9 @@ async function answer(btn,correct){
       if(!token)throw new Error('Không lấy được phiên xác thực của tài khoản.');
       // auth-sync normally provisions this profile, but the game must remain
       // race-safe if the player answers before that background sync finishes.
-      // The reward endpoint is server-authoritative. A browser-side profile
-      // read must never block the reward request when Firestore rules/cache are
-      // temporarily unavailable or out of sync with production.
-      try{
-        await window.studyStore.loadProfile();
-      }catch(profileError){
-        console.warn('[KatLearn Reflex] Profile read unavailable; continuing with server reward.',profileError);
-      }
+      // The reward endpoint is fully server-authoritative. Do not perform
+      // any Firestore profile read/write in the browser before requesting the
+      // reward; stale rules or client-side permissions must never block it.
       const payload={action:'answer',word:v.word,meaning:vocabMeaning(v),answer:btn.dataset.answer||'',mode,source:activeVocabSource};
       const res=await fetch(gameEndpoint(),{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(payload)});
       const data=await res.json().catch(()=>({}));
