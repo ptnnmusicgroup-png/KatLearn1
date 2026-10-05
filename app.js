@@ -48,7 +48,7 @@ updateHomeHeader();
 setInterval(()=>updateHomeHeader(),30000);
 updateDailyGoal(0);
 const PAGE_ALIASES={vocabulary:'words',words:'words',home:'home',packs:'packs',personalPacks:'personalPacks',personal:'personalPacks',learn:'learn',practice:'practice',test:'test',shop:'shop',ranking:'ranking',progress:'progress',studentClasses:'studentClasses'};
-function showPage(rawId,updateHash=true){if(String(rawId||'')==='test'){location.href='/test.html';return}const id=PAGE_ALIASES[rawId]||rawId;const page=$('#'+id);if(!page)return;$$('.page').forEach(p=>p.classList.remove('active-page'));page.classList.add('active-page');$$('.nav-item').forEach(b=>b.classList.toggle('active',(PAGE_ALIASES[b.dataset.page]||b.dataset.page)===id));$('.sidebar')?.classList.remove('open');if(updateHash){const hash=id==='words'?'vocabulary':id;history.replaceState(null,'','#'+hash)}if(id==='ranking')renderLeaderboard();if(id==='packs')renderPublicPacks();if(id==='personalPacks')window.renderStudentPersonalPacks?.();if(id==='words')renderVocabularyViews();if(id==='studentClasses')window.katlearnStudentClasses?.render();window.scrollTo({top:0,behavior:'smooth'})}
+function showPage(rawId,updateHash=true){if(String(rawId||'')==='test'){location.href='/test.html';return}const id=PAGE_ALIASES[rawId]||rawId;const page=$('#'+id);if(!page)return;$$('.page').forEach(p=>p.classList.remove('active-page'));page.classList.add('active-page');$$('.nav-item').forEach(b=>b.classList.toggle('active',(PAGE_ALIASES[b.dataset.page]||b.dataset.page)===id));$('.sidebar')?.classList.remove('open');if(updateHash){const hash=id==='words'?'vocabulary':id;history.replaceState(null,'','#'+hash)}if(id==='ranking')renderLeaderboard();if(id==='progress')void renderProgressDashboard();if(id==='packs')renderPublicPacks();if(id==='personalPacks')window.renderStudentPersonalPacks?.();if(id==='words')renderVocabularyViews();if(id==='studentClasses')window.katlearnStudentClasses?.render();window.scrollTo({top:0,behavior:'smooth'})}
 function openInitialPage(){const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();showPage(hash&&PAGE_ALIASES[hash]?hash:'home',false)}
 $$('.nav-item').forEach(b=>b.onclick=()=>showPage(b.dataset.page));$$('[data-go]').forEach(b=>b.onclick=()=>showPage(b.dataset.go));if($('.start-lesson'))$('.start-lesson').onclick=()=>showPage('learn');if($('.menu-toggle'))$('.menu-toggle').onclick=()=>$('.sidebar')?.classList.toggle('open');window.addEventListener('hashchange',()=>{const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();if(hash&&PAGE_ALIASES[hash])showPage(hash,false)});
 function updateLearnStudySummary(){
@@ -130,6 +130,7 @@ function markCurrentCard(knownValue){
   if(knownValue)knownWordKeys.add(key);else knownWordKeys.delete(key);
   saveKnownState();
   syncProfile({knownWords:known});
+  void renderProgressDashboard();
   if(knownValue&&known>=vocab.length){
     renderCard();
     toast('🎉 Bạn đã nhớ toàn bộ bộ từ này!');
@@ -346,6 +347,7 @@ async function answer(btn,correct){
     rewardError=error?.message||'Không thể kết nối máy chủ kết quả.';
   }
 
+  void renderProgressDashboard();
   // Never grant KatCoin only in localStorage. Rewards are authoritative on the
   // server so students cannot lose coins because Auth was still restoring.
   if(good&&!awarded&&!serverConfirmed)$('#feedback').textContent='Chính xác! KatCoin chưa được cộng: '+rewardError;
@@ -704,7 +706,7 @@ window.addEventListener('8b1-auth-change',e=>{
   void refreshAuthDependentViews(e.detail);
 });
 window.addEventListener('katlearn-account-fast',e=>{if(e.detail?.account){renderAuth(e.detail.user);renderAdmin(e.detail.user)}});
-window.addEventListener('katlearn-account-ready',e=>{void refreshAuthDependentViews(e.detail?.account?e.detail.user:null)});
+window.addEventListener('katlearn-account-ready',e=>{void refreshAuthDependentViews(e.detail?.account?e.detail.user:null)}); window.addEventListener('katlearn-account-ready',()=>{void renderProgressDashboard()});
 window.addEventListener('katlearn-account-ready',e=>{const profile=e.detail?.profile||null;updateHomeHeader(profile);updateDailyGoal(profile?.dailyQuestions||0)});renderAuth(null);renderAdmin(null);const loginModal=$('#loginModal');if(loginModal)loginModal.querySelector('.modal-close')?.addEventListener('click',()=>loginModal.classList.remove('show'));if(loginModal)loginModal.onclick=e=>{if(e.target===loginModal)loginModal.classList.remove('show')};function authError(err){if(err.code==='auth/unauthorized-domain')return `Firebase chưa cho phép domain “${location.hostname}”. Vào Authentication → Settings → Authorized domains để thêm domain này.`;const messages={'auth/operation-not-allowed':'Hãy bật Email/Password trong Firebase Authentication trước.','auth/email-already-in-use':'Email này đã có tài khoản. Hãy đăng nhập.','auth/invalid-credential':'Email hoặc mật khẩu không đúng.','auth/weak-password':'Mật khẩu cần ít nhất 6 ký tự.'};return messages[err.code]||'Không thể thực hiện: '+err.message}async function providerLogin(provider){try{const user=await window.studyStore.signIn(provider);$('#loginModal').classList.remove('show');renderAuth(user);toast(`Chào mừng ${user.displayName||'bạn'}! Dữ liệu đang được đồng bộ.`)}catch(err){toast(authError(err))}}async function emailLogin(create){const email=$('#authEmail').value.trim(),password=$('#authPassword').value;if(!email||!password)return;try{const user=await window.studyStore.signInEmail(email,password,create);$('#loginModal').classList.remove('show');renderAuth(user);toast(create?'Đã tạo tài khoản thành công!':'Đăng nhập thành công!')}catch(err){toast(authError(err))}}const emailLoginForm=$('#emailLoginForm'),emailRegister=$('#emailRegister'),googleLogin=$('#googleLogin'),appleLogin=$('#appleLogin'),logoutBtn=$('#logoutBtn'),openProgress=$('#openProgress');if(emailLoginForm)emailLoginForm.onsubmit=e=>{e.preventDefault();emailLogin(false)};if(emailRegister)emailRegister.onclick=()=>emailLogin(true);if(googleLogin)googleLogin.onclick=()=>providerLogin('google');if(appleLogin)appleLogin.onclick=()=>providerLogin('apple');if(logoutBtn)logoutBtn.onclick=async()=>{try{await window.studyStore.signOut();toast('Đã đăng xuất.');setTimeout(()=>location.replace('/login.html'),100)}catch(e){toast('❌ Không thể đăng xuất: '+(e.message||'Lỗi không xác định'))}};if(openProgress)openProgress.onclick=()=>{showPage('progress');$('#accountPanel').hidden=true};document.addEventListener('click',e=>{const topActions=$('.top-actions'),panel=$('#accountPanel');if(topActions&&!topActions.contains(e.target)&&panel)panel.hidden=true});
 renderCard();renderQuiz();updateCoins();openInitialPage();
 function initSidebarScrollControls(){
