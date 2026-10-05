@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap");
 /* KatLearn System UI v3 — cohesive product layer.
    Presentation-only: intentionally leaves learning/auth/data logic untouched. */
 
@@ -714,3 +715,25 @@ button:disabled{filter:saturate(.7)}
   .sidebar nav{gap:3px!important;padding-top:1px!important;padding-bottom:8px!important}
   .nav-item{min-height:37px!important;height:37px!important}
 }
+
+/* ===== Baloo 2 typography layer ===== */
+:root{--kl-display-font:"Baloo 2","Be Vietnam Pro",system-ui,sans-serif}
+.page-intro h1,.greeting-row h1,.hero-content h2,.section-heading h2,.learn-title-row h1,
+.reflex-arena-title h1,.mode-card h3,.question-wrap h2,.pack-summary b,.word-summary b,
+.stat-grid h2,.word-list h3,.card-face h2,.shop-theme-card h3,.shop-section-label h2,
+.shop-item h3,.personal-packs-title h3,.personal-pack-card h3,.account-panel-head b,.modal-card h2{
+  font-family:var(--kl-display-font)!important;
+}
+.sidebar .brand>span:last-child,.sidebar .nav-item,.sidebar .class-label,
+.primary-btn,.add-word-btn,.create-pack-btn,.login-btn,.account-trigger,.coin-pill,
+.settings-btn,.notification,.account-menu-btn,.learn-tool-btn,.flash-nav-btn,.flash-main-btn,
+.flash-result-btn,.mode-card,.answer,.reflex-skip,.word-table-tools button,.pack-tabs button,
+.shop-theme-card button,.eyebrow{
+  font-family:var(--kl-display-font)!important;
+}
+.page-intro h1{font-weight:700!important;letter-spacing:-.035em!important}
+.hero-content h2,.reflex-arena-title h1,.learn-title-row h1{letter-spacing:-.025em!important}
+.sidebar .nav-item{font-weight:700!important}
+.primary-btn,.add-word-btn,.create-pack-btn,.login-btn,.account-menu-btn,.learn-tool-btn,
+.flash-main-btn,.flash-result-btn,.reflex-skip,.pack-tabs button,.shop-theme-card button{font-weight:700!important}
+.eyebrow,.class-label{font-weight:700!important}
