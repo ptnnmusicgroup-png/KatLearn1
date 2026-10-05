@@ -505,7 +505,7 @@ async function openVocabularyPack(pack){
   else loadKnownState();
   cardIndex=0;
   localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
-  renderCard();renderQuiz();showPage('learn');
+  if($('#learn')){renderCard();renderQuiz();}showPage('learn');
   toast(`Đã mở “${pack.name}”.`);
 }
 async function openCoreTopic(topicId){
