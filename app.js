@@ -51,7 +51,7 @@ const PAGE_ALIASES={vocabulary:'words',words:'words',home:'home',packs:'packs',p
 const PAGE_ROUTES={home:'home.html',packs:'packs.html',personalPacks:'personal-packs.html',words:'vocabulary.html',learn:'learn.html',practice:'practice.html',test:'test.html',shop:'shop.html',ranking:'ranking.html',progress:'progress.html',studentClasses:'student-classes.html'};
 function showPage(rawId,updateHash=true){const raw=String(rawId||'').trim(),id=PAGE_ALIASES[raw]||raw||'home',route=PAGE_ROUTES[id]||PAGE_ROUTES.home,current=(location.pathname.split('/').pop()||'home.html').toLowerCase();if(route===current)return;location.href='/'+route}
 function openInitialPage(){return}
-$$('.nav-item').forEach(b=>b.onclick=()=>showPage(b.dataset.page));function updateLearnStudySummary(){
+$('.nav-item').forEach(b=>b.onclick=()=>showPage(b.dataset.page));$('[data-go]').forEach(b=>b.onclick=()=>showPage(b.dataset.go));if($('.start-lesson'))$('.start-lesson').onclick=()=>showPage('learn');if($('.menu-toggle'))$('.menu-toggle').onclick=()=>{const sidebar=$('.sidebar');if(!sidebar)return;const isOpen=sidebar.classList.toggle('open');$('.menu-toggle').setAttribute('aria-expanded',String(isOpen));$('.menu-toggle').setAttribute('aria-label',isOpen?'Đóng menu điều hướng':'Mở menu điều hướng')};window.addEventListener('hashchange',()=>{const hash=decodeURIComponent(location.hash.replace(/^#/,'')).trim();if(hash&&PAGE_ALIASES[hash])showPage(hash,false)});function updateLearnStudySummary(){
   const total=vocab.length,done=Math.min(knownWordKeys.size,total),remaining=Math.max(0,total-done),percent=total?Math.round(done/total*100):0;
   const set=(id,value)=>{const el=$('#'+id);if(el)el.textContent=String(value)};
   set('learnPackTitle',activeDeckMeta.name||'Flashcard từ vựng');
