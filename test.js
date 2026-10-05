@@ -24,7 +24,7 @@
     const box=$('#packList'),empty=$('#packEmpty'),count=$('#selectedPackCount');
     if(!box)return;
     if(!packs.length){
-      box.innerHTML='';empty.hidden=false;empty.innerHTML='<div class="lock-state"><div class="lock-state-icon">📚</div><b>Chưa có bộ từ đủ điều kiện</b><p>Tạo ít nhất một bộ từ riêng có từ vựng hợp lệ rồi quay lại đây để Kat ra đề cho bạn.</p><a href="/index.html#personalPacks">+ Tạo bộ từ riêng</a></div>';count.textContent='0';updateConfig();return;
+      box.innerHTML='';empty.hidden=false;empty.innerHTML='<div class="lock-state"><div class="lock-state-icon">📚</div><b>Chưa có bộ từ đủ điều kiện</b><p>Tạo ít nhất một bộ từ riêng có từ vựng hợp lệ rồi quay lại đây để Kat ra đề cho bạn.</p><a href="/personal-packs.html">+ Tạo bộ từ riêng</a></div>';count.textContent='0';updateConfig();return;
     }
     empty.hidden=true;
     box.innerHTML=packs.map(p=>'<label class="pack-check"><input type="checkbox" value="'+esc(p.id)+'"><span class="pack-check-ui"><i class="pack-check-mark">✓</i><span class="pack-check-info"><b>'+esc(p.name||'Bộ từ chưa đặt tên')+'</b><span>'+p.words.length+' từ · bộ riêng của bạn</span></span></span></label>').join('');
@@ -174,7 +174,7 @@
   async function leaveToHome(){
     suppressGuard=true;testActive=false;clearInterval(timerId);
     try{if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen()}catch(_){}
-    location.replace('/index.html');
+    location.replace('/home.html');
   }
   function restart(){
     $('#testResult').classList.remove('active');$('#packSetup').removeAttribute('hidden');$('#setupStatus').textContent='Chọn lại bộ từ, rồi tạo một đề mới.';renderPackList();
@@ -184,9 +184,14 @@
     if(document.fullscreenElement)return;
     testActive=false;clearInterval(timerId);timerId=null;
     try{sessionStorage.setItem('katlearn-test-return-error','1')}catch(_){}
-    location.replace('/index.html?testError=fullscreen-exit');
+    location.replace('/home.html?testError=fullscreen-exit');
   }
   function mount(){
+    const menu=document.querySelector('.test-menu-toggle'),sidebar=document.querySelector('.test-sidebar');
+    if(menu&&sidebar){
+      menu.onclick=()=>{const open=sidebar.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Đóng menu điều hướng':'Mở menu điều hướng')};
+      sidebar.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{sidebar.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-label','Mở menu điều hướng')}));
+    }
     $('#selectAll').onclick=()=>{$('#packList input[type="checkbox"]').forEach(x=>x.checked=true);updateConfig()};
     $('#clearAll').onclick=()=>{$('#packList input[type="checkbox"]').forEach(x=>x.checked=false);updateConfig()};
     $('#startTest').onclick=start;$('#submitAnswer').onclick=()=>checkAnswer($('#testInput').value.trim());$('#testNext').onclick=next;
