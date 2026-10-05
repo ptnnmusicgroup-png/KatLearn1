@@ -628,7 +628,8 @@ function renderPackLibrary(packs=[],assigned=[]){
 let publicPackRenderPromise=null;
 let publicPackRenderUid='';
 async function renderPublicPacks(){
-  const target=$('#publishedPacks'),adminList=$('#publicPackList');
+  const target=$('#publishedPacks')||$('#packLibrary'),adminList=$('#publicPackList');
+  if(!target)return;
   const uid=String(window.studyStore?.user?.uid||'guest');
   if(publicPackRenderPromise&&publicPackRenderUid===uid)return publicPackRenderPromise;
 
