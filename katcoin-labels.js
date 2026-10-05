@@ -7,7 +7,7 @@
     nodes.forEach(n=>{
       const value=n.nodeValue;
       if(!value||/katcoin/i.test(value)) return;
-      n.nodeValue=value.replace(/(?<![\\p{L}\\p{M}])Xu(?![\\p{L}\\p{M}])/gu,'KatCoin').replace(/(?<![\\p{L}\\p{M}])xu(?![\\p{L}\\p{M}])/gu,'KatCoin');
+      n.nodeValue=value.replace(/(?<![\p{L}\p{M}])Xu(?![\p{L}\p{M}])/gu,'KatCoin').replace(/(?<![\p{L}\p{M}])xu(?![\p{L}\p{M}])/gu,'KatCoin');
     });
   }
   function boot(){
@@ -15,7 +15,7 @@
     const observer=new MutationObserver(mutations=>{
       mutations.forEach(m=>m.addedNodes.forEach(n=>{
         if(n.nodeType===Node.TEXT_NODE){
-          n.nodeValue=n.nodeValue.replace(/(?<![\\p{L}\\p{M}])Xu(?![\\p{L}\\p{M}])/gu,'KatCoin').replace(/(?<![\\p{L}\\p{M}])xu(?![\\p{L}\\p{M}])/gu,'KatCoin');
+          n.nodeValue=n.nodeValue.replace(/(?<![\p{L}\p{M}])Xu(?![\p{L}\p{M}])/gu,'KatCoin').replace(/(?<![\p{L}\p{M}])xu(?![\p{L}\p{M}])/gu,'KatCoin');
         }else if(n.nodeType===Node.ELEMENT_NODE) replaceText(n);
       }));
     });
