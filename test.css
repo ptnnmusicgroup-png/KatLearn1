@@ -149,6 +149,7 @@ button{cursor:pointer}
   background:linear-gradient(135deg,#efe9ff,#e3ddff);
   font-size:21px;
 }
+.test-sidebar-brand>span img{width:28px;height:32px;display:block;object-fit:contain;border-radius:9px}
 .test-sidebar-brand b{
   font:700 21px/1 Fredoka,sans-serif;
 }
