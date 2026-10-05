@@ -348,19 +348,28 @@
       const uid=currentUser.uid;
       const profile=await this.loadProfile();
       if(String(profile?.studentAccountType||'free').toLowerCase()==='class')throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
-      const accountCode=String(profile?.accountCode||'').trim()||await this.ensureAccountCode();
-      try{
-        await api.deleteDoc(api.doc(db,'users',uid,'personalPacks',String(packId)));
-      }catch(directError){
-        const token=await this.getIdToken(true);
-        if(!token)throw directError;
-        const res=await fetch('/api/personal-pack-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'delete',id:String(packId)})});
-        const data=await res.json().catch(()=>({}));
-        if(!res.ok)throw new Error(data.error||directError.message||'Không thể xóa bộ từ.');
-        return data;
-      }
-      try{await api.deleteDoc(api.doc(db,'accounts',accountCode,'memory',String(packId)))}catch(mirrorError){console.warn('[KatLearn] Account pack mirror delete failed:',mirrorError)}
-      return {ok:true,id:String(packId),action:'delete',accountCode};
+
+      // Deletion is intentionally server-authoritative. The previous client
+      // path deleted the user namespace first, then tried to delete the
+      // account-memory mirror with browser rules. A mirror/account mismatch
+      // could make the UI report a failure after the canonical document was
+      // already removed. The protected endpoint deletes both namespaces in
+      // one Admin SDK batch.
+      const token=await this.getIdToken(true);
+      if(!token)throw new Error('Không lấy được phiên xác thực của tài khoản.');
+      const res=await fetch('/api/personal-pack-action',{
+        method:'POST',
+        cache:'no-store',
+        headers:{
+          'Content-Type':'application/json',
+          Authorization:'Bearer '+token
+        },
+        body:JSON.stringify({action:'delete',id:String(packId)})
+      });
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok||data.ok!==true)throw new Error(data.error||'Không thể xóa bộ từ.');
+      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      return data;
     },
     async personalPacks(){
       if(!db&&!authReady&&window.KATLEARN_FIREBASE_CONFIG){
