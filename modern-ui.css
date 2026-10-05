@@ -1379,3 +1379,92 @@ body{
 @media (prefers-reduced-motion:reduce){
   .sidebar,.menu-toggle{transition:none!important}
 }
+
+/* ===== Desktop-first drawer refinement ===== */
+@media (min-width:1181px){
+  .sidebar{
+    width:310px!important;
+    min-width:310px!important;
+    padding:24px 18px 18px!important;
+    border-radius:0 30px 30px 0!important;
+  }
+  .sidebar .brand{
+    height:62px!important;
+    padding-inline:14px!important;
+    border-radius:19px!important;
+  }
+  .sidebar .brand .brand-mark{
+    width:44px!important;
+    height:44px!important;
+    border-radius:15px!important;
+  }
+  .sidebar .brand>span:last-child{
+    font-size:23px!important;
+  }
+  .sidebar .class-label{
+    margin:12px 13px 22px!important;
+    font-size:10px!important;
+  }
+  .sidebar nav{gap:8px!important;padding:3px 4px 10px!important}
+  .sidebar .nav-item{
+    min-height:50px!important;
+    height:50px!important;
+    padding:0 15px!important;
+    border-radius:16px!important;
+    font-size:13px!important;
+  }
+  .sidebar .nav-item span{
+    width:31px!important;
+    margin-right:4px!important;
+    font-size:17px!important;
+  }
+  .topbar{
+    min-height:78px!important;
+    padding:13px clamp(22px,3vw,46px)!important;
+  }
+  .menu-toggle{
+    flex-basis:46px!important;
+    width:46px!important;
+    height:46px!important;
+    min-width:46px!important;
+    min-height:46px!important;
+    border-radius:14px!important;
+    font-size:20px!important;
+  }
+  .page{
+    max-width:1540px!important;
+    padding-left:clamp(28px,4vw,56px)!important;
+    padding-right:clamp(28px,4vw,56px)!important;
+    padding-top:38px!important;
+  }
+}
+
+@media (min-width:821px) and (max-width:1180px){
+  .sidebar{
+    width:290px!important;
+    min-width:290px!important;
+    padding:20px 15px 16px!important;
+  }
+  .sidebar .brand{height:56px!important}
+  .sidebar .nav-item{
+    min-height:46px!important;
+    height:46px!important;
+    font-size:12px!important;
+  }
+  .topbar{
+    min-height:70px!important;
+    padding-inline:18px!important;
+  }
+}
+
+/* Avoid hiding the drawer on short-but-wide laptop displays. */
+@media (min-width:821px) and (max-height:680px){
+  .sidebar{
+    padding-top:14px!important;
+    padding-bottom:12px!important;
+  }
+  .sidebar .brand{height:48px!important}
+  .sidebar .class-label{margin:8px 12px 12px!important}
+  .sidebar nav{gap:5px!important}
+  .sidebar .nav-item{min-height:41px!important;height:41px!important}
+}
