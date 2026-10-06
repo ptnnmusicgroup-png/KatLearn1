@@ -236,6 +236,7 @@ if(!['personal','library','both'].includes(reflexSourceMode))reflexSourceMode='p
 let reflexCatalog={personal:[],library:[]};
 let reflexCatalogPromise=null;
 let reflexCatalogUid='';
+let reflexCatalogLoaded=false;
 function reflexSourceLabel(kind){return kind==='personal'?'Cá nhân':'Thư viện'}
 function reflexPackKey(kind,id){return kind+':'+String(id||'')}
 function reflexPackSource(pack){
@@ -252,8 +253,10 @@ async function loadReflexCatalog(force=false){
   if(!picker)return;
   const user=await window.studyStore?.waitForAuth?.().catch(()=>null);
   const uid=String(user?.uid||'guest');
+  if(reflexCatalogLoaded&&!force&&reflexCatalogUid===uid)return reflexCatalog;
   if(reflexCatalogPromise&&!force&&reflexCatalogUid===uid)return reflexCatalogPromise;
   reflexCatalogUid=uid;
+  reflexCatalogLoaded=false;
   reflexCatalogPromise=(async()=>{
     if(uid&&uid!=='guest'){
       try{
@@ -276,6 +279,9 @@ async function loadReflexCatalog(force=false){
     const community=publicPacks.map(pack=>({...pack,reflexSource:{kind:'public',id:String(pack.id||'')},libraryGroup:'Pack công khai'}));
     reflexCatalog.library=[...corePacks.filter(Boolean),...community];
     reflexCatalog.personal=reflexCatalog.personal.map(pack=>({...pack,reflexSource:{kind:'personal',id:String(pack.id||'')},libraryGroup:'Bộ từ của mình'}));
+    reflexSelected.personal=new Set(reflexCatalog.personal.map(pack=>reflexPackKey('personal',pack.id||reflexPackSource(pack).id)));
+    reflexSelected.library=new Set(reflexCatalog.library.map(pack=>reflexPackKey('library',pack.id||reflexPackSource(pack).id)));
+    reflexCatalogLoaded=true;
     renderReflexSourcePicker();
     return reflexCatalog;
   })().finally(()=>{reflexCatalogPromise=null});
@@ -299,7 +305,6 @@ let reflexSelected={personal:new Set(),library:new Set()};
 function reflexSelectedPackIds(kind){
   const current=reflexSelected[kind];
   const available=new Set(reflexPackList(kind).map(pack=>reflexPackKey(kind,pack.id||reflexPackSource(pack).id)));
-  if(!current.size&&available.size)available.forEach(id=>current.add(id));
   [...current].forEach(id=>{if(!available.has(id))current.delete(id)});
   return current;
 }
@@ -394,7 +399,14 @@ async function initReflexSourcePicker(){
     btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));
   });
   const status=$('#reflexSourceStatus');if(status)status.textContent='Đang tải toàn bộ bộ từ…';
-  try{await loadReflexCatalog(true)}catch(error){console.error('[KatLearn] Reflex source init:',error);renderReflexSourcePicker();renderQuiz()}
+  try{
+    await loadReflexCatalog(true);
+    await refreshReflexPool(true);
+  }catch(error){
+    console.error('[KatLearn] Reflex source init:',error);
+    renderReflexSourcePicker();
+    renderQuiz();
+  }
 }
 window.addEventListener('8b1-auth-change',()=>{if($('#reflexSourcePicker'))void initReflexSourcePicker()});
 function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answered=false;
