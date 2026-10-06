@@ -275,7 +275,10 @@ async function loadReflexCatalog(force=false){
       }
     }));
     let publicPacks=[];
-    try{publicPacks=Array.isArray(await window.studyStore?.publicPacks?.())?await window.studyStore.publicPacks():[]}catch(error){console.warn('[KatLearn] Reflex public packs:',error)}
+    try{
+      const packs=await window.studyStore?.publicPacks?.();
+      publicPacks=Array.isArray(packs)?packs:[];
+    }catch(error){console.warn('[KatLearn] Reflex public packs:',error)}
     const community=publicPacks.map(pack=>({...pack,reflexSource:{kind:'public',id:String(pack.id||'')},libraryGroup:'Pack công khai'}));
     reflexCatalog.library=[...corePacks.filter(Boolean),...community];
     reflexCatalog.personal=reflexCatalog.personal.map(pack=>({...pack,reflexSource:{kind:'personal',id:String(pack.id||'')},libraryGroup:'Bộ từ của mình'}));
