@@ -30,6 +30,13 @@ function applyServerProfile(profile){
   updateDailyGoal(dailyCount);
   updateCoins();
 }
+function applyServerCoinBalance(balance){
+  const value=Number(balance);
+  if(!Number.isFinite(value))return;
+  coins=Math.max(0,value);
+  updateCoins();
+  if(typeof renderProgressDashboard==='function')void renderProgressDashboard();
+}
 async function syncProfile(extra={}){const user=window.studyStore?.user;if(!window.studyStore?.connected()||!user)return;const uid=user.uid;try{if(window.studyStore?.user?.uid!==uid)return;const data={...extra};if(!['core','public','assigned'].includes(String(activeVocabSource?.kind||'')))Object.assign(data,{knownWords:known,totalWords:vocab.length,vocab});if(window.studyStore?.user?.uid!==uid)return;await window.studyStore.saveProfile(data)}catch(e){if(window.studyStore?.user?.uid===uid)console.warn('Firebase sync:',e)}}
 function toast(msg,kind=''){const t=$('#toast');if(!t)return;clearTimeout(window.__katToastTimer);t.className=''+(kind?' '+kind:'');t.textContent=msg;t.classList.add('show');window.__katToastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
 (function showTestReturnError(){
@@ -905,6 +912,7 @@ window.addEventListener('8b1-auth-change',e=>{
   void refreshAuthDependentViews(e.detail);
 });
 window.addEventListener('katlearn-account-fast',e=>{if(e.detail?.account){renderAuth(e.detail.user);renderAdmin(e.detail.user)}});
+window.addEventListener('katlearn-coin-balance',e=>applyServerCoinBalance(e.detail?.coins));
 window.addEventListener('katlearn-account-ready',e=>{
   const profile=e.detail?.profile||null;
   applyServerProfile(profile);
