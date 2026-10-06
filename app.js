@@ -256,7 +256,10 @@ async function loadReflexCatalog(force=false){
   reflexCatalogUid=uid;
   reflexCatalogPromise=(async()=>{
     if(uid&&uid!=='guest'){
-      try{reflexCatalog.personal=Array.isArray(await window.studyStore.personalPacks())?await window.studyStore.personalPacks():[]}catch(error){console.warn('[KatLearn] Reflex personal packs:',error);reflexCatalog.personal=[]}
+      try{
+        const packs=await window.studyStore.personalPacks();
+        reflexCatalog.personal=Array.isArray(packs)?packs:[];
+      }catch(error){console.warn('[KatLearn] Reflex personal packs:',error);reflexCatalog.personal=[]}
     }else reflexCatalog.personal=[];
     const coreTopics=Array.isArray(window.katlearnCoreVocabulary?.topics)?window.katlearnCoreVocabulary.topics:[];
     const corePacks=await Promise.all(coreTopics.map(async topic=>{
@@ -274,7 +277,6 @@ async function loadReflexCatalog(force=false){
     reflexCatalog.library=[...corePacks.filter(Boolean),...community];
     reflexCatalog.personal=reflexCatalog.personal.map(pack=>({...pack,reflexSource:{kind:'personal',id:String(pack.id||'')},libraryGroup:'Bộ từ của mình'}));
     renderReflexSourcePicker();
-    refreshReflexPool(false);
     return reflexCatalog;
   })().finally(()=>{reflexCatalogPromise=null});
   return reflexCatalogPromise;
