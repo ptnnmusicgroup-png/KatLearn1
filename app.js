@@ -230,6 +230,188 @@ function handleReflexTimeout(){
   updateReflexHud(0);
   setTimeout(advanceReflexRound,650);
 }
+
+let reflexSourceMode=localStorage.getItem('katlearn-reflex-source-mode')||'personal';
+if(!['personal','library','both'].includes(reflexSourceMode))reflexSourceMode='personal';
+let reflexCatalog={personal:[],library:[]};
+let reflexCatalogPromise=null;
+let reflexCatalogUid='';
+let reflexCatalogLoaded=false;
+function reflexSourceLabel(kind){return kind==='personal'?'Cá nhân':'Thư viện'}
+function reflexPackKey(kind,id){return kind+':'+String(id||'')}
+function reflexPackSource(pack){
+  return pack?.reflexSource||(
+    pack?.core?{kind:'core',id:String(pack.topicId||pack.id||'').replace(/^core:/,'')}:
+    {kind:'public',id:String(pack?.id||'').replace(/^public:/,'')}
+  );
+}
+function reflexPackList(kind){
+  return kind==='personal'?reflexCatalog.personal:reflexCatalog.library;
+}
+async function loadReflexCatalog(force=false){
+  const picker=$('#reflexPackPicker');
+  if(!picker)return;
+  const user=await window.studyStore?.waitForAuth?.().catch(()=>null);
+  const uid=String(user?.uid||'guest');
+  if(reflexCatalogLoaded&&!force&&reflexCatalogUid===uid)return reflexCatalog;
+  if(reflexCatalogPromise&&!force&&reflexCatalogUid===uid)return reflexCatalogPromise;
+  reflexCatalogUid=uid;
+  reflexCatalogLoaded=false;
+  reflexCatalogPromise=(async()=>{
+    if(uid&&uid!=='guest'){
+      try{
+        const packs=await window.studyStore.personalPacks();
+        reflexCatalog.personal=Array.isArray(packs)?packs:[];
+      }catch(error){console.warn('[KatLearn] Reflex personal packs:',error);reflexCatalog.personal=[]}
+    }else reflexCatalog.personal=[];
+    const coreTopics=Array.isArray(window.katlearnCoreVocabulary?.topics)?window.katlearnCoreVocabulary.topics:[];
+    const corePacks=await Promise.all(coreTopics.map(async topic=>{
+      try{
+        const pack=await loadCoreTopic(topic.id);
+        return {...pack,reflexSource:{kind:'core',id:String(topic.id)},libraryGroup:String(topic.category||'Thư viện KatLearn')};
+      }catch(error){
+        console.warn('[KatLearn] Reflex core pack '+topic.id+':',error);
+        return null;
+      }
+    }));
+    let publicPacks=[];
+    try{
+      const packs=await window.studyStore?.publicPacks?.();
+      publicPacks=Array.isArray(packs)?packs:[];
+    }catch(error){console.warn('[KatLearn] Reflex public packs:',error)}
+    const community=publicPacks.map(pack=>({...pack,reflexSource:{kind:'public',id:String(pack.id||'')},libraryGroup:'Pack công khai'}));
+    reflexCatalog.library=[...corePacks.filter(Boolean),...community];
+    reflexCatalog.personal=reflexCatalog.personal.map(pack=>({...pack,reflexSource:{kind:'personal',id:String(pack.id||'')},libraryGroup:'Bộ từ của mình'}));
+    reflexSelected.personal=new Set(reflexCatalog.personal.map(pack=>reflexPackKey('personal',pack.id||reflexPackSource(pack).id)));
+    reflexSelected.library=new Set(reflexCatalog.library.map(pack=>reflexPackKey('library',pack.id||reflexPackSource(pack).id)));
+    reflexCatalogLoaded=true;
+    renderReflexSourcePicker();
+    return reflexCatalog;
+  })().finally(()=>{reflexCatalogPromise=null});
+  return reflexCatalogPromise;
+}
+function renderReflexPackCards(kind){
+  const packs=reflexPackList(kind);
+  if(!packs.length){
+    return kind==='personal'
+      ? '<div class="reflex-pack-empty"><span>📚</span><b>Chưa có bộ từ cá nhân</b><small>Tạo bộ từ riêng trước rồi Kat sẽ bung toàn bộ pack theo UID tại đây.</small><button type="button" data-reflex-empty-action="personal">Mở Bộ từ riêng</button></div>'
+      : '<div class="reflex-pack-empty"><span>📖</span><b>Thư viện đang trống</b><small>KatLearn chưa có dữ liệu thư viện khả dụng.</small></div>';
+  }
+  return packs.map(pack=>{
+    const source=reflexPackSource(pack),id=reflexPackKey(kind,pack.id||source.id),words=Array.isArray(pack.words)?pack.words:[];
+    const usable=words.filter(v=>v?.word&&vocabMeaning(v)).length;
+    const checked=reflexSelectedPackIds(kind).has(String(id));
+    return '<label class="reflex-pack-card'+(checked?' selected':'')+'"><input type="checkbox" class="reflex-pack-check" data-reflex-pack="'+esc(id)+'" '+(checked?'checked':'')+'><span class="reflex-pack-card-icon">'+esc(String(pack.icon||'📚'))+'</span><span class="reflex-pack-card-copy"><b>'+esc(pack.name||'Bộ từ không tên')+'</b><small>'+usable+' từ'+(pack.libraryGroup?' · '+esc(pack.libraryGroup):'')+'</small></span><span class="reflex-pack-card-tick">✓</span></label>';
+  }).join('');
+}
+let reflexSelected={personal:new Set(),library:new Set()};
+function reflexSelectedPackIds(kind){
+  const current=reflexSelected[kind];
+  const available=new Set(reflexPackList(kind).map(pack=>reflexPackKey(kind,pack.id||reflexPackSource(pack).id)));
+  [...current].forEach(id=>{if(!available.has(id))current.delete(id)});
+  return current;
+}
+function renderReflexSourcePicker(){
+  const picker=$('#reflexPackPicker'),status=$('#reflexSourceStatus');
+  if(!picker)return;
+  const personalOn=reflexSourceMode==='personal'||reflexSourceMode==='both';
+  const libraryOn=reflexSourceMode==='library'||reflexSourceMode==='both';
+  const personalSelected=personalOn?reflexSelectedPackIds('personal').size:0;
+  const librarySelected=libraryOn?reflexSelectedPackIds('library').size:0;
+  const personalTotal=reflexCatalog.personal.length,libraryTotal=reflexCatalog.library.length;
+  if(status)status.textContent=personalSelected+' cá nhân · '+librarySelected+' thư viện';
+  const section=(kind,title,subtitle,icon)=>{
+    const packs=reflexPackList(kind),selected=reflexSelectedPackIds(kind);
+    return '<section class="reflex-pack-section '+kind+'"><div class="reflex-pack-section-head"><div><span class="reflex-section-icon">'+icon+'</span><div><h3>'+title+'</h3><p>'+subtitle+'</p></div></div><div class="reflex-pack-section-actions"><b>'+selected.size+'/'+packs.length+' bộ</b><button type="button" data-reflex-select-all="'+kind+'">Chọn tất cả</button><button type="button" data-reflex-clear-all="'+kind+'">Bỏ chọn</button></div></div><div class="reflex-pack-grid">'+renderReflexPackCards(kind)+'</div></section>';
+  };
+  let html='';
+  if(personalOn)html+=section('personal','Cá nhân','Toàn bộ bộ từ của tài khoản hiện tại, tải theo UID.','👤');
+  if(libraryOn)html+=section('library','Thư viện KatLearn','Toàn bộ kho từ KatLearn + các pack công khai khả dụng.','📖');
+  picker.innerHTML=html||'<div class="reflex-pack-empty"><span>🐱</span><b>Chọn ít nhất một nguồn</b><small>Bật “1. Bộ từ của mình” hoặc “2. Bộ từ công khai” để bắt đầu.</small></div>';
+  picker.querySelectorAll('[data-reflex-empty-action="personal"]').forEach(btn=>btn.onclick=()=>showPage('personalPacks'));
+}
+function setReflexSourceMode(modeValue){
+  const mode=String(modeValue||'personal');
+  if(!['personal','library','both'].includes(mode))return;
+  reflexSourceMode=mode;
+  localStorage.setItem('katlearn-reflex-source-mode',mode);
+  document.querySelectorAll('.reflex-source-option').forEach(btn=>{
+    const pressed=btn.dataset.reflexSource===mode;
+    btn.classList.toggle('active',pressed);
+    btn.setAttribute('aria-pressed',String(pressed));
+  });
+  renderReflexSourcePicker();
+  refreshReflexPool(true);
+}
+async function refreshReflexPool(resetSession=true){
+  if(!$reflexPackPickerSafe())return;
+  await loadReflexCatalog();
+  const selectedKinds=reflexSourceMode==='both'?['personal','library']:[reflexSourceMode];
+  const pool=[],seen=new Set();
+  for(const kind of selectedKinds){
+    for(const pack of reflexPackList(kind)){
+      const key=reflexPackKey(kind,pack.id||reflexPackSource(pack).id);
+      if(!reflexSelectedPackIds(kind).has(key))continue;
+      const source=reflexPackSource(pack);
+      for(const original of Array.isArray(pack.words)?pack.words:[]){
+        const normalized=normalizeLearningWords([original])[0];
+        if(!normalized)continue;
+        const dedupe=String(normalized.word||'').trim().toLowerCase()+'::'+vocabMeaning(normalized).toLowerCase();
+        if(seen.has(dedupe))continue;
+        seen.add(dedupe);
+        pool.push({...normalized,__reflexSource:{kind:source.kind,id:String(source.id||'')},__reflexPackId:key,__reflexPackName:String(pack.name||'')});
+      }
+    }
+  }
+  vocab=pool;
+  if(resetSession){
+    cardIndex=0;question=1;reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;sessionCoins=0;
+    if($('#sessionCoins'))$('#sessionCoins').textContent='0';
+  }
+  renderReflexSourcePicker();
+  renderQuiz();
+}
+function $reflexPackPickerSafe(){return !!$('#reflexPackPicker')}
+function bindReflexSourcePicker(){
+  document.querySelectorAll('.reflex-source-option').forEach(btn=>btn.onclick=()=>setReflexSourceMode(btn.dataset.reflexSource));
+  const picker=$('#reflexPackPicker');
+  if(!picker)return;
+  picker.addEventListener('change',e=>{
+    const input=e.target?.closest?.('.reflex-pack-check');
+    if(!input)return;
+    const id=String(input.dataset.reflexPack||''),kind=id.split(':')[0]==='personal'?'personal':'library';
+    if(input.checked)reflexSelectedPackIds(kind).add(id);else reflexSelectedPackIds(kind).delete(id);
+    input.closest('.reflex-pack-card')?.classList.toggle('selected',input.checked);
+    refreshReflexPool();
+  });
+  picker.addEventListener('click',e=>{
+    const select=e.target?.closest?.('[data-reflex-select-all]'),clear=e.target?.closest?.('[data-reflex-clear-all]');
+    if(select){
+      e.preventDefault();const kind=select.dataset.reflexSelectAll;reflexPackList(kind).forEach(pack=>reflexSelectedPackIds(kind).add(reflexPackKey(kind,pack.id||reflexPackSource(pack).id)));renderReflexSourcePicker();refreshReflexPool();return;
+    }
+    if(clear){
+      e.preventDefault();const kind=clear.dataset.reflexClearAll;reflexSelected[kind].clear();renderReflexSourcePicker();refreshReflexPool();return;
+    }
+  });
+}
+async function initReflexSourcePicker(){
+  if(!$('#reflexSourcePicker'))return;
+  bindReflexSourcePicker();
+  document.querySelectorAll('.reflex-source-option').forEach(btn=>{
+    const active=btn.dataset.reflexSource===reflexSourceMode;
+    btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));
+  });
+  const status=$('#reflexSourceStatus');if(status)status.textContent='Đang tải toàn bộ bộ từ…';
+  try{
+    await loadReflexCatalog(true);
+    await refreshReflexPool(true);
+  }catch(error){
+    console.error('[KatLearn] Reflex source init:',error);
+    renderReflexSourcePicker();
+    renderQuiz();
+  }
+}
+window.addEventListener('8b1-auth-change',()=>{if($('#reflexSourcePicker'))void initReflexSourcePicker()});
 function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answered=false;
   if(!vocab.length){
     $('#questionHint').textContent='Bạn cần thêm từ vựng trước khi luyện tập.';$('#questionWord').textContent='Chưa có bộ từ';$('#questionPronounce').textContent='';
@@ -331,7 +513,7 @@ async function answer(btn,correct){
       // The reward endpoint is fully server-authoritative. Do not perform
       // any Firestore profile read/write in the browser before requesting the
       // reward; stale rules or client-side permissions must never block it.
-      const payload={action:'answer',word:v.word,meaning:vocabMeaning(v),answer:btn.dataset.answer||'',mode,source:activeVocabSource};
+      const payload={action:'answer',word:v.word,meaning:vocabMeaning(v),answer:btn.dataset.answer||'',mode,source:v.__reflexSource||activeVocabSource};
       const res=await fetch(gameEndpoint(),{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(payload)});
       const data=await res.json().catch(()=>({}));
       if(res.ok&&data.ok){
@@ -730,7 +912,7 @@ window.addEventListener('katlearn-account-ready',e=>{
 });
 window.addEventListener('katlearn-account-ready',()=>{void renderProgressDashboard()});
 window.addEventListener('katlearn-account-ready',e=>{const profile=e.detail?.profile||null;updateHomeHeader(profile);updateDailyGoal(profile?.dailyQuestions||0)});renderAuth(null);renderAdmin(null);const loginModal=$('#loginModal');if(loginModal)loginModal.querySelector('.modal-close')?.addEventListener('click',()=>loginModal.classList.remove('show'));if(loginModal)loginModal.onclick=e=>{if(e.target===loginModal)loginModal.classList.remove('show')};function authError(err){if(err.code==='auth/unauthorized-domain')return `Firebase chưa cho phép domain “${location.hostname}”. Vào Authentication → Settings → Authorized domains để thêm domain này.`;const messages={'auth/operation-not-allowed':'Hãy bật Email/Password trong Firebase Authentication trước.','auth/email-already-in-use':'Email này đã có tài khoản. Hãy đăng nhập.','auth/invalid-credential':'Email hoặc mật khẩu không đúng.','auth/weak-password':'Mật khẩu cần ít nhất 6 ký tự.'};return messages[err.code]||'Không thể thực hiện: '+err.message}async function providerLogin(provider){try{const user=await window.studyStore.signIn(provider);$('#loginModal').classList.remove('show');renderAuth(user);toast(`Chào mừng ${user.displayName||'bạn'}! Dữ liệu đang được đồng bộ.`)}catch(err){toast(authError(err))}}async function emailLogin(create){const email=$('#authEmail').value.trim(),password=$('#authPassword').value;if(!email||!password)return;try{const user=await window.studyStore.signInEmail(email,password,create);$('#loginModal').classList.remove('show');renderAuth(user);toast(create?'Đã tạo tài khoản thành công!':'Đăng nhập thành công!')}catch(err){toast(authError(err))}}const emailLoginForm=$('#emailLoginForm'),emailRegister=$('#emailRegister'),googleLogin=$('#googleLogin'),appleLogin=$('#appleLogin'),logoutBtn=$('#logoutBtn'),openProgress=$('#openProgress');if(emailLoginForm)emailLoginForm.onsubmit=e=>{e.preventDefault();emailLogin(false)};if(emailRegister)emailRegister.onclick=()=>emailLogin(true);if(googleLogin)googleLogin.onclick=()=>providerLogin('google');if(appleLogin)appleLogin.onclick=()=>providerLogin('apple');if(logoutBtn)logoutBtn.onclick=async()=>{try{await window.studyStore.signOut();toast('Đã đăng xuất.');setTimeout(()=>location.replace('/login.html'),100)}catch(e){toast('❌ Không thể đăng xuất: '+(e.message||'Lỗi không xác định'))}};if(openProgress)openProgress.onclick=()=>{showPage('progress');$('#accountPanel').hidden=true};document.addEventListener('click',e=>{const topActions=$('.top-actions'),panel=$('#accountPanel');if(topActions&&!topActions.contains(e.target)&&panel)panel.hidden=true});
-if($('#learn'))renderCard();if($('#practice'))renderQuiz();updateCoins();openInitialPage();if($('#packLibrary')||$('#publishedPacks'))void renderPublicPacks();
+if($('#learn'))renderCard();if($('#practice'))void initReflexSourcePicker();updateCoins();openInitialPage();if($('#packLibrary')||$('#publishedPacks'))void renderPublicPacks();
 
 window.addEventListener('katlearn-personal-pack-open',e=>{const words=Array.isArray(e.detail?.words)?e.detail.words:[];vocab=words;setVocabSource({kind:'personal',id:String(e.detail?.id||''),uid:window.studyStore?.userId||''});cardIndex=0;localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));if($('#learn'))renderCard();if($('#practice'))renderQuiz();if($('#wordTable'))renderVocabularyViews();void syncProfile({personalPackName:String(e.detail?.name||'').trim(),knownWords:known,totalWords:vocab.length,vocab});});
 window.addEventListener('katlearn-personal-pack-deleted',e=>{
