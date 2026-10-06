@@ -72,20 +72,25 @@
       if(connectPromise)return connectPromise;
 
       connectPromise=(async()=>{
-        const [{initializeApp,getApps,deleteApp},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile}]=await Promise.all([
+        const [{initializeApp,getApps},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile,setPersistence,browserLocalPersistence}]=await Promise.all([
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js')
         ]);
         const existing=getApps()[0];
-        if(existing){
-          await deleteApp(existing);
-          db=null;auth=null;api=null;authReady=null;authStateReady=false;currentUser=null;notifyAuth(null);
-        }
-        const app=initializeApp(config);
+        const existingMatches=existing?.options?.apiKey===config.apiKey&&existing?.options?.projectId===config.projectId;
+        const app=existingMatches?existing:initializeApp(config);
         db=getFirestore(app);
         api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction};
         auth=getAuth(app);
+        // Explicitly persist the Firebase Auth session across reloads/restarts.
+        // This prevents transient/session-only auth behavior on browsers where
+        // relying on the SDK default is not desirable.
+        try{
+          await setPersistence(auth,browserLocalPersistence);
+        }catch(error){
+          console.warn('[KatLearn] Không thể bật browserLocalPersistence:',error);
+        }
         api.auth={GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile};
 
         authStateReady=false;
