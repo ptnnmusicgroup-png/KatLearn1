@@ -146,15 +146,25 @@ module.exports=async(req,res)=>{
       };
     });
     const fillerPattern=/^(?:đây là|đây là một|một từ vựng|từ vựng này|từ này|thường được sử dụng|thường dùng|rất hữu ích|hữu ích trong|liên quan đến chủ đề|được sử dụng trong).*$/i;
-    const malformed=words.some(item=>{
-      if(!item||!item.word||!item.meaning_vi||!item.notes||!item.example||!hasVietnameseDiacritics(item.meaning_vi))return true;
-      if(!/[.!?…]$/.test(item.meaning_vi)||!/[.!?…]$/.test(item.notes)||!/[.!?…]$/.test(item.example))return true;
-      if(fillerPattern.test(tidyText(item.notes))&&tidyText(item.notes).length<90)return true;
-      if(tidyText(item.meaning_vi).toLowerCase() ===tidyText(item.word).toLowerCase())return true;
-      return false;
-    });
-    if(malformed)throw Object.assign(new Error("Kat AI trả về bộ từ chưa đạt chất lượng yêu cầu. Hãy thử lại với topic cụ thể hơn."),{status:502,code:"gemini_bad_word_format"});
-    result.pack=result.pack||{};result.pack.topic=prompt;result.pack.difficulty=difficulty;result.pack.purpose=purpose;result.words=words;
+    // Do not throw away an otherwise usable Gemini response just because a
+    // note/example is missing punctuation or resembles a generic sentence.
+    // Repair soft-quality fields locally and only discard truly unusable rows.
+    words=words.map(item=>{
+      const word=tidyText(item?.word);
+      const meaning=ensureVietnameseMeaning(item?.meaning_vi||item?.translation_vi||"");
+      return {
+        ...item,
+        word,
+        meaning_vi:meaning,
+        translation_vi:meaning,
+        part_of_speech:tidyText(item?.part_of_speech)||"other",
+        ipa:tidyText(item?.ipa)||"—",
+        example:ensureSentence(item?.example)||"The word \""+word+"\" is used in this context.",
+        notes:cleanNotes(item?.notes,word)
+      };
+    }).filter(item=>item.word&&item.meaning_vi&&hasVietnameseDiacritics(item.meaning_vi));
+    if(!words.length)throw Object.assign(new Error("Kat AI không trả về được từ vựng có nghĩa tiếng Việt. Hãy thử lại nhé."),{status:502,code:"gemini_no_usable_words"});
+    result.pack=result.pack||{};result.pack.topic=prompt;result.pack.difficulty=difficulty;result.pack.purpose=purpose;result.words=words.slice(0,wordCount);
     return send(res,200,result);
   }catch(error){return send(res,error.status||500,{error:String(error.message||"Kat AI không thể tạo bộ từ."),code:error.code||"ai_pack_failed"},error.retryAfter?{"Retry-After":String(error.retryAfter)}:{})}
 };
