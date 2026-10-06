@@ -51,6 +51,14 @@ const CLASS_FIELDS=["name","grade","description","teacherEmail","teacherUid","sc
 const PACK_FIELDS=["name","createdBy","createdByEmail","createdByUid","createdAt","updatedAt","wordCount"];
 const SCHOOL_FIELDS=["name","province","ward","schoolId","schoolLevel","createdAt","updatedAt","source","provinceId","wardId"];
 const ADMIN_SYNC_COLLECTION="KatLearn_ADMIN_SYNC_1";
+const MAX_KATCOIN_GRANT=1000000000;
+function leaderboardId(uid){return crypto.createHash("sha256").update(String(uid)).digest("hex").slice(0,32)}
+function leaderboardRow(displayName,coins,energy){return{
+  displayName:String(displayName||"KatLearner").trim().slice(0,80)||"KatLearner",
+  coins:Math.max(0,Number(coins)||0),
+  xp:Math.max(0,Number(energy)||0),
+  updatedAt:Date.now()
+}}
 const SYNC_CONFIG={
   users:{source:"users",limit:200,fields:USER_FIELDS},
   classes:{source:"classes",limit:200,fields:CLASS_FIELDS},
@@ -1372,20 +1380,57 @@ async function setUserDisabled(db,auth,decoded,uid,disabled){
   return{uid,disabled:nextDisabled};
 }
 
+async function grantUserCoins(db,decoded,uid,amount,reason=""){
+  uid=clean(uid,160);
+  if(!uid)throw fail(new Error("Thiếu UID tài khoản."),400,"missing_uid");
+  const grant=Math.floor(Number(amount));
+  if(!Number.isSafeInteger(grant)||grant<=0||grant>MAX_KATCOIN_GRANT){
+    throw fail(new Error("Số KatCoin cộng phải là số nguyên dương, tối đa "+MAX_KATCOIN_GRANT.toLocaleString("en-US")+" xu mỗi lần."),400,"invalid_coin_grant");
+  }
+  reason=clean(reason,300);
+  const ref=db.collection("users").doc(uid);
+  const result=await db.runTransaction(async tx=>{
+    const snap=await tx.get(ref);
+    if(!snap.exists)throw fail(new Error("Không tìm thấy tài khoản."),404,"user_not_found");
+    const profile=snap.data()||{};
+    const email=String(profile.email||"").toLowerCase();
+    if(email==="katlearn.admin@gmail.com")throw fail(new Error("Không thể cộng KatCoin cho Admin hệ thống."),403,"admin_protected");
+    const previous=Math.max(0,Math.floor(Number(profile.coins||0)));
+    const next=previous+grant;
+    if(!Number.isSafeInteger(next))throw fail(new Error("Số dư KatCoin vượt giới hạn an toàn."),400,"coin_balance_overflow");
+    tx.set(ref,{coins:next,updatedAt:Date.now()},{merge:true});
+    tx.set(db.collection("leaderboard").doc(leaderboardId(uid)),leaderboardRow(profile.displayName,next,profile.energy),{merge:true});
+    return{uid,previousCoins:previous,added:grant,coins:next,reason};
+  });
+  await audit(db,decoded,"user.grant_coins",uid,{
+    added:result.added,
+    previousCoins:result.previousCoins,
+    coins:result.coins,
+    reason:result.reason
+  });
+  return result;
+}
+
 async function resetUserStats(db,decoded,uid){
   uid=clean(uid,160);
   if(!uid)throw fail(new Error("Thiếu UID tài khoản."),400,"missing_uid");
-  const ref=db.collection("users").doc(uid),snap=await ref.get();
-  if(!snap.exists)throw fail(new Error("Không tìm thấy tài khoản."),404,"user_not_found");
-  const email=String(snap.data()?.email||"").toLowerCase();
-  if(email==="katlearn.admin@gmail.com")throw fail(new Error("Không thể reset tài khoản Admin hệ thống."),403,"admin_protected");
-  await ref.set({
-    coins:0,energy:0,streak:0,lastStudyDay:"",
-    dailyQuestions:0,dailyCorrect:0,questionsAnswered:0,correctAnswers:0,
-    updatedAt:Date.now()
-  },{merge:true});
+  const ref=db.collection("users").doc(uid);
+  const result=await db.runTransaction(async tx=>{
+    const snap=await tx.get(ref);
+    if(!snap.exists)throw fail(new Error("Không tìm thấy tài khoản."),404,"user_not_found");
+    const profile=snap.data()||{};
+    const email=String(profile.email||"").toLowerCase();
+    if(email==="katlearn.admin@gmail.com")throw fail(new Error("Không thể reset tài khoản Admin hệ thống."),403,"admin_protected");
+    tx.set(ref,{
+      coins:0,energy:0,streak:0,lastStudyDay:"",
+      dailyQuestions:0,dailyCorrect:0,questionsAnswered:0,correctAnswers:0,
+      updatedAt:Date.now()
+    },{merge:true});
+    tx.set(db.collection("leaderboard").doc(leaderboardId(uid)),leaderboardRow(profile.displayName,0,0),{merge:true});
+    return{uid};
+  });
   await audit(db,decoded,"user.reset_stats",uid);
-  return{uid};
+  return result;
 }
 
 async function deleteUser(db,auth,decoded,uid){
@@ -1888,6 +1933,7 @@ module.exports=async(req,res)=>{
     if(action==="rename-user")return writeJson(res,200,{ok:true,...await renameUser(db,auth,decoded,body.uid,body.name)},origin);
     if(action==="disable-user")return writeJson(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,true)},origin);
     if(action==="enable-user")return writeJson(res,200,{ok:true,...await setUserDisabled(db,auth,decoded,body.uid,false)},origin);
+    if(action==="grant-coins")return writeJson(res,200,{ok:true,...await grantUserCoins(db,decoded,body.uid,body.amount,body.reason)},origin);
     if(action==="reset-user-stats")return writeJson(res,200,{ok:true,...await resetUserStats(db,decoded,body.uid)},origin);
     if(action==="delete-user")return writeJson(res,200,{ok:true,...await deleteUser(db,auth,decoded,body.uid)},origin);
     if(action==="update-class")return writeJson(res,200,{ok:true,...await renameClass(db,decoded,body.classId,body.name,body.grade,body.description)},origin);

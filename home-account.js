@@ -55,6 +55,12 @@
     applyProfile(window.katlearnAccount?.profile||null);
   }
   window.addEventListener('katlearn-account-ready',e=>applyProfile(e.detail?.profile||null));
+  window.addEventListener('katlearn-coin-balance',e=>{
+    const value=Number(e.detail?.coins);
+    if(!Number.isFinite(value))return;
+    const coinEl=document.getElementById('haCoins');
+    if(coinEl)coinEl.textContent=Math.max(0,value).toLocaleString('en-US');
+  });
   window.addEventListener('8b1-auth-change',()=>{void hydrate()});
   document.addEventListener('click',e=>{const root=document.getElementById('homeAccount');if(root&&!root.contains(e.target)){root.querySelector('.ha-panel')?.setAttribute('hidden','')}});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hydrate,{once:true});else hydrate();

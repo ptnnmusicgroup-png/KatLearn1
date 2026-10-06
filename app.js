@@ -12,7 +12,7 @@ const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const aiEndpoint=name=>'/api/'+String(name||'').replace(/^\/+/, '');
 const gameEndpoint=()=>'/api/game-action';
 async function aiHeaders(){const h={'Content-Type':'application/json'};try{const t=await window.studyStore?.getIdToken?.();if(t)h.Authorization='Bearer '+t}catch(_){}return h}
-function format(n){return n.toLocaleString('en-US')}
+function format(n){const value=Number(n);return Number.isFinite(value)?Math.max(0,value).toLocaleString('en-US'):'0'}
 function updateDailyGoal(count){
   dailyCount=Math.max(0,Number(count)||0);
   const done=Math.min(10,dailyCount);
@@ -24,11 +24,19 @@ function updateDailyGoal(count){
 function updateCoins(){['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=format(coins)});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
 function applyServerProfile(profile){
   if(!profile)return;
-  coins=Math.max(0,Number(profile.coins||0));
-  energy=Math.max(0,Number(profile.energy||0));
+  const coinValue=Number(profile.coins),energyValue=Number(profile.energy);
+  coins=Number.isFinite(coinValue)?Math.max(0,Math.floor(coinValue)):0;
+  energy=Number.isFinite(energyValue)?Math.max(0,Math.floor(energyValue)):0;
   dailyCount=Math.max(0,Number(profile.dailyQuestions||0));
   updateDailyGoal(dailyCount);
   updateCoins();
+}
+function applyServerCoinBalance(balance){
+  const value=Number(balance);
+  if(!Number.isFinite(value))return;
+  coins=Math.max(0,value);
+  updateCoins();
+  if(typeof renderProgressDashboard==='function')void renderProgressDashboard();
 }
 async function syncProfile(extra={}){const user=window.studyStore?.user;if(!window.studyStore?.connected()||!user)return;const uid=user.uid;try{if(window.studyStore?.user?.uid!==uid)return;const data={...extra};if(!['core','public','assigned'].includes(String(activeVocabSource?.kind||'')))Object.assign(data,{knownWords:known,totalWords:vocab.length,vocab});if(window.studyStore?.user?.uid!==uid)return;await window.studyStore.saveProfile(data)}catch(e){if(window.studyStore?.user?.uid===uid)console.warn('Firebase sync:',e)}}
 function toast(msg,kind=''){const t=$('#toast');if(!t)return;clearTimeout(window.__katToastTimer);t.className=''+(kind?' '+kind:'');t.textContent=msg;t.classList.add('show');window.__katToastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
@@ -905,6 +913,7 @@ window.addEventListener('8b1-auth-change',e=>{
   void refreshAuthDependentViews(e.detail);
 });
 window.addEventListener('katlearn-account-fast',e=>{if(e.detail?.account){renderAuth(e.detail.user);renderAdmin(e.detail.user)}});
+window.addEventListener('katlearn-coin-balance',e=>applyServerCoinBalance(e.detail?.coins));
 window.addEventListener('katlearn-account-ready',e=>{
   const profile=e.detail?.profile||null;
   applyServerProfile(profile);
