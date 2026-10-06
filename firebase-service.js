@@ -260,44 +260,30 @@
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để tạo bộ từ riêng.');
       const user=currentUser,uid=user.uid;
       if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      const profile=await this.loadProfile();
-      if(String(profile?.studentAccountType||'free').toLowerCase()==='class')throw new Error('Tài khoản lớp học do giáo viên quản lý không có bộ từ cá nhân.');
       const name=String(pack?.name||'').trim();
       const words=Array.isArray(pack?.words)?pack.words:[];
       if(!name)throw new Error('Hãy đặt tên cho bộ từ nhé.');
       if(!words.length)throw new Error('Bộ từ cần ít nhất một từ có nghĩa.');
 
-      const accountCode=await this.ensureAccountCode();
-      const identity=await this.ensurePackIdentity(name);
-      if(currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
-      const now=api.serverTimestamp();
-      const payload={
-        name,words,kind:'personalPack',
-        ownerUid:uid,ownerAccountCode:accountCode,
-        ownerEmail:String(user.email||''),
-        ownerDisplayName:String(user.displayName||user.email?.split('@')[0]||'KatLearn Student'),
-        createdAt:now,updatedAt:now
-      };
-      const userRef=api.doc(db,'users',uid,'personalPacks',identity.docId);
-      const accountRef=api.doc(db,'accounts',accountCode,'memory',identity.docId);
-      // Write directly to the user's namespace. This makes personal packs
-      // visible immediately at users/{uid}/personalPacks/{packId}.
-      try{
-        await api.setDoc(userRef,payload,{merge:false});
-      }catch(directError){
-        // Fallback for deployments where Firestore Rules have not yet been
-        // published: the protected server endpoint can still provision the
-        // same user namespace with Firebase Admin.
-        const token=await this.getIdToken(true);
-        if(!token)throw directError;
-        const res=await fetch('/api/personal-pack',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({id:identity.docId,name,words})});
-        const data=await res.json().catch(()=>({}));
-        if(!res.ok)throw new Error(data.error||directError.message||'Không thể lưu bộ từ.');
-        return data;
-      }
-      try{await api.setDoc(accountRef,payload,{merge:false})}
-      catch(mirrorError){console.warn('[KatLearn] Account pack mirror failed:',mirrorError)}
-      return {id:identity.docId,accountCode,source:'users',...payload};
+      // Creating a personal pack is server-authoritative. Do not perform
+      // client-side account/sequence transactions first: restrictive or stale
+      // Firestore Rules can reject those preflights even though Firebase Admin
+      // is allowed to create the pack safely.
+      const token=await this.getIdToken(true);
+      if(!token)throw new Error('Không lấy được phiên xác thực của tài khoản.');
+      const res=await fetch('/api/personal-pack',{
+        method:'POST',
+        cache:'no-store',
+        headers:{
+          'Content-Type':'application/json',
+          Authorization:'Bearer '+token
+        },
+        body:JSON.stringify({name,words})
+      });
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok)throw new Error(data.error||'Không thể lưu bộ từ.');
+      if(String(window.studyStore?.user?.uid||'')!==uid)throw new Error('Tài khoản đã thay đổi, hãy thử lại.');
+      return data;
     },
     async updatePersonalPack(packId,pack){
       if(!db||!currentUser)throw new Error('Hãy đăng nhập để cập nhật bộ từ.');
