@@ -736,3 +736,12 @@ button:disabled{filter:saturate(.7)}
 .primary-btn,.add-word-btn,.create-pack-btn,.login-btn,.account-menu-btn,.learn-tool-btn,
 .flash-main-btn,.flash-result-btn,.reflex-skip,.pack-tabs button,.shop-theme-card button{font-weight:700!important}
 .eyebrow,.class-label{font-weight:700!important}
+
+
+/* Flashcard renderer fallback: keep front/back faces readable on all browsers. */
+.flashcard{overflow:hidden!important;position:relative!important;transform:none!important;-webkit-transform:none!important;transform-style:flat!important;-webkit-transform-style:flat!important}
+.flashcard .card-face{opacity:1!important;visibility:visible!important;transform:rotateY(0deg)!important;-webkit-transform:rotateY(0deg)!important;transition:opacity .22s ease,transform .32s ease,visibility 0s linear 0s!important;-webkit-transition:opacity .22s ease,-webkit-transform .32s ease,visibility 0s linear 0s!important}
+.flashcard:not(.flipped) .card-front{opacity:1!important;visibility:visible!important;transform:rotateY(0deg)!important;-webkit-transform:rotateY(0deg)!important;pointer-events:auto!important}
+.flashcard:not(.flipped) .card-back{opacity:0!important;visibility:hidden!important;transform:rotateY(-90deg)!important;-webkit-transform:rotateY(-90deg)!important;pointer-events:none!important}
+.flashcard.flipped .card-front{opacity:0!important;visibility:hidden!important;transform:rotateY(90deg)!important;-webkit-transform:rotateY(90deg)!important;pointer-events:none!important}
+.flashcard.flipped .card-back{opacity:1!important;visibility:visible!important;transform:rotateY(0deg)!important;-webkit-transform:rotateY(0deg)!important;pointer-events:auto!important}
