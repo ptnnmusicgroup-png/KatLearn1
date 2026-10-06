@@ -27,6 +27,21 @@
     panel.querySelector('#haLogout').onclick=async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='⏳ Đang đăng xuất...';try{await window.studyStore.signOut();location.reload()}catch(err){b.disabled=false;b.textContent='↪ Đăng xuất';alert('Không thể đăng xuất lúc này. Hãy thử lại nhé.')}};
     root.append(trigger,panel);return true;
   }
+  function applyProfile(p){
+    if(!p)return;
+    const c=document.getElementById('haCoins'),en=document.getElementById('haEnergy'),w=document.getElementById('haWords'),ci=document.getElementById('haClassInfo');
+    if(ci){
+      const isClass=String(p.studentAccountType||'').toLowerCase()==='class';
+      if(isClass){
+        const cn=String(p.className||'').trim(),sn=String(p.schoolName||'').trim();
+        ci.textContent='Học sinh'+(cn?' lớp '+cn:'')+(sn?' - Trường '+sn:'');
+        ci.hidden=false;
+      }else{ci.textContent='';ci.hidden=true}
+    }
+    if(c)c.textContent=Number(p.coins||0).toLocaleString('en-US');
+    if(en)en.textContent=Number(p.energy||0).toLocaleString('en-US');
+    if(w)w.textContent=Number(p.totalWords||0).toLocaleString('en-US');
+  }
   async function hydrate(){
     render();
     if(!window.studyStore)return;
@@ -35,9 +50,11 @@
     }
     render();
     if((window.studyStore?.user?.email||'').toLowerCase()===ADMIN_EMAIL){location.replace(ADMIN_HOME);return}
-    const uid=String(window.studyStore?.user?.uid||'');
-    try{const p=await window.studyStore.loadProfile();if(String(window.studyStore?.user?.uid||'')!==uid)return;if(p){const c=document.getElementById('haCoins'),en=document.getElementById('haEnergy'),w=document.getElementById('haWords'),ci=document.getElementById('haClassInfo');if(ci){const isClass=String(p.studentAccountType||'').toLowerCase()==='class';if(isClass){const cn=String(p.className||'').trim(),sn=String(p.schoolName||'').trim();ci.textContent='Học sinh'+(cn?' lớp '+cn:'')+(sn?' - Trường '+sn:'');ci.hidden=false}else{ci.textContent='';ci.hidden=true}}if(c)c.textContent=Number(p.coins||0).toLocaleString('en-US');if(en)en.textContent=Number(p.energy||0).toLocaleString('en-US');if(w)w.textContent=Number(p.totalWords||0).toLocaleString('en-US')}}catch(e){}
+    // Profile data has one owner: auth-sync.js. Do not perform a second
+    // Firestore read here, which can race the shared account-ready event.
+    applyProfile(window.katlearnAccount?.profile||null);
   }
+  window.addEventListener('katlearn-account-ready',e=>applyProfile(e.detail?.profile||null));
   window.addEventListener('8b1-auth-change',()=>{void hydrate()});
   document.addEventListener('click',e=>{const root=document.getElementById('homeAccount');if(root&&!root.contains(e.target)){root.querySelector('.ha-panel')?.setAttribute('hidden','')}});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',hydrate,{once:true});else hydrate();
