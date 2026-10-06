@@ -335,7 +335,7 @@ function setReflexSourceMode(modeValue){
   if(!['personal','library','both'].includes(mode))return;
   reflexSourceMode=mode;
   localStorage.setItem('katlearn-reflex-source-mode',mode);
-  $('.reflex-source-option').forEach(btn=>{
+  document.querySelectorAll('.reflex-source-option').forEach(btn=>{
     const pressed=btn.dataset.reflexSource===mode;
     btn.classList.toggle('active',pressed);
     btn.setAttribute('aria-pressed',String(pressed));
@@ -373,7 +373,7 @@ async function refreshReflexPool(resetSession=true){
 }
 function $reflexPackPickerSafe(){return !!$('#reflexPackPicker')}
 function bindReflexSourcePicker(){
-  $('.reflex-source-option').forEach(btn=>btn.onclick=()=>setReflexSourceMode(btn.dataset.reflexSource));
+  document.querySelectorAll('.reflex-source-option').forEach(btn=>btn.onclick=()=>setReflexSourceMode(btn.dataset.reflexSource));
   const picker=$('#reflexPackPicker');
   if(!picker)return;
   picker.addEventListener('change',e=>{
@@ -397,7 +397,7 @@ function bindReflexSourcePicker(){
 async function initReflexSourcePicker(){
   if(!$('#reflexSourcePicker'))return;
   bindReflexSourcePicker();
-  $('.reflex-source-option').forEach(btn=>{
+  document.querySelectorAll('.reflex-source-option').forEach(btn=>{
     const active=btn.dataset.reflexSource===reflexSourceMode;
     btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));
   });
