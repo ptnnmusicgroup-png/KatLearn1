@@ -48,6 +48,7 @@ const SHOP_ITEMS={
   'theme-pink':{name:'Pink Mood',price:180},
   'theme-ocean':{name:'Ocean Calm',price:220},
   'theme-lavender':{name:'Lavender Dream',price:260},
+  'theme-sen-viet':{name:'Sen Việt',price:320},
   'shop-cat-nap':{name:'Cat Nap',price:3000,image:'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&q=82'},
   'shop-tabby-cozy':{name:'Cozy Tabby',price:3000,image:'https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=900&q=82'},
   'shop-sleepy-cat':{name:'Sleepy Kitty',price:3000,image:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=900&q=82'},
