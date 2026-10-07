@@ -34,9 +34,34 @@ function applyServerProfile(profile){
 function applyServerCoinBalance(balance){
   const value=Number(balance);
   if(!Number.isFinite(value))return;
-  coins=Math.max(0,value);
+  coins=Math.max(0,Math.floor(value));
   updateCoins();
   if(typeof renderProgressDashboard==='function')void renderProgressDashboard();
+}
+let serverCoinRefreshSeq=0;
+async function refreshAuthoritativeCoinBalance(reason='auth'){
+  const user=window.studyStore?.user;
+  if(!user)return null;
+  const uid=String(user.uid||'');
+  const seq=++serverCoinRefreshSeq;
+  try{
+    const token=await window.studyStore.getIdToken(true);
+    if(!token)return null;
+    const res=await fetch('/api/game-action',{
+      method:'POST',
+      cache:'no-store',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body:JSON.stringify({action:'balance'})
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok||String(window.studyStore?.user?.uid||'')!==uid||seq!==serverCoinRefreshSeq)return null;
+    applyServerCoinBalance(data.coins);
+    window.dispatchEvent(new CustomEvent('katlearn-coin-balance',{detail:{coins,reason,server:true,uid}}));
+    return coins;
+  }catch(error){
+    if(seq===serverCoinRefreshSeq)console.warn('[KatLearn coins] Server balance refresh failed:',error);
+    return null;
+  }
 }
 async function syncProfile(extra={}){const user=window.studyStore?.user;if(!window.studyStore?.connected()||!user)return;const uid=user.uid;try{if(window.studyStore?.user?.uid!==uid)return;const data={...extra};if(!['core','public','assigned'].includes(String(activeVocabSource?.kind||'')))Object.assign(data,{knownWords:known,totalWords:vocab.length,vocab});if(window.studyStore?.user?.uid!==uid)return;await window.studyStore.saveProfile(data)}catch(e){if(window.studyStore?.user?.uid===uid)console.warn('Firebase sync:',e)}}
 function toast(msg,kind=''){const t=$('#toast');if(!t)return;clearTimeout(window.__katToastTimer);t.className=''+(kind?' '+kind:'');t.textContent=msg;t.classList.add('show');window.__katToastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
@@ -919,6 +944,7 @@ function clearClientLearningState(){
 window.addEventListener('8b1-auth-change',e=>{
   if(!e.detail)clearClientLearningState();
   loadKnownState();
+  if(e.detail)void refreshAuthoritativeCoinBalance('auth-change');
   void refreshAuthDependentViews(e.detail);
 });
 window.addEventListener('katlearn-account-fast',e=>{if(e.detail?.account){renderAuth(e.detail.user);renderAdmin(e.detail.user)}});
@@ -926,6 +952,7 @@ window.addEventListener('katlearn-coin-balance',e=>applyServerCoinBalance(e.deta
 window.addEventListener('katlearn-account-ready',e=>{
   const profile=e.detail?.profile||null;
   applyServerProfile(profile);
+  if(e.detail?.account)void refreshAuthoritativeCoinBalance('account-ready');
   void refreshAuthDependentViews(e.detail?.account?e.detail.user:null);
 });
 window.addEventListener('katlearn-account-ready',()=>{void renderProgressDashboard()});

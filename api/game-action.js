@@ -142,6 +142,15 @@ module.exports=async(req,res)=>{
     const body=req.body||{},action=String(body.action||""),{db}=init();
     const userRef=db.doc("users/"+token.uid),leaderboardRef=db.doc("leaderboard/"+leaderboardId(token.uid));
 
+    if(action==="balance"){
+      const snap=await userRef.get();
+      if(!snap.exists){
+        return send(res,404,{ok:false,error:"Chưa có hồ sơ người dùng.",coins:0});
+      }
+      const profile=snap.data()||{};
+      return send(res,200,{ok:true,uid:token.uid,coins:Math.max(0,Math.floor(Number(profile.coins||0))),energy:Math.max(0,Math.floor(Number(profile.energy||0)))});
+    }
+
     if(action==="answer"){
       const word=String(body.word||"").trim().slice(0,100),meaning=String(body.meaning||"").trim().slice(0,200),submittedAnswer=String(body.answer||"").trim().slice(0,200),mode=String(body.mode||"").trim().slice(0,40)||"engvi",source=body.source||{};
       if(!word||!meaning||!submittedAnswer)return send(res,400,{error:"Thiếu dữ liệu câu trả lời."});
