@@ -1,6 +1,6 @@
 let vocab=[];
 try{const savedVocab=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(Array.isArray(savedVocab))vocab=savedVocab}catch(e){}
-let coins=0,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
+let coins=0,coinBalanceReady=false,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
 let activeVocabSource={kind:'legacy'};try{const raw=localStorage.getItem('katlearn-vocab-source');if(raw)activeVocabSource=JSON.parse(raw)||activeVocabSource}catch(_){}
 let activeDeckMeta={name:'Flashcard từ vựng',description:'Chọn một bộ từ để bắt đầu học theo nhịp của bạn.',icon:'📚'};
 function vocabKey(v){return String(v?.word||'').trim().toLowerCase()+'::'+vocabMeaning(v).trim().toLowerCase()}
@@ -21,11 +21,10 @@ function updateDailyGoal(count){
   if(label)label.textContent=done+' / 10';
   if(percent)percent.textContent=(done*10)+'%';
 }
-function updateCoins(){['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=format(coins)});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
+function updateCoins(){const label=coinBalanceReady?format(coins):(window.studyStore?.user?'—':'0');['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=label});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
 function applyServerProfile(profile){
   if(!profile)return;
-  const coinValue=Number(profile.coins),energyValue=Number(profile.energy);
-  coins=Number.isFinite(coinValue)?Math.max(0,Math.floor(coinValue)):0;
+  const energyValue=Number(profile.energy);
   energy=Number.isFinite(energyValue)?Math.max(0,Math.floor(energyValue)):0;
   dailyCount=Math.max(0,Number(profile.dailyQuestions||0));
   updateDailyGoal(dailyCount);
@@ -34,6 +33,7 @@ function applyServerProfile(profile){
 function applyServerCoinBalance(balance){
   const value=Number(balance);
   if(!Number.isFinite(value))return;
+  coinBalanceReady=true;
   coins=Math.max(0,Math.floor(value));
   updateCoins();
   if(typeof renderProgressDashboard==='function')void renderProgressDashboard();
@@ -41,6 +41,8 @@ function applyServerCoinBalance(balance){
 let serverCoinRefreshSeq=0;
 async function refreshAuthoritativeCoinBalance(reason='auth'){
   const user=window.studyStore?.user;
+  if(!user){coinBalanceReady=false;coins=0;updateCoins();return null;}
+  coinBalanceReady=false;updateCoins();
   if(!user)return null;
   const uid=String(user.uid||'');
   const seq=++serverCoinRefreshSeq;
@@ -932,7 +934,7 @@ async function refreshAuthDependentViews(user){
   ]);
 }
 function clearClientLearningState(){
-  vocab=[];coins=0;energy=0;cardIndex=0;known=0;question=1;sessionCoins=0;dailyCount=0;answered=false;contextRequestId++;clearReflexTimer();reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;
+  vocab=[];coins=0;coinBalanceReady=false;energy=0;cardIndex=0;known=0;question=1;sessionCoins=0;dailyCount=0;answered=false;contextRequestId++;clearReflexTimer();reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;
   knownWordKeys=new Set();
   activeVocabSource={kind:'legacy'};
   for(const key of ['katlearn-vocab','katlearn-vocab-source','katlearn-stats','katlearn-personal-pack-name','katlearn-theme','katlearn-owned-themes','katlearn-account-type'])localStorage.removeItem(key);
