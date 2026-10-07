@@ -12,13 +12,20 @@
     if(loadPromise)return loadPromise;
     loadPromise=(async()=>{
       try{
-        const profile=profileHint&&typeof profileHint==='object'
-          ?profileHint
-          :await window.studyStore.loadProfile();
+        const token=await window.studyStore.getIdToken(true);
+        if(!token)throw new Error('Không lấy được phiên xác thực.');
+        const res=await fetch('/api/game-action',{
+          method:'POST',
+          cache:'no-store',
+          headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+          body:JSON.stringify({action:'balance'})
+        });
+        const data=await res.json().catch(()=>({}));
+        if(!res.ok)throw new Error(data.error||'Không thể đọc số dư KatCoin.');
         if(String(window.studyStore?.user?.uid||'')!==nextUid)return false;
-        cloudCoins=Math.max(0,Number(profile?.coins||0));
+        cloudCoins=Math.max(0,Math.floor(Number(data.coins||0)));
         ready=true;paint();
-        window.dispatchEvent(new CustomEvent('katlearn-coins-ready',{detail:{uid:nextUid,coins:cloudCoins}}));
+        window.dispatchEvent(new CustomEvent('katlearn-coins-ready',{detail:{uid:nextUid,coins:cloudCoins,server:true}}));
         return true;
       }catch(e){console.warn('[KatLearn coins]',e);return false}
       finally{loadPromise=null}
