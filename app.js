@@ -751,6 +751,7 @@ function getPersonalPackProgress(pack,uid){
   const state=percentage>=80?'good':percentage>=50?'mid':'low';
   return {total:uniqueKeys.size,known:knownWords,unknown:unknownWords,percentage,state};
 }
+window.getPersonalPackProgress=getPersonalPackProgress;
 function renderPersonalPackProgressList(){
   const box=$('#progressPackList');
   if(!box)return;
