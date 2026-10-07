@@ -21,7 +21,7 @@
     const name=user.displayName||user.email?.split('@')[0]||'KatLearn Student',initial=(name.trim()[0]||'K').toUpperCase();
     const trigger=el('button',{class:'ha-user'});trigger.innerHTML=`<span class="ha-avatar">${initial}</span><span>${name.replace(/[<>&\"']/g,'')}</span><span>⌄</span>`;
     const panel=el('div',{class:'ha-panel'});panel.hidden=true;
-    panel.innerHTML=`<div class="ha-head"><span class="ha-avatar large">${initial}</span><div><b>${name.replace(/[<>&\"']/g,'')}</b><small>${(user.email||'').replace(/[<>&\"']/g,'')}</small></div></div><div id="haClassInfo" class="ha-class-info" hidden></div><div class="ha-stats"><div class="ha-stat"><span>🪙</span><b id="haCoins">0</b><small>KatCoin</small></div><div class="ha-stat"><span>⚡</span><b id="haEnergy">0</b><small>Năng lượng</small></div><div class="ha-stat"><span>📚</span><b id="haWords">0</b><small>Từ vựng</small></div></div><button class="ha-menu" id="haProgress">◔ Tiến độ học tập</button><button class="ha-menu danger" id="haLogout">↪ Đăng xuất</button>`;
+    panel.innerHTML=`<div class="ha-head"><span class="ha-avatar large">${initial}</span><div><b>${name.replace(/[<>&\"']/g,'')}</b><small>${(user.email||'').replace(/[<>&\"']/g,'')}</small></div></div><div id="haClassInfo" class="ha-class-info" hidden></div><div class="ha-stats"><div class="ha-stat"><span>🪙</span><b id="haCoins">—</b><small>KatCoin</small></div><div class="ha-stat"><span>⚡</span><b id="haEnergy">0</b><small>Năng lượng</small></div><div class="ha-stat"><span>📚</span><b id="haWords">0</b><small>Từ vựng</small></div></div><button class="ha-menu" id="haProgress">◔ Tiến độ học tập</button><button class="ha-menu danger" id="haLogout">↪ Đăng xuất</button>`;
     trigger.onclick=()=>panel.hidden=!panel.hidden;
     panel.querySelector('#haProgress').onclick=()=>{panel.hidden=true;document.querySelector('[data-page="progress"]')?.click()};
     panel.querySelector('#haLogout').onclick=async e=>{const b=e.currentTarget;b.disabled=true;b.textContent='⏳ Đang đăng xuất...';try{await window.studyStore.signOut();location.reload()}catch(err){b.disabled=false;b.textContent='↪ Đăng xuất';alert('Không thể đăng xuất lúc này. Hãy thử lại nhé.')}};
@@ -38,7 +38,7 @@
         ci.hidden=false;
       }else{ci.textContent='';ci.hidden=true}
     }
-    if(c)c.textContent=Number(p.coins||0).toLocaleString('en-US');
+    if(c&&window.katlearnCoinController?.ready===false)c.textContent='—';
     if(en)en.textContent=Number(p.energy||0).toLocaleString('en-US');
     if(w)w.textContent=Number(p.totalWords||0).toLocaleString('en-US');
   }

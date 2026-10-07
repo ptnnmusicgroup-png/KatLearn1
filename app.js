@@ -1,6 +1,6 @@
 let vocab=[];
 try{const savedVocab=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(Array.isArray(savedVocab))vocab=savedVocab}catch(e){}
-let coins=0,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
+let coins=0,coinBalanceReady=false,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
 let activeVocabSource={kind:'legacy'};try{const raw=localStorage.getItem('katlearn-vocab-source');if(raw)activeVocabSource=JSON.parse(raw)||activeVocabSource}catch(_){}
 let activeDeckMeta={name:'Flashcard từ vựng',description:'Chọn một bộ từ để bắt đầu học theo nhịp của bạn.',icon:'📚'};
 function vocabKey(v){return String(v?.word||'').trim().toLowerCase()+'::'+vocabMeaning(v).trim().toLowerCase()}
@@ -21,11 +21,10 @@ function updateDailyGoal(count){
   if(label)label.textContent=done+' / 10';
   if(percent)percent.textContent=(done*10)+'%';
 }
-function updateCoins(){['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=format(coins)});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
+function updateCoins(){const label=coinBalanceReady?format(coins):(window.studyStore?.user?'—':'0');['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=label});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
 function applyServerProfile(profile){
   if(!profile)return;
-  const coinValue=Number(profile.coins),energyValue=Number(profile.energy);
-  coins=Number.isFinite(coinValue)?Math.max(0,Math.floor(coinValue)):0;
+  const energyValue=Number(profile.energy);
   energy=Number.isFinite(energyValue)?Math.max(0,Math.floor(energyValue)):0;
   dailyCount=Math.max(0,Number(profile.dailyQuestions||0));
   updateDailyGoal(dailyCount);
@@ -34,35 +33,69 @@ function applyServerProfile(profile){
 function applyServerCoinBalance(balance){
   const value=Number(balance);
   if(!Number.isFinite(value))return;
+  coinBalanceReady=true;
   coins=Math.max(0,Math.floor(value));
   updateCoins();
   if(typeof renderProgressDashboard==='function')void renderProgressDashboard();
 }
-let serverCoinRefreshSeq=0;
+let serverCoinRefreshSeq=0,serverCoinRefreshPromise=null,serverCoinRefreshUid='';
 async function refreshAuthoritativeCoinBalance(reason='auth'){
   const user=window.studyStore?.user;
-  if(!user)return null;
-  const uid=String(user.uid||'');
-  const seq=++serverCoinRefreshSeq;
-  try{
-    const token=await window.studyStore.getIdToken(true);
-    if(!token)return null;
-    const res=await fetch('/api/game-action',{
-      method:'POST',
-      cache:'no-store',
-      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
-      body:JSON.stringify({action:'balance'})
-    });
-    const data=await res.json().catch(()=>({}));
-    if(!res.ok||String(window.studyStore?.user?.uid||'')!==uid||seq!==serverCoinRefreshSeq)return null;
-    applyServerCoinBalance(data.coins);
-    window.dispatchEvent(new CustomEvent('katlearn-coin-balance',{detail:{coins,reason,server:true,uid}}));
-    return coins;
-  }catch(error){
-    if(seq===serverCoinRefreshSeq)console.warn('[KatLearn coins] Server balance refresh failed:',error);
+  if(!user){
+    serverCoinRefreshPromise=null;
+    serverCoinRefreshUid='';
+    coinBalanceReady=false;
+    coins=0;
+    updateCoins();
     return null;
   }
+  const uid=String(user.uid||'');
+  if(serverCoinRefreshPromise&&serverCoinRefreshUid===uid)return serverCoinRefreshPromise;
+
+  if(!coinBalanceReady)updateCoins();
+  const seq=++serverCoinRefreshSeq;
+  serverCoinRefreshUid=uid;
+  serverCoinRefreshPromise=(async()=>{
+    try{
+      const token=await window.studyStore.getIdToken(true);
+      if(!token)return null;
+      const res=await fetch('/api/game-action',{
+        method:'POST',
+        cache:'no-store',
+        headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+        body:JSON.stringify({action:'balance'})
+      });
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok||String(window.studyStore?.user?.uid||'')!==uid||seq!==serverCoinRefreshSeq)return null;
+      applyServerCoinBalance(data.coins);
+      window.dispatchEvent(new CustomEvent('katlearn-coin-balance',{
+        detail:{coins,reason,server:true,uid}
+      }));
+      return coins;
+    }catch(error){
+      if(seq===serverCoinRefreshSeq)console.warn('[KatLearn coins] Server balance refresh failed:',error);
+      return null;
+    }finally{
+      if(serverCoinRefreshUid===uid){
+        serverCoinRefreshPromise=null;
+        serverCoinRefreshUid='';
+      }
+    }
+  })();
+  return serverCoinRefreshPromise;
 }
+window.katlearnCoinController={
+  get value(){return coinBalanceReady?coins:null},
+  get ready(){return coinBalanceReady},
+  setFromServer(balance,reason='external'){
+    applyServerCoinBalance(balance);
+    window.dispatchEvent(new CustomEvent('katlearn-coin-balance',{
+      detail:{coins,reason,server:true,uid:window.studyStore?.user?.uid||''}
+    }));
+    return coins;
+  },
+  refresh:refreshAuthoritativeCoinBalance
+};
 async function syncProfile(extra={}){const user=window.studyStore?.user;if(!window.studyStore?.connected()||!user)return;const uid=user.uid;try{if(window.studyStore?.user?.uid!==uid)return;const data={...extra};if(!['core','public','assigned'].includes(String(activeVocabSource?.kind||'')))Object.assign(data,{knownWords:known,totalWords:vocab.length,vocab});if(window.studyStore?.user?.uid!==uid)return;await window.studyStore.saveProfile(data)}catch(e){if(window.studyStore?.user?.uid===uid)console.warn('Firebase sync:',e)}}
 function toast(msg,kind=''){const t=$('#toast');if(!t)return;clearTimeout(window.__katToastTimer);t.className=''+(kind?' '+kind:'');t.textContent=msg;t.classList.add('show');window.__katToastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
 (function showTestReturnError(){
@@ -562,11 +595,11 @@ async function answer(btn,correct){
         if(Number.isFinite(Number(data.dailyQuestions)))updateDailyGoal(data.dailyQuestions);
         serverConfirmed=typeof data.correct==='boolean';awarded=data.rewarded===true;
         if(data.correct===true&&data.rewarded===true){
-          sessionCoins+=10;coins=Number(data.coins??coins);energy=Number(data.xp??energy);
-          updateCoins();$('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙';
+          sessionCoins+=10;energy=Number(data.xp??energy);
+          window.katlearnCoinController?.setFromServer?.(data.coins,'reward');
+          $('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙';
         }else if(good&&data.correct===true&&!data.rewarded){
-          if(Number.isFinite(Number(data.coins)))coins=Number(data.coins);
-          updateCoins();
+          if(Number.isFinite(Number(data.coins)))window.katlearnCoinController?.setFromServer?.(data.coins,'reward-check');
           $('#feedback').textContent='Chính xác! Lượt này đã nhận/không đủ điều kiện cộng thêm KatCoin.';
         }else if(good){
           $('#feedback').textContent='Đáp án chưa được máy chủ xác nhận.';
@@ -932,7 +965,7 @@ async function refreshAuthDependentViews(user){
   ]);
 }
 function clearClientLearningState(){
-  vocab=[];coins=0;energy=0;cardIndex=0;known=0;question=1;sessionCoins=0;dailyCount=0;answered=false;contextRequestId++;clearReflexTimer();reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;
+  vocab=[];coins=0;coinBalanceReady=false;energy=0;cardIndex=0;known=0;question=1;sessionCoins=0;dailyCount=0;answered=false;contextRequestId++;clearReflexTimer();reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;
   knownWordKeys=new Set();
   activeVocabSource={kind:'legacy'};
   for(const key of ['katlearn-vocab','katlearn-vocab-source','katlearn-stats','katlearn-personal-pack-name','katlearn-theme','katlearn-owned-themes','katlearn-account-type'])localStorage.removeItem(key);
