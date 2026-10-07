@@ -81,7 +81,6 @@
             const personal=await window.studyStore.syncPersonalLearningData();
             if(!isCurrent())return null;
             nextProfile=await window.studyStore.loadProfile?.()||nextProfile;
-            emit('katlearn-personal-learning-synced',{...personal,user,profile:nextProfile});
           }catch(personalError){
             if(isCurrent())console.warn('[KatLearn] Personal vocabulary auto-sync:',personalError);
           }
