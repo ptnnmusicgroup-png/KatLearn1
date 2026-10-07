@@ -38,39 +38,51 @@ function applyServerCoinBalance(balance){
   updateCoins();
   if(typeof renderProgressDashboard==='function')void renderProgressDashboard();
 }
-let serverCoinRefreshSeq=0;
+let serverCoinRefreshSeq=0,serverCoinRefreshPromise=null,serverCoinRefreshUid='';
 async function refreshAuthoritativeCoinBalance(reason='auth'){
   const user=window.studyStore?.user;
   if(!user){
+    serverCoinRefreshPromise=null;
+    serverCoinRefreshUid='';
     coinBalanceReady=false;
     coins=0;
     updateCoins();
     return null;
   }
-  coinBalanceReady=false;
-  updateCoins();
   const uid=String(user.uid||'');
+  if(serverCoinRefreshPromise&&serverCoinRefreshUid===uid)return serverCoinRefreshPromise;
+
+  if(!coinBalanceReady)updateCoins();
   const seq=++serverCoinRefreshSeq;
-  try{
-    const token=await window.studyStore.getIdToken(true);
-    if(!token)return null;
-    const res=await fetch('/api/game-action',{
-      method:'POST',
-      cache:'no-store',
-      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
-      body:JSON.stringify({action:'balance'})
-    });
-    const data=await res.json().catch(()=>({}));
-    if(!res.ok||String(window.studyStore?.user?.uid||'')!==uid||seq!==serverCoinRefreshSeq)return null;
-    applyServerCoinBalance(data.coins);
-    window.dispatchEvent(new CustomEvent('katlearn-coin-balance',{
-      detail:{coins,reason,server:true,uid}
-    }));
-    return coins;
-  }catch(error){
-    if(seq===serverCoinRefreshSeq)console.warn('[KatLearn coins] Server balance refresh failed:',error);
-    return null;
-  }
+  serverCoinRefreshUid=uid;
+  serverCoinRefreshPromise=(async()=>{
+    try{
+      const token=await window.studyStore.getIdToken(true);
+      if(!token)return null;
+      const res=await fetch('/api/game-action',{
+        method:'POST',
+        cache:'no-store',
+        headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+        body:JSON.stringify({action:'balance'})
+      });
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok||String(window.studyStore?.user?.uid||'')!==uid||seq!==serverCoinRefreshSeq)return null;
+      applyServerCoinBalance(data.coins);
+      window.dispatchEvent(new CustomEvent('katlearn-coin-balance',{
+        detail:{coins,reason,server:true,uid}
+      }));
+      return coins;
+    }catch(error){
+      if(seq===serverCoinRefreshSeq)console.warn('[KatLearn coins] Server balance refresh failed:',error);
+      return null;
+    }finally{
+      if(serverCoinRefreshUid===uid){
+        serverCoinRefreshPromise=null;
+        serverCoinRefreshUid='';
+      }
+    }
+  })();
+  return serverCoinRefreshPromise;
 }
 window.katlearnCoinController={
   get value(){return coinBalanceReady?coins:null},
@@ -583,11 +595,11 @@ async function answer(btn,correct){
         if(Number.isFinite(Number(data.dailyQuestions)))updateDailyGoal(data.dailyQuestions);
         serverConfirmed=typeof data.correct==='boolean';awarded=data.rewarded===true;
         if(data.correct===true&&data.rewarded===true){
-          sessionCoins+=10;coins=Number(data.coins??coins);energy=Number(data.xp??energy);
-          updateCoins();$('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙';
+          sessionCoins+=10;energy=Number(data.xp??energy);
+          window.katlearnCoinController?.setFromServer?.(data.coins,'reward');
+          $('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙';
         }else if(good&&data.correct===true&&!data.rewarded){
-          if(Number.isFinite(Number(data.coins)))coins=Number(data.coins);
-          updateCoins();
+          if(Number.isFinite(Number(data.coins)))window.katlearnCoinController?.setFromServer?.(data.coins,'reward-check');
           $('#feedback').textContent='Chính xác! Lượt này đã nhận/không đủ điều kiện cộng thêm KatCoin.';
         }else if(good){
           $('#feedback').textContent='Đáp án chưa được máy chủ xác nhận.';
