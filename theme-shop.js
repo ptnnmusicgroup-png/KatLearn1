@@ -7,7 +7,93 @@ function setBg(id,save){const x=data.find(a=>a[0]===id);if(!x){document.body.sty
 function owned(){try{const raw=JSON.parse(localStorage.getItem('katlearn-owned-themes')||'[]');return new Set(Array.isArray(raw)?raw:[])}catch(_){localStorage.removeItem('katlearn-owned-themes');return new Set()}}
 function draw(){const g=$('.shop-theme-grid');if(!g)return;const have=owned(),cur=localStorage.getItem('katlearn-theme')||'default';g.innerHTML=data.map(x=>{const already=have.has('theme-'+x[0]);return `<article class="shop-theme-card"><div class="shop-theme-preview" style="background-image:url('${x[3]}')"></div><h3>${x[1]}</h3><p>${x[4]}</p><b>🪙 ${num(x[2])}</b><button class="shop-buy-theme" data-price="${x[2]}" data-theme-id="${x[0]}" data-item-id="theme-${x[0]}" ${already?'disabled':''}>${already?'✓ Đã mua':'Mua'}</button><button class="shop-apply-theme" data-theme-id="${x[0]}" ${already||cur===x[0]?'':'disabled'}>${cur===x[0]?'✓ Đang áp dụng':'Áp dụng'}</button></article>`}).join('')}
 async function restore(){if(!window.studyStore?.user)return false;const uid=String(window.studyStore.user.uid||'');try{let p=window.katlearnAccount?.profile||null;if(!p)p=await window.katlearnAccount?.wait?.()||null;if(!p)p=await window.studyStore.loadProfile();if(String(window.studyStore?.user?.uid||'')!==uid)return false;if(p){localStorage.setItem('katlearn-account-type',String(p.studentAccountType||'free').toLowerCase()==='class'?'class':'free');const vv=Array.isArray(p.vocab)?p.vocab:[];let activeSource={kind:'legacy'};try{activeSource=JSON.parse(localStorage.getItem('katlearn-vocab-source')||'{"kind":"legacy"}')||activeSource}catch(_){}const activePack=['core','public','assigned'].includes(String(activeSource.kind||''));if(!activePack){localStorage.setItem('katlearn-vocab',JSON.stringify(vv));if(typeof vocab!=='undefined')vocab=vv;}localStorage.setItem('katlearn-owned-themes',JSON.stringify(Array.isArray(p.ownedThemes)?p.ownedThemes:[]));localStorage.setItem('katlearn-stats',JSON.stringify({questionsAnswered:Number(p.questionsAnswered||0),correctAnswers:Number(p.correctAnswers||0)}));if(p.personalPackName)localStorage.setItem('katlearn-personal-pack-name',p.personalPackName);const storedTheme=String(p.themeId||'').replace(/^theme-/,'').trim();if(storedTheme)localStorage.setItem('katlearn-theme',storedTheme);else localStorage.removeItem('katlearn-theme');if(!activePack&&typeof known!=='undefined')known=Number(p.knownWords||0);if(typeof energy!=='undefined')energy=Number(p.energy||0);if(document.querySelector('#learn')&&typeof renderCard==='function')renderCard();if(document.querySelector('#practice')&&typeof renderQuiz==='function')renderQuiz();if(document.querySelector('#wordTable')&&typeof renderVocabularyViews==='function')renderVocabularyViews();if(document.querySelector('#wordList')&&typeof renderWordList==='function')renderWordList();const k=$('#knownCount');if(k&&!activePack)k.textContent=Number(p.knownWords||0);const t=$('#totalWords');if(t&&!activePack)t.textContent=vv.length;const cards=document.querySelectorAll('#progress .stat-grid>div'),a=Number(p.questionsAnswered||0),c=Number(p.correctAnswers||0),acc=a?Math.round(c/a*100):0,vals=[Number(p.knownWords||0),acc+'%',Number(p.streak||0),num(p.coins)];cards.forEach((x,i)=>{const h=x.querySelector('h2');if(h)h.textContent=vals[i]});setBg(storedTheme||'default',false)}else{localStorage.setItem('katlearn-account-type','free');localStorage.setItem('katlearn-vocab','[]');localStorage.setItem('katlearn-owned-themes','[]');localStorage.setItem('katlearn-stats','{"questionsAnswered":0,"correctAnswers":0}');localStorage.removeItem('katlearn-theme')}return true}catch(e){console.warn('[KatLearn restore]',e);return false}}
-document.addEventListener('click',async e=>{const a=e.target.closest?.('.shop-apply-theme');if(a){e.preventDefault();e.stopImmediatePropagation();const id=a.dataset.themeId;if(a.disabled)return;a.disabled=true;try{const token=await window.studyStore?.getIdToken?.(true);if(!token)throw new Error('Không lấy được phiên xác thực.');const res=await fetch('/api/game-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'apply-theme',itemId:'theme-'+id})});const d=await res.json().catch(()=>({}));if(!res.ok)throw new Error(d.error||'Không thể áp dụng theme.');if(d.themeId) {setBg(String(d.themeId).replace(/^theme-/,''),true);localStorage.setItem('katlearn-theme',String(d.themeId).replace(/^theme-/,''));}draw();toastSafe('🎨 Đã áp dụng theme “'+(data.find(x=>x[0]===id)?.[1]||'Theme')+'”!')}catch(err){toastSafe('Không thể áp dụng theme: '+(err.message||'lỗi'));a.disabled=false}return}const b=e.target.closest?.('.shop-buy-theme');if(b){e.preventDefault();e.stopImmediatePropagation();const price=Number(b.dataset.price||0);if(!Number.isFinite(price)||price<=0)return toastSafe('Giá vật phẩm không hợp lệ.');if(b.disabled)return;b.disabled=true;const currentCoins=typeof coins!=='undefined'?Number(coins||0):0;try{const itemId=b.dataset.itemId,name=b.closest('article')?.querySelector('h3')?.textContent||'Theme';if(!window.studyStore?.user)throw new Error('Bạn cần đăng nhập để mua vật phẩm.');{const token=await window.studyStore.getIdToken(true);if(!token)throw new Error('Không lấy được phiên xác thực của tài khoản.');const res=await fetch('/api/game-action',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'purchase',itemId,price,name})});const purchaseResult=await res.json().catch(()=>({}));if(!res.ok)throw new Error(purchaseResult.error||'Không thể mua vật phẩm');if(window.katlearnCoinController?.setFromServer)window.katlearnCoinController.setFromServer(purchaseResult.coins,'purchase');const set=owned();set.add(itemId);localStorage.setItem('katlearn-owned-themes',JSON.stringify([...set]));const appliedTheme=String(purchaseResult?.themeId||itemId).replace(/^theme-/,'');if(itemId.startsWith('theme-')){setBg(appliedTheme,true);localStorage.setItem('katlearn-theme',appliedTheme);try{window.dispatchEvent(new CustomEvent('katlearn-theme-applied',{detail:{themeId:appliedTheme,source:'purchase'}}))}catch(_){}}draw();toastSafe(itemId.startsWith('theme-')?'🎉 Đã mua và áp dụng theme ngay! 🐱':'Đã mua vật phẩm! 🐾')}catch(err){void window.katlearnCoinController?.refresh?.('purchase-error');toastSafe('Không thể hoàn tất giao dịch: '+(err.message||'lỗi'));b.disabled=false}}});function makeOverlay(){let o=$('#klPackOverlay');if(o)return o;o=document.createElement('div');o.id='klPackOverlay';o.className='kl-pack-overlay';o.innerHTML='<div class="kl-pack-card" role="dialog" aria-modal="true"><div id="klPackStep"></div></div>';document.body.appendChild(o);o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')});return o}
+document.addEventListener('click',async e=>{
+  const applyButton=e.target.closest?.('.shop-apply-theme');
+  if(applyButton){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const id=applyButton.dataset.themeId;
+    if(applyButton.disabled)return;
+    applyButton.disabled=true;
+    try{
+      const token=await window.studyStore?.getIdToken?.(true);
+      if(!token)throw new Error('Không lấy được phiên xác thực.');
+      const res=await fetch('/api/game-action',{
+        method:'POST',
+        cache:'no-store',
+        headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+        body:JSON.stringify({action:'apply-theme',itemId:'theme-'+id})
+      });
+      const dataResponse=await res.json().catch(()=>({}));
+      if(!res.ok)throw new Error(dataResponse.error||'Không thể áp dụng theme.');
+      const appliedId=String(dataResponse.themeId||'').replace(/^theme-/,'');
+      if(appliedId){
+        setBg(appliedId,true);
+      }
+      draw();
+      toastSafe('🎨 Đã áp dụng theme “'+(data.find(x=>x[0]===id)?.[1]||'Theme')+'”!');
+    }catch(err){
+      toastSafe('Không thể áp dụng theme: '+(err.message||'lỗi'));
+      applyButton.disabled=false;
+    }
+    return;
+  }
+
+  const buyButton=e.target.closest?.('.shop-buy-theme');
+  if(!buyButton)return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  if(buyButton.disabled)return;
+
+  const price=Number(buyButton.dataset.price||0);
+  if(!Number.isFinite(price)||price<=0){
+    toastSafe('Giá vật phẩm không hợp lệ.');
+    return;
+  }
+
+  buyButton.disabled=true;
+  try{
+    if(!window.studyStore?.user)throw new Error('Bạn cần đăng nhập để mua vật phẩm.');
+    const token=await window.studyStore.getIdToken(true);
+    if(!token)throw new Error('Không lấy được phiên xác thực của tài khoản.');
+
+    const itemId=buyButton.dataset.itemId;
+    const name=buyButton.closest('article')?.querySelector('h3')?.textContent||'Theme';
+    const res=await fetch('/api/game-action',{
+      method:'POST',
+      cache:'no-store',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body:JSON.stringify({action:'purchase',itemId,price,name})
+    });
+    const purchaseResult=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(purchaseResult.error||'Không thể mua vật phẩm.');
+
+    // app.js is the only owner of the global KatCoin state.
+    window.katlearnCoinController?.setFromServer?.(purchaseResult.coins,'purchase');
+
+    const set=owned();
+    set.add(itemId);
+    localStorage.setItem('katlearn-owned-themes',JSON.stringify([...set]));
+
+    if(itemId.startsWith('theme-')){
+      const appliedTheme=String(purchaseResult.themeId||itemId).replace(/^theme-/,'');
+      setBg(appliedTheme,true);
+      window.dispatchEvent(new CustomEvent('katlearn-theme-applied',{
+        detail:{themeId:appliedTheme,source:'purchase'}
+      }));
+    }
+
+    draw();
+    toastSafe(itemId.startsWith('theme-')
+      ?'🎉 Đã mua và áp dụng theme ngay! 🐱'
+      :'Đã mua vật phẩm! 🐾');
+  }catch(err){
+    void window.katlearnCoinController?.refresh?.('purchase-error');
+    toastSafe('Không thể hoàn tất giao dịch: '+(err.message||'lỗi'));
+    buyButton.disabled=false;
+  }
+});
+function makeOverlay(){let o=$('#klPackOverlay');if(o)return o;o=document.createElement('div');o.id='klPackOverlay';o.className='kl-pack-overlay';o.innerHTML='<div class="kl-pack-card" role="dialog" aria-modal="true"><div id="klPackStep"></div></div>';document.body.appendChild(o);o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')});return o}
 function openPackName(){const o=makeOverlay(),name=localStorage.getItem('katlearn-personal-pack-name')||'';$('#klPackStep').innerHTML=`<h2>📚 Tạo bộ từ</h2><p>Đặt tên cho pack của bạn. Sau khi tạo, Kat sẽ mở ngay trình thêm từ vựng.</p><label class="kl-pack-name">Tên bộ từ<input id="klPackNameInput" maxlength="80" placeholder="VD: IELTS Environment" value="${escapeHtml(name)}" autofocus></label><div class="kl-pack-actions"><span class="kl-ai-note">🐱 Pack cá nhân của bạn</span><div><button class="kl-btn ghost" id="klPackCancel">Hủy</button><button class="kl-btn primary" id="klPackCreate">Tạo bộ từ →</button></div></div>`;o.classList.add('show');setTimeout(()=>$('#klPackNameInput')?.focus(),30);$('#klPackCancel').onclick=()=>o.classList.remove('show');$('#klPackCreate').onclick=()=>{const n=$('#klPackNameInput').value.trim();if(!n)return toastSafe('Hãy đặt tên cho bộ từ trước nhé!');localStorage.setItem('katlearn-personal-pack-name',n);if(window.studyStore?.user)void window.studyStore.saveProfile({personalPackName:n});openWordEditor(n)};$('#klPackNameInput').onkeydown=e=>{if(e.key==='Enter')$('#klPackCreate').click()}}
 function escapeHtml(text){return String(text||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function toastSafe(msg){if(typeof toast==='function')toast(msg);else alert(msg)}
