@@ -63,3 +63,5 @@
   .personal-pack-card{display:grid;grid-template-columns:auto 1fr}
   .personal-pack-card .personal-pack-actions{grid-column:1/-1;margin-left:0;justify-content:flex-end}
 }
+
+.progress-pack-state{display:block;margin-top:7px;font-size:9px;color:#8f9bad;font-weight:700}.progress-pack-card .kl-icon{margin-right:4px}.pack-progress-meta .kl-icon,.personal-pack-actions .kl-icon,.personal-pack-progress-meta .kl-icon{flex:0 0 auto}.kl-icon-slot{display:inline-grid;place-items:center;line-height:0;vertical-align:middle;margin-right:3px}.kl-icon-slot .kl-icon{margin:0}
