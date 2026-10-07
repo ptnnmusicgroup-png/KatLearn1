@@ -41,9 +41,14 @@ function applyServerCoinBalance(balance){
 let serverCoinRefreshSeq=0;
 async function refreshAuthoritativeCoinBalance(reason='auth'){
   const user=window.studyStore?.user;
-  if(!user){coinBalanceReady=false;coins=0;updateCoins();return null;}
-  coinBalanceReady=false;updateCoins();
-  if(!user)return null;
+  if(!user){
+    coinBalanceReady=false;
+    coins=0;
+    updateCoins();
+    return null;
+  }
+  coinBalanceReady=false;
+  updateCoins();
   const uid=String(user.uid||'');
   const seq=++serverCoinRefreshSeq;
   try{
@@ -58,13 +63,27 @@ async function refreshAuthoritativeCoinBalance(reason='auth'){
     const data=await res.json().catch(()=>({}));
     if(!res.ok||String(window.studyStore?.user?.uid||'')!==uid||seq!==serverCoinRefreshSeq)return null;
     applyServerCoinBalance(data.coins);
-    window.dispatchEvent(new CustomEvent('katlearn-coin-balance',{detail:{coins,reason,server:true,uid}}));
+    window.dispatchEvent(new CustomEvent('katlearn-coin-balance',{
+      detail:{coins,reason,server:true,uid}
+    }));
     return coins;
   }catch(error){
     if(seq===serverCoinRefreshSeq)console.warn('[KatLearn coins] Server balance refresh failed:',error);
     return null;
   }
 }
+window.katlearnCoinController={
+  get value(){return coinBalanceReady?coins:null},
+  get ready(){return coinBalanceReady},
+  setFromServer(balance,reason='external'){
+    applyServerCoinBalance(balance);
+    window.dispatchEvent(new CustomEvent('katlearn-coin-balance',{
+      detail:{coins,reason,server:true,uid:window.studyStore?.user?.uid||''}
+    }));
+    return coins;
+  },
+  refresh:refreshAuthoritativeCoinBalance
+};
 async function syncProfile(extra={}){const user=window.studyStore?.user;if(!window.studyStore?.connected()||!user)return;const uid=user.uid;try{if(window.studyStore?.user?.uid!==uid)return;const data={...extra};if(!['core','public','assigned'].includes(String(activeVocabSource?.kind||'')))Object.assign(data,{knownWords:known,totalWords:vocab.length,vocab});if(window.studyStore?.user?.uid!==uid)return;await window.studyStore.saveProfile(data)}catch(e){if(window.studyStore?.user?.uid===uid)console.warn('Firebase sync:',e)}}
 function toast(msg,kind=''){const t=$('#toast');if(!t)return;clearTimeout(window.__katToastTimer);t.className=''+(kind?' '+kind:'');t.textContent=msg;t.classList.add('show');window.__katToastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
 (function showTestReturnError(){
