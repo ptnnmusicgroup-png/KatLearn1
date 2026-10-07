@@ -73,6 +73,20 @@
           }
         }
 
+        // As soon as Auth is ready, hydrate the student's complete personal
+        // vocabulary and aggregate learning progress. The student never has
+        // to open "Bộ từ riêng" first; this runs from the account session bus.
+        if(isCurrent()&&window.studyStore?.syncPersonalLearningData){
+          try{
+            const personal=await window.studyStore.syncPersonalLearningData();
+            if(!isCurrent())return null;
+            nextProfile=await window.studyStore.loadProfile?.()||nextProfile;
+            emit('katlearn-personal-learning-synced',{...personal,user,profile:nextProfile});
+          }catch(personalError){
+            if(isCurrent())console.warn('[KatLearn] Personal vocabulary auto-sync:',personalError);
+          }
+        }
+
         // Ignore stale work if Firebase has already switched accounts.
         if(!isCurrent())return null;
 
