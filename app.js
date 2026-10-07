@@ -42,8 +42,17 @@ async function syncProfile(extra={}){const user=window.studyStore?.user;if(!wind
 function toast(msg,kind=''){const t=$('#toast');if(!t)return;clearTimeout(window.__katToastTimer);t.className=''+(kind?' '+kind:'');t.textContent=msg;t.classList.add('show');window.__katToastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
 (function showTestReturnError(){
   const params=new URLSearchParams(location.search);
-  if(params.get('testError')!=='fullscreen-exit')return;
-  setTimeout(()=>toast('🐱 Đang làm mà thoát full screen, biết Kat buồn lắm hummm ._.','kat-warning'),180);
+  const reason=params.get('testError');
+  if(reason!=='focus-lost'&&reason!=='fullscreen-exit')return;
+  let message='🐱 Đang làm mà rời khỏi bài kiểm tra, Kat đã hủy đề này hummm ._.';
+  try{
+    const raw=sessionStorage.getItem('katlearn-test-violation');
+    const violation=raw?JSON.parse(raw):null;
+    if(violation?.reason==='window-blur')message='🐱 Bạn vừa chuyển sang cửa sổ khác, nên Kat đã hủy bài kiểm tra hummm ._.';
+    else if(violation?.reason==='tab-hidden')message='🐱 Bạn vừa rời khỏi tab bài kiểm tra, nên Kat đã hủy bài kiểm tra hummm ._.';
+    sessionStorage.removeItem('katlearn-test-violation');
+  }catch(_){}
+  setTimeout(()=>toast(message,'kat-warning'),180);
   params.delete('testError');
   const next=params.toString();
   history.replaceState(null,document.title,location.pathname+(next?'?'+next:'')+location.hash);

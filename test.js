@@ -2,7 +2,7 @@
   const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   const normalize=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
-  let packs=[],selectedPacks=[],questions=[],index=0,score=0,answered=false,startedAt=0,timerId=null,testActive=false,suppressGuard=false,answersLog=[];
+  let packs=[],selectedPacks=[],questions=[],index=0,score=0,answered=false,startedAt=0,timerId=null,testActive=false,suppressGuard=false,answersLog=[],antiCheatCleanup=null,antiCheatTriggered=false,focusCheckId=null,blurCheckId=null;
   function toast(msg,kind='normal'){
     const el=$('#testToast');if(!el)return;
     el.textContent=msg;el.className='test-toast '+kind+' show';
@@ -97,25 +97,15 @@
       return {item,kind,correct:kind==='type-en'?item.word:item.mean};
     });
   }
-  async function enterFullscreen(){
-    if(document.fullscreenElement)return true;
-    const target=document.documentElement;
-    if(!target.requestFullscreen)throw new Error('Trình duyệt không hỗ trợ chế độ toàn màn hình.');
-    await target.requestFullscreen();
-    return !!document.fullscreenElement;
-  }
   async function start(){
     if(testActive)return;
     const pool=combineSelectedWords(),count=Number($('#questionCount')?.value)||15;
     if(pool.length<4){toast('Hãy chọn bộ từ có ít nhất 4 từ hợp lệ.','error');return;}
-    try{
-      $('#startTest').disabled=true;$('#setupStatus').textContent='⏳ Đang chuyển sang chế độ toàn màn hình…';
-      if(!await enterFullscreen())throw new Error('Trình duyệt chưa cho phép chế độ toàn màn hình.');
-    }catch(e){
-      $('#startTest').disabled=false;$('#setupStatus').textContent='⚠️ Không thể bật toàn màn hình. Hãy cho phép chế độ toàn màn hình rồi thử lại.';toast(e.message||'Không thể vào toàn màn hình.','error');return;
-    }
+    $('#startTest').disabled=true;
+    $('#setupStatus').textContent='🛡️ Chế độ kiểm tra đã sẵn sàng. Không cần toàn màn hình; chỉ cần giữ bài kiểm tra ở cửa sổ đang dùng.';
     selectedPacks=getSelectedPackRows();
-    questions=buildQuestions(pool,count);index=0;score=0;answersLog=[];answered=false;startedAt=Date.now();testActive=true;suppressGuard=false;
+    questions=buildQuestions(pool,count);index=0;score=0;answersLog=[];answered=false;startedAt=Date.now();testActive=true;suppressGuard=false;antiCheatTriggered=false;
+    installAntiCheatGuard();
     clearInterval(timerId);timerId=setInterval(updateTimer,1000);updateTimer();
     $('#packSetup').setAttribute('hidden','');$('#testRun').classList.add('active');$('#testResult').classList.remove('active');renderQuestion();
   }
@@ -171,20 +161,66 @@
   }
   function formatDuration(ms){const s=Math.max(0,Math.floor(ms/1000)),m=Math.floor(s/60),sec=s%60;return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');}
   function updateTimer(){if(startedAt)$('#testTimer').textContent='⏱ '+formatDuration(Date.now()-startedAt);}
-  async function leaveToHome(){
-    suppressGuard=true;testActive=false;clearInterval(timerId);
-    try{if(document.fullscreenElement&&document.exitFullscreen)await document.exitFullscreen()}catch(_){}
+  function leaveToHome(){
+    suppressGuard=true;testActive=false;clearInterval(timerId);timerId=null;cleanupAntiCheatGuard();
     location.replace('/home.html');
   }
   function restart(){
     $('#testResult').classList.remove('active');$('#packSetup').removeAttribute('hidden');$('#setupStatus').textContent='Chọn lại bộ từ, rồi tạo một đề mới.';renderPackList();
   }
-  function handleFullscreenChange(){
-    if(!testActive||suppressGuard)return;
-    if(document.fullscreenElement)return;
-    testActive=false;clearInterval(timerId);timerId=null;
-    try{sessionStorage.setItem('katlearn-test-return-error','1')}catch(_){}
-    location.replace('/home.html?testError=fullscreen-exit');
+  function cleanupAntiCheatGuard(){
+    clearInterval(focusCheckId);focusCheckId=null;
+    clearTimeout(blurCheckId);blurCheckId=null;
+    if(typeof antiCheatCleanup==='function'){antiCheatCleanup();antiCheatCleanup=null;}
+  }
+  function triggerAntiCheat(reason){
+    if(!testActive||suppressGuard||antiCheatTriggered)return;
+    antiCheatTriggered=true;
+    testActive=false;answered=false;clearInterval(timerId);timerId=null;cleanupAntiCheatGuard();
+    const payload={reason,index:index+1,total:questions.length,detectedAt:Date.now()};
+    try{
+      sessionStorage.setItem('katlearn-test-violation',JSON.stringify(payload));
+      sessionStorage.setItem('katlearn-test-return-error','1');
+    }catch(_){}
+    location.replace('/home.html?testError=focus-lost');
+  }
+  function installAntiCheatGuard(){
+    cleanupAntiCheatGuard();
+    const isAway=()=>document.visibilityState!=='visible'||!document.hasFocus();
+    const onVisibility=()=>{if(isAway())triggerAntiCheat('tab-hidden');};
+    const onBlur=()=>{
+      clearTimeout(blurCheckId);
+      blurCheckId=setTimeout(()=>{if(isAway())triggerAntiCheat('window-blur');},180);
+    };
+    const onContextMenu=e=>{if(testActive){e.preventDefault();toast('🛡️ Menu chuột phải bị khóa trong lúc làm bài.','error');}};
+    const onCopy=e=>{if(testActive){e.preventDefault();toast('🛡️ Không thể sao chép nội dung của đề.','error');}};
+    const onCut=e=>{if(testActive){e.preventDefault();toast('🛡️ Không thể cắt nội dung trong lúc làm bài.','error');}};
+    const onPaste=e=>{if(testActive){e.preventDefault();toast('🛡️ Không thể dán đáp án vào bài kiểm tra.','error');}};
+    const onKeyDown=e=>{
+      if(!testActive)return;
+      const key=String(e.key||'').toLowerCase(),mod=e.ctrlKey||e.metaKey;
+      if(key==='f12'||(mod&&['c','x','v','p','s','u'].includes(key))||(mod&&e.shiftKey&&['i','j','c'].includes(key))){
+        e.preventDefault();
+        toast('🛡️ Phím tắt này bị khóa trong lúc làm bài.','error');
+      }
+    };
+    document.addEventListener('visibilitychange',onVisibility,true);
+    window.addEventListener('blur',onBlur,true);
+    document.addEventListener('contextmenu',onContextMenu,true);
+    document.addEventListener('copy',onCopy,true);
+    document.addEventListener('cut',onCut,true);
+    document.addEventListener('paste',onPaste,true);
+    document.addEventListener('keydown',onKeyDown,true);
+    focusCheckId=setInterval(()=>{if(testActive&&isAway())triggerAntiCheat('focus-check');},500);
+    antiCheatCleanup=()=>{
+      document.removeEventListener('visibilitychange',onVisibility,true);
+      window.removeEventListener('blur',onBlur,true);
+      document.removeEventListener('contextmenu',onContextMenu,true);
+      document.removeEventListener('copy',onCopy,true);
+      document.removeEventListener('cut',onCut,true);
+      document.removeEventListener('paste',onPaste,true);
+      document.removeEventListener('keydown',onKeyDown,true);
+    };
   }
   function mount(){
     const menu=document.querySelector('.test-menu-toggle'),sidebar=document.querySelector('.test-sidebar');
@@ -195,7 +231,7 @@
     $('#selectAll').onclick=()=>{$('#packList input[type="checkbox"]').forEach(x=>x.checked=true);updateConfig()};
     $('#clearAll').onclick=()=>{$('#packList input[type="checkbox"]').forEach(x=>x.checked=false);updateConfig()};
     $('#startTest').onclick=start;$('#submitAnswer').onclick=()=>checkAnswer($('#testInput').value.trim());$('#testNext').onclick=next;
-    $('#retryTest').onclick=restart;$('#homeFromResult').onclick=leaveToHome;document.addEventListener('fullscreenchange',handleFullscreenChange);
+    $('#retryTest').onclick=restart;$('#homeFromResult').onclick=leaveToHome;
     window.addEventListener('8b1-auth-change',e=>{
       if(testActive)return;
       if(e.detail)void load();
