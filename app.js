@@ -698,6 +698,84 @@ if(wordSave)wordSave.onclick=async()=>{const sourceKind=String(activeVocabSource
 if($('#addWordFromList'))$('#addWordFromList').onclick=()=>{if(requireSignedInPersonalService())$('#wordModal').classList.add('show')};
 if($('#openFlashcards'))$('#openFlashcards').onclick=()=>showPage('learn');if($('#wordSearch'))$('#wordSearch').oninput=e=>renderVocabularyViews(e.target.value);
 function esc(text){return String(text||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+const KAT_ICON_PATHS={
+  book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"/><path d="M8 7h8M8 10h6"/>',
+  layers:'<rect x="4" y="4" width="16" height="5" rx="2"/><rect x="4" y="10" width="16" height="5" rx="2"/><rect x="4" y="16" width="16" height="4" rx="2"/>',
+  check:'<path d="m5 12 4 4L19 6"/>',
+  checkCircle:'<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16.5 9"/>',
+  target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',
+  chart:'<path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 3-4 3 2 5-7"/>',
+  flame:'<path d="M13.5 3.5c.4 3.2-1.2 4.9-2.8 6.1-1.2.9-2.2 2-2.2 3.8A3.8 3.8 0 0 0 12.3 17c1.7 0 3.2-1 3.8-2.6.5-1.4.2-2.7-.4-3.9 2.5 1.5 4 3.9 3.6 6.4A7.5 7.5 0 1 1 13.5 3.5Z"/>',
+  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>',
+  play:'<path d="m9 6 10 6-10 6V6Z"/>',
+  more:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+  edit:'<path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13 6 4 4"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6"/><path d="m6 7 1 13h10l1-13M9 7V4h6v3"/>',
+  shield:'<path d="M12 3 19 6v5c0 4.7-2.9 8.1-7 10-4.1-1.9-7-5.3-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/>',
+  words:'<path d="M5 5h14v14H5z"/><path d="M8 9h8M8 12h6M8 15h4"/>',
+  user:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  refresh:'<path d="M20 11a8 8 0 0 0-14.6-4L4 9"/><path d="M4 4v5h5M4 13a8 8 0 0 0 14.6 4L20 15"/><path d="M20 20v-5h-5"/>',
+  settings:'<path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4.9 15.2 3.5 16l1.8 3.1 1.5-.8a8.2 8.2 0 0 0 2.2 1.3V21h3.6v-1.4a8.2 8.2 0 0 0 2.2-1.3l1.5.8 1.8-3.1-1.4-.8a7.8 7.8 0 0 0 0-2.4l1.4-.8-1.8-3.1-1.5.8a8.2 8.2 0 0 0-2.2-1.3V7H9.9v1.4a8.2 8.2 0 0 0-2.2 1.3l-1.5-.8-1.8 3.1 1.4.8a7.8 7.8 0 0 0 0 2.4Z"/>'
+};
+function katIcon(name,size=18,extraClass=''){
+  const paths=KAT_ICON_PATHS[String(name||'')]||KAT_ICON_PATHS.book;
+  return '<span class="kl-icon '+esc(extraClass||'')+'" aria-hidden="true" style="width:'+Number(size||18)+'px;height:'+Number(size||18)+'px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">'+paths+'</svg></span>';
+}
+window.katIcon=katIcon;
+function hydrateKatIcons(root=document){
+  root.querySelectorAll('[data-kat-icon]').forEach(el=>{
+    const name=el.getAttribute('data-kat-icon')||'book';
+    const size=Math.max(14,Number(el.getAttribute('data-icon-size')||18));
+    el.innerHTML=katIcon(name,size);
+  });
+}
+function getPersonalPackProgress(pack,uid){
+  const words=Array.isArray(pack?.words)?pack.words.filter(v=>String(v?.word||'').trim()&&vocabMeaning(v)):[];
+  const total=words.length;
+  const rawKeys=new Set();
+  try{
+    const stored=JSON.parse(localStorage.getItem('katlearn-known:'+String(uid||'')+':personal:'+String(pack?.id||''))||'[]');
+    if(Array.isArray(stored))for(const key of stored)if(key)rawKeys.add(String(key));
+  }catch(_){}
+  const uniqueKeys=new Set();
+  let knownWords=0;
+  for(const word of words){
+    const key=vocabKey(word);
+    if(uniqueKeys.has(key))continue;
+    uniqueKeys.add(key);
+    if(rawKeys.has(key))knownWords++;
+  }
+  const unknownWords=Math.max(0,uniqueKeys.size-knownWords);
+  const percentage=uniqueKeys.size?Math.round(knownWords/uniqueKeys.size*100):0;
+  const state=percentage>=80?'good':percentage>=50?'mid':'low';
+  return {total:uniqueKeys.size,known:knownWords,unknown:unknownWords,percentage,state};
+}
+function renderPersonalPackProgressList(){
+  const box=$('#progressPackList');
+  if(!box)return;
+  const user=window.studyStore?.user,uid=String(user?.uid||'');
+  if(!uid){
+    box.innerHTML='<div class="progress-pack-empty"><div class="empty-icon">'+katIcon('user',22)+'</div><b>Đăng nhập để xem tiến độ từng bộ</b><small>Kat sẽ theo dõi riêng trạng thái của từng bộ từ.</small></div>';
+    return;
+  }
+  const packs=personalLearningSnapshot.uid===uid&&Array.isArray(personalLearningSnapshot.packs)?personalLearningSnapshot.packs:[];
+  if(!packs.length){
+    box.innerHTML='<div class="progress-pack-empty"><div class="empty-icon">'+katIcon('layers',22)+'</div><b>Chưa có bộ từ đang học</b><small>Tạo hoặc thêm một bộ từ riêng để Kat bắt đầu theo dõi tiến độ.</small></div>';
+    return;
+  }
+  box.innerHTML=packs.map(pack=>{
+    const p=getPersonalPackProgress(pack,uid);
+    const stateLabel=p.state==='good'?'Đang vững':p.state==='mid'?'Đang tiến bộ':'Cần ôn thêm';
+    return '<article class="progress-pack-card">'+
+      '<div class="progress-pack-head"><div class="progress-pack-icon">'+katIcon('book',20)+'</div><div class="progress-pack-copy"><h3>'+esc(pack.name||'Bộ từ chưa đặt tên')+'</h3><p>'+p.total+' từ trong bộ học riêng</p></div><strong class="progress-pack-percent is-'+p.state+'">'+p.percentage+'%</strong></div>'+
+      '<div class="pack-progress-track" role="progressbar" aria-label="Tiến độ '+esc(pack.name||'bộ từ')+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+p.percentage+'"><span class="pack-progress-fill is-'+p.state+'" style="width:'+p.percentage+'%"></span></div>'+
+      '<div class="pack-progress-meta"><span class="known">'+katIcon('checkCircle',13)+' '+p.known+' đã thuộc</span><span class="unknown">'+katIcon('target',13)+' '+p.unknown+' chưa thuộc</span></div>'+
+      '<small class="progress-pack-state">'+esc(stateLabel)+'</small>'+
+    '</article>';
+  }).join('');
+}
+setTimeout(()=>{try{hydrateKatIcons()}catch(_){}},0);
 let progressRenderPromise=null;
 async function renderProgressDashboard(){
   const user=await window.studyStore?.waitForAuth?.().catch(()=>null);
@@ -751,6 +829,7 @@ async function renderProgressDashboard(){
       if(streakMeta)streakMeta.textContent=streak?'Ngày học liên tiếp':'Chưa có chuỗi học';
       if(coinsEl)coinsEl.textContent=balance.toLocaleString('vi-VN');
       if(coinsMeta)coinsMeta.textContent='Số dư KatCoin hiện tại';
+      renderPersonalPackProgressList();
       return profile;
     }catch(error){
       console.warn('[KatLearn progress]',error);
@@ -1058,7 +1137,10 @@ window.addEventListener('katlearn-personal-learning-synced',e=>{
   if(e.detail?.uid&&e.detail.uid===String(window.studyStore?.user?.uid||'')){
     applyPersonalLearningSnapshot(e.detail);
     if(document.body?.dataset?.page==='vocabulary')renderVocabularyViews($('#wordSearch')?.value||'');
-    if(document.body?.dataset?.page==='progress')void renderProgressDashboard();
+    if(document.body?.dataset?.page==='progress'){
+      renderPersonalPackProgressList();
+      void renderProgressDashboard();
+    }
   }
 });
 window.addEventListener('katlearn-account-ready',()=>{void renderProgressDashboard()});
