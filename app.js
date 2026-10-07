@@ -2,6 +2,54 @@ let vocab=[];
 try{const savedVocab=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(Array.isArray(savedVocab))vocab=savedVocab}catch(e){}
 let coins=0,coinBalanceReady=false,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
 let activeVocabSource={kind:'legacy'};try{const raw=localStorage.getItem('katlearn-vocab-source');if(raw)activeVocabSource=JSON.parse(raw)||activeVocabSource}catch(_){}
+let personalLearningSnapshot={uid:'',packs:[],words:[],knownKeys:new Set(),totalWords:0,knownWords:0,personalPacksCount:0};
+let progressVisitRecordedUid='';
+function applyPersonalLearningSnapshot(data){
+  const uid=String(data?.uid||'');
+  if(!uid)return;
+  personalLearningSnapshot={
+    uid,
+    packs:Array.isArray(data?.packs)?data.packs:[],
+    words:Array.isArray(data?.words)?data.words:[],
+    knownKeys:new Set(Array.isArray(data?.knownKeys)?data.knownKeys.filter(Boolean).map(String):[]),
+    totalWords:Math.max(0,Number(data?.totalWords||0)),
+    knownWords:Math.max(0,Number(data?.knownWords||0)),
+    personalPacksCount:Math.max(0,Number(data?.personalPacksCount||0))
+  };
+  window.katlearnPersonalLearning=personalLearningSnapshot;
+}
+async function syncPersonalProgressFromLocal(){
+  const uid=String(window.studyStore?.user?.uid||'');
+  if(!uid||personalLearningSnapshot.uid!==uid)return null;
+  const knownKeys=new Set();
+  for(const pack of personalLearningSnapshot.packs){
+    try{
+      const raw=localStorage.getItem('katlearn-known:'+uid+':personal:'+String(pack?.id||''));
+      const arr=JSON.parse(raw||'[]');
+      if(Array.isArray(arr))for(const key of arr)if(key)knownKeys.add(String(key));
+    }catch(_){}
+  }
+  let knownWords=0;
+  for(const word of personalLearningSnapshot.words){
+    const key=vocabKey(word);
+    if(knownKeys.has(key))knownWords++;
+  }
+  personalLearningSnapshot.knownKeys=knownKeys;
+  personalLearningSnapshot.knownWords=knownWords;
+  window.katlearnPersonalLearning=personalLearningSnapshot;
+  try{
+    await window.studyStore?.saveProfile?.({
+      personalPacksCount:personalLearningSnapshot.personalPacksCount,
+      personalWordCount:personalLearningSnapshot.totalWords,
+      personalKnownCount:knownWords,
+      totalWords:personalLearningSnapshot.totalWords,
+      knownWords
+    },uid);
+  }catch(error){console.warn('[KatLearn] Personal progress write:',error)}
+  window.dispatchEvent(new CustomEvent('katlearn-personal-learning-synced',{detail:personalLearningSnapshot}));
+  return personalLearningSnapshot;
+}
+if(typeof window!=='undefined')window.katlearnPersonalLearning=personalLearningSnapshot;
 let activeDeckMeta={name:'Flashcard từ vựng',description:'Chọn một bộ từ để bắt đầu học theo nhịp của bạn.',icon:'📚'};
 function vocabKey(v){return String(v?.word||'').trim().toLowerCase()+'::'+vocabMeaning(v).trim().toLowerCase()}
 function knownStateKey(){const uid=String(window.studyStore?.user?.uid||window.studyStore?.userId||'guest');return 'katlearn-known:'+uid+':'+String(activeVocabSource?.kind||'legacy')+':'+String(activeVocabSource?.id||activeVocabSource?.uid||'legacy')}
@@ -162,13 +210,20 @@ function renderWordList(){
 }
 
 function renderVocabularyViews(filter=''){if(!$('#wordTable')&&!$('#wordTotalStat'))return;
-  const q=String(filter||'').trim().toLowerCase(),visible=vocab.filter(v=>{
+  const isVocabularyPage=document.body?.dataset?.page==='vocabulary'||location.pathname.endsWith('/vocabulary.html');
+  const usePersonal=isVocabularyPage&&!!window.studyStore?.user&&personalLearningSnapshot.uid===String(window.studyStore.user.uid||'');
+  const sourceWords=usePersonal?personalLearningSnapshot.words:vocab;
+  const sourceKnown=usePersonal?personalLearningSnapshot.knownKeys:knownWordKeys;
+  const q=String(filter||'').trim().toLowerCase(),visible=sourceWords.filter(v=>{
     const word=String(v?.word||''),mean=vocabMeaning(v);
     return !q||word.toLowerCase().includes(q)||mean.toLowerCase().includes(q);
-  }),total=vocab.length,done=Math.min(knownWordKeys.size,total),progress=total?Math.round(done/total*100):0;
+  }),total=sourceWords.length,done=usePersonal?Math.min(personalLearningSnapshot.knownWords,total):Math.min(sourceKnown.size,total),progress=total?Math.round(done/total*100):0;
   $('#wordTotalStat').textContent=total;$('#wordKnownStat').textContent=done;$('#wordUnknownStat').textContent=Math.max(0,total-done);$('#wordProgressStat').textContent=progress+'%';
   $('#personalWordCount').textContent=total;$('#personalKnownCount').textContent=done;
-  $('#wordTable').innerHTML=visible.length?visible.map((v,i)=>'<div class="word-table-row"><span><b>'+esc(v.word)+'</b><small>'+ (i+1)+'/'+total+'</small></span><span>'+esc(v.mean)+'</span><span>'+esc(v.pron||'—')+'</span><span><i class="word-status '+(knownWordKeys.has(vocabKey(v))?'':'new')+'">'+(knownWordKeys.has(vocabKey(v))?'Đã thuộc':'Mới')+'</i></span></div>').join(''):'<div class="empty-state">Chưa có từ phù hợp.</div>';
+  $('#wordTable').innerHTML=visible.length?visible.map((v,i)=>{
+    const key=vocabKey(v),packNames=Array.isArray(v?.packNames)?v.packNames.join(' · '):'';
+    return '<div class="word-table-row"><span><b>'+esc(v.word)+'</b><small>'+ (i+1)+'/'+total+(packNames?' · '+esc(packNames):'')+'</small></span><span>'+esc(v.mean)+'</span><span>'+esc(v.pron||'—')+'</span><span><i class="word-status '+(sourceKnown.has(key)?'':'new')+'">'+(sourceKnown.has(key)?'Đã thuộc':'Mới')+'</i></span></div>';
+  }).join(''):'<div class="empty-state">Chưa có từ phù hợp.</div>';
 }
 
 function setCardFlipped(flipped){
@@ -212,7 +267,11 @@ function markCurrentCard(knownValue){
   const v=vocab[cardIndex],key=vocabKey(v);
   if(knownValue)knownWordKeys.add(key);else knownWordKeys.delete(key);
   saveKnownState();
-  void syncProfile({knownWords:known}).then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
+  if(activeVocabSource?.kind==='personal'&&personalLearningSnapshot.uid===String(window.studyStore?.user?.uid||'')){
+    void syncPersonalProgressFromLocal().then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
+  }else{
+    void syncProfile({knownWords:known}).then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
+  }
   if(knownValue&&known>=vocab.length){
     renderCard();
     toast('🎉 Bạn đã nhớ toàn bộ bộ từ này!');
@@ -656,30 +715,36 @@ async function renderProgressDashboard(){
   }
   const uid=String(user.uid||'');
   if(progressRenderPromise)return progressRenderPromise;
+  if(progressVisitRecordedUid!==uid){
+    progressVisitRecordedUid=uid;
+    void window.studyStore?.recordProgressView?.();
+  }
   progressRenderPromise=(async()=>{
     try{
       const profile=await window.studyStore.loadProfile();
+      if(String(window.studyStore?.user?.uid||'')===uid&&personalLearningSnapshot.uid!==uid&&window.studyStore?.syncPersonalLearningData){
+        try{await window.studyStore.syncPersonalLearningData()}catch(error){console.warn('[KatLearn] Progress personal sync:',error)}
+      }
       if(String(window.studyStore?.user?.uid||'')!==uid)return null;
       if(!profile){
         if(wordsEl)wordsEl.textContent='0';
         if(wordsMeta)wordsMeta.textContent='Chưa có hồ sơ học tập';
         return null;
       }
-      // Word progress is scoped to the deck the student is currently studying.
-      // This avoids showing personal-pack counts while the user is reviewing a
-      // public/core/assigned pack.
-      const localVocabCount=Math.max(0,Array.isArray(vocab)?vocab.length:0);
-      const localKnownCount=Math.max(0,Number(knownWordKeys?.size||0));
-      const hasLocalDeck=localVocabCount>0;
-      const vocabCount=hasLocalDeck?localVocabCount:Math.max(0,Number(profile.totalWords||0));
-      const knownCount=hasLocalDeck?Math.min(localKnownCount,vocabCount):Math.min(Math.max(0,Number(profile.knownWords||0)),vocabCount);
+      const personalReady=personalLearningSnapshot.uid===uid;
+      const vocabCount=personalReady
+        ?Math.max(0,Number(personalLearningSnapshot.totalWords||0))
+        :Math.max(0,Number(profile.personalWordCount||profile.totalWords||0));
+      const knownCount=personalReady
+        ?Math.min(Math.max(0,Number(personalLearningSnapshot.knownWords||0)),vocabCount)
+        :Math.min(Math.max(0,Number(profile.personalKnownCount||profile.knownWords||0)),vocabCount);
       const answeredCount=Math.max(0,Number(profile.questionsAnswered||0));
       const correctCount=Math.max(0,Number(profile.correctAnswers||0));
       const accuracy=answeredCount?Math.round(Math.min(1,correctCount/answeredCount)*100):0;
       const streak=Math.max(0,Number(profile.streak||0));
       const balance=Math.max(0,Number(profile.coins||0));
-      if(wordsEl)wordsEl.textContent=knownCount.toLocaleString('vi-VN');
-      if(wordsMeta)wordsMeta.textContent=vocabCount?knownCount+' / '+vocabCount+' từ trong bộ đang học':'Chưa có bộ từ đang học';
+      if(wordsEl)wordsEl.textContent=vocabCount.toLocaleString('vi-VN');
+      if(wordsMeta)wordsMeta.textContent=vocabCount?(knownCount+' đã thuộc · '+Math.max(0,Number(personalLearningSnapshot.personalPacksCount||profile.personalPacksCount||0))+' bộ đang học'):'Chưa có bộ từ đang học';
       if(accEl)accEl.textContent=accuracy+'%';
       if(accMeta)accMeta.textContent=answeredCount.toLocaleString('vi-VN')+' câu đã trả lời · '+correctCount.toLocaleString('vi-VN')+' câu đúng';
       if(streakEl)streakEl.textContent=streak.toLocaleString('vi-VN');
@@ -986,19 +1051,41 @@ window.addEventListener('katlearn-account-ready',e=>{
   const profile=e.detail?.profile||null;
   applyServerProfile(profile);
   if(e.detail?.account)void refreshAuthoritativeCoinBalance('account-ready');
+  if(!e.detail?.account)personalLearningSnapshot={uid:'',packs:[],words:[],knownKeys:new Set(),totalWords:0,knownWords:0,personalPacksCount:0};
   void refreshAuthDependentViews(e.detail?.account?e.detail.user:null);
+});
+window.addEventListener('katlearn-personal-learning-synced',e=>{
+  if(e.detail?.uid&&e.detail.uid===String(window.studyStore?.user?.uid||'')){
+    applyPersonalLearningSnapshot(e.detail);
+    if(document.body?.dataset?.page==='vocabulary')renderVocabularyViews($('#wordSearch')?.value||'');
+    if(document.body?.dataset?.page==='progress')void renderProgressDashboard();
+  }
 });
 window.addEventListener('katlearn-account-ready',()=>{void renderProgressDashboard()});
 window.addEventListener('katlearn-account-ready',e=>{const profile=e.detail?.profile||null;updateHomeHeader(profile);updateDailyGoal(profile?.dailyQuestions||0)});renderAuth(null);renderAdmin(null);const loginModal=$('#loginModal');if(loginModal)loginModal.querySelector('.modal-close')?.addEventListener('click',()=>loginModal.classList.remove('show'));if(loginModal)loginModal.onclick=e=>{if(e.target===loginModal)loginModal.classList.remove('show')};function authError(err){if(err.code==='auth/unauthorized-domain')return `Firebase chưa cho phép domain “${location.hostname}”. Vào Authentication → Settings → Authorized domains để thêm domain này.`;const messages={'auth/operation-not-allowed':'Hãy bật Email/Password trong Firebase Authentication trước.','auth/email-already-in-use':'Email này đã có tài khoản. Hãy đăng nhập.','auth/invalid-credential':'Email hoặc mật khẩu không đúng.','auth/weak-password':'Mật khẩu cần ít nhất 6 ký tự.'};return messages[err.code]||'Không thể thực hiện: '+err.message}async function providerLogin(provider){try{const user=await window.studyStore.signIn(provider);$('#loginModal').classList.remove('show');renderAuth(user);toast(`Chào mừng ${user.displayName||'bạn'}! Dữ liệu đang được đồng bộ.`)}catch(err){toast(authError(err))}}async function emailLogin(create){const email=$('#authEmail').value.trim(),password=$('#authPassword').value;if(!email||!password)return;try{const user=await window.studyStore.signInEmail(email,password,create);$('#loginModal').classList.remove('show');renderAuth(user);toast(create?'Đã tạo tài khoản thành công!':'Đăng nhập thành công!')}catch(err){toast(authError(err))}}const emailLoginForm=$('#emailLoginForm'),emailRegister=$('#emailRegister'),googleLogin=$('#googleLogin'),appleLogin=$('#appleLogin'),logoutBtn=$('#logoutBtn'),openProgress=$('#openProgress');if(emailLoginForm)emailLoginForm.onsubmit=e=>{e.preventDefault();emailLogin(false)};if(emailRegister)emailRegister.onclick=()=>emailLogin(true);if(googleLogin)googleLogin.onclick=()=>providerLogin('google');if(appleLogin)appleLogin.onclick=()=>providerLogin('apple');if(logoutBtn)logoutBtn.onclick=async()=>{try{await window.studyStore.signOut();toast('Đã đăng xuất.');setTimeout(()=>location.replace('/login.html'),100)}catch(e){toast('❌ Không thể đăng xuất: '+(e.message||'Lỗi không xác định'))}};if(openProgress)openProgress.onclick=()=>{showPage('progress');$('#accountPanel').hidden=true};document.addEventListener('click',e=>{const topActions=$('.top-actions'),panel=$('#accountPanel');if(topActions&&!topActions.contains(e.target)&&panel)panel.hidden=true});
 if($('#learn'))renderCard();if($('#practice'))void initReflexSourcePicker();updateCoins();openInitialPage();if($('#packLibrary')||$('#publishedPacks'))void renderPublicPacks();
 
-window.addEventListener('katlearn-personal-pack-open',e=>{const words=Array.isArray(e.detail?.words)?e.detail.words:[];vocab=words;setVocabSource({kind:'personal',id:String(e.detail?.id||''),uid:window.studyStore?.userId||''});cardIndex=0;localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));if($('#learn'))renderCard();if($('#practice'))renderQuiz();if($('#wordTable'))renderVocabularyViews();void syncProfile({personalPackName:String(e.detail?.name||'').trim(),knownWords:known,totalWords:vocab.length,vocab});});
+window.addEventListener('katlearn-personal-pack-open',e=>{
+  const words=Array.isArray(e.detail?.words)?e.detail.words:[];
+  vocab=words;
+  setVocabSource({kind:'personal',id:String(e.detail?.id||''),uid:window.studyStore?.userId||''});
+  cardIndex=0;
+  localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
+  if($('#learn'))renderCard();
+  if($('#practice'))renderQuiz();
+  if($('#wordTable'))renderVocabularyViews();
+  void window.studyStore?.syncPersonalLearningData?.().then(()=>syncPersonalProgressFromLocal()).catch(()=>{});
+  void syncProfile({personalPackName:String(e.detail?.name||'').trim(),knownWords:known,totalWords:vocab.length,vocab});
+});
 window.addEventListener('katlearn-personal-pack-deleted',e=>{
   const id=String(e.detail?.id||'');
   if(activeVocabSource?.kind!=='personal'||String(activeVocabSource?.id||'')!==id)return;
   vocab=[];cardIndex=0;known=0;knownWordKeys.clear();
   activeVocabSource={kind:'legacy'};
   localStorage.removeItem('katlearn-vocab');localStorage.removeItem('katlearn-vocab-source');localStorage.removeItem('katlearn-known-'+id);
-  if($('#learn'))renderCard();if($('#practice'))renderQuiz();if($('#wordTable'))renderVocabularyViews();void syncProfile({personalPackName:'',knownWords:0,totalWords:0,vocab:[]});void renderPackLibrary();
+  if($('#learn'))renderCard();if($('#practice'))renderQuiz();if($('#wordTable'))renderVocabularyViews();
+  void window.studyStore?.syncPersonalLearningData?.().catch(()=>{});
+  void syncProfile({personalPackName:'',knownWords:0,totalWords:0,vocab:[]});
+  void renderPackLibrary();
   toast('Bộ từ đang học đã được xóa.');
 });
