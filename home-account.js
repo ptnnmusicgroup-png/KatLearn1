@@ -38,7 +38,7 @@
         ci.hidden=false;
       }else{ci.textContent='';ci.hidden=true}
     }
-    if(c)c.textContent=Number(p.coins||0).toLocaleString('en-US');
+    if(c&&window.katlearnCoinController?.ready===false)c.textContent='—';
     if(en)en.textContent=Number(p.energy||0).toLocaleString('en-US');
     if(w)w.textContent=Number(p.totalWords||0).toLocaleString('en-US');
   }
