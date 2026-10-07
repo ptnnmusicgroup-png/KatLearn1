@@ -207,6 +207,23 @@ module.exports=async(req,res)=>{
       return send(res,200,result);
     }
 
+    if(action==="apply-theme"){
+      const itemId=String(body.itemId||"").trim().slice(0,80),item=SHOP_ITEMS[itemId];
+      if(!item||!itemId.startsWith("theme-"))return send(res,400,{error:"Theme không hợp lệ."});
+      const result=await db.runTransaction(async transaction=>{
+        const snap=await transaction.get(userRef);
+        if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
+        const profile=snap.data()||{};
+        const owned=Array.isArray(profile.ownedThemes)&&profile.ownedThemes.includes(itemId);
+        const itemRef=db.doc("users/"+token.uid+"/items/"+itemId);
+        const itemSnap=await transaction.get(itemRef);
+        if(!owned&&!itemSnap.exists)throw Object.assign(new Error("Bạn chưa mua theme này."),{status:403});
+        transaction.update(userRef,{themeId:itemId,updatedAt:FieldValue.serverTimestamp()});
+        return{ok:true,themeId:itemId,coins:Math.max(0,Number(profile.coins||0)),item:{id:itemId,name:item.name,price:item.price}};
+      });
+      return send(res,200,result);
+    }
+
     if(action==="purchase"){
       const itemId=String(body.itemId||"").trim().slice(0,80),item=SHOP_ITEMS[itemId];
       if(!item)return send(res,400,{error:"Vật phẩm không hợp lệ."});
@@ -218,11 +235,11 @@ module.exports=async(req,res)=>{
         if(itemSnap.exists)throw Object.assign(new Error("Vật phẩm này đã được mua."),{status:409});
         if(coins<item.price)throw Object.assign(new Error("Không đủ KatCoin."),{status:400});
         const profileUpdate={coins:coins-item.price};
-        if(itemId.startsWith('theme-'))profileUpdate.ownedThemes=FieldValue.arrayUnion(itemId);
+        if(itemId.startsWith('theme-')){profileUpdate.ownedThemes=FieldValue.arrayUnion(itemId);profileUpdate.themeId=itemId;}
         transaction.update(userRef,profileUpdate);
         transaction.set(itemRef,{id:itemId,name:item.name,price:item.price,...(item.image?{image:item.image}:{}),boughtAt:FieldValue.serverTimestamp()});
         transaction.set(leaderboardRef,publicScore(profile.displayName,coins-item.price,xp),{merge:true});
-        return{ok:true,coins:coins-item.price,item:{id:itemId,name:item.name,price:item.price}};
+        return{ok:true,coins:coins-item.price,themeId:itemId.startsWith('theme-')?itemId:'',item:{id:itemId,name:item.name,price:item.price}};
       });
       return send(res,200,result);
     }
