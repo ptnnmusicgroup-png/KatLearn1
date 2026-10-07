@@ -81,7 +81,7 @@
         const existingMatches=existing?.options?.apiKey===config.apiKey&&existing?.options?.projectId===config.projectId;
         const app=existingMatches?existing:initializeApp(config);
         db=getFirestore(app);
-        api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction};
+        api={doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction,increment};
         auth=getAuth(app);
         // Explicitly persist the Firebase Auth session across reloads/restarts.
         // This prevents transient/session-only auth behavior on browsers where
