@@ -1,6 +1,6 @@
 /* Firebase browser data layer. */
 (function(){
-  let db=null,auth=null,api={},currentUser=null,authReady=null,authStateReady=false,connectPromise=null,lastAuthUid=undefined;
+  let db=null,auth=null,api={},currentUser=null,authReady=null,authStateReady=false,connectPromise=null,lastAuthUid=undefined,profileWriteQueue=Promise.resolve();
   window.KATLEARN_FIREBASE_CONFIG={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDomain:'elp---katlearn.firebaseapp.com',projectId:'elp---katlearn',storageBucket:'elp---katlearn.firebasestorage.app',messagingSenderId:'344478447672',appId:'1:344478447672:web:4ed109a40303d0b41b0ecd',measurementId:'G-KTW11GD97T'};
   const guestId=localStorage.getItem('8b1-guest-id')||crypto.randomUUID();localStorage.setItem('8b1-guest-id',guestId);
   function stripVietnamese(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
@@ -72,7 +72,7 @@
       if(connectPromise)return connectPromise;
 
       connectPromise=(async()=>{
-        const [{initializeApp,getApps},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile,setPersistence,browserLocalPersistence}]=await Promise.all([
+        const [{initializeApp,getApps},{getFirestore,doc,setDoc,addDoc,collection,serverTimestamp,getDocs,getDoc,query,orderBy,limit,where,updateDoc,deleteDoc,runTransaction,increment},{getAuth,GoogleAuthProvider,OAuthProvider,signInWithPopup,onAuthStateChanged,signOut,createUserWithEmailAndPassword,signInWithEmailAndPassword,updateProfile,setPersistence,browserLocalPersistence}]=await Promise.all([
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'),
           import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js')
@@ -230,33 +230,61 @@
       if(expectedUid&&String(expectedUid)!==uid)return;
       if(currentUser?.uid!==uid)return;
       const ref=api.doc(db,'users',uid);
-      const existing=await api.getDoc(ref);
-      const payload={...data};
-      ['__coinsAuthoritative','coins','energy','streak','lastStudyDay','dailyQuestions','dailyCorrect','questionsAnswered','correctAnswers','ownedThemes','teacherUid','teacherUids','studentAccountType','classId','className','catalogClassId','schoolId','schoolName','province','ward','teacherName','teacherEmail'].forEach(k=>delete payload[k]);
-      const base={
-        displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
-        email:user.email||'',
-        photoURL:user.photoURL||'',
-        provider:user.providerData?.[0]?.providerId||'password',
-        role:'student',
-        coins:0,
-        energy:0,
-        streak:0,
-        lastStudyDay:'',
-        dailyQuestions:0,
-        dailyCorrect:0,
-        questionsAnswered:0,
-        correctAnswers:0,
-        ownedThemes:[],
-        joinedClassIds:[],
-        teacherUid:'',
-        teacherUids:[],
-        totalWords:0
+      const run=async()=>{
+        if(currentUser?.uid!==uid)return null;
+        const existing=await api.getDoc(ref);
+        if(currentUser?.uid!==uid)return null;
+        const payload={...data};
+        ['__coinsAuthoritative','coins','energy','streak','lastStudyDay','dailyQuestions','dailyCorrect','questionsAnswered','correctAnswers','ownedThemes','teacherUid','teacherUids','studentAccountType','classId','className','catalogClassId','schoolId','schoolName','province','ward','teacherName','teacherEmail'].forEach(k=>delete payload[k]);
+        if(!existing.exists()){
+          const base={
+            displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
+            email:user.email||'',
+            photoURL:user.photoURL||'',
+            provider:user.providerData?.[0]?.providerId||'password',
+            role:'student',
+            coins:0,
+            energy:0,
+            streak:0,
+            lastStudyDay:'',
+            dailyQuestions:0,
+            dailyCorrect:0,
+            questionsAnswered:0,
+            correctAnswers:0,
+            ownedThemes:[],
+            joinedClassIds:[],
+            teacherUid:'',
+            teacherUids:[],
+            totalWords:0
+          };
+          return api.setDoc(ref,{...base,...payload,updatedAt:api.serverTimestamp()},{merge:false});
+        }
+        return api.setDoc(ref,{...payload,displayName:user.displayName||existing.data()?.displayName||user.email?.split('@')[0]||'KatLearn Student',email:user.email||existing.data()?.email||'',photoURL:user.photoURL||existing.data()?.photoURL||'',updatedAt:api.serverTimestamp()},{merge:true});
       };
-      if(!existing.exists()){
-        return api.setDoc(ref,{...base,...payload,updatedAt:api.serverTimestamp()},{merge:false});
+      const next=profileWriteQueue.then(run,run);
+      profileWriteQueue=next.catch(()=>{});
+      return next;
+    },
+    async recordProgressView(){
+      const user=currentUser||await this.waitForAuth();
+      if(!db||!user)return null;
+      const uid=String(user.uid||'');
+      if(!uid||currentUser?.uid!==uid)return null;
+      try{
+        const ref=api.doc(db,'users',uid);
+        const snap=await api.getDoc(ref);
+        if(!snap.exists())await this.saveProfile({});
+        if(currentUser?.uid!==uid)return null;
+        await api.setDoc(ref,{
+          progressViewCount:increment(1),
+          lastProgressViewedAt:api.serverTimestamp(),
+          updatedAt:api.serverTimestamp()
+        },{merge:true});
+        return true;
+      }catch(error){
+        if(currentUser?.uid===uid)console.warn('[KatLearn] Progress view sync:',error);
+        return false;
       }
-      return api.setDoc(ref,{...payload,displayName:user.displayName||existing.data()?.displayName||user.email?.split('@')[0]||'KatLearn Student',email:user.email||existing.data()?.email||'',photoURL:user.photoURL||existing.data()?.photoURL||'',updatedAt:api.serverTimestamp()},{merge:true});
     },
     async recordAnswer(data){if(!db||!currentUser)return;await api.addDoc(api.collection(db,'users',this.userId,'attempts'),{...data,createdAt:api.serverTimestamp()});await this.saveProfile({lastStudyAt:api.serverTimestamp()})},
     async purchase(item){if(!db||!currentUser)return;return api.setDoc(api.doc(db,'users',this.userId,'items',item.id),{...item,boughtAt:api.serverTimestamp()})},
@@ -437,6 +465,71 @@
         console.warn('[KatLearn] Personal packs load failed (UID + account + server):',directError,serverError);
         throw serverError;
       }
+    },
+    async syncPersonalLearningData(){
+      const user=currentUser||await this.waitForAuth();
+      if(!db||!user)return {uid:'',packs:[],words:[],totalWords:0,knownWords:0,personalPacksCount:0};
+      const uid=String(user.uid||'');
+      if(!uid||currentUser?.uid!==uid)return {uid,packs:[],words:[],totalWords:0,knownWords:0,personalPacksCount:0};
+      let packs=[];
+      try{
+        packs=await this.personalPacks();
+      }catch(error){
+        console.warn('[KatLearn] Personal learning sync load failed:',error);
+        return {uid,packs:[],words:[],totalWords:0,knownWords:0,personalPacksCount:0,error};
+      }
+      const merged=[];
+      const byWord=new Map();
+      const knownKeys=new Set();
+      const addKnown=(packId)=>{
+        try{
+          const raw=localStorage.getItem('katlearn-known:'+uid+':personal:'+String(packId||''));
+          const arr=JSON.parse(raw||'[]');
+          if(Array.isArray(arr))for(const key of arr)if(key)knownKeys.add(String(key));
+        }catch(_){}
+      };
+      for(const pack of packs){
+        const packId=String(pack?.id||'');
+        addKnown(packId);
+        const packName=String(pack?.name||'Bộ từ riêng');
+        for(const word of Array.isArray(pack?.words)?pack.words:[]){
+          const wordValue=String(word?.word||'').trim();
+          const meanValue=String(word?.mean||word?.meaning_vi||'').trim();
+          if(!wordValue||!meanValue)continue;
+          const key=wordValue.toLowerCase().replace(/\s+/g,' ')+'::'+meanValue.toLowerCase().replace(/\s+/g,' ');
+          const existing=byWord.get(key);
+          if(existing){
+            existing.packIds=[...new Set([...(existing.packIds||[]),packId])];
+            existing.packNames=[...new Set([...(existing.packNames||[]),packName])];
+            continue;
+          }
+          const item={...word,packIds:packId?[packId]:[],packNames:packName?[packName]:[]};
+          byWord.set(key,item);merged.push(item);
+        }
+      }
+      const totalWords=merged.length;
+      let knownWords=0;
+      for(const item of merged){
+        const key=String(item?.word||'').trim().toLowerCase().replace(/\s+/g,' ')+'::'+String(item?.mean||item?.meaning_vi||'').trim().toLowerCase().replace(/\s+/g,' ');
+        if(knownKeys.has(key))knownWords++;
+      }
+      const result={uid,packs,words:merged,totalWords,knownWords,knownKeys:[...knownKeys],personalPacksCount:packs.length,updatedAt:Date.now()};
+      try{
+        if(String(window.studyStore?.user?.uid||'')===uid){
+          await this.saveProfile({
+            personalPacksCount:packs.length,
+            personalWordCount:totalWords,
+            personalKnownCount:knownWords,
+            totalWords,
+            knownWords,
+            personalLearningSyncedAt:api.serverTimestamp()
+          },uid);
+        }
+      }catch(error){console.warn('[KatLearn] Personal learning progress write failed:',error)}
+      if(String(window.studyStore?.user?.uid||'')===uid){
+        window.dispatchEvent(new CustomEvent('katlearn-personal-learning-synced',{detail:result}));
+      }
+      return result;
     },
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
