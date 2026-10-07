@@ -370,12 +370,12 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     renderMinePromise=(async()=>{
       try{
         if(String(window.studyStore?.user?.uid||'')!==uid)return;
-        box.innerHTML='<div class="personal-pack-empty">🔐 Đang xác thực tài khoản và tải bộ từ của bạn…</div>';
+        box.innerHTML='<div class="personal-pack-empty"><span class="kl-icon-slot">'+(window.katIcon?.('shield',20)||'')+'</span> Đang xác thực tài khoản và tải bộ từ của bạn…</div>';
 
         if(await isManagedStudent()){
           if(String(window.studyStore?.user?.uid||'')!==uid)return;
           $('#personalPackCount').textContent='0';
-          box.innerHTML='<div class="personal-pack-empty">🔒 Bộ từ cá nhân bị khóa vì tài khoản này đang thuộc lớp do giáo viên quản lý.</div>';
+          box.innerHTML='<div class="personal-pack-empty"><span class="kl-icon-slot">'+(window.katIcon?.('lock',20)||'')+'</span> Bộ từ cá nhân bị khóa vì tài khoản này đang thuộc lớp do giáo viên quản lý.</div>';
           return;
         }
 
@@ -387,21 +387,21 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
 
         if(String(window.studyStore?.user?.uid||'')!==uid)return;
         const safePacks=packs.filter(p=>String(p?.ownerUid||uid)===uid);
-        const totalWords=safePacks.reduce((sum,p)=>sum+(Array.isArray(p.words)?p.words.length:0),0);
-        const knownWords=safePacks.reduce((sum,p)=>{
-          const raw=localStorage.getItem('katlearn-known:'+uid+':personal:'+String(p.id||''));
-          try{const parsed=JSON.parse(raw||'[]');return sum+(Array.isArray(parsed)?parsed.filter(Boolean).length:0)}catch(_){return sum}
-        },0);
+        const totalWords=safePacks.reduce((sum,p)=>sum+(window.getPersonalPackProgress?.(p,uid)?.total||0),0);
+        const knownWords=safePacks.reduce((sum,p)=>sum+(window.getPersonalPackProgress?.(p,uid)?.known||0),0);
 
         $('#personalPackCount').textContent=safePacks.length;
         const wordStat=$('#personalWordCount');if(wordStat)wordStat.textContent=totalWords;
         const knownStat=$('#personalKnownCount');if(knownStat)knownStat.textContent=Math.min(knownWords,totalWords);
 
         box.innerHTML=safePacks.length
-          ?`<div class="personal-packs-title"><div><h3>🧑‍🎓 Bộ từ của tôi</h3><p>${safePacks.length} bộ từ · ${totalWords} từ · đồng bộ riêng theo tài khoản.</p></div><span class="personal-pack-account-pill">🔐 ${esc(String(safePacks[0]?.ownerAccountCode||safePacks[0]?.accountCode||'').trim()||'Mã tài khoản đang đồng bộ')}</span></div><div class="personal-pack-grid">${safePacks.map(p=>`<article class="personal-pack-card"><span>📚</span><div><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${Array.isArray(p.words)?p.words.length:0} từ vựng · bộ riêng</p></div><div style="display:flex;gap:7px;align-items:center"><button data-my-pack="${esc(p.id)}">Học ngay →</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn">⋮</button></div></article>`).join('')}</div>`
-          : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Tạo bộ từ đầu tiên →</a> 🐾</div>';
+          ?`<div class="personal-packs-title"><div><h3><span class="kl-icon-slot">${window.katIcon?.('layers',18)||''}</span> Bộ từ của tôi</h3><p>${safePacks.length} bộ từ · ${totalWords} từ · đồng bộ riêng theo tài khoản.</p></div><span class="personal-pack-account-pill"><span class="kl-icon-slot">${window.katIcon?.('shield',14)||''}</span> ${esc(String(safePacks[0]?.ownerAccountCode||safePacks[0]?.accountCode||'').trim()||'Mã tài khoản đang đồng bộ')}</span></div><div class="personal-pack-grid">${safePacks.map(p=>{
+              const progress=window.getPersonalPackProgress?.(p,uid)||{total:Array.isArray(p.words)?p.words.length:0,known:0,unknown:Array.isArray(p.words)?p.words.length:0,percentage:0,state:'low'};
+              return `<article class="personal-pack-card"><span class="personal-pack-progress-icon">${window.katIcon?.('book',19)||''}</span><div class="personal-pack-copy"><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${progress.total} từ vựng · bộ riêng</p></div><div class="personal-pack-actions"><button data-my-pack="${esc(p.id)}"><span class="kl-icon-slot">${window.katIcon?.('play',13)||''}</span> Học ngay</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn"><span class="kl-icon-slot">${window.katIcon?.('more',16)||''}</span></button></div><div class="personal-pack-progress"><div class="personal-pack-progress-top"><small>Tiến độ học</small><strong class="is-${progress.state}">${progress.percentage}%</strong></div><div class="pack-progress-track" role="progressbar" aria-label="Tiến độ ${esc(p.name||'bộ từ')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress.percentage}"><span class="pack-progress-fill is-${progress.state}" style="width:${progress.percentage}%"></span></div><div class="pack-progress-meta"><span class="known">${window.katIcon?.('checkCircle',12)||''} ${progress.known} đã thuộc</span><span class="unknown">${window.katIcon?.('target',12)||''} ${progress.unknown} chưa thuộc</span></div></div></article>`;
+            }).join('')}</div>`
+          : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Tạo bộ từ đầu tiên →</a></div>';
 
-        $$('[data-my-pack-menu]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openPersonalPackMenu(btn,safePacks.find(x=>x.id===btn.dataset.myPackMenu))});
+        $('[data-my-pack-menu]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openPersonalPackMenu(btn,safePacks.find(x=>x.id===btn.dataset.myPackMenu))});
         $$('[data-my-pack]').forEach(btn=>btn.onclick=async()=>{
           const p=safePacks.find(x=>x.id===btn.dataset.myPack);
           if(!p)return;
@@ -430,7 +430,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   function openPersonalPackMenu(anchor,p){
     closePersonalPackMenu();if(!p)return;
     const menu=document.createElement('div');menu.className='personal-pack-action-menu';
-    menu.innerHTML='<button data-personal-pack-action="rename">✏️ Đổi tên bộ từ</button><button class="danger" data-personal-pack-action="delete">🗑️ Xóa</button>';
+    menu.innerHTML='<button data-personal-pack-action="rename"><span class="kl-icon-slot">'+(window.katIcon?.('edit',14)||'')+'</span> Đổi tên bộ từ</button><button class="danger" data-personal-pack-action="delete"><span class="kl-icon-slot">'+(window.katIcon?.('trash',14)||'')+'</span> Xóa</button>';
     document.body.appendChild(menu);
     const r=anchor.getBoundingClientRect();
     menu.style.position='fixed';menu.style.top=Math.min(window.innerHeight-menu.offsetHeight-8,r.bottom+6)+'px';menu.style.left=Math.min(window.innerWidth-menu.offsetWidth-8,Math.max(8,r.right-menu.offsetWidth))+'px';
@@ -447,7 +447,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     const name=prompt('Tên mới cho bộ từ:',p.name||'');if(name===null)return;
     const cleanName=name.trim();if(!cleanName)return toast('Tên bộ từ không được để trống.');
     if(cleanName===p.name)return;
-    try{await window.studyStore.updatePersonalPack(p.id,{name:cleanName});toast('✓ Đã đổi tên bộ từ');await renderMine()}
+    try{await window.studyStore.updatePersonalPack(p.id,{name:cleanName});toast('Đã đổi tên bộ từ');await renderMine()}
     catch(e){toast('Không thể đổi tên: '+(e.message||'Lỗi không xác định'))}
   }
 
