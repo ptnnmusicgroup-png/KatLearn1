@@ -368,6 +368,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
     if(renderMinePromise&&renderMineUid===uid)return renderMinePromise;
     renderMineUid=uid;
     renderMinePromise=(async()=>{
+      let packs=[];
       try{
         if(String(window.studyStore?.user?.uid||'')!==uid)return;
         box.innerHTML='<div class="personal-pack-empty"><span class="kl-icon-slot">'+(window.katIcon?.('shield',20)||'')+'</span> Đang xác thực tài khoản và tải bộ từ của bạn…</div>';
@@ -383,7 +384,6 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
 
         // Load from the authenticated UID namespace first, then use the
         // protected server reader and the shared auth snapshot as fallbacks.
-        let packs=[];
         try{
           const direct=await window.studyStore.personalPacks();
           if(Array.isArray(direct))packs=direct;
