@@ -410,23 +410,30 @@
         return tb-ta;
       });
 
+      const merged=[];
+      const seen=new Set();
+      const addPacks=list=>{
+        for(const pack of Array.isArray(list)?list:[]){
+          const id=String(pack?.id||'');
+          if(!id||seen.has(id))continue;
+          seen.add(id);
+          merged.push(pack);
+        }
+      };
+
       let directError=null;
       try{
         // Primary path: Auth UID -> users/{uid}/personalPacks.
-        // An empty canonical collection is not definitive: older packs may
-        // still live in the account-memory namespace. Only return early when
-        // we actually found packs.
         const snap=await api.getDocs(api.query(
           api.collection(db,'users',uid,'personalPacks')
         ));
-        const directPacks=normalizePacks(snap.docs,'users');
-        if(directPacks.length)return directPacks;
+        addPacks(normalizePacks(snap.docs,'users'));
       }catch(error){
         directError=error;
       }
 
-      // Rules-safe fallback: locate the account by the same authenticated UID,
-      // then read its mirrored personal-pack memory. No profile lookup required.
+      // Compatibility path: merge older account-memory packs even when the
+      // canonical UID namespace already contains newer packs.
       try{
         const accountSnap=await api.getDocs(api.query(
           api.collection(db,'accounts'),
@@ -442,18 +449,26 @@
               api.where('kind','==','personalPack'),
               api.limit(100)
             ));
-            const accountPacks=normalizePacks(memorySnap.docs,'account-memory',accountCode);
-            if(accountPacks.length)return accountPacks;
+            addPacks(normalizePacks(memorySnap.docs,'account-memory',accountCode));
           }
         }
       }catch(accountError){
         console.warn('[KatLearn] Account-memory personal packs fallback failed:',accountError);
       }
 
+      if(merged.length){
+        merged.sort((a,b)=>{
+          const ta=Number(a.createdAt?.seconds||a.createdAt||0);
+          const tb=Number(b.createdAt?.seconds||b.createdAt||0);
+          return tb-ta;
+        });
+        return merged.slice(0,100);
+      }
+
       // Last resort: protected server reader, when Firebase Admin is configured.
       try{
         const token=await this.getIdToken(true);
-        if(!token)throw directError;
+        if(!token)throw directError||new Error('Không lấy được phiên xác thực của tài khoản.');
         const res=await fetch('/api/personal-packs',{
           method:'GET',cache:'no-store',
           headers:{Authorization:'Bearer '+token,Accept:'application/json'}
@@ -465,7 +480,7 @@
           ownerUid:String(pack.ownerUid||uid),
           accountCode:String(pack.ownerAccountCode||data.accountCode||''),
           source:String(pack.source||'users')
-        })).filter(pack=>String(pack.ownerUid||uid)===uid);
+        })).filter(pack=>String(pack.ownerUid||uid)===uid).slice(0,100);
       }catch(serverError){
         console.warn('[KatLearn] Personal packs load failed (UID + account + server):',directError,serverError);
         throw serverError;
