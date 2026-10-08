@@ -28,6 +28,141 @@ function installThemeRuntime(){
       body[data-kat-theme] .hero-card{background:linear-gradient(135deg,var(--kl-theme-hero1),var(--kl-theme-hero2))!important;box-shadow:0 18px 42px var(--kl-theme-shadow)!important}
       body[data-kat-theme] .primary-btn,body[data-kat-theme] .know-btn,body[data-kat-theme] .cp-btn.primary,body[data-kat-theme] .shop-theme-card .shop-apply-theme{background:linear-gradient(135deg,var(--kl-theme-accent),var(--kl-theme-accent2))!important;color:#fff!important}
       body[data-kat-theme] .activity-card:hover,body[data-kat-theme] .mode-card:hover,body[data-kat-theme] .mode-card.active-mode,body[data-kat-theme] .student-pack-row input:focus,body[data-kat-theme] .student-pack-row select:focus,body[data-kat-theme] .cp-field input:focus,body[data-kat-theme] .cp-field textarea:focus,body[data-kat-theme] .cp-field select:focus{border-color:var(--kl-theme-accent)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--kl-theme-accent) 12%,transparent)!important}
+      /* Unified theme button layer: one source of truth for button surfaces and contrast. */
+      body[data-kat-theme] button,
+      body[data-kat-theme] input[type="button"],
+      body[data-kat-theme] input[type="submit"]{
+        border-color:var(--kl-theme-line);
+        transition:background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease,opacity .18s ease!important;
+      }
+      body[data-kat-theme] .primary-btn,
+      body[data-kat-theme] .add-word-btn,
+      body[data-kat-theme] .create-pack-btn,
+      body[data-kat-theme] .login-btn,
+      body[data-kat-theme] .settings-save,
+      body[data-kat-theme] .cp-btn.primary,
+      body[data-kat-theme] .student-pack-save-btn,
+      body[data-kat-theme] .test-start:not(:disabled),
+      body[data-kat-theme] .test-submit:not(:disabled),
+      body[data-kat-theme] .test-next,
+      body[data-kat-theme] .result-actions .primary,
+      body[data-kat-theme] .shop-theme-card .shop-apply-theme{
+        background:linear-gradient(135deg,var(--kl-theme-accent),var(--kl-theme-accent2))!important;
+        color:#fff!important;
+        border-color:transparent!important;
+        box-shadow:0 10px 24px var(--kl-theme-shadow)!important;
+      }
+      body[data-kat-theme] .learn-tool-btn,
+      body[data-kat-theme] .flash-nav-btn,
+      body[data-kat-theme] .flash-main-btn,
+      body[data-kat-theme] .card-icon-btn,
+      body[data-kat-theme] .settings-back,
+      body[data-kat-theme] .settings-cancel,
+      body[data-kat-theme] .account-menu-btn,
+      body[data-kat-theme] .cp-btn.secondary,
+      body[data-kat-theme] .shop-theme-card .shop-buy-theme,
+      body[data-kat-theme] .pack-actions button,
+      body[data-kat-theme] .result-actions button:not(.primary),
+      body[data-kat-theme] #selectAll,
+      body[data-kat-theme] #clearAll,
+      body[data-kat-theme] #retryTest{
+        background:var(--kl-theme-surface)!important;
+        color:var(--kl-theme-accent)!important;
+        border:1px solid var(--kl-theme-line)!important;
+        box-shadow:0 7px 18px var(--kl-theme-shadow)!important;
+      }
+      body[data-kat-theme] .learn-tool-btn:hover,
+      body[data-kat-theme] .flash-nav-btn:hover,
+      body[data-kat-theme] .flash-main-btn:hover,
+      body[data-kat-theme] .card-icon-btn:hover,
+      body[data-kat-theme] .settings-back:hover,
+      body[data-kat-theme] .settings-cancel:hover,
+      body[data-kat-theme] .account-menu-btn:hover,
+      body[data-kat-theme] .cp-btn.secondary:hover,
+      body[data-kat-theme] .shop-theme-card .shop-buy-theme:hover,
+      body[data-kat-theme] .pack-actions button:hover,
+      body[data-kat-theme] .result-actions button:not(.primary):hover,
+      body[data-kat-theme] #selectAll:hover,
+      body[data-kat-theme] #clearAll:hover,
+      body[data-kat-theme] #retryTest:hover{
+        background:var(--kl-theme-soft)!important;
+        border-color:var(--kl-theme-accent)!important;
+      }
+      body[data-kat-theme] .account-trigger,
+      body[data-kat-theme] .settings-btn,
+      body[data-kat-theme] .notification,
+      body[data-kat-theme] .menu-toggle,
+      body[data-kat-theme] .test-menu-toggle{
+        background:transparent!important;
+        color:var(--kl-theme-text)!important;
+        border-color:transparent!important;
+        box-shadow:none!important;
+      }
+      body[data-kat-theme] .pack-tabs button,
+      body[data-kat-theme] .cp-mode-tab,
+      body[data-kat-theme] .reflex-source-option,
+      body[data-kat-theme] .reflex-length{
+        background:var(--kl-theme-surface)!important;
+        color:var(--kl-theme-muted)!important;
+        border-color:var(--kl-theme-line)!important;
+      }
+      body[data-kat-theme] .pack-tabs button.active,
+      body[data-kat-theme] .cp-mode-tab.active,
+      body[data-kat-theme] .reflex-source-option.active,
+      body[data-kat-theme] .reflex-length.active{
+        background:var(--kl-theme-soft)!important;
+        color:var(--kl-theme-accent)!important;
+        border-color:color-mix(in srgb,var(--kl-theme-accent) 45%,transparent)!important;
+        box-shadow:0 7px 18px var(--kl-theme-shadow)!important;
+      }
+      body[data-kat-theme] .reflex-skip{
+        background:var(--kl-theme-surface)!important;
+        color:var(--kl-theme-accent)!important;
+        border-color:var(--kl-theme-line)!important;
+      }
+      body[data-kat-theme] .flash-result-btn.unsure{
+        background:color-mix(in srgb,#f6cf7a 15%,var(--kl-theme-surface))!important;
+        color:#a16d23!important;
+        border-color:color-mix(in srgb,#d59c31 28%,var(--kl-theme-line))!important;
+      }
+      body[data-kat-theme] .flash-result-btn.known{
+        background:color-mix(in srgb,#4bb487 14%,var(--kl-theme-surface))!important;
+        color:#2f8664!important;
+        border-color:color-mix(in srgb,#4bb487 28%,var(--kl-theme-line))!important;
+      }
+      body[data-kat-theme] .modal-close{
+        background:var(--kl-theme-soft)!important;
+        color:var(--kl-theme-text)!important;
+        border:1px solid var(--kl-theme-line)!important;
+      }
+      body[data-kat-theme] button:disabled,
+      body[data-kat-theme] input[type="submit"]:disabled{
+        background:color-mix(in srgb,var(--kl-theme-surface) 86%,var(--kl-theme-muted))!important;
+        color:var(--kl-theme-muted)!important;
+        border-color:var(--kl-theme-line)!important;
+        box-shadow:none!important;
+      }
+      body[data-kat-theme] button:focus-visible,
+      body[data-kat-theme] input:focus-visible{
+        outline:3px solid color-mix(in srgb,var(--kl-theme-accent) 24%,transparent)!important;
+        outline-offset:2px;
+      }
+      body[data-kat-theme="night"] .learn-tool-btn,
+      body[data-kat-theme="night"] .flash-nav-btn,
+      body[data-kat-theme="night"] .flash-main-btn,
+      body[data-kat-theme="night"] .card-icon-btn,
+      body[data-kat-theme="night"] .settings-back,
+      body[data-kat-theme="night"] .settings-cancel,
+      body[data-kat-theme="night"] .account-menu-btn,
+      body[data-kat-theme="night"] .cp-btn.secondary,
+      body[data-kat-theme="night"] .shop-theme-card .shop-buy-theme,
+      body[data-kat-theme="night"] .pack-actions button,
+      body[data-kat-theme="night"] .result-actions button:not(.primary),
+      body[data-kat-theme="night"] #selectAll,
+      body[data-kat-theme="night"] #clearAll,
+      body[data-kat-theme="night"] #retryTest{
+        background:#2a2745!important;
+      }
       body[data-kat-theme] .coin-pill,body[data-kat-theme] .coin-earned{background:var(--kl-theme-soft)!important;border-color:var(--kl-theme-line)!important;color:var(--kl-theme-accent)!important}
       body[data-kat-theme] .word-item.selected,body[data-kat-theme] .rank-row.you,body[data-kat-theme] .rank-list-row.mine{background:var(--kl-theme-soft)!important;color:var(--kl-theme-accent)!important}
       body[data-kat-theme] .quiz-badge,body[data-kat-theme] .mode-card span,body[data-kat-theme] .word-list h3 span{background:var(--kl-theme-soft)!important;color:var(--kl-theme-accent)!important}
@@ -75,6 +210,17 @@ function installThemeRuntime(){
       root.style.setProperty('--kl-theme-hero2',t.hero2);
       root.style.setProperty('--kl-theme-shadow',t.shadow);
       root.style.setProperty('--kl-theme-background',assets[id] ? 'url("' + assets[id] + '")' : 'none')
+      // Bridge legacy CSS variables so all older components consume the active theme palette.
+      root.style.setProperty('--kl-accent',t.accent);
+      root.style.setProperty('--kl-accent-2',t.accent2);
+      root.style.setProperty('--purple',t.accent);
+      root.style.setProperty('--purple2',t.accent2);
+      root.style.setProperty('--bg',t.bg);
+      root.style.setProperty('--ink',t.text);
+      root.style.setProperty('--muted',t.muted);
+      root.style.setProperty('--line',t.line);
+      root.style.setProperty('--shadow','0 12px 30px ' + t.shadow);
+
       body.dataset.katTheme=id;
       let meta=document.querySelector('meta[name="theme-color"]');
       if(!meta){meta=document.createElement('meta');meta.name='theme-color';document.head.appendChild(meta)}
