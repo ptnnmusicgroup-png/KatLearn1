@@ -38,7 +38,14 @@
         ci.hidden=false;
       }else{ci.textContent='';ci.hidden=true}
     }
-    if(c&&window.katlearnCoinController?.ready===false)c.textContent='—';
+    if(c){
+      const controller=window.katlearnCoinController;
+      const liveValue=Number(controller?.value);
+      const profileValue=Number(p.coins);
+      if(controller?.ready&&Number.isFinite(liveValue))c.textContent=Math.max(0,Math.floor(liveValue)).toLocaleString('en-US');
+      else if(Number.isFinite(profileValue))c.textContent=Math.max(0,Math.floor(profileValue)).toLocaleString('en-US');
+      else c.textContent='—';
+    }
     if(en)en.textContent=Number(p.energy||0).toLocaleString('en-US');
     if(w)w.textContent=Number(p.totalWords||0).toLocaleString('en-US');
   }
