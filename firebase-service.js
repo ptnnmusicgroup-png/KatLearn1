@@ -413,10 +413,14 @@
       let directError=null;
       try{
         // Primary path: Auth UID -> users/{uid}/personalPacks.
+        // An empty canonical collection is not definitive: older packs may
+        // still live in the account-memory namespace. Only return early when
+        // we actually found packs.
         const snap=await api.getDocs(api.query(
           api.collection(db,'users',uid,'personalPacks')
         ));
-        return normalizePacks(snap.docs,'users');
+        const directPacks=normalizePacks(snap.docs,'users');
+        if(directPacks.length)return directPacks;
       }catch(error){
         directError=error;
       }
@@ -438,7 +442,8 @@
               api.where('kind','==','personalPack'),
               api.limit(100)
             ));
-            return normalizePacks(memorySnap.docs,'account-memory',accountCode);
+            const accountPacks=normalizePacks(memorySnap.docs,'account-memory',accountCode);
+            if(accountPacks.length)return accountPacks;
           }
         }
       }catch(accountError){
