@@ -515,6 +515,48 @@ function installThemeRuntime(){
   }
 
 (function(){
+  const ICONS={
+    target:'<circle cx="12" cy="12" r="8.5"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 2.5v2M21.5 12h-2M12 21.5v-2M2.5 12h2"></path>',
+    book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21V5.5Z"></path><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M8 7h8M8 10h6"></path>',
+    layers:'<path d="m12 3 8 4.5-8 4.5-8-4.5L12 3Z"></path><path d="m4 12 8 4.5 8-4.5"></path><path d="m4 16.5 8 4.5 8-4.5"></path>',
+    words:'<rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M8 8h8M8 12h6M8 16h5"></path>',
+    chart:'<path d="M5 19V9"></path><path d="M12 19V5"></path><path d="M19 19v-7"></path><path d="M3 19h18"></path>',
+    checkCircle:'<circle cx="12" cy="12" r="8.5"></circle><path d="m8 12 2.5 2.5L16 9"></path>',
+    settings:'<path d="M12 3.5v2M12 18.5v2M20.5 12h-2M5.5 12h-2M18 6l-1.4 1.4M7.4 16.6 6 18M18 18l-1.4-1.4M7.4 7.4 6 6"></path><circle cx="12" cy="12" r="3.3"></circle>',
+    shield:'<path d="M12 3 19 6v5c0 4.5-2.7 7.8-7 10-4.3-2.2-7-5.5-7-10V6l7-3Z"></path><path d="m9 12 2 2 4-4"></path>',
+    coin:'<circle cx="12" cy="12" r="8.5"></circle><path d="M9.2 9.5c.4-1 1.4-1.5 2.8-1.5 1.6 0 2.8.7 2.8 1.9 0 1.1-.8 1.7-2.6 2.1-1.8.4-2.8 1-2.8 2.1 0 1.2 1.2 1.9 2.8 1.9 1.4 0 2.4-.5 2.8-1.5"></path><path d="M12 7v10"></path>',
+    flame:'<path d="M13.2 3.5c.4 2.2-.8 3.2-2.1 4.4C9.8 9.1 8.8 10.4 8.8 12a3.2 3.2 0 0 0 6.4 0c0-.9-.4-1.8-1-2.7.1 2-1.2 3.2-2 3.8"></path><path d="M12 20.5a7 7 0 0 0 7-7c0-2.5-1.1-4.8-3.2-6.7.2 2.2-.3 4-1.6 5.2A4.2 4.2 0 0 1 12 20.5Z"></path>',
+    arrow:'<path d="M5 12h13"></path><path d="m13 6 6 6-6 6"></path>'
+  };
+  function renderIcon(el){
+    if(!el||el.dataset.katIconRendered==='1')return;
+    const name=String(el.getAttribute('data-kat-icon')||'').trim(),icon=ICONS[name];
+    if(!icon)return;
+    const size=Math.max(10,Number(el.getAttribute('data-icon-size')||18));
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('width',String(size));svg.setAttribute('height',String(size));
+    svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');svg.setAttribute('fill','none');
+    svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.8');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');
+    svg.innerHTML=icon;el.replaceChildren(svg);el.dataset.katIconRendered='1';
+    el.style.display='inline-flex';el.style.alignItems='center';el.style.justifyContent='center';el.style.width=size+'px';el.style.height=size+'px';el.style.flex='0 0 auto';el.style.lineHeight='0';
+  }
+  function installKatIcons(){
+    const renderAll=()=>document.querySelectorAll('[data-kat-icon]').forEach(renderIcon);
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderAll,{once:true});else renderAll();
+    if(window.__katIconObserver||!document.body)return;
+    window.__katIconObserver=new MutationObserver(muts=>{
+      for(const m of muts)for(const n of m.addedNodes)if(n.nodeType===1){
+        if(n.matches?.('[data-kat-icon]'))renderIcon(n);
+        n.querySelectorAll?.('[data-kat-icon]').forEach(renderIcon);
+      }
+    });
+    window.__katIconObserver.observe(document.body,{childList:true,subtree:true});
+  }
+  window.katlearnIcons={render:renderIcon,refresh:installKatIcons};
+  installKatIcons();
+})();
+
+(function(){
   function boot(){
     const ready=()=>{ installThemeRuntime();
       if(window.aiPackGeneratorUI?.init) window.aiPackGeneratorUI.init();
