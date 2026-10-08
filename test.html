@@ -9,20 +9,19 @@
 <aside class="test-sidebar" aria-label="KatLearn navigation">
   <a class="test-sidebar-brand" href="/home.html"><span><img src="/favicon.svg" alt="" aria-hidden="true"></span><b>Kat<span>Learn</span></b></a>
   <p class="test-sidebar-label">English learning platform</p>
-  <nav>
-    <a href="/home.html"><span>⌂</span>Trang chủ</a>
-    <a href="/packs.html"><span>▣</span>Bộ từ vựng</a>
-    <a href="/personal-packs.html"><span>📚</span>Bộ từ riêng</a>
-    <a href="/vocabulary.html"><span>☷</span>Từ vựng</a>
-    <a href="/practice.html"><span>✦</span>Game phản xạ</a>
-    <a class="active" href="/test.html" aria-current="page"><span>📝</span>Kiểm tra</a>
-    <a href="/shop.html"><span>◈</span>Cửa hàng</a>
-    <a href="/ranking.html"><span>♛</span>Xếp hạng</a>
-    <a href="/progress.html"><span>◔</span>Tiến độ</a>
+  <nav><a href="/home.html"><span data-kat-icon="target" data-icon-size="18"></span>Trang chủ</a>
+    <a href="/packs.html"><span data-kat-icon="book" data-icon-size="18"></span>Bộ từ vựng</a>
+    <a href="/personal-packs.html"><span data-kat-icon="layers" data-icon-size="18"></span>Bộ từ riêng</a>
+    <a href="/vocabulary.html"><span data-kat-icon="words" data-icon-size="18"></span>Từ vựng</a>
+    <a href="/practice.html"><span data-kat-icon="chart" data-icon-size="18"></span>Game phản xạ</a>
+    <a href="/test.html" class="active" aria-current="page"><span data-kat-icon="checkCircle" data-icon-size="18"></span>Kiểm tra</a>
+    <a href="/shop.html"><span data-kat-icon="layers" data-icon-size="18"></span>Cửa hàng</a>
+    <a href="/ranking.html"><span data-kat-icon="target" data-icon-size="18"></span>Xếp hạng</a>
+    <a href="/progress.html"><span data-kat-icon="chart" data-icon-size="18"></span>Tiến độ</a>
   </nav>
 </aside>
 <main class="test-page"><div class="test-wrap">
-<header class="test-top"><button class="test-menu-toggle" type="button" aria-label="Mở menu điều hướng" aria-expanded="false">☰</button><a class="test-brand" href="/index.html"><span class="test-brand-logo" aria-hidden="true"></span><span class="test-brand-name">Kat<span>Learn</span></span></a><div class="test-top-actions"><a href="/index.html">← Trang chủ</a></div></header>
+<header class="test-top"><button class="test-menu-toggle" type="button" aria-label="Mở menu điều hướng" aria-expanded="false"><span data-kat-icon="layers" data-icon-size="19"></span></button><a class="test-brand" href="/index.html"><span class="test-brand-logo" aria-hidden="true"></span><span class="test-brand-name">Kat<span>Learn</span></span></a><div class="test-top-actions"><a href="/index.html">← Trang chủ</a></div></header>
 <div id="testToast" class="test-toast" aria-live="assertive"></div>
 <section class="test-hero"><p class="test-kicker">KATLEARN · SMART VOCABULARY TEST</p><h1 class="test-title">Kiểm tra từ vựng.</h1><p class="test-subtitle">Chọn một hoặc nhiều bộ từ riêng. KatLearn sẽ tự trộn dữ liệu và tạo một đề mới cho mỗi lần làm — không cộng KatCoin. Bạn có thể mở rộng trình duyệt bình thường; hệ thống sẽ kết thúc bài nếu bạn chuyển tab hoặc chuyển sang cửa sổ khác.</p><span class="test-hero-badge">🛡️ Theo dõi rời khỏi bài · không cần fullscreen</span></section>
 <section id="packSetup" class="test-card"><h2>Chọn bộ từ để ra đề</h2><p>Chỉ dùng các bộ từ học sinh tự thêm trong tài khoản của bạn. Có thể chọn nhiều bộ để tạo một đề tổng hợp.</p><div id="packEmpty" hidden></div>
@@ -42,4 +41,4 @@
 <footer class="test-foot">KatLearn · English learning from Việt Nam 🇻🇳 · Smart Vocabulary Test</footer>
 </div></main>
 <script src="admin-config.js"></script><script src="firebase-service.js?v=20261008-service2"></script><script src="auth-sync.js"></script><script src="test.js?v=20261007-1"></script>
-<script src="katlearn-activation.js?v=20261008-theme3"></script></body></html>
+<script src="katlearn-activation.js?v=20261008-icons1"></script></body></html>
