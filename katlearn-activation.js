@@ -1,6 +1,5 @@
 // Feature activation bridge: wires the already-built AI UI into KatLearn without replacing existing learning flows.
-(function(){
-  function installThemeRuntime(){
+function installThemeRuntime(){
     if(window.katlearnTheme?.apply)return;
     const themes={
       default:{accent:'#6d5efc',accent2:'#8c7eff',bg:'#f7f8fc',surface:'#ffffff',surface2:'#fbfbfe',text:'#24364b',muted:'#8290a3',line:'#ebedf4',soft:'#f1efff',top:'#ffffff',meta:'#f6f7fb',hero1:'#6153ef',hero2:'#a296fc',shadow:'rgba(44,54,94,.08)',themeColor:'#f7f5ff'},
@@ -75,7 +74,7 @@
       root.style.setProperty('--kl-theme-hero1',t.hero1);
       root.style.setProperty('--kl-theme-hero2',t.hero2);
       root.style.setProperty('--kl-theme-shadow',t.shadow);
-      root.style.setProperty('--kl-theme-background',assets[id]?\`url("${assets[id]}")\`:'none');
+      root.style.setProperty('--kl-theme-background',assets[id] ? 'url("' + assets[id] + '")' : 'none')
       body.dataset.katTheme=id;
       let meta=document.querySelector('meta[name="theme-color"]');
       if(!meta){meta=document.createElement('meta');meta.name='theme-color';document.head.appendChild(meta)}
