@@ -885,6 +885,35 @@ function normalizeLearningWords(words=[]){
     type:v?.type||v?.part_of_speech||''
   })).filter(v=>String(v?.word||'').trim()&&vocabMeaning(v));
 }
+async function restorePendingPersonalPack(){
+  let pending=null;
+  try{
+    const raw=sessionStorage.getItem('katlearn-pending-personal-pack');
+    if(raw)pending=JSON.parse(raw);
+  }catch(_){}
+  if(!pending||!Array.isArray(pending.words)||!pending.words.length)return false;
+  const user=window.studyStore?.user||null;
+  const pendingUid=String(pending.uid||'');
+  const userUid=String(user?.uid||'');
+  if(pendingUid&&!userUid)return false;
+  if(pendingUid&&userUid&&pendingUid!==userUid){
+    try{sessionStorage.removeItem('katlearn-pending-personal-pack')}catch(_){}
+    return false;
+  }
+  vocab=normalizeLearningWords(pending.words);
+  if(!vocab.length)return false;
+  activeDeckMeta={
+    name:String(pending.name||'Flashcard từ vựng'),
+    description:String(pending.description||'Bộ từ riêng của bạn. Học từng thẻ và theo dõi tiến độ.'),
+    icon:'📚'
+  };
+  setVocabSource({kind:'personal',id:String(pending.id||''),uid:userUid||pendingUid});
+  cardIndex=0;
+  localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
+  if($('#learn')){renderCard();updateLearnStudySummary?.();renderWordList?.()}
+  try{sessionStorage.removeItem('katlearn-pending-personal-pack')}catch(_){}
+  return true;
+}
 async function openVocabularyPack(pack){
   if(!pack)return;
   // Firebase Auth can still be hydrating when the library is clicked immediately
@@ -1123,6 +1152,7 @@ function clearClientLearningState(){
 window.addEventListener('8b1-auth-change',e=>{
   if(!e.detail)clearClientLearningState();
   loadKnownState();
+  if(e.detail)void restorePendingPersonalPack();
   if(e.detail)void refreshAuthoritativeCoinBalance('auth-change');
   void refreshAuthDependentViews(e.detail);
 });
@@ -1131,6 +1161,7 @@ window.addEventListener('katlearn-coin-balance',e=>applyServerCoinBalance(e.deta
 window.addEventListener('katlearn-account-ready',e=>{
   const profile=e.detail?.profile||null;
   applyServerProfile(profile);
+  if(e.detail?.account)void restorePendingPersonalPack();
   if(e.detail?.account)void refreshAuthoritativeCoinBalance('account-ready');
   if(!e.detail?.account)personalLearningSnapshot={uid:'',packs:[],words:[],knownKeys:new Set(),totalWords:0,knownWords:0,personalPacksCount:0};
   void refreshAuthDependentViews(e.detail?.account?e.detail.user:null);
