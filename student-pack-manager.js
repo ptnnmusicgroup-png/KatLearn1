@@ -381,12 +381,42 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
 
         if(String(window.studyStore?.user?.uid||'')!==uid)return;
 
-        // Firebase Auth is the identity source. Firestore personal packs are
-        // loaded only from the authenticated UID's canonical namespace.
-        const packs=await window.studyStore.personalPacks();
+        // Load from the authenticated UID namespace first, then use the
+        // protected server reader and the shared auth snapshot as fallbacks.
+        let packs=[];
+        try{
+          const direct=await window.studyStore.personalPacks();
+          if(Array.isArray(direct))packs=direct;
+        }catch(error){
+          console.warn('[KatLearn] Browser personal-pack reader failed:',error);
+        }
+
+        if(!packs.length){
+          try{
+            const token=await window.studyStore?.getIdToken?.(true);
+            if(token){
+              const res=await fetch('/api/personal-packs',{
+                method:'GET',
+                cache:'no-store',
+                headers:{Authorization:'Bearer '+token,Accept:'application/json'}
+              });
+              const data=await res.json().catch(()=>({}));
+              if(res.ok&&Array.isArray(data.packs))packs=data.packs;
+            }
+          }catch(error){
+            console.warn('[KatLearn] Server personal-pack reader failed:',error);
+          }
+        }
+
+        if(!packs.length&&String(window.katlearnPersonalLearning?.uid||'')===uid){
+          packs=Array.isArray(window.katlearnPersonalLearning.packs)
+            ?window.katlearnPersonalLearning.packs:[];
+        }
 
         if(String(window.studyStore?.user?.uid||'')!==uid)return;
-        const safePacks=packs.filter(p=>String(p?.ownerUid||uid)===uid);
+        const safePacks=[...new Map(packs
+          .filter(p=>p&&String(p.ownerUid||uid)===uid&&String(p.id||''))
+          .map(p=>[String(p.id),p])).values()];
         const totalWords=safePacks.reduce((sum,p)=>sum+(window.getPersonalPackProgress?.(p,uid)?.total||0),0);
         const knownWords=safePacks.reduce((sum,p)=>sum+(window.getPersonalPackProgress?.(p,uid)?.known||0),0);
 
@@ -394,6 +424,9 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         const wordStat=$('#personalWordCount');if(wordStat)wordStat.textContent=totalWords;
         const knownStat=$('#personalKnownCount');if(knownStat)knownStat.textContent=Math.min(knownWords,totalWords);
 
+        box.style.display='block';
+        box.style.visibility='visible';
+        box.style.opacity='1';
         box.innerHTML=safePacks.length
           ?`<div class="personal-packs-title"><div><h3><span class="kl-icon-slot">${window.katIcon?.('layers',18)||''}</span> Bộ từ của tôi</h3><p>${safePacks.length} bộ từ · ${totalWords} từ · đồng bộ riêng theo tài khoản.</p></div><span class="personal-pack-account-pill"><span class="kl-icon-slot">${window.katIcon?.('shield',14)||''}</span> ${esc(String(safePacks[0]?.ownerAccountCode||safePacks[0]?.accountCode||'').trim()||'Mã tài khoản đang đồng bộ')}</span></div><div class="personal-pack-grid">${safePacks.map(p=>{
               const progress=window.getPersonalPackProgress?.(p,uid)||{total:Array.isArray(p.words)?p.words.length:0,known:0,unknown:Array.isArray(p.words)?p.words.length:0,percentage:0,state:'low'};
