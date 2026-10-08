@@ -89,7 +89,6 @@ function findWord(words,word,meaning){
   const w=norm(word),m=norm(meaning);
   return (Array.isArray(words)?words:[]).some(item=>norm(item?.word)===w&&norm(item?.mean??item?.meaning_vi)===m);
 }
-function rewardClaimId(sourceKind,sourceId,word,meaning,mode,day){return crypto.createHash("sha256").update([sourceKind,sourceId,word,meaning,mode,day].map(norm).join("\0")).digest("hex").slice(0,64)}
 function loadCoreWords(topicId){
   const relative=CORE_PACK_PATHS[String(topicId||'').trim()];
   if(!relative)throw Object.assign(new Error("Topic KatLearn không hợp lệ."),{status:400});
@@ -178,10 +177,8 @@ module.exports=async(req,res)=>{
       const expectedAnswer=mode==="vieng"?word:meaning;
       const correct=norm(submittedAnswer)===norm(expectedAnswer);
       const currentStudyDay=studyDay();
-      const rewardRef=rewardable?userRef.collection("rewardClaims").doc(rewardClaimId(sourceKind,String(source?.id||""),word,meaning,mode,currentStudyDay)):null;
       const result=await db.runTransaction(async transaction=>{
         const snap=await transaction.get(userRef);
-        const rewardSnap=rewardRef?await transaction.get(rewardRef):null;
         if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
         const profile=snap.data()||{};
         const now=Date.now();
@@ -200,13 +197,14 @@ module.exports=async(req,res)=>{
           dailyCorrect
         };
         let coins=Number(profile.coins||0),xp=Number(profile.energy||0);
-        const grantReward=correct&&rewardable&&!rewardSnap?.exists;
+        // Every correctly answered, validated Reflex Arena question earns +10
+        // KatCoin. The old per-word/day reward claim blocked legitimate repeats.
+        const grantReward=correct&&rewardable;
         if(correct){
           updates.correctAnswers=FieldValue.increment(1);
           if(grantReward){
             updates.coins=FieldValue.increment(10);updates.energy=FieldValue.increment(10);
             coins+=10;xp+=10;
-            transaction.create(rewardRef,{sourceKind,sourceId:String(source?.id||"").slice(0,160),word,meaning,mode,studyDay:currentStudyDay,createdAt:FieldValue.serverTimestamp()});
           }
         }
         transaction.set(userRef,updates,{merge:true});

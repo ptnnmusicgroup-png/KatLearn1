@@ -788,7 +788,7 @@ async function answer(btn,correct){
           $('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙';
         }else if(good&&data.correct===true&&!data.rewarded){
           if(Number.isFinite(Number(data.coins)))window.katlearnCoinController?.setFromServer?.(data.coins,'reward-check');
-          $('#feedback').textContent='Chính xác! Lượt này đã nhận/không đủ điều kiện cộng thêm KatCoin.';
+          $('#feedback').textContent='Chính xác! 🐾 Lượt này chưa được nhận KatCoin vì nguồn từ hiện tại không thuộc diện thưởng.';
         }else if(good){
           $('#feedback').textContent='Đáp án chưa được máy chủ xác nhận.';
         }
