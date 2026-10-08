@@ -232,7 +232,7 @@ function installThemeRuntime(){
       body[data-kat-theme] .test-option.selected{background:var(--kl-theme-soft)!important;border-color:var(--kl-theme-accent)!important}
       body[data-kat-theme] .test-option-key{background:var(--kl-theme-surface2)!important;color:var(--kl-theme-muted)!important}
       body[data-kat-theme] .test-option.selected .test-option-key{background:var(--kl-theme-accent)!important;color:#fff!important}
-      body[data-kat-theme] .test-option.correct,.body[data-kat-theme] .revision-exam-answer.correct{border-color:#68b88f!important;background:color-mix(in srgb,#4bb487 10%,var(--kl-theme-surface))!important}
+      body[data-kat-theme] .test-option.correct,body[data-kat-theme] .revision-exam-answer.correct{border-color:#68b88f!important;background:color-mix(in srgb,#4bb487 10%,var(--kl-theme-surface))!important}
       body[data-kat-theme] .test-option.wrong,body[data-kat-theme] .revision-exam-answer.wrong{border-color:#df8794!important;background:color-mix(in srgb,#df697d 9%,var(--kl-theme-surface))!important}
       body[data-kat-theme] .result-ring{background:conic-gradient(var(--kl-theme-accent) var(--score,0%),var(--kl-theme-meta) 0)!important}
       body[data-kat-theme] .result-ring:after{background:var(--kl-theme-surface)!important}
