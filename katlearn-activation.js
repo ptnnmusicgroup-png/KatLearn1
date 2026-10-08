@@ -451,16 +451,25 @@ function installThemeRuntime(){
       root.style.setProperty('--cp-shadow','0 24px 80px ' + t.shadow);
       root.style.setProperty('--text',t.text);
       root.style.setProperty('--purple-dark',t.accent);
-      // Bridge legacy CSS variables so all older components consume the active theme palette.
-      root.style.setProperty('--kl-accent',t.accent);
-      root.style.setProperty('--kl-accent-2',t.accent2);
-      root.style.setProperty('--purple',t.accent);
-      root.style.setProperty('--purple2',t.accent2);
-      root.style.setProperty('--bg',t.bg);
-      root.style.setProperty('--ink',t.text);
-      root.style.setProperty('--muted',t.muted);
-      root.style.setProperty('--line',t.line);
-      root.style.setProperty('--shadow','0 12px 30px ' + t.shadow);
+      // Bridge every legacy design-token family. Several older stylesheets declare
+      // these variables with !important, so the runtime bridge must use the same priority.
+      const shadow='0 12px 30px '+t.shadow;
+      const shadowSm='0 8px 26px '+t.shadow;
+      const v3Shadow='0 20px 60px '+t.shadow;
+      const v3ShadowSm='0 9px 28px '+t.shadow;
+      const bridge={
+        '--kl-bg':t.bg,'--kl-surface':t.surface,'--kl-surface-2':t.surface2,'--kl-ink':t.text,
+        '--kl-muted':t.muted,'--kl-line':t.line,'--kl-accent':t.accent,'--kl-accent-2':t.accent2,
+        '--kl-soft':t.soft,'--kl-shadow':shadow,'--kl-shadow-sm':shadowSm,
+        '--kl-v3-bg':t.bg,'--kl-v3-surface':t.surface,'--kl-v3-surface-solid':t.surface2,
+        '--kl-v3-line':t.line,'--kl-v3-ink':t.text,'--kl-v3-muted':t.muted,
+        '--kl-v3-purple':t.accent,'--kl-v3-purple-2':t.accent2,
+        '--kl-v3-blue':t.accent2,'--kl-v3-shadow':v3Shadow,'--kl-v3-shadow-sm':v3ShadowSm,
+        '--purple':t.accent,'--purple2':t.accent2,'--bg':t.bg,'--ink':t.text,'--muted':t.muted,
+        '--line':t.line,'--shadow':shadow,'--coral':t.accent2,'--kl-navy':t.text,
+        '--kl-cyan':t.accent2,'--kl-pastel':t.soft
+      };
+      Object.entries(bridge).forEach(([name,value])=>root.style.setProperty(name,value,'important'));
 
       body.dataset.katTheme=id;
       let meta=document.querySelector('meta[name="theme-color"]');
