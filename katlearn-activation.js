@@ -1,7 +1,109 @@
 // Feature activation bridge: wires the already-built AI UI into KatLearn without replacing existing learning flows.
 (function(){
+  function installThemeRuntime(){
+    if(window.katlearnTheme?.apply)return;
+    const themes={
+      default:{accent:'#6d5efc',accent2:'#8c7eff',bg:'#f7f8fc',surface:'#ffffff',surface2:'#fbfbfe',text:'#24364b',muted:'#8290a3',line:'#ebedf4',soft:'#f1efff',top:'#ffffff',meta:'#f6f7fb',hero1:'#6153ef',hero2:'#a296fc',shadow:'rgba(44,54,94,.08)',themeColor:'#f7f5ff'},
+      night:{accent:'#a99cff',accent2:'#f39bb1',bg:'#141327',surface:'#211f38',surface2:'#2a2745',text:'#f6f2ff',muted:'#b7aecb',line:'rgba(255,255,255,.10)',soft:'rgba(169,156,255,.16)',top:'rgba(27,24,49,.94)',meta:'rgba(255,255,255,.08)',hero1:'#40356f',hero2:'#8d5d86',shadow:'rgba(0,0,0,.25)',themeColor:'#17152f'},
+      sky:{accent:'#3289c7',accent2:'#79c8ee',bg:'#eef8ff',surface:'rgba(255,255,255,.82)',surface2:'#f7fcff',text:'#25445c',muted:'#71889a',line:'rgba(79,145,183,.15)',soft:'#e8f5fc',top:'rgba(255,255,255,.86)',meta:'rgba(255,255,255,.72)',hero1:'#4b9fd1',hero2:'#8bcfed',shadow:'rgba(38,98,133,.10)',themeColor:'#9edcff'},
+      pink:{accent:'#d65c8a',accent2:'#f39fbd',bg:'#fff4f8',surface:'rgba(255,255,255,.86)',surface2:'#fff9fb',text:'#563446',muted:'#987985',line:'rgba(214,92,138,.14)',soft:'#fff0f5',top:'rgba(255,255,255,.88)',meta:'rgba(255,255,255,.74)',hero1:'#d66392',hero2:'#f5b2c8',shadow:'rgba(158,73,110,.10)',themeColor:'#ffd6e1'},
+      ocean:{accent:'#177f90',accent2:'#54c7d0',bg:'#ebfbf8',surface:'rgba(255,255,255,.84)',surface2:'#f6fffd',text:'#214b58',muted:'#718f98',line:'rgba(23,127,144,.14)',soft:'#e5f8f7',top:'rgba(255,255,255,.87)',meta:'rgba(255,255,255,.73)',hero1:'#258d9d',hero2:'#64c9cf',shadow:'rgba(27,107,119,.10)',themeColor:'#74d7df'},
+      lavender:{accent:'#6f63b8',accent2:'#a9a0e8',bg:'#f5f1ff',surface:'rgba(255,255,255,.84)',surface2:'#fbf9ff',text:'#433c65',muted:'#857ea0',line:'rgba(111,99,184,.15)',soft:'#efecff',top:'rgba(255,255,255,.87)',meta:'rgba(255,255,255,.72)',hero1:'#786cc8',hero2:'#b6afea',shadow:'rgba(86,73,143,.10)',themeColor:'#d8d1ff'},
+      'sen-viet':{accent:'#5b9b83',accent2:'#786ccc',bg:'#fbf7ef',surface:'rgba(255,255,255,.80)',surface2:'#fffaf2',text:'#3f4751',muted:'#7d7f86',line:'rgba(91,155,131,.16)',soft:'#edf6f1',top:'rgba(255,252,246,.84)',meta:'rgba(255,255,255,.70)',hero1:'#5b9b83',hero2:'#786ccc',shadow:'rgba(83,91,86,.10)',themeColor:'#fffaf2'}
+    };
+    const css=document.createElement('style');
+    css.id='katlearn-theme-runtime';
+    css.textContent=`
+      body[data-kat-theme]{background-color:var(--kl-theme-bg)!important;background-image:var(--kl-theme-background)!important;background-size:cover!important;background-attachment:fixed!important;background-position:center!important;color:var(--kl-theme-text)!important}
+      body[data-kat-theme] .app-shell,body[data-kat-theme] main{background:transparent!important}
+      body[data-kat-theme] .sidebar{background:var(--kl-theme-top)!important;border-right-color:var(--kl-theme-line)!important;box-shadow:12px 0 40px var(--kl-theme-shadow)!important}
+      body[data-kat-theme] .topbar{background:var(--kl-theme-top)!important;border-bottom-color:var(--kl-theme-line)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important}
+      body[data-kat-theme] .brand,body[data-kat-theme] h1,body[data-kat-theme] h2,body[data-kat-theme] h3,body[data-kat-theme] .card-title h3,body[data-kat-theme] .pack-summary b,body[data-kat-theme] .word-summary b{color:var(--kl-theme-text)!important}
+      body[data-kat-theme] p,body[data-kat-theme] small,body[data-kat-theme] .subtext,body[data-kat-theme] .muted,body[data-kat-theme] .activity-card small,body[data-kat-theme] .section-heading p{color:var(--kl-theme-muted)!important}
+      body[data-kat-theme] .brand span span,body[data-kat-theme] .nav-item:hover,body[data-kat-theme] .nav-item.active,body[data-kat-theme] .eyebrow,body[data-kat-theme] .card-title button,body[data-kat-theme] .rank-tabs .active{color:var(--kl-theme-accent)!important}
+      body[data-kat-theme] .nav-item{color:var(--kl-theme-muted)!important}
+      body[data-kat-theme] .nav-item:hover,body[data-kat-theme] .nav-item.active{background:var(--kl-theme-soft)!important}
+      body[data-kat-theme] .search{background:var(--kl-theme-meta)!important;color:var(--kl-theme-muted)!important}
+      body[data-kat-theme] .streak-card,body[data-kat-theme] .activity-card,body[data-kat-theme] .daily-goal,body[data-kat-theme] .mini-ranking,body[data-kat-theme] .word-list,body[data-kat-theme] .mode-card,body[data-kat-theme] .quiz-panel,body[data-kat-theme] .stat-grid>div,body[data-kat-theme] .chart-card,body[data-kat-theme] .weak-card,body[data-kat-theme] .ranking-list,body[data-kat-theme] .rank-tabs,body[data-kat-theme] .shop-grid article,body[data-kat-theme] .shop-theme-card,body[data-kat-theme] .published-packs,body[data-kat-theme] .personal-pack-card,body[data-kat-theme] .learn-summary,body[data-kat-theme] .flash-stage,body[data-kat-theme] .test-card,body[data-kat-theme] .test-hero,body[data-kat-theme] .result-card,body[data-kat-theme] .cp-hero-card,body[data-kat-theme] .cp-account,body[data-kat-theme] .cp-card,body[data-kat-theme] .auth-screen .card{background:var(--kl-theme-surface)!important;color:var(--kl-theme-text)!important;border-color:var(--kl-theme-line)!important;box-shadow:0 14px 40px var(--kl-theme-shadow)!important}
+      body[data-kat-theme] .student-pack-head,body[data-kat-theme] .student-pack-row input,body[data-kat-theme] .student-pack-row select,body[data-kat-theme] .cp-field input,body[data-kat-theme] .cp-field textarea,body[data-kat-theme] .cp-field select{background:var(--kl-theme-surface2)!important;color:var(--kl-theme-text)!important;border-color:var(--kl-theme-line)!important}
+      body[data-kat-theme] .hero-card{background:linear-gradient(135deg,var(--kl-theme-hero1),var(--kl-theme-hero2))!important;box-shadow:0 18px 42px var(--kl-theme-shadow)!important}
+      body[data-kat-theme] .primary-btn,body[data-kat-theme] .know-btn,body[data-kat-theme] .cp-btn.primary,body[data-kat-theme] .shop-theme-card .shop-apply-theme{background:linear-gradient(135deg,var(--kl-theme-accent),var(--kl-theme-accent2))!important;color:#fff!important}
+      body[data-kat-theme] .activity-card:hover,body[data-kat-theme] .mode-card:hover,body[data-kat-theme] .mode-card.active-mode,body[data-kat-theme] .student-pack-row input:focus,body[data-kat-theme] .student-pack-row select:focus,body[data-kat-theme] .cp-field input:focus,body[data-kat-theme] .cp-field textarea:focus,body[data-kat-theme] .cp-field select:focus{border-color:var(--kl-theme-accent)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--kl-theme-accent) 12%,transparent)!important}
+      body[data-kat-theme] .coin-pill,body[data-kat-theme] .coin-earned{background:var(--kl-theme-soft)!important;border-color:var(--kl-theme-line)!important;color:var(--kl-theme-accent)!important}
+      body[data-kat-theme] .word-item.selected,body[data-kat-theme] .rank-row.you,body[data-kat-theme] .rank-list-row.mine{background:var(--kl-theme-soft)!important;color:var(--kl-theme-accent)!important}
+      body[data-kat-theme] .quiz-badge,body[data-kat-theme] .mode-card span,body[data-kat-theme] .word-list h3 span{background:var(--kl-theme-soft)!important;color:var(--kl-theme-accent)!important}
+      body[data-kat-theme] .quiz-progress i,body[data-kat-theme] .progress-line span,body[data-kat-theme] .bar-chart .today-bar{background:linear-gradient(90deg,var(--kl-theme-accent),var(--kl-theme-accent2))!important}
+      body[data-kat-theme] .flashcard .card-front{background:linear-gradient(145deg,var(--kl-theme-hero1),var(--kl-theme-hero2))!important}
+      body[data-kat-theme] .flashcard .card-back{background:linear-gradient(145deg,var(--kl-theme-accent),var(--kl-theme-accent2))!important}
+      body[data-kat-theme] .flashcard .card-face h2,body[data-kat-theme] .flashcard .card-face p,body[data-kat-theme] .flashcard .word-type{color:#fff!important}
+      body[data-kat-theme] .modal-card,body[data-kat-theme] .student-pack-modal,.kl-pack-card{background:var(--kl-theme-surface)!important;color:var(--kl-theme-text)!important;border-color:var(--kl-theme-line)!important}
+      body[data-kat-theme] input,body[data-kat-theme] textarea,body[data-kat-theme] select{color:var(--kl-theme-text)}
+      body[data-kat-theme] .site-footer,body[data-kat-theme] #katlearnFooter{background:color-mix(in srgb,var(--kl-theme-surface) 78%,transparent)!important;border-top-color:var(--kl-theme-line)!important}
+      body[data-kat-theme="night"] .vn-ui-motif{opacity:.35!important}
+      body[data-kat-theme="sen-viet"] .hero-card{box-shadow:0 18px 42px rgba(91,155,131,.16)!important}
+      body[data-kat-theme="sen-viet"] .brand-mark{background:linear-gradient(135deg,#5b9b83,#786ccc)!important}
+      body[data-kat-theme="night"] .brand-mark{background:linear-gradient(135deg,#5f5495,#b06d84)!important}
+      body[data-kat-theme="ocean"] .activity-card .activity-icon{background:#dff7f4!important}
+      body[data-kat-theme="sky"] .activity-card .activity-icon{background:#e4f4fc!important}
+      body[data-kat-theme="pink"] .activity-card .activity-icon{background:#ffeaf2!important}
+      body[data-kat-theme="lavender"] .activity-card .activity-icon{background:#eeeaff!important}
+      body[data-kat-theme="night"] .activity-card .activity-icon{background:rgba(255,255,255,.08)!important;color:var(--kl-theme-accent)!important}
+      `;
+    document.head.appendChild(css);
+    const assets={
+      night:'/assets/1/bg-cat-night.svg',sky:'/assets/1/bg-sky.svg',pink:'/assets/1/bg-pink.svg',
+      ocean:'/assets/1/bg-ocean.svg',lavender:'/assets/1/bg-lavender.svg','sen-viet':'/assets/1/bg-sen-viet.svg'
+    };
+    function apply(raw,{persist=true}={}){
+      const requested=String(raw||'default').replace(/^theme-/,'').trim();
+      const id=themes[requested]?requested:'default';
+      const t=themes[id];
+      const root=document.documentElement;
+      const body=document.body;
+      if(!body)return id;
+      root.style.setProperty('--kl-theme-bg',t.bg);
+      root.style.setProperty('--kl-theme-surface',t.surface);
+      root.style.setProperty('--kl-theme-surface2',t.surface2);
+      root.style.setProperty('--kl-theme-text',t.text);
+      root.style.setProperty('--kl-theme-muted',t.muted);
+      root.style.setProperty('--kl-theme-line',t.line);
+      root.style.setProperty('--kl-theme-soft',t.soft);
+      root.style.setProperty('--kl-theme-top',t.top);
+      root.style.setProperty('--kl-theme-meta',t.meta);
+      root.style.setProperty('--kl-theme-accent',t.accent);
+      root.style.setProperty('--kl-theme-accent2',t.accent2);
+      root.style.setProperty('--kl-theme-hero1',t.hero1);
+      root.style.setProperty('--kl-theme-hero2',t.hero2);
+      root.style.setProperty('--kl-theme-shadow',t.shadow);
+      root.style.setProperty('--kl-theme-background',assets[id]?\`url("${assets[id]}")\`:'none');
+      body.dataset.katTheme=id;
+      let meta=document.querySelector('meta[name="theme-color"]');
+      if(!meta){meta=document.createElement('meta');meta.name='theme-color';document.head.appendChild(meta)}
+      meta.setAttribute('content',t.themeColor);
+      if(persist)localStorage.setItem('katlearn-theme',id);
+      window.dispatchEvent(new CustomEvent('katlearn-theme-changed',{detail:{themeId:id}}));
+      return id;
+    }
+    window.katlearnTheme={apply,themes:Object.freeze(themes)};
+    let initial=localStorage.getItem('katlearn-theme')||'default';
+    apply(initial,{persist:false});
+    window.addEventListener('8b1-auth-change',async()=>{
+      const saved=localStorage.getItem('katlearn-theme')||'default';
+      apply(saved,{persist:false});
+      try{
+        if(!window.studyStore?.user)return;
+        let profile=window.katlearnAccount?.profile||null;
+        if(!profile&&window.studyStore?.loadProfile)profile=await window.studyStore.loadProfile();
+        if(String(window.studyStore?.user?.uid||'')!==String(window.studyStore?.user?.uid||''))return;
+        const themeId=String(profile?.themeId||'').replace(/^theme-/,'').trim();
+        if(themeId)apply(themeId,{persist:true});
+      }catch(error){console.warn('[KatLearn theme sync]',error)}
+    });
+  }
+
+(function(){
   function boot(){
-    const ready=()=>{
+    const ready=()=>{ installThemeRuntime();
       if(window.aiPackGeneratorUI?.init) window.aiPackGeneratorUI.init();
       if(window.packPreviewModal?.init) window.packPreviewModal.init();
       installManualAI(); addAiButton(); wirePackSave(); addCuteShopItems();
