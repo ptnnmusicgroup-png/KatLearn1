@@ -414,9 +414,11 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         }
 
         if(String(window.studyStore?.user?.uid||'')!==uid)return;
+        // These sources are already scoped to the authenticated user.
+        // Do not let a stale/missing ownerUid field hide an otherwise valid pack.
         const safePacks=[...new Map(packs
-          .filter(p=>p&&String(p.ownerUid||uid)===uid&&String(p.id||''))
-          .map(p=>[String(p.id),p])).values()];
+          .filter(p=>p&&String(p.id||''))
+          .map(p=>[String(p.id),{...p,ownerUid:String(p.ownerUid||uid)}])).values()];
 
         // Progress rendering is secondary. A progress error must never hide pack data.
         const progressFor=(pack)=>{
@@ -460,8 +462,8 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         if(String(window.studyStore?.user?.uid||'')===uid){
           // Never discard already-retrieved packs because a secondary UI operation failed.
           const recovered=[...new Map((Array.isArray(packs)?packs:[])
-            .filter(p=>p&&String(p.ownerUid||uid)===uid&&String(p.id||''))
-            .map(p=>[String(p.id),p])).values()];
+            .filter(p=>p&&String(p.id||''))
+            .map(p=>[String(p.id),{...p,ownerUid:String(p.ownerUid||uid)}])).values()];
           const packCount=$('#personalPackCount');if(packCount)packCount.textContent=recovered.length;
           const wordStat=$('#personalWordCount');
           const recoveredWords=recovered.reduce((sum,p)=>sum+(Array.isArray(p.words)?p.words.length:0),0);
