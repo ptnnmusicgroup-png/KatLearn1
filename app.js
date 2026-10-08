@@ -74,6 +74,13 @@ function applyServerProfile(profile){
   if(!profile)return;
   const energyValue=Number(profile.energy);
   energy=Number.isFinite(energyValue)?Math.max(0,Math.floor(energyValue)):0;
+  const profileCoins=Number(profile.coins);
+  if(Number.isFinite(profileCoins)&&!coinBalanceReady){
+    // Home can render the profile balance immediately while the
+    // authoritative server balance request is still in flight.
+    coins=Math.max(0,Math.floor(profileCoins));
+    coinBalanceReady=true;
+  }
   dailyCount=Math.max(0,Number(profile.dailyQuestions||0));
   updateDailyGoal(dailyCount);
   updateCoins();
