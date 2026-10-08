@@ -67,12 +67,17 @@ module.exports=async(req,res)=>{
 
     if(action==="delete"){
       const batch=db.batch();
-      batch.delete(found.ref);
-      if(found.source==="users" || found.accountSnap){
-        batch.delete(db.collection("users").doc(user.uid).collection("personalPacks").doc(packId));
-      }
+      // Always remove the canonical UID copy, then the mirrored account copy.
+      // When the legacy account namespace is the document we found, avoid
+      // scheduling the same Firestore document for deletion twice.
+      const userRef=db.collection("users").doc(user.uid).collection("personalPacks").doc(packId);
+      batch.delete(userRef);
       if(found.accountCode){
-        batch.delete(db.collection("accounts").doc(found.accountCode).collection("memory").doc(packId));
+        const accountRef=db.collection("accounts").doc(found.accountCode).collection("memory").doc(packId);
+        if(found.source!=="accounts" || String(found.ref.path)!==String(accountRef.path))batch.delete(found.ref);
+        batch.delete(accountRef);
+      }else if(found.source!=="users"){
+        batch.delete(found.ref);
       }
       await batch.commit();
       return send(res,200,{ok:true,id:packId,action:"delete"});
