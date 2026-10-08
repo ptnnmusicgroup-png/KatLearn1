@@ -77,6 +77,7 @@ function applyServerProfile(profile){
   dailyCount=Math.max(0,Number(profile.dailyQuestions||0));
   updateDailyGoal(dailyCount);
   updateCoins();
+  updateHomeHeader(profile);
 }
 function applyServerCoinBalance(balance){
   const value=Number(balance);
@@ -145,6 +146,120 @@ window.katlearnCoinController={
   refresh:refreshAuthoritativeCoinBalance
 };
 async function syncProfile(extra={}){const user=window.studyStore?.user;if(!window.studyStore?.connected()||!user)return;const uid=user.uid;try{if(window.studyStore?.user?.uid!==uid)return;const data={...extra};if(!['core','public','assigned'].includes(String(activeVocabSource?.kind||'')))Object.assign(data,{knownWords:known,totalWords:vocab.length,vocab});if(window.studyStore?.user?.uid!==uid)return;await window.studyStore.saveProfile(data)}catch(e){if(window.studyStore?.user?.uid===uid)console.warn('Firebase sync:',e)}}
+function studyDayClient(date=new Date()){
+  try{
+    return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
+  }catch(_){return new Date(date).toISOString().slice(0,10)}
+}
+function updateStreakDots(profile={}){
+  const dots=[...$('.streak-days i')];
+  if(!dots.length)return;
+  const streak=Math.max(0,Math.floor(Number(profile?.streak)||0));
+  const last=String(profile?.lastStudyDay||'');
+  const today=studyDayClient();
+  const parseDay=value=>{
+    const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value||''));
+    return m?Date.UTC(Number(m[1]),Number(m[2])-1,Number(m[3])):NaN;
+  };
+  const t=parseDay(today),l=parseDay(last);
+  const gap=Number.isFinite(t)&&Number.isFinite(l)?Math.round((t-l)/86400000):9999;
+  const activeStreak=gap===0||gap===1?streak:0;
+  const visible=Math.min(7,activeStreak);
+  dots.forEach((dot,i)=>{
+    dot.className='';
+    dot.textContent='·';
+    if(i>=7-visible)dot.textContent=(i===6&&gap===0)?'H':'✓';
+    if(i===6&&gap===0)dot.classList.add('today');
+  });
+}
+function playCorrectSparkles(target){
+  const el=typeof target==='string'?$(target):target;
+  if(!el)return;
+  el.classList.remove('kat-correct-pop');
+  void el.offsetWidth;
+  el.classList.add('kat-correct-pop');
+  if(!document.getElementById('kat-correct-motion-style')){
+    const style=document.createElement('style');
+    style.id='kat-correct-motion-style';
+    style.textContent=`
+      .kat-sparkle-burst{position:fixed;left:0;top:0;width:1px;height:1px;pointer-events:none;z-index:99999}
+      .kat-sparkle-burst .kat-sparkle{position:absolute;left:-7px;top:-7px;font-size:var(--size,18px);line-height:1;color:var(--sparkle,#ffd86b);filter:drop-shadow(0 2px 8px rgba(255,202,78,.45));opacity:0;transform:translate(0,0) scale(.2) rotate(0deg);animation:katSparkle .72s cubic-bezier(.15,.7,.2,1) var(--delay,0ms) forwards}
+      @keyframes katSparkle{
+        0%{opacity:0;transform:translate(0,0) scale(.15) rotate(0deg)}
+        18%{opacity:1;transform:translate(calc(var(--dx)*.18),calc(var(--dy)*.18)) scale(1.15) rotate(45deg)}
+        65%{opacity:1;transform:translate(calc(var(--dx)*.72),calc(var(--dy)*.72)) scale(.92) rotate(160deg)}
+        100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.25) rotate(260deg)}
+      }
+      .kat-correct-pop{animation:katCorrectPop .42s ease-out}
+      @keyframes katCorrectPop{
+        0%{transform:scale(1)}
+        45%{transform:scale(1.035)}
+        100%{transform:scale(1)}
+      }
+      @media (prefers-reduced-motion:reduce){
+        .kat-sparkle-burst .kat-sparkle,.kat-correct-pop{animation:none!important}
+      }`;
+    document.head.appendChild(style);
+  }
+  const rect=el.getBoundingClientRect();
+  const layer=document.createElement('div');
+  layer.className='kat-sparkle-burst';
+  layer.style.left=(rect.left+rect.width/2)+'px';
+  layer.style.top=(rect.top+rect.height/2)+'px';
+  const particles=[
+    [-36,-28,'✦'],[-14,-45,'✧'],[16,-42,'✦'],[37,-22,'✧'],
+    [47,8,'✦'],[29,34,'★'],[2,46,'✧'],[-27,36,'✦'],
+    [-49,12,'★'],[-58,-10,'✧'],[-34,4,'✦'],[12,10,'✧']
+  ];
+  particles.forEach(([dx,dy,symbol],i)=>{
+    const s=document.createElement('span');
+    s.className='kat-sparkle';
+    s.textContent=symbol;
+    s.style.setProperty('--dx',dx+'px');
+    s.style.setProperty('--dy',dy+'px');
+    s.style.setProperty('--delay',(i*18)+'ms');
+    s.style.setProperty('--size',(12+(i%4)*3)+'px');
+    s.style.setProperty('--sparkle',i%3===0?'#ffe38a':i%3===1?'#fff6c7':'#ffd05c');
+    layer.appendChild(s);
+  });
+  document.body.appendChild(layer);
+  window.setTimeout(()=>layer.remove(),1050);
+  window.setTimeout(()=>el.classList.remove('kat-correct-pop'),500);
+}
+let studyActivityPromise=null,studyActivityUid='',studyActivityDay='';
+async function recordStudyActivity(){
+  const user=await window.studyStore?.waitForAuth?.().catch(()=>null);
+  if(!user)return null;
+  const uid=String(user.uid||'');
+  const day=studyDayClient();
+  if(studyActivityUid===uid&&studyActivityDay===day)return {ok:true,uid,streak:null,lastStudyDay:day,cached:true};
+  if(studyActivityPromise)return studyActivityPromise;
+  const requestUid=uid;
+  studyActivityUid=uid;
+  studyActivityPromise=(async()=>{
+    try{
+      const token=await window.studyStore.getIdToken(true);
+      if(!token)return null;
+      const res=await fetch('/api/study-progress',{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({action:'study'})});
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok||!data.ok)throw new Error(data.error||'Không thể cập nhật chuỗi học.');
+      if(String(window.studyStore?.user?.uid||'')!==requestUid)return null;
+      studyActivityDay=day;
+      const profile=window.katlearnAccount?.profile||{};
+      updateHomeHeader({...profile,streak:data.streak,lastStudyDay:data.lastStudyDay});
+      updateStreakDots({...profile,streak:data.streak,lastStudyDay:data.lastStudyDay});
+      window.dispatchEvent(new CustomEvent('katlearn-streak-updated',{detail:data}));
+      return data;
+    }catch(error){
+      if(studyActivityUid===requestUid)studyActivityUid='';
+      console.warn('[KatLearn] Study streak sync:',error);
+      return null;
+    }finally{
+      studyActivityPromise=null;
+    }
+  })();
+  return studyActivityPromise;
+}
 function toast(msg,kind=''){const t=$('#toast');if(!t)return;clearTimeout(window.__katToastTimer);t.className=''+(kind?' '+kind:'');t.textContent=msg;t.classList.add('show');window.__katToastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
 (function showTestReturnError(){
   const params=new URLSearchParams(location.search);
@@ -166,6 +281,7 @@ function toast(msg,kind=''){const t=$('#toast');if(!t)return;clearTimeout(window
 function updateHomeHeader(profile=null){
   const now=new Date(),days=['CHỦ NHẬT','THỨ HAI','THỨ BA','THỨ TƯ','THỨ NĂM','THỨ SÁU','THỨ BẢY'],month=now.getMonth()+1;
   const eyebrow=$('.greeting-row .eyebrow'),title=$('.greeting-row h1'),streak=$('.streak-card b');
+  const sourceProfile=profile||window.katlearnAccount?.profile||null;
   if(eyebrow)eyebrow.textContent=days[now.getDay()]+', '+now.getDate()+' THÁNG '+month;
   if(title){
     const h=now.getHours();
@@ -173,10 +289,20 @@ function updateHomeHeader(profile=null){
     const icon=h>=5&&h<12?'☀️':h>=12&&h<18?'🌤️':'🌙';
     title.innerHTML=esc(greeting.replace('!',''))+'! <span>'+icon+'</span>';
   }
-  if(streak&&profile&&Number.isFinite(Number(profile.streak)))streak.textContent=Number(profile.streak).toLocaleString('vi-VN')+' ngày';
+  if(streak){
+    const raw=Math.max(0,Math.floor(Number(sourceProfile?.streak)||0));
+    const last=String(sourceProfile?.lastStudyDay||'');
+    const today=studyDayClient();
+    const parseDay=value=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value||''));return m?Date.UTC(Number(m[1]),Number(m[2])-1,Number(m[3])):NaN};
+    const t=parseDay(today),l=parseDay(last),gap=Number.isFinite(t)&&Number.isFinite(l)?Math.round((t-l)/86400000):9999;
+    const display=gap<=1?raw:0;
+    streak.textContent=display.toLocaleString('vi-VN')+' ngày';
+    updateStreakDots({...sourceProfile,streak:display,lastStudyDay:last});
+  }
 }
-updateHomeHeader();
-setInterval(()=>updateHomeHeader(),30000);
+updateHomeHeader(window.katlearnAccount?.profile||null);
+void Promise.resolve(window.katlearnAccount?.wait?.()).then(profile=>{if(profile)applyServerProfile(profile)});
+setInterval(()=>updateHomeHeader(window.katlearnAccount?.profile||null),30000);
 updateDailyGoal(0);
 const PAGE_ALIASES={vocabulary:'words',words:'words',home:'home',packs:'packs',personalPacks:'personalPacks',personal:'personalPacks',learn:'learn',practice:'practice',test:'test',shop:'shop',ranking:'ranking',progress:'progress',studentClasses:'studentClasses'};
 const PAGE_ROUTES={home:'home.html',packs:'packs.html',personalPacks:'personal-packs.html',words:'vocabulary.html',learn:'learn.html',practice:'practice.html',test:'test.html',shop:'shop.html',ranking:'ranking.html',progress:'progress.html',studentClasses:'student-classes.html'};
@@ -267,6 +393,8 @@ function markCurrentCard(knownValue){
   const v=vocab[cardIndex],key=vocabKey(v);
   if(knownValue)knownWordKeys.add(key);else knownWordKeys.delete(key);
   saveKnownState();
+  if(knownValue)playCorrectSparkles($('#knowBtn'));
+  void recordStudyActivity();
   if(activeVocabSource?.kind==='personal'&&personalLearningSnapshot.uid===String(window.studyStore?.user?.uid||'')){
     void syncPersonalProgressFromLocal().then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
   }else{
@@ -624,8 +752,9 @@ async function answer(btn,correct){
   answered=true;clearReflexTimer();
   const good=btn.dataset.right==='true',v=vocab[(question-1)%vocab.length];
   reflexAnswered++;
-  if(good){reflexCorrect++;reflexCombo++;reflexMaxCombo=Math.max(reflexMaxCombo,reflexCombo);reflexScore+=100+(Math.max(0,reflexCombo-1)*25)}
+  if(good){reflexCorrect++;reflexCombo++;reflexMaxCombo=Math.max(reflexMaxCombo,reflexCombo);reflexScore+=100+(Math.max(0,reflexCombo-1)*25);playCorrectSparkles(btn)}
   else{reflexCombo=0}
+  if(good)void recordStudyActivity();
   updateReflexHud(0);
   $$('.answer').forEach(b=>{if(b.dataset.right==='true')b.classList.add('correct');b.disabled=true});
   if(!good){btn.classList.add('wrong');$('#feedback').textContent='Đáp án đúng là: '+correct;$('#feedback').style.color='#e36b63'}
