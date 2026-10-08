@@ -449,12 +449,20 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
             }).join('')}</div>`
           : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Tạo bộ từ đầu tiên →</a></div>';
         $('[data-my-pack-menu]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openPersonalPackMenu(btn,safePacks.find(x=>x.id===btn.dataset.myPackMenu))});
-        $$('[data-my-pack]').forEach(btn=>btn.onclick=async()=>{
+        $('[data-my-pack]').forEach(btn=>btn.onclick=async()=>{
           const p=safePacks.find(x=>x.id===btn.dataset.myPack);
           if(!p)return;
           const words=Array.isArray(p.words)?p.words:[];
-          window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words,id:p.id,name:p.name||''}}));
-          if(typeof showPage==='function')showPage('learn');
+          const launch={uid, id:String(p.id||''), name:String(p.name||''), description:String(p.description||''), words};
+          try{sessionStorage.setItem('katlearn-pending-personal-pack',JSON.stringify(launch));}catch(_){}
+          // The current page is only the pack manager; the actual study deck
+          // lives on learn.html. Dispatch for same-page consumers, then route.
+          window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:launch}));
+          const current=(location.pathname.split('/').pop()||'').toLowerCase();
+          if(current!=='learn.html'){
+            location.href='/learn.html';
+            return;
+          }
           toast(`Đã mở “${p.name}”.`);
         });
       }catch(e){
