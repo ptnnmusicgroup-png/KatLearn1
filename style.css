@@ -164,6 +164,10 @@
   box-shadow:0 7px 16px #6d5efc2b;
 }
 .student-pack-footer .primary-btn:disabled{opacity:.65;cursor:wait}
+/* Personal pack list must remain visible even when a legacy page/theme rule targets the generic container. */
+.student-personal-packs{display:block!important;visibility:visible!important;opacity:1!important;min-height:20px}
+.student-personal-packs .personal-pack-grid{display:grid!important;visibility:visible!important;opacity:1!important}
+.student-personal-packs .personal-pack-card{display:flex!important;visibility:visible!important;opacity:1!important}
 .personal-packs-title{margin-top:28px}
 .personal-packs-title h3{font:700 20px Fredoka;color:#2c3d54;margin-bottom:4px}
 .personal-packs-title p{font-size:10px;color:var(--muted);margin:0}
