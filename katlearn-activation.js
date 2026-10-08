@@ -90,20 +90,26 @@
     window.addEventListener('8b1-auth-change',async event=>{
       const savedUid=String(localStorage.getItem('katlearn-theme-uid')||'');
       const currentUid=String(window.studyStore?.user?.uid||'');
-      const eventUid=String(event?.detail?.uid||'');
-      const nextUid=eventUid||currentUid;
-      if(savedUid&&nextUid&&savedUid!==nextUid){
+      const eventUser=event?.detail&&typeof event.detail==='object'?event.detail:null;
+      const eventUid=String(eventUser?.uid||'');
+      if(!currentUid){
+        localStorage.removeItem('katlearn-theme-uid');
+        apply('default',{persist:false});
+        return;
+      }
+      if(savedUid&&currentUid!==savedUid){
         apply('default',{persist:false});
       }
-      apply(localStorage.getItem('katlearn-theme')||'default',{persist:false});
       try{
-        if(!currentUid)return;
         let profile=window.katlearnAccount?.profile||null;
         if(!profile&&window.studyStore?.loadProfile)profile=await window.studyStore.loadProfile();
         const themeId=String(profile?.themeId||'').replace(/^theme-/,'').trim();
         if(themeId){
           localStorage.setItem('katlearn-theme-uid',currentUid);
           apply(themeId,{persist:true});
+        }else{
+          localStorage.setItem('katlearn-theme-uid',currentUid);
+          apply('default',{persist:true});
         }
       }catch(error){console.warn('[KatLearn theme sync]',error)}
     });
