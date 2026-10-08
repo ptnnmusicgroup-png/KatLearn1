@@ -102,6 +102,9 @@ function installThemeRuntime(){
         background:var(--kl-theme-soft)!important;
         border-color:var(--kl-theme-accent)!important;
       }
+      body[data-kat-theme] .learn-back,
+      body[data-kat-theme] .revision-exam-home-cta,
+      body[data-kat-theme] .account-menu-btn.danger,
       body[data-kat-theme] .account-trigger,
       body[data-kat-theme] .settings-btn,
       body[data-kat-theme] .notification,
