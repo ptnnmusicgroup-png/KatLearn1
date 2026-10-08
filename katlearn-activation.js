@@ -249,31 +249,34 @@ function installThemeRuntime(){
     window.katlearnTheme={apply,themes:Object.freeze(themes)};
     let initial=localStorage.getItem('katlearn-theme')||'default';
     apply(initial,{persist:false});
-    window.addEventListener('8b1-auth-change',async event=>{
-      const savedUid=String(localStorage.getItem('katlearn-theme-uid')||'');
+    async function syncThemeFromProfile(profile){
       const currentUid=String(window.studyStore?.user?.uid||'');
-      const eventUser=event?.detail&&typeof event.detail==='object'?event.detail:null;
-      const eventUid=String(eventUser?.uid||'');
       if(!currentUid){
         localStorage.removeItem('katlearn-theme-uid');
         apply('default',{persist:false});
         return;
       }
-      if(savedUid&&currentUid!==savedUid){
-        apply('default',{persist:false});
-      }
+      const savedUid=String(localStorage.getItem('katlearn-theme-uid')||'');
+      if(savedUid&&savedUid!==currentUid)apply('default',{persist:false});
+      const themeId=String(profile?.themeId||'').replace(/^theme-/,'').trim();
+      localStorage.setItem('katlearn-theme-uid',currentUid);
+      apply(themeId||'default',{persist:true});
+    }
+    window.addEventListener('8b1-auth-change',async()=>{
       try{
+        if(!window.studyStore?.user){await syncThemeFromProfile(null);return}
         let profile=window.katlearnAccount?.profile||null;
         if(!profile&&window.studyStore?.loadProfile)profile=await window.studyStore.loadProfile();
-        const themeId=String(profile?.themeId||'').replace(/^theme-/,'').trim();
-        if(themeId){
-          localStorage.setItem('katlearn-theme-uid',currentUid);
-          apply(themeId,{persist:true});
-        }else{
-          localStorage.setItem('katlearn-theme-uid',currentUid);
-          apply('default',{persist:true});
-        }
-      }catch(error){console.warn('[KatLearn theme sync]',error)}
+        await syncThemeFromProfile(profile);
+      }catch(error){console.warn('[KatLearn theme auth sync]',error)}
+    });
+    window.addEventListener('katlearn-account-ready',event=>{
+      void syncThemeFromProfile(event?.detail?.profile||null);
+    });
+    window.addEventListener('katlearn-account-profile-updated',event=>{
+      if(event?.detail?.user?.uid&&String(event.detail.user.uid)===String(window.studyStore?.user?.uid||'')){
+        void syncThemeFromProfile(window.katlearnAccount?.profile||event.detail.profile||null);
+      }
     });
   }
 
