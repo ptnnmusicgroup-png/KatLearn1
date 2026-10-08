@@ -1114,7 +1114,7 @@ function clearClientLearningState(){
   vocab=[];coins=0;coinBalanceReady=false;energy=0;cardIndex=0;known=0;question=1;sessionCoins=0;dailyCount=0;answered=false;contextRequestId++;clearReflexTimer();reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;
   knownWordKeys=new Set();
   activeVocabSource={kind:'legacy'};
-  for(const key of ['katlearn-vocab','katlearn-vocab-source','katlearn-stats','katlearn-personal-pack-name','katlearn-theme','katlearn-owned-themes','katlearn-account-type'])localStorage.removeItem(key);
+  for(const key of ['katlearn-vocab','katlearn-vocab-source','katlearn-stats','katlearn-personal-pack-name','katlearn-theme','katlearn-theme-uid','katlearn-owned-themes','katlearn-account-type'])localStorage.removeItem(key);
   for(const key of Object.keys(localStorage))if(key.startsWith('katlearn-known:'))localStorage.removeItem(key);
   updateDailyGoal(0);updateCoins();if($('#learn'))renderCard();if($('#practice'))renderQuiz();
   document.querySelector('#studentPersonalPacks')?.replaceChildren();
