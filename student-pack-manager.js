@@ -299,7 +299,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       return true;
     });
     if(words.length<rawWords.length)toast(`Đã tự bỏ ${rawWords.length-words.length} từ bị trùng.`);
-
+    if(words.length>100)return toast('Mỗi bộ từ tối đa 100 từ nhé!');
 
     const btn=$('#studentPackSave');
     btn.disabled=true;
