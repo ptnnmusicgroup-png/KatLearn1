@@ -481,10 +481,11 @@ function installThemeRuntime(){
         return;
       }
       const savedUid=String(localStorage.getItem('katlearn-theme-uid')||'');
-      if(savedUid&&savedUid!==currentUid)apply('default',{persist:false});
+      const sameAccount=!!savedUid&&savedUid===currentUid;
+      if(!sameAccount)apply('default',{persist:false});
       const themeId=String(profile?.themeId||'').replace(/^theme-/,'').trim();
       localStorage.setItem('katlearn-theme-uid',currentUid);
-      apply(themeId||'default',{persist:true});
+      apply(themeId||((sameAccount&&localStorage.getItem('katlearn-theme'))||'default'),{persist:true});
     }
     window.addEventListener('8b1-auth-change',async()=>{
       try{
