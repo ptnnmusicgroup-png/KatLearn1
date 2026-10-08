@@ -417,10 +417,23 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         const safePacks=[...new Map(packs
           .filter(p=>p&&String(p.ownerUid||uid)===uid&&String(p.id||''))
           .map(p=>[String(p.id),p])).values()];
-        const totalWords=safePacks.reduce((sum,p)=>sum+(window.getPersonalPackProgress?.(p,uid)?.total||0),0);
-        const knownWords=safePacks.reduce((sum,p)=>sum+(window.getPersonalPackProgress?.(p,uid)?.known||0),0);
 
-        $('#personalPackCount').textContent=safePacks.length;
+        // Progress rendering is secondary. A progress error must never hide pack data.
+        const progressFor=(pack)=>{
+          try{
+            const value=window.getPersonalPackProgress?.(pack,uid);
+            if(value&&Number.isFinite(Number(value.total)))return value;
+          }catch(error){
+            console.warn('[KatLearn] Personal pack progress skipped:',error);
+          }
+          const words=Array.isArray(pack?.words)?pack.words.filter(w=>String(w?.word||'').trim()):[];
+          return {total:words.length,known:0,unknown:words.length,percentage:0,state:'low'};
+        };
+        const progressById=new Map(safePacks.map(p=>[String(p.id),progressFor(p)]));
+        const totalWords=safePacks.reduce((sum,p)=>sum+(progressById.get(String(p.id))?.total||0),0);
+        const knownWords=safePacks.reduce((sum,p)=>sum+(progressById.get(String(p.id))?.known||0),0);
+
+        const packCount=$('#personalPackCount');if(packCount)packCount.textContent=safePacks.length;
         const wordStat=$('#personalWordCount');if(wordStat)wordStat.textContent=totalWords;
         const knownStat=$('#personalKnownCount');if(knownStat)knownStat.textContent=Math.min(knownWords,totalWords);
 
@@ -429,11 +442,10 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         box.style.opacity='1';
         box.innerHTML=safePacks.length
           ?`<div class="personal-packs-title"><div><h3><span class="kl-icon-slot">${window.katIcon?.('layers',18)||''}</span> Bộ từ của tôi</h3><p>${safePacks.length} bộ từ · ${totalWords} từ · đồng bộ riêng theo tài khoản.</p></div><span class="personal-pack-account-pill"><span class="kl-icon-slot">${window.katIcon?.('shield',14)||''}</span> ${esc(String(safePacks[0]?.ownerAccountCode||safePacks[0]?.accountCode||'').trim()||'Mã tài khoản đang đồng bộ')}</span></div><div class="personal-pack-grid">${safePacks.map(p=>{
-              const progress=window.getPersonalPackProgress?.(p,uid)||{total:Array.isArray(p.words)?p.words.length:0,known:0,unknown:Array.isArray(p.words)?p.words.length:0,percentage:0,state:'low'};
+              const progress=progressById.get(String(p.id))||{total:Array.isArray(p.words)?p.words.length:0,known:0,unknown:Array.isArray(p.words)?p.words.length:0,percentage:0,state:'low'};
               return `<article class="personal-pack-card"><span class="personal-pack-progress-icon">${window.katIcon?.('book',19)||''}</span><div class="personal-pack-copy"><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${progress.total} từ vựng · bộ riêng</p></div><div class="personal-pack-actions"><button data-my-pack="${esc(p.id)}"><span class="kl-icon-slot">${window.katIcon?.('play',13)||''}</span> Học ngay</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn"><span class="kl-icon-slot">${window.katIcon?.('more',16)||''}</span></button></div><div class="personal-pack-progress"><div class="personal-pack-progress-top"><small>Tiến độ học</small><strong class="is-${progress.state}">${progress.percentage}%</strong></div><div class="pack-progress-track" role="progressbar" aria-label="Tiến độ ${esc(p.name||'bộ từ')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress.percentage}"><span class="pack-progress-fill is-${progress.state}" style="width:${progress.percentage}%"></span></div><div class="pack-progress-meta"><span class="known">${window.katIcon?.('checkCircle',12)||''} ${progress.known} đã thuộc</span><span class="unknown">${window.katIcon?.('target',12)||''} ${progress.unknown} chưa thuộc</span></div></div></article>`;
             }).join('')}</div>`
           : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Tạo bộ từ đầu tiên →</a></div>';
-
         $('[data-my-pack-menu]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openPersonalPackMenu(btn,safePacks.find(x=>x.id===btn.dataset.myPackMenu))});
         $$('[data-my-pack]').forEach(btn=>btn.onclick=async()=>{
           const p=safePacks.find(x=>x.id===btn.dataset.myPack);
@@ -446,7 +458,24 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       }catch(e){
         console.warn('[KatLearn] Personal pack UI load failed:',e);
         if(String(window.studyStore?.user?.uid||'')===uid){
-          box.innerHTML='<div class="personal-pack-empty">Chưa thể tải bộ từ riêng lúc này. Hãy thử mở lại mục này nhé.</div>';
+          // Never discard already-retrieved packs because a secondary UI operation failed.
+          const recovered=[...new Map((Array.isArray(packs)?packs:[])
+            .filter(p=>p&&String(p.ownerUid||uid)===uid&&String(p.id||''))
+            .map(p=>[String(p.id),p])).values()];
+          const packCount=$('#personalPackCount');if(packCount)packCount.textContent=recovered.length;
+          const wordStat=$('#personalWordCount');
+          const recoveredWords=recovered.reduce((sum,p)=>sum+(Array.isArray(p.words)?p.words.length:0),0);
+          if(wordStat)wordStat.textContent=recoveredWords;
+          const knownStat=$('#personalKnownCount');if(knownStat)knownStat.textContent='0';
+          box.style.display='block';box.style.visibility='visible';box.style.opacity='1';
+          box.innerHTML=recovered.length
+            ? '<div class="personal-packs-title"><div><h3>Bộ từ của tôi</h3><p>'+recovered.length+' bộ từ · '+recoveredWords+' từ.</p></div></div><div class="personal-pack-grid">'+recovered.map(p=>'<article class="personal-pack-card"><span class="personal-pack-progress-icon">📚</span><div class="personal-pack-copy"><h3>'+esc(p.name||'Bộ từ chưa đặt tên')+'</h3><p>'+(Array.isArray(p.words)?p.words.length:0)+' từ vựng · bộ riêng</p></div><div class="personal-pack-actions"><button data-my-pack="'+esc(p.id)+'">Học ngay</button></div></article>').join('')+'</div>'
+            : '<div class="personal-pack-empty">Chưa nhận được dữ liệu bộ từ từ máy chủ. Trang sẽ tự thử lại trong lần đồng bộ tiếp theo.</div>';
+          $('#studentPersonalPacks [data-my-pack]').forEach(btn=>btn.onclick=()=>{
+            const p=recovered.find(x=>String(x.id)===String(btn.dataset.myPack));if(!p)return;
+            window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words:Array.isArray(p.words)?p.words:[],id:p.id,name:p.name||''}}));
+            if(typeof showPage==='function')showPage('learn');
+          });
         }
       }finally{
         if(renderMineUid===uid){
