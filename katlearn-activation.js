@@ -87,16 +87,24 @@
     window.katlearnTheme={apply,themes:Object.freeze(themes)};
     let initial=localStorage.getItem('katlearn-theme')||'default';
     apply(initial,{persist:false});
-    window.addEventListener('8b1-auth-change',async()=>{
-      const saved=localStorage.getItem('katlearn-theme')||'default';
-      apply(saved,{persist:false});
+    window.addEventListener('8b1-auth-change',async event=>{
+      const savedUid=String(localStorage.getItem('katlearn-theme-uid')||'');
+      const currentUid=String(window.studyStore?.user?.uid||'');
+      const eventUid=String(event?.detail?.uid||'');
+      const nextUid=eventUid||currentUid;
+      if(savedUid&&nextUid&&savedUid!==nextUid){
+        apply('default',{persist:false});
+      }
+      apply(localStorage.getItem('katlearn-theme')||'default',{persist:false});
       try{
-        if(!window.studyStore?.user)return;
+        if(!currentUid)return;
         let profile=window.katlearnAccount?.profile||null;
         if(!profile&&window.studyStore?.loadProfile)profile=await window.studyStore.loadProfile();
-        if(String(window.studyStore?.user?.uid||'')!==String(window.studyStore?.user?.uid||''))return;
         const themeId=String(profile?.themeId||'').replace(/^theme-/,'').trim();
-        if(themeId)apply(themeId,{persist:true});
+        if(themeId){
+          localStorage.setItem('katlearn-theme-uid',currentUid);
+          apply(themeId,{persist:true});
+        }
       }catch(error){console.warn('[KatLearn theme sync]',error)}
     });
   }
