@@ -117,22 +117,22 @@ function installThemeRuntime(){
       }
       body[data-kat-theme] .pack-tabs button,
       body[data-kat-theme] .cp-mode-tab,
-      body[data-kat-theme] .reflex-source-option,
-      body[data-kat-theme] .reflex-length{
+      body[data-kat-theme] #practice .reflex-source-option,
+      body[data-kat-theme] #practice .reflex-length{
         background:var(--kl-theme-surface)!important;
         color:var(--kl-theme-muted)!important;
         border-color:var(--kl-theme-line)!important;
       }
       body[data-kat-theme] .pack-tabs button.active,
       body[data-kat-theme] .cp-mode-tab.active,
-      body[data-kat-theme] .reflex-source-option.active,
-      body[data-kat-theme] .reflex-length.active{
+      body[data-kat-theme] #practice .reflex-source-option.active,
+      body[data-kat-theme] #practice .reflex-length.active{
         background:var(--kl-theme-soft)!important;
         color:var(--kl-theme-accent)!important;
         border-color:color-mix(in srgb,var(--kl-theme-accent) 45%,transparent)!important;
         box-shadow:0 7px 18px var(--kl-theme-shadow)!important;
       }
-      body[data-kat-theme] .reflex-skip{
+      body[data-kat-theme] #practice .reflex-skip{
         background:var(--kl-theme-surface)!important;
         color:var(--kl-theme-accent)!important;
         border-color:var(--kl-theme-line)!important;
