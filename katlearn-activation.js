@@ -53,6 +53,13 @@ function installThemeRuntime(){
         box-shadow:0 10px 24px var(--kl-theme-shadow)!important;
       }
       body[data-kat-theme] .learn-tool-btn,
+      body[data-kat-theme] .published-pack button,
+      body[data-kat-theme] .pack-tile button,
+      body[data-kat-theme] .personal-pack-card button,
+      body[data-kat-theme] .word-table-tools button,
+      body[data-kat-theme] .kat-library-leaf-card button,
+      body[data-kat-theme] .student-pack-wide-btn,
+      body[data-kat-theme] .cp-add,
       body[data-kat-theme] .flash-nav-btn,
       body[data-kat-theme] .flash-main-btn,
       body[data-kat-theme] .card-icon-btn,
@@ -72,6 +79,13 @@ function installThemeRuntime(){
         box-shadow:0 7px 18px var(--kl-theme-shadow)!important;
       }
       body[data-kat-theme] .learn-tool-btn:hover,
+      body[data-kat-theme] .published-pack button:hover,
+      body[data-kat-theme] .pack-tile button:hover,
+      body[data-kat-theme] .personal-pack-card button:hover,
+      body[data-kat-theme] .word-table-tools button:hover,
+      body[data-kat-theme] .kat-library-leaf-card button:hover,
+      body[data-kat-theme] .student-pack-wide-btn:hover,
+      body[data-kat-theme] .cp-add:hover,
       body[data-kat-theme] .flash-nav-btn:hover,
       body[data-kat-theme] .flash-main-btn:hover,
       body[data-kat-theme] .card-icon-btn:hover,
