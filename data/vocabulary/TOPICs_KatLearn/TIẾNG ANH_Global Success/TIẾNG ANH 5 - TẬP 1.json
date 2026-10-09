@@ -1,0 +1,1133 @@
+{
+  "id": "global-success-english-5-term-1",
+  "name": "TIẾNG ANH 5 - TẬP 1",
+  "description": "Wordlist Tiếng Anh 5 – Global Success, Tập 1, trang 78–80. 125 mục từ đã chuẩn hóa gồm IPA, nghĩa tiếng Việt, ví dụ, loại từ và Unit.",
+  "source": "Wordlist, Tiếng Anh 5 – Global Success, Tập 1, trang 78–80; đối chiếu bản Wordlist trực tuyến và danh sách người dùng cung cấp.",
+  "words": [
+    {
+      "word": "above",
+      "mean": "ở phía trên",
+      "pron": "/əˈbʌv/",
+      "type": "preposition",
+      "example": "The clock is above the board.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "active",
+      "mean": "nhanh nhẹn, năng động, hăng hái",
+      "pron": "/ˈæktɪv/",
+      "type": "adjective",
+      "example": "My cousin is active and friendly.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "along",
+      "mean": "dọc theo",
+      "pron": "/əˈlɒŋ/",
+      "type": "preposition",
+      "example": "We walk along the river.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "always",
+      "mean": "luôn luôn",
+      "pron": "/ˈɔːlweɪz/",
+      "type": "adverb",
+      "example": "I always do my homework.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "American",
+      "mean": "thuộc nước Mỹ, có quốc tịch Mỹ",
+      "pron": "/əˈmerɪkən/",
+      "type": "adjective",
+      "example": "My pen friend is American.",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "appearance",
+      "mean": "ngoại hình",
+      "pron": "/əˈpɪərəns/",
+      "type": "noun",
+      "example": "Appearance is not everything.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "aquarium",
+      "mean": "bể kính nuôi cá",
+      "pron": "/əˈkweəriəm/",
+      "type": "noun",
+      "example": "We saw many fish at the aquarium.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "around",
+      "mean": "xung quanh",
+      "pron": "/əˈraʊnd/",
+      "type": "preposition",
+      "example": "We walked around the lake.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "arrive",
+      "mean": "đến, tới",
+      "pron": "/əˈraɪv/",
+      "type": "verb",
+      "example": "We arrive at school at seven.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "Australian",
+      "mean": "thuộc nước Úc, có quốc tịch Úc",
+      "pron": "/ɒsˈtreɪliən/",
+      "type": "adjective",
+      "example": "My Australian friend lives in Sydney.",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "baseball",
+      "mean": "bóng chày",
+      "pron": "/ˈbeɪsbɔːl/",
+      "type": "noun",
+      "example": "We sometimes play baseball.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "beautifully",
+      "mean": "đẹp, hay; một cách đẹp mắt",
+      "pron": "/ˈbjuːtɪfli/",
+      "type": "adverb",
+      "example": "She sings beautifully.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "beside",
+      "mean": "bên cạnh",
+      "pron": "/bɪˈsaɪd/",
+      "type": "preposition",
+      "example": "The bookcase is beside the board.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "best friend",
+      "mean": "bạn thân",
+      "pron": "/ˌbest ˈfrend/",
+      "type": "noun",
+      "example": "Lan is my best friend.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "board",
+      "mean": "bảng (trên lớp học)",
+      "pron": "/bɔːd/",
+      "type": "noun",
+      "example": "The teacher writes on the board.",
+      "note": "Unit 6 · Our School Rooms",
+      "category": "Unit 6"
+    },
+    {
+      "word": "bookcase",
+      "mean": "tủ sách",
+      "pron": "/ˈbʊkkeɪs/",
+      "type": "noun",
+      "example": "The books are in the bookcase.",
+      "note": "Unit 6 · Our School Rooms",
+      "category": "Unit 6"
+    },
+    {
+      "word": "building",
+      "mean": "tòa nhà",
+      "pron": "/ˈbɪldɪŋ/",
+      "type": "noun",
+      "example": "That building is very tall.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "campsite",
+      "mean": "địa điểm cắm trại",
+      "pron": "/ˈkæmpsaɪt/",
+      "type": "noun",
+      "example": "We stayed at a campsite.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "cartoon",
+      "mean": "phim hoạt hình",
+      "pron": "/kɑːˈtuːn/",
+      "type": "noun",
+      "example": "I watch a cartoon after school.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "Chinese",
+      "mean": "thuộc Trung Quốc, có quốc tịch Trung Quốc",
+      "pron": "/ˌtʃaɪˈniːz/",
+      "type": "adjective",
+      "example": "My Chinese friend can speak English.",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "class",
+      "mean": "lớp học",
+      "pron": "/klɑːs/",
+      "type": "noun",
+      "example": "My class is friendly.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "clever",
+      "mean": "thông minh, lanh lợi",
+      "pron": "/ˈklevə/",
+      "type": "adjective",
+      "example": "The dolphin is clever.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "colour",
+      "mean": "màu sắc",
+      "pron": "/ˈkʌlə/",
+      "type": "noun",
+      "example": "Pink is my favourite colour.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "cool",
+      "mean": "thú vị",
+      "pron": "/kuːl/",
+      "type": "adjective",
+      "example": "That game is really cool.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "corridor",
+      "mean": "hành lang",
+      "pron": "/ˈkɒrɪdɔː/",
+      "type": "noun",
+      "example": "We walk quietly along the corridor.",
+      "note": "Unit 6 · Our School Rooms",
+      "category": "Unit 6"
+    },
+    {
+      "word": "country",
+      "mean": "đất nước",
+      "pron": "/ˈkʌntri/",
+      "type": "noun",
+      "example": "Viet Nam is my country.",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "countryside",
+      "mean": "nông thôn, vùng quê",
+      "pron": "/ˈkʌntrisaɪd/",
+      "type": "noun",
+      "example": "My grandparents live in the countryside.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "cousin",
+      "mean": "anh, chị, em họ",
+      "pron": "/ˈkʌzn/",
+      "type": "noun",
+      "example": "My cousin is ten years old.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "crayon",
+      "mean": "bút sáp màu",
+      "pron": "/ˈkreɪən/",
+      "type": "noun",
+      "example": "I colour the picture with a crayon.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "dance",
+      "mean": "nhảy, múa",
+      "pron": "/dɑːns/",
+      "type": "verb",
+      "example": "I like to dance with my friends.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "difficult",
+      "mean": "khó",
+      "pron": "/ˈdɪfɪkəlt/",
+      "type": "adjective",
+      "example": "This question is difficult.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "do projects",
+      "mean": "làm các bài tập dự án",
+      "pron": "/duː ˈprɒdʒekts/",
+      "type": "phrase",
+      "example": "We do projects in groups.",
+      "note": "Unit 7 · Our Favourite School Activities",
+      "category": "Unit 7"
+    },
+    {
+      "word": "dolphin",
+      "mean": "cá heo",
+      "pron": "/ˈdɒlfɪn/",
+      "type": "noun",
+      "example": "The dolphin can swim quickly.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "downstairs",
+      "mean": "xuống gác, ở tầng dưới",
+      "pron": "/ˌdaʊnˈsteəz/",
+      "type": "adverb",
+      "example": "My bedroom is downstairs.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "easy",
+      "mean": "dễ dàng",
+      "pron": "/ˈiːzi/",
+      "type": "adjective",
+      "example": "This exercise is easy.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "email",
+      "mean": "thư điện tử",
+      "pron": "/ˈiːmeɪl/",
+      "type": "noun",
+      "example": "I sent an email to my friend.",
+      "note": "Unit 7 · Our Favourite School Activities",
+      "category": "Unit 7"
+    },
+    {
+      "word": "example",
+      "mean": "ví dụ",
+      "pron": "/ɪɡˈzɑːmpl/",
+      "type": "noun",
+      "example": "Can you give me an example?",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "firefighter",
+      "mean": "lính cứu hỏa",
+      "pron": "/ˈfaɪəfaɪtə/",
+      "type": "noun",
+      "example": "My uncle is a firefighter.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "first",
+      "mean": "thứ nhất",
+      "pron": "/fɜːst/",
+      "type": "determiner",
+      "example": "This is my first lesson today.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "flat",
+      "mean": "căn hộ",
+      "pron": "/flæt/",
+      "type": "noun",
+      "example": "We live in a flat.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "floor",
+      "mean": "tầng",
+      "pron": "/flɔː/",
+      "type": "noun",
+      "example": "Our classroom is on the second floor.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "food",
+      "mean": "đồ ăn",
+      "pron": "/fuːd/",
+      "type": "noun",
+      "example": "My favourite food is noodles.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "footballer",
+      "mean": "cầu thủ bóng đá",
+      "pron": "/ˈfʊtbɔːlə/",
+      "type": "noun",
+      "example": "He wants to be a footballer.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "foreign",
+      "mean": "nước ngoài, ngoại quốc",
+      "pron": "/ˈfɒrən/",
+      "type": "adjective",
+      "example": "I have friends from foreign countries.",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "friendly",
+      "mean": "thân thiện",
+      "pron": "/ˈfrendli/",
+      "type": "adjective",
+      "example": "My new classmates are friendly.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "fun",
+      "mean": "sự vui thích, niềm vui",
+      "pron": "/fʌn/",
+      "type": "noun",
+      "example": "Playing games is fun.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "funfair",
+      "mean": "hội chợ giải trí",
+      "pron": "/ˈfʌnfeə/",
+      "type": "noun",
+      "example": "We went to the funfair on Sunday.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "future",
+      "mean": "tương lai",
+      "pron": "/ˈfjuːtʃə/",
+      "type": "noun",
+      "example": "I want to be a doctor in the future.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "gardener",
+      "mean": "người làm vườn",
+      "pron": "/ˈɡɑːdnə/",
+      "type": "noun",
+      "example": "The gardener waters the flowers.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "glue stick",
+      "mean": "keo dán dạng thỏi",
+      "pron": "/ˈɡluː stɪk/",
+      "type": "noun",
+      "example": "I need a glue stick for this project.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "go",
+      "mean": "đi",
+      "pron": "/ɡəʊ/",
+      "type": "verb",
+      "example": "I go to school by bike.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "go for a walk",
+      "mean": "đi dạo bộ",
+      "pron": "/ɡəʊ fər ə wɔːk/",
+      "type": "phrase",
+      "example": "We go for a walk after dinner.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "good for group work",
+      "mean": "tốt, giúp ích cho hoạt động nhóm",
+      "pron": "/ɡʊd fə ɡruːp wɜːk/",
+      "type": "phrase",
+      "example": "This activity is good for group work.",
+      "note": "Unit 7 · Our Favourite School Activities",
+      "category": "Unit 7"
+    },
+    {
+      "word": "grade",
+      "mean": "khối lớp",
+      "pron": "/ɡreɪd/",
+      "type": "noun",
+      "example": "I am in grade five.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "ground floor",
+      "mean": "tầng trệt, tầng một",
+      "pron": "/ˌɡraʊnd ˈflɔː/",
+      "type": "noun",
+      "example": "The library is on the ground floor.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "helpful",
+      "mean": "hay giúp đỡ, tốt bụng",
+      "pron": "/ˈhelpfl/",
+      "type": "adjective",
+      "example": "My brother is helpful at home.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "hill",
+      "mean": "đồi",
+      "pron": "/hɪl/",
+      "type": "noun",
+      "example": "We walked up the hill.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "house",
+      "mean": "ngôi nhà",
+      "pron": "/haʊs/",
+      "type": "noun",
+      "example": "Their house is near the lake.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "Indian",
+      "mean": "thuộc Ấn Độ, có quốc tịch Ấn Độ",
+      "pron": "/ˈɪndiən/",
+      "type": "adjective",
+      "example": "My Indian friend likes football.",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "in front of",
+      "mean": "ở phía trước",
+      "pron": "/ɪn ˈfrʌnt əv/",
+      "type": "preposition",
+      "example": "The teacher is in front of the class.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "interesting",
+      "mean": "thú vị",
+      "pron": "/ˈɪntrəstɪŋ/",
+      "type": "adjective",
+      "example": "This story is interesting.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "Japanese",
+      "mean": "thuộc Nhật Bản, có quốc tịch Nhật Bản",
+      "pron": "/ˌdʒæpəˈniːz/",
+      "type": "adjective",
+      "example": "My Japanese friend can play the violin.",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "just",
+      "mean": "chỉ",
+      "pron": "/dʒʌst/",
+      "type": "adverb",
+      "example": "I just want to read.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "king",
+      "mean": "vua",
+      "pron": "/kɪŋ/",
+      "type": "noun",
+      "example": "The king lives in a palace.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "lake",
+      "mean": "hồ nước",
+      "pron": "/leɪk/",
+      "type": "noun",
+      "example": "We have a picnic beside the lake.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "land",
+      "mean": "đất nước, vùng đất",
+      "pron": "/lænd/",
+      "type": "noun",
+      "example": "This land is good for planting trees.",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "last",
+      "mean": "trước, lần trước (trong quá khứ)",
+      "pron": "/lɑːst/",
+      "type": "determiner",
+      "example": "I visited my cousin last week.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "listen",
+      "mean": "nghe",
+      "pron": "/ˈlɪsn/",
+      "type": "verb",
+      "example": "Listen to the teacher, please.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "Malaysian",
+      "mean": "thuộc Ma-lai-xi-a, có quốc tịch Ma-lai-xi-a",
+      "pron": "/məˈleɪziən/",
+      "type": "adjective",
+      "example": "My Malaysian friend is kind.",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "map",
+      "mean": "bản đồ",
+      "pron": "/mæp/",
+      "type": "noun",
+      "example": "We used a map to find the campsite.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "memory game",
+      "mean": "trò chơi trí nhớ",
+      "pron": "/ˈmeməri ɡeɪm/",
+      "type": "noun",
+      "example": "We play a memory game in class.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "nationality",
+      "mean": "quốc tịch",
+      "pron": "/ˌnæʃəˈnæləti/",
+      "type": "noun",
+      "example": "What is your nationality?",
+      "note": "Unit 3 · My Foreign Friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "never",
+      "mean": "không bao giờ",
+      "pron": "/ˈnevə/",
+      "type": "adverb",
+      "example": "I never go to bed late.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "news",
+      "mean": "tin tức",
+      "pron": "/njuːz/",
+      "type": "noun",
+      "example": "I watch the news with my parents.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "ninety-three",
+      "mean": "chín mươi ba (93)",
+      "pron": "/ˌnaɪnti ˈθriː/",
+      "type": "number",
+      "example": "Ninety-three is a number.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "often",
+      "mean": "hay, thường",
+      "pron": "/ˈɒfn/",
+      "type": "adverb",
+      "example": "I often read books at home.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "one hundred and sixteen",
+      "mean": "một trăm mười sáu (116)",
+      "pron": "/wʌn ˈhʌndrəd ən ˌsɪkˈstiːn/",
+      "type": "number",
+      "example": "One hundred and sixteen is more than one hundred.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "pagoda",
+      "mean": "chùa",
+      "pron": "/pəˈɡəʊdə/",
+      "type": "noun",
+      "example": "We visited an old pagoda.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "panda",
+      "mean": "gấu trúc",
+      "pron": "/ˈpændə/",
+      "type": "noun",
+      "example": "The panda eats bamboo.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "past",
+      "mean": "qua, vượt qua",
+      "pron": "/pɑːst/",
+      "type": "preposition",
+      "example": "We walked past the school gate.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "pencil sharpener",
+      "mean": "cái gọt bút chì",
+      "pron": "/ˈpensəl ˌʃɑːpnə/",
+      "type": "noun",
+      "example": "Can I borrow your pencil sharpener?",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "personality",
+      "mean": "tính cách",
+      "pron": "/ˌpɜːsəˈnæləti/",
+      "type": "noun",
+      "example": "She has a friendly personality.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "pink",
+      "mean": "màu hồng",
+      "pron": "/pɪŋk/",
+      "type": "noun/adjective",
+      "example": "My school bag is pink.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "plant",
+      "mean": "trồng (cây)",
+      "pron": "/plɑːnt/",
+      "type": "verb",
+      "example": "We plant flowers in the garden.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "play",
+      "mean": "chơi",
+      "pron": "/pleɪ/",
+      "type": "verb",
+      "example": "I play with my friends.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "play games",
+      "mean": "chơi trò chơi",
+      "pron": "/pleɪ ɡeɪmz/",
+      "type": "phrase",
+      "example": "We play games after class.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "queen",
+      "mean": "hoàng hậu, nữ hoàng",
+      "pron": "/kwiːn/",
+      "type": "noun",
+      "example": "The queen greeted the visitors.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "rarely",
+      "mean": "hiếm khi",
+      "pron": "/ˈreəli/",
+      "type": "adverb",
+      "example": "I rarely watch television on weekdays.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "read books",
+      "mean": "đọc sách",
+      "pron": "/riːd bʊks/",
+      "type": "phrase",
+      "example": "I read books every evening.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "really",
+      "mean": "thật sự, rất",
+      "pron": "/ˈrɪəli/",
+      "type": "adverb",
+      "example": "This is really interesting.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "report",
+      "mean": "đưa tin, báo cáo",
+      "pron": "/rɪˈpɔːt/",
+      "type": "verb",
+      "example": "They report the news on television.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "reporter",
+      "mean": "phóng viên",
+      "pron": "/rɪˈpɔːtə/",
+      "type": "noun",
+      "example": "The reporter asks questions.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "Rose Garden",
+      "mean": "Vườn Hồng",
+      "pron": "/rəʊz ˈɡɑːdn/",
+      "type": "proper noun",
+      "example": "We visited the Rose Garden.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "sandwich",
+      "mean": "bánh mì kẹp",
+      "pron": "/ˈsænwɪtʃ/",
+      "type": "noun",
+      "example": "I had a sandwich for lunch.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "set square",
+      "mean": "cái ê-ke",
+      "pron": "/ˈset skweə/",
+      "type": "noun",
+      "example": "I use a set square in maths.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "solve maths problems",
+      "mean": "giải các bài toán",
+      "pron": "/sɒlv mæθs ˈprɒbləmz/",
+      "type": "phrase",
+      "example": "We solve maths problems together.",
+      "note": "Unit 7 · Our Favourite School Activities",
+      "category": "Unit 7"
+    },
+    {
+      "word": "sometimes",
+      "mean": "thỉnh thoảng",
+      "pron": "/ˈsʌmtaɪmz/",
+      "type": "adverb",
+      "example": "I sometimes play table tennis.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "start",
+      "mean": "bắt đầu",
+      "pron": "/stɑːt/",
+      "type": "verb",
+      "example": "Our lesson starts at eight.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "storybook",
+      "mean": "sách truyện",
+      "pron": "/ˈstɔːribʊk/",
+      "type": "noun",
+      "example": "I read a storybook before bed.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "sun",
+      "mean": "mặt trời",
+      "pron": "/sʌn/",
+      "type": "noun",
+      "example": "The sun is bright today.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "sure",
+      "mean": "chắc chắn",
+      "pron": "/ʃɔː/",
+      "type": "adjective",
+      "example": "Are you sure about the answer?",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "surf the Internet",
+      "mean": "lướt mạng Internet",
+      "pron": "/sɜːf ði ˈɪntənet/",
+      "type": "phrase",
+      "example": "I surf the Internet to find information.",
+      "note": "Unit 7 · Our Favourite School Activities",
+      "category": "Unit 7"
+    },
+    {
+      "word": "survey",
+      "mean": "cuộc khảo sát",
+      "pron": "/ˈsɜːveɪ/",
+      "type": "noun",
+      "example": "We did a survey about favourite sports.",
+      "note": "Unit 7 · Our Favourite School Activities",
+      "category": "Unit 7"
+    },
+    {
+      "word": "table tennis",
+      "mean": "môn bóng bàn",
+      "pron": "/ˈteɪbəl ˌtenɪs/",
+      "type": "noun",
+      "example": "I play table tennis with my sister.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "theatre",
+      "mean": "nhà hát",
+      "pron": "/ˈθɪətə/",
+      "type": "noun",
+      "example": "We watched a play at the theatre.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "theme park",
+      "mean": "công viên giải trí",
+      "pron": "/ˈθiːm pɑːk/",
+      "type": "noun",
+      "example": "We went to a theme park on holiday.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "third",
+      "mean": "thứ ba",
+      "pron": "/θɜːd/",
+      "type": "determiner",
+      "example": "Our classroom is on the third floor.",
+      "note": "Unit 8 · In Our Classroom",
+      "category": "Unit 8"
+    },
+    {
+      "word": "thirty-eight",
+      "mean": "ba mươi tám (38)",
+      "pron": "/ˌθɜːti ˈeɪt/",
+      "type": "number",
+      "example": "There are thirty-eight pupils in the hall.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "together",
+      "mean": "cùng, cùng với, cùng nhau",
+      "pron": "/təˈɡeðə/",
+      "type": "adverb",
+      "example": "We study together after school.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "tower",
+      "mean": "tòa tháp",
+      "pron": "/ˈtaʊə/",
+      "type": "noun",
+      "example": "The tower is next to the lake.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "travel",
+      "mean": "đi lại, di chuyển",
+      "pron": "/ˈtrævl/",
+      "type": "verb",
+      "example": "I want to travel around Viet Nam.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "twenty-three",
+      "mean": "hai mươi ba (23)",
+      "pron": "/ˌtwenti ˈθriː/",
+      "type": "number",
+      "example": "There are twenty-three books on the table.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "under",
+      "mean": "ở phía dưới",
+      "pron": "/ˈʌndə/",
+      "type": "preposition",
+      "example": "The cat is under the table.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "upstairs",
+      "mean": "lên gác, ở tầng trên",
+      "pron": "/ˌʌpˈsteəz/",
+      "type": "adverb",
+      "example": "My bedroom is upstairs.",
+      "note": "Unit 2 · Our Homes",
+      "category": "Unit 2"
+    },
+    {
+      "word": "useful",
+      "mean": "có ích, hữu ích",
+      "pron": "/ˈjuːsfl/",
+      "type": "adjective",
+      "example": "This dictionary is useful.",
+      "note": "Unit 7 · Our Favourite School Activities",
+      "category": "Unit 7"
+    },
+    {
+      "word": "usually",
+      "mean": "thường thường",
+      "pron": "/ˈjuːʒuəli/",
+      "type": "adverb",
+      "example": "I usually get up at six.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "violin",
+      "mean": "đàn vi-ô-lông",
+      "pron": "/ˌvaɪəˈlɪn/",
+      "type": "noun",
+      "example": "She can play the violin.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "visit",
+      "mean": "thăm, tham quan",
+      "pron": "/ˈvɪzɪt/",
+      "type": "verb",
+      "example": "We visit our grandparents at the weekend.",
+      "note": "Unit 10 · Our School Trip",
+      "category": "Unit 10"
+    },
+    {
+      "word": "walk",
+      "mean": "đi bộ",
+      "pron": "/wɔːk/",
+      "type": "verb",
+      "example": "I walk to school with my friend.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "want",
+      "mean": "muốn",
+      "pron": "/wɒnt/",
+      "type": "verb",
+      "example": "I want to be a writer.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "watch",
+      "mean": "xem",
+      "pron": "/wɒtʃ/",
+      "type": "verb",
+      "example": "We watch a cartoon together.",
+      "note": "Unit 4 · Our Free-time Activities",
+      "category": "Unit 4"
+    },
+    {
+      "word": "water the flowers",
+      "mean": "tưới hoa",
+      "pron": "/ˈwɔːtə ðə ˈflaʊəz/",
+      "type": "phrase",
+      "example": "I water the flowers every morning.",
+      "note": "Unit 9 · Our Outdoor Activities",
+      "category": "Unit 9"
+    },
+    {
+      "word": "writer",
+      "mean": "nhà văn",
+      "pron": "/ˈraɪtə/",
+      "type": "noun",
+      "example": "My aunt is a writer.",
+      "note": "Unit 5 · My Future Job",
+      "category": "Unit 5"
+    },
+    {
+      "word": "yesterday",
+      "mean": "ngày hôm qua",
+      "pron": "/ˈjestədeɪ/",
+      "type": "adverb",
+      "example": "I visited the museum yesterday.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    },
+    {
+      "word": "yourself",
+      "mean": "bản thân bạn",
+      "pron": "/jɔːˈself/",
+      "type": "pronoun",
+      "example": "Please introduce yourself.",
+      "note": "Unit 1 · All About Me!",
+      "category": "Unit 1"
+    }
+  ]
+}
