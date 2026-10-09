@@ -40,6 +40,7 @@
     {id:'katlearn-collocations-phrasal',name:'KatLearn Collocations & Phrasal Verbs',category:'KatLearn Library · Skills',path:'TOPICs_KatLearn/KatLearn_Collocations_Phrasal.json'},
     {id:'katlearn-exam-workplace-specialized',name:'KatLearn Exam · Workplace · Specialized',category:'KatLearn Library · Exam & Specialized',path:'TOPICs_KatLearn/KatLearn_Exam_Workplace_Specialized.json'},
     {id:'katlearn-school-english',name:'KatLearn School English',category:'KatLearn Library · School English',path:'TOPICs_KatLearn/KatLearn_School_English.json'},
+    {id:'global-success-english-1',name:'TIẾNG ANH 1',category:'TIẾNG ANH_Global Success',path:'TOPICs_KatLearn/TIẾNG ANH_Global Success/TIẾNG ANH 1.json'},
     {id:'katlearn-irregular-verbs',name:'KatLearn Irregular Verbs',category:'KatLearn Library · Foundations',path:'TOPICs_KatLearn/KatLearn_Irregular_Verbs.json'}
   ];
   const cache=new Map();
@@ -116,6 +117,9 @@
     ]},
     {id:'school',name:'School English',icon:'🏫',children:[
       {id:'school-core',name:'KatLearn School English',icon:'📚',packId:'katlearn-school-english'}
+    ]},
+    {id:'global-success-english',name:'TIẾNG ANH_Global Success',icon:'📚',children:[
+      {id:'global-success-english-1',name:'TIẾNG ANH 1',icon:'📘',packId:'global-success-english-1'}
     ]},
     {id:'cefr',name:'CEFR',icon:'📈',children:[
       {id:'cefr-builder',name:'CEFR B1–B2 Builder',icon:'📈',packId:'katlearn-cefr-builder'}
