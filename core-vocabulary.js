@@ -45,6 +45,7 @@
     {id:'global-success-english-3',name:'TIẾNG ANH 3',category:'TIẾNG ANH_Global Success',path:'TOPICs_KatLearn/TIẾNG ANH_Global Success/TIẾNG ANH 3.json'},
     {id:'global-success-english-4',name:'TIẾNG ANH 4 - TẬP 1',category:'TIẾNG ANH_Global Success',path:'TOPICs_KatLearn/TIẾNG ANH_Global Success/TIẾNG ANH 4.json'},
     {id:'global-success-english-4-term-2',name:'TIẾNG ANH 4 - TẬP 2',category:'TIẾNG ANH_Global Success',path:'TOPICs_KatLearn/TIẾNG ANH_Global Success/TIẾNG ANH 4 - TẬP 2.json'},
+    {id:'global-success-english-5-term-1',name:'TIẾNG ANH 5 - TẬP 1',category:'TIẾNG ANH_Global Success',path:'TOPICs_KatLearn/TIẾNG ANH_Global Success/TIẾNG ANH 5 - TẬP 1.json'},
     {id:'katlearn-irregular-verbs',name:'KatLearn Irregular Verbs',category:'KatLearn Library · Foundations',path:'TOPICs_KatLearn/KatLearn_Irregular_Verbs.json'}
   ];
   const cache=new Map();
@@ -127,7 +128,8 @@
       {id:'global-success-english-2',name:'TIẾNG ANH 2',icon:'📗',packId:'global-success-english-2'},
       {id:'global-success-english-3',name:'TIẾNG ANH 3',icon:'📙',packId:'global-success-english-3'},
       {id:'global-success-english-4',name:'TIẾNG ANH 4 - TẬP 1',icon:'📕',packId:'global-success-english-4'},
-      {id:'global-success-english-4-term-2',name:'TIẾNG ANH 4 - TẬP 2',icon:'📘',packId:'global-success-english-4-term-2'}
+      {id:'global-success-english-4-term-2',name:'TIẾNG ANH 4 - TẬP 2',icon:'📘',packId:'global-success-english-4-term-2'},
+      {id:'global-success-english-5-term-1',name:'TIẾNG ANH 5 - TẬP 1',icon:'📗',packId:'global-success-english-5-term-1'}
     ]},
     {id:'cefr',name:'CEFR',icon:'📈',children:[
       {id:'cefr-builder',name:'CEFR B1–B2 Builder',icon:'📈',packId:'katlearn-cefr-builder'}
