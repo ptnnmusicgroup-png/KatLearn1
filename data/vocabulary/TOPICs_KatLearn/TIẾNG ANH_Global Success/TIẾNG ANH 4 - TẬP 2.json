@@ -1,0 +1,908 @@
+{
+  "id": "global-success-english-4-term-2",
+  "name": "TIẾNG ANH 4 - TẬP 2",
+  "description": "Wordlist Tiếng Anh 4 – Global Success, Tập 2, trang 74–75. 100 mục từ đã chuẩn hóa với IPA, nghĩa tiếng Việt, ví dụ và Unit.",
+  "source": "Wordlist, Tiếng Anh 4 – Global Success, Tập 2, trang 74–75; đối chiếu danh sách người dùng cung cấp và bản Wordlist trực tuyến.",
+  "words": [
+    {
+      "word": "actor",
+      "mean": "diễn viên (nam)",
+      "pron": "/ˈæktə/",
+      "type": "noun",
+      "example": "My uncle is an actor.",
+      "note": "Unit 12 · Jobs",
+      "category": "Unit 12"
+    },
+    {
+      "word": "afternoon",
+      "mean": "buổi chiều",
+      "pron": "/ˌɑːftəˈnuːn/",
+      "type": "time expression",
+      "example": "I do my homework in the afternoon.",
+      "note": "Unit 14 · Daily activities",
+      "category": "Unit 14"
+    },
+    {
+      "word": "around",
+      "mean": "xung quanh",
+      "pron": "/əˈraʊnd/",
+      "type": "preposition/adverb",
+      "example": "We sit around the campfire.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "bakery",
+      "mean": "hiệu bánh mì",
+      "pron": "/ˈbeɪkəri/",
+      "type": "noun",
+      "example": "The bakery is near the bookshop.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "beautifully",
+      "mean": "đẹp đẽ, một cách đẹp mắt",
+      "pron": "/ˈbjuːtɪfli/",
+      "type": "adverb",
+      "example": "She sings beautifully.",
+      "note": "Unit 13 · Appearance",
+      "category": "Unit 13"
+    },
+    {
+      "word": "behind",
+      "mean": "đằng sau",
+      "pron": "/bɪˈhaɪnd/",
+      "type": "preposition",
+      "example": "The gift shop is behind the bakery.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "between",
+      "mean": "ở giữa",
+      "pron": "/bɪˈtwiːn/",
+      "type": "preposition",
+      "example": "The bookshop is between the bakery and the cinema.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "big",
+      "mean": "to, lớn (kích thước)",
+      "pron": "/bɪɡ/",
+      "type": "adjective",
+      "example": "The lion is big.",
+      "note": "Unit 13 · Appearance",
+      "category": "Unit 13"
+    },
+    {
+      "word": "bookshop",
+      "mean": "hiệu sách",
+      "pron": "/ˈbʊkʃɒp/",
+      "type": "noun",
+      "example": "I want to go to the bookshop.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "build a campfire",
+      "mean": "đốt lửa trại",
+      "pron": "/bɪld ə ˈkæmpfaɪə/",
+      "type": "phrase",
+      "example": "We can build a campfire at the campsite.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "burrow",
+      "mean": "hang (của cầy, thỏ)",
+      "pron": "/ˈbʌrəʊ/",
+      "type": "noun",
+      "example": "The rabbit lives in a burrow.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "busy",
+      "mean": "bận rộn, nhộn nhịp",
+      "pron": "/ˈbɪzi/",
+      "type": "adjective",
+      "example": "The city is busy today.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "centre",
+      "mean": "trung tâm",
+      "pron": "/ˈsentə/",
+      "type": "noun",
+      "example": "The shopping centre is very big.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "cinema",
+      "mean": "rạp chiếu phim",
+      "pron": "/ˈsɪnəmə/, /ˈsɪnəmɑː/",
+      "type": "noun",
+      "example": "Let's go to the cinema.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "clean (the floor)",
+      "mean": "lau (sàn nhà)",
+      "pron": "/kliːn ðə flɔː/",
+      "type": "phrase",
+      "example": "I clean the floor on Sunday.",
+      "note": "Unit 14 · Daily activities",
+      "category": "Unit 14"
+    },
+    {
+      "word": "cloudy",
+      "mean": "có mây, nhiều mây",
+      "pron": "/ˈklaʊdi/",
+      "type": "adjective",
+      "example": "It is cloudy today.",
+      "note": "Unit 16 · Weather",
+      "category": "Unit 16"
+    },
+    {
+      "word": "cooking",
+      "mean": "việc nấu nướng",
+      "pron": "/ˈkʊkɪŋ/",
+      "type": "noun",
+      "example": "I help my mum with the cooking.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "crocodile",
+      "mean": "cá sấu",
+      "pron": "/ˈkrɒkədaɪl/",
+      "type": "noun",
+      "example": "The crocodile lives near the water.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "dance around the campfire",
+      "mean": "nhảy, múa quanh lửa trại",
+      "pron": "/dɑːns əˈraʊnd ðə ˈkæmpfaɪə/",
+      "type": "phrase",
+      "example": "We dance around the campfire.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "den",
+      "mean": "hang (của sư tử)",
+      "pron": "/den/",
+      "type": "noun",
+      "example": "The lion lives in a den.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "do (the housework)",
+      "mean": "làm việc nhà",
+      "pron": "/duː ðə ˈhaʊswɜːk/",
+      "type": "phrase",
+      "example": "I do the housework with my family.",
+      "note": "Unit 14 · Daily activities",
+      "category": "Unit 14"
+    },
+    {
+      "word": "do yoga",
+      "mean": "tập yoga",
+      "pron": "/duː ˈjəʊɡə/",
+      "type": "phrase",
+      "example": "My mum likes to do yoga.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "dong",
+      "mean": "đồng (đơn vị tiền tệ Việt Nam)",
+      "pron": "/dɒŋ/",
+      "type": "noun",
+      "example": "The T-shirt costs fifty thousand dong.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "email",
+      "mean": "thư điện tử; gửi thư điện tử",
+      "pron": "/ˈiːmeɪl/",
+      "type": "noun/verb",
+      "example": "I send an email to my friend.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "evening",
+      "mean": "buổi tối",
+      "pron": "/ˈiːvnɪŋ/",
+      "type": "time expression",
+      "example": "I watch television in the evening.",
+      "note": "Unit 14 · Daily activities",
+      "category": "Unit 14"
+    },
+    {
+      "word": "eye",
+      "mean": "mắt",
+      "pron": "/aɪ/",
+      "type": "noun",
+      "example": "She has big eyes.",
+      "note": "Unit 13 · Appearance",
+      "category": "Unit 13"
+    },
+    {
+      "word": "face",
+      "mean": "khuôn mặt",
+      "pron": "/feɪs/",
+      "type": "noun",
+      "example": "He has a round face.",
+      "note": "Unit 13 · Appearance",
+      "category": "Unit 13"
+    },
+    {
+      "word": "factory",
+      "mean": "nhà máy",
+      "pron": "/ˈfæktri/",
+      "type": "noun",
+      "example": "My aunt works in a factory.",
+      "note": "Unit 12 · Jobs",
+      "category": "Unit 12"
+    },
+    {
+      "word": "farm",
+      "mean": "trang trại",
+      "pron": "/fɑːm/",
+      "type": "noun",
+      "example": "My uncle works on a farm.",
+      "note": "Unit 12 · Jobs",
+      "category": "Unit 12"
+    },
+    {
+      "word": "farmer",
+      "mean": "nông dân",
+      "pron": "/ˈfɑːmə/",
+      "type": "noun",
+      "example": "My grandpa is a farmer.",
+      "note": "Unit 12 · Jobs",
+      "category": "Unit 12"
+    },
+    {
+      "word": "film",
+      "mean": "phim",
+      "pron": "/fɪlm/",
+      "type": "noun",
+      "example": "We watch a film at the weekend.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "food stall",
+      "mean": "quầy hàng thực phẩm",
+      "pron": "/fuːd stɔːl/",
+      "type": "noun",
+      "example": "There is a food stall in this street.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "get (to)",
+      "mean": "đến (một địa điểm)",
+      "pron": "/ɡet tə/",
+      "type": "phrase",
+      "example": "How can I get to the hospital?",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "gift shop",
+      "mean": "cửa hàng quà tặng",
+      "pron": "/ˈɡɪft ʃɒp/",
+      "type": "noun",
+      "example": "The gift shop is opposite the bookshop.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "giraffe",
+      "mean": "hươu cao cổ",
+      "pron": "/dʒəˈrɑːf/",
+      "type": "noun",
+      "example": "The giraffe has a long neck.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "go straight",
+      "mean": "đi thẳng",
+      "pron": "/ɡəʊ streɪt/",
+      "type": "phrase",
+      "example": "Go straight and turn left.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "hair",
+      "mean": "tóc",
+      "pron": "/heə/",
+      "type": "noun",
+      "example": "She has long hair.",
+      "note": "Unit 13 · Appearance",
+      "category": "Unit 13"
+    },
+    {
+      "word": "help with the cooking",
+      "mean": "giúp đỡ việc nấu ăn",
+      "pron": "/help wɪð ðə ˈkʊkɪŋ/",
+      "type": "phrase",
+      "example": "I help with the cooking every day.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "hippo",
+      "mean": "hà mã",
+      "pron": "/ˈhɪpəʊ/",
+      "type": "noun",
+      "example": "The hippo is big.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "hospital",
+      "mean": "bệnh viện",
+      "pron": "/ˈhɒspɪtl/",
+      "type": "noun",
+      "example": "The nurse works at a hospital.",
+      "note": "Unit 12 · Jobs",
+      "category": "Unit 12"
+    },
+    {
+      "word": "in",
+      "mean": "trong, ở (dùng với tên đường/phố)",
+      "pron": "/ɪn/",
+      "type": "preposition",
+      "example": "The bookshop is in Green Street.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "left",
+      "mean": "bên trái",
+      "pron": "/left/",
+      "type": "direction",
+      "example": "Turn left at the cinema.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "like",
+      "mean": "giống như",
+      "pron": "/laɪk/",
+      "type": "preposition",
+      "example": "The lion looks like a big cat.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "lion",
+      "mean": "con sư tử",
+      "pron": "/ˈlaɪən/",
+      "type": "noun",
+      "example": "The lion can roar loudly.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "live",
+      "mean": "sống",
+      "pron": "/lɪv/",
+      "type": "verb",
+      "example": "Giraffes live in Africa.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "long",
+      "mean": "dài",
+      "pron": "/lɒŋ/",
+      "type": "adjective",
+      "example": "The giraffe has a long neck.",
+      "note": "Unit 13 · Appearance",
+      "category": "Unit 13"
+    },
+    {
+      "word": "loudly",
+      "mean": "ầm ĩ, inh ỏi",
+      "pron": "/ˈlaʊdli/",
+      "type": "adverb",
+      "example": "The lion roars loudly.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "me",
+      "mean": "tớ, tôi",
+      "pron": "/miː/, /mi/",
+      "type": "pronoun",
+      "example": "Please take a photo of me.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "meal",
+      "mean": "bữa ăn",
+      "pron": "/miːl/",
+      "type": "noun",
+      "example": "We have a meal together.",
+      "note": "Unit 14 · Daily activities",
+      "category": "Unit 14"
+    },
+    {
+      "word": "merrily",
+      "mean": "vui vẻ, một cách vui tươi",
+      "pron": "/ˈmerəli/",
+      "type": "adverb",
+      "example": "The children sing merrily.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "morning",
+      "mean": "buổi sáng",
+      "pron": "/ˈmɔːnɪŋ/",
+      "type": "time expression",
+      "example": "I get up in the morning.",
+      "note": "Unit 14 · Daily activities",
+      "category": "Unit 14"
+    },
+    {
+      "word": "near",
+      "mean": "ở gần",
+      "pron": "/nɪə/",
+      "type": "preposition",
+      "example": "The bakery is near the bookshop.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "noisy",
+      "mean": "ồn ào, om sòm, huyên náo",
+      "pron": "/ˈnɔɪzi/",
+      "type": "adjective",
+      "example": "The city is noisy.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "noon",
+      "mean": "buổi trưa",
+      "pron": "/nuːn/",
+      "type": "time expression",
+      "example": "We have lunch at noon.",
+      "note": "Unit 14 · Daily activities",
+      "category": "Unit 14"
+    },
+    {
+      "word": "nurse",
+      "mean": "y tá, điều dưỡng viên",
+      "pron": "/nɜːs/",
+      "type": "noun",
+      "example": "My mother is a nurse.",
+      "note": "Unit 12 · Jobs",
+      "category": "Unit 12"
+    },
+    {
+      "word": "nursing home",
+      "mean": "viện điều dưỡng",
+      "pron": "/ˈnɜːsɪŋ həʊm/",
+      "type": "noun",
+      "example": "The nurse works at a nursing home.",
+      "note": "Unit 12 · Jobs",
+      "category": "Unit 12"
+    },
+    {
+      "word": "office worker",
+      "mean": "nhân viên văn phòng",
+      "pron": "/ˈɒfɪs ˌwɜːkə/",
+      "type": "noun",
+      "example": "My uncle is an office worker.",
+      "note": "Unit 12 · Jobs",
+      "category": "Unit 12"
+    },
+    {
+      "word": "opposite",
+      "mean": "đối diện",
+      "pron": "/ˈɒpəzɪt/",
+      "type": "preposition/adjective",
+      "example": "The supermarket is opposite the cinema.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "photo",
+      "mean": "bức ảnh",
+      "pron": "/ˈfəʊtəʊ/",
+      "type": "noun",
+      "example": "This is a photo of my family.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "play card games",
+      "mean": "chơi bài",
+      "pron": "/pleɪ ˈkɑːd ɡeɪmz/",
+      "type": "phrase",
+      "example": "We play card games at camp.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "play tennis",
+      "mean": "chơi quần vợt",
+      "pron": "/pleɪ ˈtenɪs/",
+      "type": "phrase",
+      "example": "I play tennis with my friends.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "play tug of war",
+      "mean": "chơi kéo co",
+      "pron": "/pleɪ tʌɡ əv ˈwɔː/",
+      "type": "phrase",
+      "example": "We play tug of war at the camp.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "policeman",
+      "mean": "cảnh sát (nam)",
+      "pron": "/pəˈliːsmən/",
+      "type": "noun",
+      "example": "The policeman helps people.",
+      "note": "Unit 12 · Jobs",
+      "category": "Unit 12"
+    },
+    {
+      "word": "put up a tent",
+      "mean": "dựng lều, cắm trại",
+      "pron": "/pʊt ʌp ə tent/",
+      "type": "phrase",
+      "example": "We put up a tent at the campsite.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "quickly",
+      "mean": "nhanh chóng, mau lẹ",
+      "pron": "/ˈkwɪkli/",
+      "type": "adverb",
+      "example": "The boy runs quickly.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "quiet",
+      "mean": "yên tĩnh, tĩnh mịch",
+      "pron": "/ˈkwaɪət/",
+      "type": "adjective",
+      "example": "The library is quiet.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "rainy",
+      "mean": "có mưa",
+      "pron": "/ˈreɪni/",
+      "type": "adjective",
+      "example": "It is rainy today.",
+      "note": "Unit 16 · Weather",
+      "category": "Unit 16"
+    },
+    {
+      "word": "right",
+      "mean": "bên phải",
+      "pron": "/raɪt/",
+      "type": "direction",
+      "example": "Turn right at the road sign.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "road",
+      "mean": "con đường, đường phố",
+      "pron": "/rəʊd/",
+      "type": "noun",
+      "example": "The hospital is on this road.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "road sign",
+      "mean": "biển chỉ đường",
+      "pron": "/ˈrəʊd saɪn/",
+      "type": "noun",
+      "example": "Look at the road sign.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "roar",
+      "mean": "gầm, rống lên (như hổ, sư tử)",
+      "pron": "/rɔː/",
+      "type": "verb",
+      "example": "The lion can roar.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "round",
+      "mean": "tròn; vòng quanh",
+      "pron": "/raʊnd/",
+      "type": "adjective/adverb",
+      "example": "Turn round at the next street.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "shopping centre",
+      "mean": "trung tâm mua sắm",
+      "pron": "/ˈʃɒpɪŋ ˌsentə/",
+      "type": "noun",
+      "example": "Let's go to the shopping centre.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "short",
+      "mean": "thấp, lùn; ngắn",
+      "pron": "/ʃɔːt/",
+      "type": "adjective",
+      "example": "My brother is short.",
+      "note": "Unit 13 · Appearance",
+      "category": "Unit 13"
+    },
+    {
+      "word": "sing songs",
+      "mean": "hát các bài hát",
+      "pron": "/sɪŋ sɒŋz/",
+      "type": "phrase",
+      "example": "We sing songs around the campfire.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "skirt",
+      "mean": "chân váy",
+      "pron": "/skɜːt/",
+      "type": "noun",
+      "example": "The skirt costs sixty thousand dong.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "slim",
+      "mean": "mảnh mai, thon gọn",
+      "pron": "/slɪm/",
+      "type": "adjective",
+      "example": "My sister is tall and slim.",
+      "note": "Unit 13 · Appearance",
+      "category": "Unit 13"
+    },
+    {
+      "word": "sports centre",
+      "mean": "trung tâm thể thao",
+      "pron": "/ˈspɔːts ˌsentə/",
+      "type": "noun",
+      "example": "I play tennis at the sports centre.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "stop",
+      "mean": "dừng lại",
+      "pron": "/stɒp/",
+      "type": "verb",
+      "example": "Stop at the road sign.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "street",
+      "mean": "phố, đường phố",
+      "pron": "/striːt/",
+      "type": "noun",
+      "example": "The bakery is in Green Street.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "sunny",
+      "mean": "có nắng",
+      "pron": "/ˈsʌni/",
+      "type": "adjective",
+      "example": "It is sunny today.",
+      "note": "Unit 16 · Weather",
+      "category": "Unit 16"
+    },
+    {
+      "word": "supermarket",
+      "mean": "siêu thị",
+      "pron": "/ˈsuːpəˌmɑːkɪt/",
+      "type": "noun",
+      "example": "We buy food at the supermarket.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "swimming pool",
+      "mean": "bể bơi",
+      "pron": "/ˈswɪmɪŋ puːl/",
+      "type": "noun",
+      "example": "We swim in the swimming pool.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "take a photo",
+      "mean": "chụp ảnh",
+      "pron": "/teɪk ə ˈfəʊtəʊ/",
+      "type": "phrase",
+      "example": "Can you take a photo of us?",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "tall",
+      "mean": "cao",
+      "pron": "/tɔːl/",
+      "type": "adjective",
+      "example": "The giraffe is tall.",
+      "note": "Unit 13 · Appearance",
+      "category": "Unit 13"
+    },
+    {
+      "word": "television",
+      "mean": "truyền hình; ti-vi",
+      "pron": "/ˈtelɪvɪʒən/",
+      "type": "noun",
+      "example": "I watch television after dinner.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "tell a story",
+      "mean": "kể chuyện",
+      "pron": "/tel ə ˈstɔːri/",
+      "type": "phrase",
+      "example": "Grandma can tell a story.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "tent",
+      "mean": "lều (ở nơi cắm trại)",
+      "pron": "/tent/",
+      "type": "noun",
+      "example": "We sleep in a tent.",
+      "note": "Unit 20 · At the summer camp",
+      "category": "Unit 20"
+    },
+    {
+      "word": "thousand",
+      "mean": "nghìn (1.000)",
+      "pron": "/ˈθaʊzənd/",
+      "type": "number",
+      "example": "The T-shirt costs fifty thousand dong.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "T-shirt",
+      "mean": "áo thun",
+      "pron": "/ˈtiː ʃɜːt/",
+      "type": "noun",
+      "example": "I am wearing a blue T-shirt.",
+      "note": "Unit 18 · At the shopping centre",
+      "category": "Unit 18"
+    },
+    {
+      "word": "turn",
+      "mean": "rẽ; quay",
+      "pron": "/tɜːn/",
+      "type": "verb",
+      "example": "Turn at the next street.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "turn left",
+      "mean": "rẽ trái",
+      "pron": "/tɜːn left/",
+      "type": "phrase",
+      "example": "Turn left at the cinema.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "turn right",
+      "mean": "rẽ phải",
+      "pron": "/tɜːn raɪt/",
+      "type": "phrase",
+      "example": "Turn right at the road sign.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "turn round",
+      "mean": "quay lại, đổi hướng ngược lại",
+      "pron": "/tɜːn raʊnd/",
+      "type": "phrase",
+      "example": "Turn round and go back.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "wash (the clothes/the dishes)",
+      "mean": "giặt quần áo / rửa bát đĩa",
+      "pron": "/wɒʃ ðə kləʊðz / ðə ˈdɪʃɪz/",
+      "type": "phrase",
+      "example": "I wash the clothes on Saturday.",
+      "note": "Unit 14 · Daily activities",
+      "category": "Unit 14"
+    },
+    {
+      "word": "watch",
+      "mean": "xem",
+      "pron": "/wɒtʃ/",
+      "type": "verb",
+      "example": "We watch a film together.",
+      "note": "Unit 15 · My family's weekends",
+      "category": "Unit 15"
+    },
+    {
+      "word": "water park",
+      "mean": "công viên nước",
+      "pron": "/ˈwɔːtə pɑːk/",
+      "type": "noun",
+      "example": "We go to the water park in summer.",
+      "note": "Unit 17 · In the city",
+      "category": "Unit 17"
+    },
+    {
+      "word": "weather",
+      "mean": "thời tiết",
+      "pron": "/ˈweðə/",
+      "type": "noun",
+      "example": "What's the weather like today?",
+      "note": "Unit 16 · Weather",
+      "category": "Unit 16"
+    },
+    {
+      "word": "web",
+      "mean": "mạng nhện",
+      "pron": "/web/",
+      "type": "noun",
+      "example": "The spider makes a web.",
+      "note": "Unit 19 · The animal world",
+      "category": "Unit 19"
+    },
+    {
+      "word": "windy",
+      "mean": "có gió",
+      "pron": "/ˈwɪndi/",
+      "type": "adjective",
+      "example": "It is windy today.",
+      "note": "Unit 16 · Weather",
+      "category": "Unit 16"
+    }
+  ]
+}
