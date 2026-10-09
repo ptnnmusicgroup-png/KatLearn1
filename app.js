@@ -393,6 +393,7 @@ function renderCard(){
   renderWordList();
   renderVocabularyViews();
   setCardFlipped(false);
+  renderFullPersonalPack();
 }
 
 function markCurrentCard(knownValue){
@@ -1060,6 +1061,7 @@ function renderFullPersonalPack(){
   const subtitle=$('#fullPersonalPackSubtitle');
   if(title)title.textContent=activeDeckMeta.name||'Bộ từ riêng';
   if(subtitle)subtitle.textContent='Đầy đủ '+vocab.length+' từ vựng trong bộ này';
+  const count=$('#fullPersonalPackCount');if(count)count.textContent=String(vocab.length);
   const list=$('#fullPersonalPackWords');
   if(!list)return;
   list.innerHTML=vocab.map((word,index)=>{
