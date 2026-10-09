@@ -41,6 +41,7 @@
     {id:'katlearn-exam-workplace-specialized',name:'KatLearn Exam · Workplace · Specialized',category:'KatLearn Library · Exam & Specialized',path:'TOPICs_KatLearn/KatLearn_Exam_Workplace_Specialized.json'},
     {id:'katlearn-school-english',name:'KatLearn School English',category:'KatLearn Library · School English',path:'TOPICs_KatLearn/KatLearn_School_English.json'},
     {id:'global-success-english-1',name:'TIẾNG ANH 1',category:'TIẾNG ANH_Global Success',path:'TOPICs_KatLearn/TIẾNG ANH_Global Success/TIẾNG ANH 1.json'},
+    {id:'global-success-english-2',name:'TIẾNG ANH 2',category:'TIẾNG ANH_Global Success',path:'TOPICs_KatLearn/TIẾNG ANH_Global Success/TIẾNG ANH 2.json'},
     {id:'katlearn-irregular-verbs',name:'KatLearn Irregular Verbs',category:'KatLearn Library · Foundations',path:'TOPICs_KatLearn/KatLearn_Irregular_Verbs.json'}
   ];
   const cache=new Map();
