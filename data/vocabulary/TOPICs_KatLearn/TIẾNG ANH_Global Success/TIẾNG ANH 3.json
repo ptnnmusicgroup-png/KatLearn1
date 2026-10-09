@@ -1,0 +1,881 @@
+{
+  "id": "global-success-english-3",
+  "name": "TIẾNG ANH 3",
+  "description": "Glossary Tiếng Anh 3 · Global Success. 97 mục từ đã chuẩn hóa, gồm phiên âm, nghĩa tiếng Việt, ví dụ và Unit.",
+  "source": "Danh mục từ vựng do người dùng cung cấp; chính tả, phiên âm IPA, nghĩa tiếng Việt và chủ đề Unit được chuẩn hóa theo tài liệu Tiếng Anh 3 – Global Success.",
+  "words": [
+    {
+      "word": "art room",
+      "mean": "phòng mĩ thuật",
+      "pron": "/ɑːt ruːm/",
+      "type": "noun",
+      "example": "We are in the art room.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "badminton",
+      "mean": "cầu lông",
+      "pron": "/ˈbædmɪntən/",
+      "type": "noun",
+      "example": "I play badminton at break time.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "basketball",
+      "mean": "bóng rổ",
+      "pron": "/ˈbɑːskɪtbɔːl/",
+      "type": "noun",
+      "example": "I play basketball with my friends.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "black",
+      "mean": "màu đen",
+      "pron": "/blæk/",
+      "type": "colour",
+      "example": "My pen is black.",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "blue",
+      "mean": "màu xanh da trời",
+      "pron": "/bluː/",
+      "type": "colour",
+      "example": "My school bag is blue.",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "book",
+      "mean": "quyển sách",
+      "pron": "/bʊk/",
+      "type": "noun",
+      "example": "This is my book.",
+      "note": "Unit 8 · My school things",
+      "category": "Unit 8"
+    },
+    {
+      "word": "break time",
+      "mean": "giờ ra chơi, giờ giải lao",
+      "pron": "/ˈbreɪk taɪm/",
+      "type": "noun",
+      "example": "We play together at break time.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "brown",
+      "mean": "màu nâu",
+      "pron": "/braʊn/",
+      "type": "colour",
+      "example": "My pencil case is brown.",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "bye",
+      "mean": "tạm biệt",
+      "pron": "/baɪ/",
+      "type": "expression",
+      "example": "Bye, see you again!",
+      "note": "Unit 1 · Hello",
+      "category": "Unit 1"
+    },
+    {
+      "word": "chat",
+      "mean": "trò chuyện",
+      "pron": "/tʃæt/",
+      "type": "verb",
+      "example": "I chat with my friends.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "chess",
+      "mean": "cờ vua",
+      "pron": "/tʃes/",
+      "type": "noun",
+      "example": "I play chess at break time.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "classroom",
+      "mean": "lớp học",
+      "pron": "/ˈklɑːsruːm/",
+      "type": "noun",
+      "example": "This is our classroom.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "close",
+      "mean": "đóng, gấp lại",
+      "pron": "/kləʊz/",
+      "type": "verb",
+      "example": "Close your book, please.",
+      "note": "Unit 7 · Classroom instructions",
+      "category": "Unit 7"
+    },
+    {
+      "word": "colour",
+      "mean": "màu sắc",
+      "pron": "/ˈkʌlə/",
+      "type": "noun",
+      "example": "What colour is it?",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "come in",
+      "mean": "đi vào, mời vào",
+      "pron": "/kʌm ɪn/",
+      "type": "expression",
+      "example": "Come in, please.",
+      "note": "Unit 7 · Classroom instructions",
+      "category": "Unit 7"
+    },
+    {
+      "word": "computer room",
+      "mean": "phòng tin học",
+      "pron": "/kəmˈpjuːtə ruːm/",
+      "type": "noun",
+      "example": "We learn in the computer room.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "cook",
+      "mean": "nấu ăn",
+      "pron": "/kʊk/",
+      "type": "verb",
+      "example": "I can cook.",
+      "note": "Unit 5 · My hobbies",
+      "category": "Unit 5"
+    },
+    {
+      "word": "dance",
+      "mean": "nhảy, múa",
+      "pron": "/dɑːns/",
+      "type": "verb",
+      "example": "I can dance.",
+      "note": "Unit 5 · My hobbies",
+      "category": "Unit 5"
+    },
+    {
+      "word": "do",
+      "mean": "làm",
+      "pron": "/duː/",
+      "type": "verb",
+      "example": "I can do it.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "draw",
+      "mean": "vẽ",
+      "pron": "/drɔː/",
+      "type": "verb",
+      "example": "I can draw a picture.",
+      "note": "Unit 5 · My hobbies",
+      "category": "Unit 5"
+    },
+    {
+      "word": "ear",
+      "mean": "tai",
+      "pron": "/ɪə/",
+      "type": "noun",
+      "example": "This is my ear.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "eight",
+      "mean": "tám (8)",
+      "pron": "/eɪt/",
+      "type": "number",
+      "example": "I can count to eight.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "English",
+      "mean": "tiếng Anh",
+      "pron": "/ˈɪŋɡlɪʃ/",
+      "type": "noun",
+      "example": "I learn English at school.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "eraser",
+      "mean": "cục tẩy",
+      "pron": "/ɪˈreɪzə/",
+      "type": "noun",
+      "example": "This is my eraser.",
+      "note": "Unit 8 · My school things",
+      "category": "Unit 8"
+    },
+    {
+      "word": "eye",
+      "mean": "mắt",
+      "pron": "/aɪ/",
+      "type": "noun",
+      "example": "I have two eyes.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "face",
+      "mean": "mặt",
+      "pron": "/feɪs/",
+      "type": "noun",
+      "example": "Touch your face.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "fine",
+      "mean": "khỏe, tốt",
+      "pron": "/faɪn/",
+      "type": "adjective",
+      "example": "I'm fine, thank you.",
+      "note": "Unit 1 · Hello",
+      "category": "Unit 1"
+    },
+    {
+      "word": "five",
+      "mean": "năm (5)",
+      "pron": "/faɪv/",
+      "type": "number",
+      "example": "I can count to five.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "football",
+      "mean": "bóng đá",
+      "pron": "/ˈfʊtbɔːl/",
+      "type": "noun",
+      "example": "I play football with my friends.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "four",
+      "mean": "bốn (4)",
+      "pron": "/fɔː/",
+      "type": "number",
+      "example": "I can count to four.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "friend",
+      "mean": "bạn, bạn bè",
+      "pron": "/frend/",
+      "type": "noun",
+      "example": "You are my friend.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "goodbye",
+      "mean": "chào tạm biệt",
+      "pron": "/ˌɡʊdˈbaɪ/",
+      "type": "expression",
+      "example": "Goodbye, see you tomorrow!",
+      "note": "Unit 1 · Hello",
+      "category": "Unit 1"
+    },
+    {
+      "word": "go out",
+      "mean": "đi ra ngoài",
+      "pron": "/ɡəʊ aʊt/",
+      "type": "expression",
+      "example": "May I go out, please?",
+      "note": "Unit 7 · Classroom instructions",
+      "category": "Unit 7"
+    },
+    {
+      "word": "green",
+      "mean": "màu xanh lá cây",
+      "pron": "/ɡriːn/",
+      "type": "colour",
+      "example": "I like the colour green.",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "gym",
+      "mean": "phòng thể chất",
+      "pron": "/dʒɪm/",
+      "type": "noun",
+      "example": "We play sports in the gym.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "hair",
+      "mean": "tóc",
+      "pron": "/heə/",
+      "type": "noun",
+      "example": "My hair is black.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "hand",
+      "mean": "bàn tay",
+      "pron": "/hænd/",
+      "type": "noun",
+      "example": "Raise your hand, please.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "have",
+      "mean": "có",
+      "pron": "/hæv/",
+      "type": "verb",
+      "example": "I have two hands.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "hello",
+      "mean": "xin chào",
+      "pron": "/həˈləʊ/",
+      "type": "expression",
+      "example": "Hello! How are you?",
+      "note": "Unit 1 · Hello",
+      "category": "Unit 1"
+    },
+    {
+      "word": "hi",
+      "mean": "xin chào",
+      "pron": "/haɪ/",
+      "type": "expression",
+      "example": "Hi, I'm Nam.",
+      "note": "Unit 1 · Hello",
+      "category": "Unit 1"
+    },
+    {
+      "word": "how",
+      "mean": "như thế nào",
+      "pron": "/haʊ/",
+      "type": "question word",
+      "example": "How are you?",
+      "note": "Unit 1 · Hello",
+      "category": "Unit 1"
+    },
+    {
+      "word": "I",
+      "mean": "tôi",
+      "pron": "/aɪ/",
+      "type": "pronoun",
+      "example": "I am a pupil.",
+      "note": "Unit 1 · Hello",
+      "category": "Unit 1"
+    },
+    {
+      "word": "it",
+      "mean": "nó, cái đó, điều đó",
+      "pron": "/ɪt/",
+      "type": "pronoun",
+      "example": "It is my book.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "library",
+      "mean": "thư viện",
+      "pron": "/ˈlaɪbrəri/",
+      "type": "noun",
+      "example": "I read books in the library.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "mouth",
+      "mean": "miệng",
+      "pron": "/maʊθ/",
+      "type": "noun",
+      "example": "Open your mouth.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "Mr",
+      "mean": "ông (đứng trước tên nam giới)",
+      "pron": "/ˈmɪstə/",
+      "type": "title",
+      "example": "Mr Long is my teacher.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "Ms",
+      "mean": "cô, bà (đứng trước tên phụ nữ)",
+      "pron": "/mɪz/",
+      "type": "title",
+      "example": "Ms Hoa is my teacher.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "music room",
+      "mean": "phòng âm nhạc",
+      "pron": "/ˈmjuːzɪk ruːm/",
+      "type": "noun",
+      "example": "We sing in the music room.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "my",
+      "mean": "của tôi",
+      "pron": "/maɪ/",
+      "type": "possessive adjective",
+      "example": "My name is Mai.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "name",
+      "mean": "tên",
+      "pron": "/neɪm/",
+      "type": "noun",
+      "example": "What's your name?",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "nine",
+      "mean": "chín (9)",
+      "pron": "/naɪn/",
+      "type": "number",
+      "example": "I can count to nine.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "no",
+      "mean": "không",
+      "pron": "/nəʊ/",
+      "type": "expression",
+      "example": "No, it isn't.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "nose",
+      "mean": "mũi",
+      "pron": "/nəʊz/",
+      "type": "noun",
+      "example": "This is my nose.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "notebook",
+      "mean": "vở, quyển vở ghi",
+      "pron": "/ˈnəʊtbʊk/",
+      "type": "noun",
+      "example": "This is my notebook.",
+      "note": "Unit 8 · My school things",
+      "category": "Unit 8"
+    },
+    {
+      "word": "one",
+      "mean": "một (1)",
+      "pron": "/wʌn/",
+      "type": "number",
+      "example": "I can count to one.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "open",
+      "mean": "mở (ví dụ: mở miệng)",
+      "pron": "/ˈəʊpən/",
+      "type": "verb",
+      "example": "Open your mouth, please.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "orange",
+      "mean": "màu da cam",
+      "pron": "/ˈɒrɪndʒ/",
+      "type": "colour",
+      "example": "I like the colour orange.",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "our",
+      "mean": "của chúng tôi, của chúng ta",
+      "pron": "/ˈaʊə/",
+      "type": "possessive adjective",
+      "example": "This is our school.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "paint",
+      "mean": "vẽ, tô màu",
+      "pron": "/peɪnt/",
+      "type": "verb",
+      "example": "I can paint a picture.",
+      "note": "Unit 5 · My hobbies",
+      "category": "Unit 5"
+    },
+    {
+      "word": "pen",
+      "mean": "bút mực",
+      "pron": "/pen/",
+      "type": "noun",
+      "example": "I have a blue pen.",
+      "note": "Unit 8 · My school things",
+      "category": "Unit 8"
+    },
+    {
+      "word": "pencil",
+      "mean": "bút chì",
+      "pron": "/ˈpensəl/",
+      "type": "noun",
+      "example": "This is my pencil.",
+      "note": "Unit 8 · My school things",
+      "category": "Unit 8"
+    },
+    {
+      "word": "pencil case",
+      "mean": "hộp bút",
+      "pron": "/ˈpensəl keɪs/",
+      "type": "noun",
+      "example": "My pencil case is red.",
+      "note": "Unit 8 · My school things",
+      "category": "Unit 8"
+    },
+    {
+      "word": "play",
+      "mean": "chơi",
+      "pron": "/pleɪ/",
+      "type": "verb",
+      "example": "I play with my friends.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "playground",
+      "mean": "sân chơi",
+      "pron": "/ˈpleɪɡraʊnd/",
+      "type": "noun",
+      "example": "Let's go to the playground.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "please",
+      "mean": "làm ơn, xin mời",
+      "pron": "/pliːz/",
+      "type": "expression",
+      "example": "Open the book, please.",
+      "note": "Unit 7 · Classroom instructions",
+      "category": "Unit 7"
+    },
+    {
+      "word": "red",
+      "mean": "màu đỏ",
+      "pron": "/red/",
+      "type": "colour",
+      "example": "I like the colour red.",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "ruler",
+      "mean": "thước kẻ",
+      "pron": "/ˈruːlə/",
+      "type": "noun",
+      "example": "I have a ruler.",
+      "note": "Unit 8 · My school things",
+      "category": "Unit 8"
+    },
+    {
+      "word": "run",
+      "mean": "chạy",
+      "pron": "/rʌn/",
+      "type": "verb",
+      "example": "I can run.",
+      "note": "Unit 5 · My hobbies",
+      "category": "Unit 5"
+    },
+    {
+      "word": "seven",
+      "mean": "bảy (7)",
+      "pron": "/ˈsevən/",
+      "type": "number",
+      "example": "I can count to seven.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "school",
+      "mean": "trường học",
+      "pron": "/skuːl/",
+      "type": "noun",
+      "example": "I go to school every day.",
+      "note": "Unit 6 · Our school",
+      "category": "Unit 6"
+    },
+    {
+      "word": "school bag",
+      "mean": "cặp sách",
+      "pron": "/ˈskuːl bæɡ/",
+      "type": "noun",
+      "example": "This is my school bag.",
+      "note": "Unit 8 · My school things",
+      "category": "Unit 8"
+    },
+    {
+      "word": "sing",
+      "mean": "hát",
+      "pron": "/sɪŋ/",
+      "type": "verb",
+      "example": "I can sing a song.",
+      "note": "Unit 5 · My hobbies",
+      "category": "Unit 5"
+    },
+    {
+      "word": "sit down",
+      "mean": "ngồi xuống",
+      "pron": "/sɪt daʊn/",
+      "type": "expression",
+      "example": "Sit down, please.",
+      "note": "Unit 7 · Classroom instructions",
+      "category": "Unit 7"
+    },
+    {
+      "word": "six",
+      "mean": "sáu (6)",
+      "pron": "/sɪks/",
+      "type": "number",
+      "example": "I can count to six.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "speak",
+      "mean": "nói",
+      "pron": "/spiːk/",
+      "type": "verb",
+      "example": "Speak English, please.",
+      "note": "Unit 7 · Classroom instructions",
+      "category": "Unit 7"
+    },
+    {
+      "word": "stand up",
+      "mean": "đứng lên",
+      "pron": "/stænd ʌp/",
+      "type": "expression",
+      "example": "Stand up, please.",
+      "note": "Unit 7 · Classroom instructions",
+      "category": "Unit 7"
+    },
+    {
+      "word": "swim",
+      "mean": "bơi",
+      "pron": "/swɪm/",
+      "type": "verb",
+      "example": "I can swim.",
+      "note": "Unit 5 · My hobbies",
+      "category": "Unit 5"
+    },
+    {
+      "word": "table tennis",
+      "mean": "bóng bàn",
+      "pron": "/ˈteɪbəl ˌtenɪs/",
+      "type": "noun",
+      "example": "I play table tennis.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "teacher",
+      "mean": "giáo viên",
+      "pron": "/ˈtiːtʃə/",
+      "type": "noun",
+      "example": "My teacher is kind.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "ten",
+      "mean": "mười (10)",
+      "pron": "/ten/",
+      "type": "number",
+      "example": "I can count to ten.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "thank you",
+      "mean": "cảm ơn",
+      "pron": "/ˈθæŋk juː/",
+      "type": "expression",
+      "example": "Thank you very much.",
+      "note": "Unit 1 · Hello",
+      "category": "Unit 1"
+    },
+    {
+      "word": "that",
+      "mean": "đó, kia",
+      "pron": "/ðæt/",
+      "type": "pronoun",
+      "example": "That is my classroom.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "they",
+      "mean": "họ, chúng nó",
+      "pron": "/ðeɪ/",
+      "type": "pronoun",
+      "example": "They are my friends.",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "this",
+      "mean": "này, cái này",
+      "pron": "/ðɪs/",
+      "type": "pronoun",
+      "example": "This is my book.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "three",
+      "mean": "ba (3)",
+      "pron": "/θriː/",
+      "type": "number",
+      "example": "I can count to three.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "touch",
+      "mean": "chạm, sờ",
+      "pron": "/tʌtʃ/",
+      "type": "verb",
+      "example": "Touch your nose.",
+      "note": "Unit 4 · Our bodies",
+      "category": "Unit 4"
+    },
+    {
+      "word": "two",
+      "mean": "hai (2)",
+      "pron": "/tuː/",
+      "type": "number",
+      "example": "I can count to two.",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "Vietnamese",
+      "mean": "tiếng Việt",
+      "pron": "/ˌvjetnəˈmiːz/",
+      "type": "noun",
+      "example": "I can speak Vietnamese.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "volleyball",
+      "mean": "bóng chuyền",
+      "pron": "/ˈvɒlibɔːl/",
+      "type": "noun",
+      "example": "We play volleyball at school.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "walk",
+      "mean": "đi, đi bộ",
+      "pron": "/wɔːk/",
+      "type": "verb",
+      "example": "I walk to school.",
+      "note": "Unit 5 · My hobbies",
+      "category": "Unit 5"
+    },
+    {
+      "word": "what",
+      "mean": "gì, cái gì",
+      "pron": "/wɒt/",
+      "type": "question word",
+      "example": "What is your name?",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    },
+    {
+      "word": "white",
+      "mean": "màu trắng",
+      "pron": "/waɪt/",
+      "type": "colour",
+      "example": "I like the colour white.",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "word puzzle",
+      "mean": "trò chơi ô chữ",
+      "pron": "/ˈwɜːd ˌpʌzəl/",
+      "type": "noun",
+      "example": "I like word puzzles.",
+      "note": "Unit 10 · Break time activities",
+      "category": "Unit 10"
+    },
+    {
+      "word": "yellow",
+      "mean": "màu vàng",
+      "pron": "/ˈjeləʊ/",
+      "type": "colour",
+      "example": "I like the colour yellow.",
+      "note": "Unit 9 · Colours",
+      "category": "Unit 9"
+    },
+    {
+      "word": "yes",
+      "mean": "vâng, đúng vậy",
+      "pron": "/jes/",
+      "type": "expression",
+      "example": "Yes, it is.",
+      "note": "Unit 3 · Our friends",
+      "category": "Unit 3"
+    },
+    {
+      "word": "you",
+      "mean": "bạn, các bạn",
+      "pron": "/juː/",
+      "type": "pronoun",
+      "example": "You are my friend.",
+      "note": "Unit 1 · Hello",
+      "category": "Unit 1"
+    },
+    {
+      "word": "your",
+      "mean": "của bạn, của các bạn",
+      "pron": "/jɔː/",
+      "type": "possessive adjective",
+      "example": "What is your name?",
+      "note": "Unit 2 · Our names",
+      "category": "Unit 2"
+    }
+  ]
+}
