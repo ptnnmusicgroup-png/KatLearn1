@@ -1,0 +1,647 @@
+{
+  "id": "global-success-english-1",
+  "name": "TIẾNG ANH 1",
+  "description": "Glossary Tiếng Anh 1 · Global Success. 71 mục từ được chuẩn hóa từ danh mục Glossary, có phiên âm, nghĩa tiếng Việt và ghi chú Unit.",
+  "source": "Glossary, Tiếng Anh 1 – Global Success, trang 74–75; đối chiếu bản danh mục được người dùng cung cấp.",
+  "words": [
+    {
+      "word": "apple",
+      "mean": "quả táo",
+      "pron": "/ˈæp.əl/",
+      "type": "noun",
+      "example": "I have an apple.",
+      "note": "Unit 3 · At the street market",
+      "category": "Unit 3"
+    },
+    {
+      "word": "bag",
+      "mean": "cái túi",
+      "pron": "/bæɡ/",
+      "type": "noun",
+      "example": "This is my bag.",
+      "note": "Unit 3 · At the street market",
+      "category": "Unit 3"
+    },
+    {
+      "word": "ball",
+      "mean": "quả bóng",
+      "pron": "/bɔːl/",
+      "type": "noun",
+      "example": "It is a ball.",
+      "note": "Unit 1 · In the school playground",
+      "category": "Unit 1"
+    },
+    {
+      "word": "banana",
+      "mean": "quả chuối",
+      "pron": "/bəˈnɑː.nə/",
+      "type": "noun",
+      "example": "I like bananas.",
+      "note": "Unit 13 · In the school canteen",
+      "category": "Unit 13"
+    },
+    {
+      "word": "bell",
+      "mean": "cái chuông",
+      "pron": "/bel/",
+      "type": "noun",
+      "example": "Ring the bell.",
+      "note": "Unit 6 · In the classroom",
+      "category": "Unit 6"
+    },
+    {
+      "word": "bike",
+      "mean": "xe đạp",
+      "pron": "/baɪk/",
+      "type": "noun",
+      "example": "I have a bike.",
+      "note": "Unit 1 · In the school playground",
+      "category": "Unit 1"
+    },
+    {
+      "word": "book",
+      "mean": "quyển sách",
+      "pron": "/bʊk/",
+      "type": "noun",
+      "example": "This is a book.",
+      "note": "Unit 1 · In the school playground",
+      "category": "Unit 1"
+    },
+    {
+      "word": "bus",
+      "mean": "xe buýt",
+      "pron": "/bʌs/",
+      "type": "noun",
+      "example": "The bus is big.",
+      "note": "Unit 11 · At the bus stop",
+      "category": "Unit 11"
+    },
+    {
+      "word": "cake",
+      "mean": "cái bánh",
+      "pron": "/keɪk/",
+      "type": "noun",
+      "example": "I like cake.",
+      "note": "Unit 2 · In the dining room",
+      "category": "Unit 2"
+    },
+    {
+      "word": "can",
+      "mean": "lon đồ uống",
+      "pron": "/kæn/",
+      "type": "noun",
+      "example": "It is a can.",
+      "note": "Unit 3 · At the street market",
+      "category": "Unit 3"
+    },
+    {
+      "word": "car",
+      "mean": "xe ô tô",
+      "pron": "/kɑː(r)/",
+      "type": "noun",
+      "example": "I see a car.",
+      "note": "Unit 2 · In the dining room",
+      "category": "Unit 2"
+    },
+    {
+      "word": "cat",
+      "mean": "con mèo",
+      "pron": "/kæt/",
+      "type": "noun",
+      "example": "This is a cat.",
+      "note": "Unit 2 · In the dining room",
+      "category": "Unit 2"
+    },
+    {
+      "word": "chicken",
+      "mean": "thịt gà",
+      "pron": "/ˈtʃɪk.ɪn/",
+      "type": "noun",
+      "example": "I like chicken.",
+      "note": "Unit 5 · At the fish and chip shop",
+      "category": "Unit 5"
+    },
+    {
+      "word": "chips",
+      "mean": "khoai tây chiên",
+      "pron": "/tʃɪps/",
+      "type": "noun",
+      "example": "I like chips.",
+      "note": "Unit 5 · At the fish and chip shop",
+      "category": "Unit 5"
+    },
+    {
+      "word": "clock",
+      "mean": "cái đồng hồ",
+      "pron": "/klɒk/",
+      "type": "noun",
+      "example": "Look at the clock.",
+      "note": "Unit 9 · In the shop",
+      "category": "Unit 9"
+    },
+    {
+      "word": "cup",
+      "mean": "cái chén",
+      "pron": "/kʌp/",
+      "type": "noun",
+      "example": "This is my cup.",
+      "note": "Unit 2 · In the dining room",
+      "category": "Unit 2"
+    },
+    {
+      "word": "desk",
+      "mean": "cái bàn học sinh",
+      "pron": "/desk/",
+      "type": "noun",
+      "example": "This is my desk.",
+      "note": "Unit 4 · In the bedroom",
+      "category": "Unit 4"
+    },
+    {
+      "word": "dog",
+      "mean": "con chó",
+      "pron": "/dɒɡ/",
+      "type": "noun",
+      "example": "I see a dog.",
+      "note": "Unit 4 · In the bedroom",
+      "category": "Unit 4"
+    },
+    {
+      "word": "door",
+      "mean": "cửa ra vào",
+      "pron": "/dɔː(r)/",
+      "type": "noun",
+      "example": "Open the door.",
+      "note": "Unit 4 · In the bedroom",
+      "category": "Unit 4"
+    },
+    {
+      "word": "duck",
+      "mean": "con vịt",
+      "pron": "/dʌk/",
+      "type": "noun",
+      "example": "The duck is yellow.",
+      "note": "Unit 4 · In the bedroom",
+      "category": "Unit 4"
+    },
+    {
+      "word": "eight",
+      "mean": "tám (8)",
+      "pron": "/eɪt/",
+      "type": "number",
+      "example": "I can count to eight.",
+      "note": "Unit 16 · At home",
+      "category": "Unit 16"
+    },
+    {
+      "word": "face",
+      "mean": "mặt",
+      "pron": "/feɪs/",
+      "type": "noun",
+      "example": "Touch your face.",
+      "note": "Unit 15 · At the football match",
+      "category": "Unit 15"
+    },
+    {
+      "word": "father",
+      "mean": "bố",
+      "pron": "/ˈfɑː.ðə(r)/",
+      "type": "noun",
+      "example": "This is my father.",
+      "note": "Unit 15 · At the football match",
+      "category": "Unit 15"
+    },
+    {
+      "word": "fish",
+      "mean": "cá",
+      "pron": "/fɪʃ/",
+      "type": "noun",
+      "example": "I see a fish.",
+      "note": "Unit 5 · At the fish and chip shop",
+      "category": "Unit 5"
+    },
+    {
+      "word": "fish and chips",
+      "mean": "món cá tẩm bột và khoai tây chiên",
+      "pron": "/ˌfɪʃ ən ˈtʃɪps/",
+      "type": "phrase",
+      "example": "I like fish and chips.",
+      "note": "Unit 5 · At the fish and chip shop",
+      "category": "Unit 5"
+    },
+    {
+      "word": "five",
+      "mean": "năm (5)",
+      "pron": "/faɪv/",
+      "type": "number",
+      "example": "I have five pens.",
+      "note": "Unit 9 · In the shop",
+      "category": "Unit 9"
+    },
+    {
+      "word": "foot",
+      "mean": "bàn chân",
+      "pron": "/fʊt/",
+      "type": "noun",
+      "example": "This is my foot.",
+      "note": "Unit 15 · At the football match",
+      "category": "Unit 15"
+    },
+    {
+      "word": "football",
+      "mean": "bóng đá; quả bóng đá",
+      "pron": "/ˈfʊt.bɔːl/",
+      "type": "noun",
+      "example": "Let’s play football.",
+      "note": "Unit 15 · At the football match",
+      "category": "Unit 15"
+    },
+    {
+      "word": "four",
+      "mean": "bốn (4)",
+      "pron": "/fɔː(r)/",
+      "type": "number",
+      "example": "I see four cats.",
+      "note": "Unit 9 · In the shop",
+      "category": "Unit 9"
+    },
+    {
+      "word": "garden",
+      "mean": "khu vườn",
+      "pron": "/ˈɡɑː.dən/",
+      "type": "noun",
+      "example": "This is a garden.",
+      "note": "Unit 7 · In the garden",
+      "category": "Unit 7"
+    },
+    {
+      "word": "gate",
+      "mean": "cổng ra vào",
+      "pron": "/ɡeɪt/",
+      "type": "noun",
+      "example": "Open the gate.",
+      "note": "Unit 7 · In the garden",
+      "category": "Unit 7"
+    },
+    {
+      "word": "girl",
+      "mean": "cô bé",
+      "pron": "/ɡɜːl/",
+      "type": "noun",
+      "example": "She is a girl.",
+      "note": "Unit 7 · In the garden",
+      "category": "Unit 7"
+    },
+    {
+      "word": "goat",
+      "mean": "con dê",
+      "pron": "/ɡəʊt/",
+      "type": "noun",
+      "example": "That is a goat.",
+      "note": "Unit 7 · In the garden",
+      "category": "Unit 7"
+    },
+    {
+      "word": "hair",
+      "mean": "tóc",
+      "pron": "/heə(r)/",
+      "type": "noun",
+      "example": "Touch your hair.",
+      "note": "Unit 8 · In the park",
+      "category": "Unit 8"
+    },
+    {
+      "word": "hand",
+      "mean": "bàn tay",
+      "pron": "/hænd/",
+      "type": "noun",
+      "example": "Show me your hand.",
+      "note": "Unit 8 · In the park",
+      "category": "Unit 8"
+    },
+    {
+      "word": "hat",
+      "mean": "cái mũ",
+      "pron": "/hæt/",
+      "type": "noun",
+      "example": "This is my hat.",
+      "note": "Unit 3 · At the street market",
+      "category": "Unit 3"
+    },
+    {
+      "word": "head",
+      "mean": "đầu",
+      "pron": "/hed/",
+      "type": "noun",
+      "example": "Touch your head.",
+      "note": "Unit 8 · In the park",
+      "category": "Unit 8"
+    },
+    {
+      "word": "horse",
+      "mean": "con ngựa",
+      "pron": "/hɔːs/",
+      "type": "noun",
+      "example": "I see a horse.",
+      "note": "Unit 8 · In the park",
+      "category": "Unit 8"
+    },
+    {
+      "word": "lake",
+      "mean": "hồ nước",
+      "pron": "/leɪk/",
+      "type": "noun",
+      "example": "We are at the lake.",
+      "note": "Unit 12 · At the lake",
+      "category": "Unit 12"
+    },
+    {
+      "word": "leaf",
+      "mean": "lá cây",
+      "pron": "/liːf/",
+      "type": "noun",
+      "example": "This is a green leaf.",
+      "note": "Unit 12 · At the lake",
+      "category": "Unit 12"
+    },
+    {
+      "word": "lemon",
+      "mean": "quả chanh",
+      "pron": "/ˈlem.ən/",
+      "type": "noun",
+      "example": "It is a lemon.",
+      "note": "Unit 12 · At the lake",
+      "category": "Unit 12"
+    },
+    {
+      "word": "lock",
+      "mean": "ổ khóa",
+      "pron": "/lɒk/",
+      "type": "noun",
+      "example": "This is a lock.",
+      "note": "Unit 9 · In the shop",
+      "category": "Unit 9"
+    },
+    {
+      "word": "milk",
+      "mean": "sữa",
+      "pron": "/mɪlk/",
+      "type": "noun",
+      "example": "I drink milk.",
+      "note": "Unit 5 · At the fish and chip shop",
+      "category": "Unit 5"
+    },
+    {
+      "word": "monkey",
+      "mean": "con khỉ",
+      "pron": "/ˈmʌŋ.ki/",
+      "type": "noun",
+      "example": "That is a monkey.",
+      "note": "Unit 10 · At the zoo",
+      "category": "Unit 10"
+    },
+    {
+      "word": "mango",
+      "mean": "quả xoài",
+      "pron": "/ˈmæŋ.ɡəʊ/",
+      "type": "noun",
+      "example": "I like mangoes.",
+      "note": "Unit 10 · At the zoo",
+      "category": "Unit 10"
+    },
+    {
+      "word": "mop",
+      "mean": "cây lau nhà",
+      "pron": "/mɒp/",
+      "type": "noun",
+      "example": "This is a mop.",
+      "note": "Unit 9 · In the shop",
+      "category": "Unit 9"
+    },
+    {
+      "word": "mother",
+      "mean": "mẹ",
+      "pron": "/ˈmʌð.ə(r)/",
+      "type": "noun",
+      "example": "This is my mother.",
+      "note": "Unit 10 · At the zoo",
+      "category": "Unit 10"
+    },
+    {
+      "word": "mouse",
+      "mean": "con chuột",
+      "pron": "/maʊs/",
+      "type": "noun",
+      "example": "I see a mouse.",
+      "note": "Unit 10 · At the zoo",
+      "category": "Unit 10"
+    },
+    {
+      "word": "nine",
+      "mean": "chín (9)",
+      "pron": "/naɪn/",
+      "type": "number",
+      "example": "I can count to nine.",
+      "note": "Unit 16 · At home",
+      "category": "Unit 16"
+    },
+    {
+      "word": "noodles",
+      "mean": "mì",
+      "pron": "/ˈnuː.dəlz/",
+      "type": "noun",
+      "example": "I like noodles.",
+      "note": "Unit 13 · In the school canteen",
+      "category": "Unit 13"
+    },
+    {
+      "word": "nut",
+      "mean": "hạt lạc",
+      "pron": "/nʌt/",
+      "type": "noun",
+      "example": "This is a nut.",
+      "note": "Unit 13 · In the school canteen",
+      "category": "Unit 13"
+    },
+    {
+      "word": "one",
+      "mean": "một (1)",
+      "pron": "/wʌn/",
+      "type": "number",
+      "example": "I have one book.",
+      "note": "Unit 9 · In the shop",
+      "category": "Unit 9"
+    },
+    {
+      "word": "pen",
+      "mean": "bút mực",
+      "pron": "/pen/",
+      "type": "noun",
+      "example": "This is a pen.",
+      "note": "Unit 6 · In the classroom",
+      "category": "Unit 6"
+    },
+    {
+      "word": "pencil",
+      "mean": "bút chì",
+      "pron": "/ˈpen.sl/",
+      "type": "noun",
+      "example": "I have a pencil.",
+      "note": "Unit 6 · In the classroom",
+      "category": "Unit 6"
+    },
+    {
+      "word": "pot",
+      "mean": "cái nồi",
+      "pron": "/pɒt/",
+      "type": "noun",
+      "example": "This is a pot.",
+      "note": "Unit 9 · In the shop",
+      "category": "Unit 9"
+    },
+    {
+      "word": "red",
+      "mean": "màu đỏ",
+      "pron": "/red/",
+      "type": "adjective",
+      "example": "It is red.",
+      "note": "Unit 6 · In the classroom",
+      "category": "Unit 6"
+    },
+    {
+      "word": "run",
+      "mean": "chạy",
+      "pron": "/rʌn/",
+      "type": "verb",
+      "example": "I can run.",
+      "note": "Unit 11 · At the bus stop",
+      "category": "Unit 11"
+    },
+    {
+      "word": "seven",
+      "mean": "bảy (7)",
+      "pron": "/ˈsev.ən/",
+      "type": "number",
+      "example": "I can count to seven.",
+      "note": "Unit 16 · At home",
+      "category": "Unit 16"
+    },
+    {
+      "word": "six",
+      "mean": "sáu (6)",
+      "pron": "/sɪks/",
+      "type": "number",
+      "example": "I have six pens.",
+      "note": "Unit 16 · At home",
+      "category": "Unit 16"
+    },
+    {
+      "word": "sun",
+      "mean": "mặt trời",
+      "pron": "/sʌn/",
+      "type": "noun",
+      "example": "The sun is hot.",
+      "note": "Unit 11 · At the bus stop",
+      "category": "Unit 11"
+    },
+    {
+      "word": "teddy bear",
+      "mean": "con gấu bông",
+      "pron": "/ˈted.i beə(r)/",
+      "type": "noun",
+      "example": "This is my teddy bear.",
+      "note": "Unit 14 · In the toy shop",
+      "category": "Unit 14"
+    },
+    {
+      "word": "ten",
+      "mean": "mười (10)",
+      "pron": "/ten/",
+      "type": "number",
+      "example": "I can count to ten.",
+      "note": "Unit 16 · At home",
+      "category": "Unit 16"
+    },
+    {
+      "word": "three",
+      "mean": "ba (3)",
+      "pron": "/θriː/",
+      "type": "number",
+      "example": "I see three balls.",
+      "note": "Unit 9 · In the shop",
+      "category": "Unit 9"
+    },
+    {
+      "word": "tiger",
+      "mean": "con hổ",
+      "pron": "/ˈtaɪ.ɡə(r)/",
+      "type": "noun",
+      "example": "The tiger is big.",
+      "note": "Unit 14 · In the toy shop",
+      "category": "Unit 14"
+    },
+    {
+      "word": "top",
+      "mean": "con quay",
+      "pron": "/tɒp/",
+      "type": "noun",
+      "example": "I have a top.",
+      "note": "Unit 14 · In the toy shop",
+      "category": "Unit 14"
+    },
+    {
+      "word": "truck",
+      "mean": "ô tô tải",
+      "pron": "/trʌk/",
+      "type": "noun",
+      "example": "The truck is red.",
+      "note": "Unit 11 · At the bus stop",
+      "category": "Unit 11"
+    },
+    {
+      "word": "turtle",
+      "mean": "con rùa",
+      "pron": "/ˈtɜː.təl/",
+      "type": "noun",
+      "example": "The turtle is slow.",
+      "note": "Unit 14 · In the toy shop",
+      "category": "Unit 14"
+    },
+    {
+      "word": "two",
+      "mean": "hai (2)",
+      "pron": "/tuː/",
+      "type": "number",
+      "example": "I have two books.",
+      "note": "Unit 9 · In the shop",
+      "category": "Unit 9"
+    },
+    {
+      "word": "wash",
+      "mean": "rửa; lau",
+      "pron": "/wɒʃ/",
+      "type": "verb",
+      "example": "Wash your hands.",
+      "note": "Unit 16 · At home",
+      "category": "Unit 16"
+    },
+    {
+      "word": "water",
+      "mean": "nước",
+      "pron": "/ˈwɔː.tə(r)/",
+      "type": "noun",
+      "example": "I drink water.",
+      "note": "Unit 16 · At home",
+      "category": "Unit 16"
+    },
+    {
+      "word": "window",
+      "mean": "cửa sổ",
+      "pron": "/ˈwɪn.dəʊ/",
+      "type": "noun",
+      "example": "Open the window.",
+      "note": "Unit 16 · At home",
+      "category": "Unit 16"
+    }
+  ]
+}
