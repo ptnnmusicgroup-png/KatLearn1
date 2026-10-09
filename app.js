@@ -1046,9 +1046,38 @@ async function restorePendingPersonalPack(){
   setVocabSource({kind:'personal',id:String(pending.id||''),uid:userUid||pendingUid});
   cardIndex=0;
   localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
-  if($('#learn')){renderCard();updateLearnStudySummary?.();renderWordList?.()}
+  if($('#learn')){renderCard();updateLearnStudySummary?.();renderWordList?.();renderFullPersonalPack()}
   try{sessionStorage.removeItem('katlearn-pending-personal-pack')}catch(_){}
   return true;
+}
+function renderFullPersonalPack(){
+  const panel=$('#fullPersonalPack');
+  if(!panel)return;
+  const isPersonal=activeVocabSource?.kind==='personal';
+  if(!isPersonal||!vocab.length){panel.hidden=true;panel.innerHTML='';return}
+  panel.hidden=false;
+  const title=$('#fullPersonalPackTitle');
+  const subtitle=$('#fullPersonalPackSubtitle');
+  if(title)title.textContent=activeDeckMeta.name||'Bộ từ riêng';
+  if(subtitle)subtitle.textContent='Đầy đủ '+vocab.length+' từ vựng trong bộ này';
+  const list=$('#fullPersonalPackWords');
+  if(!list)return;
+  list.innerHTML=vocab.map((word,index)=>{
+    const pron=vocabPronunciation(word);
+    const mean=vocabMeaning(word);
+    const example=String(word?.example||word?.example_en||'').trim();
+    const note=String(word?.note||word?.notes||'').trim();
+    const knownWord=knownWordKeys.has(vocabKey(word));
+    return '<article class="personal-full-word-row'+(knownWord?' is-known':'')+'">'+
+      '<span class="personal-full-word-index">'+(index+1)+'</span>'+
+      '<div class="personal-full-word-main"><h3>'+esc(word.word||'')+'</h3>'+
+      (pron?'<p class="personal-full-word-pron">'+esc(pron)+'</p>':'')+
+      (example?'<p class="personal-full-word-example">'+esc(example)+'</p>':'')+
+      (note?'<p class="personal-full-word-note">'+esc(note)+'</p>':'')+
+      '</div><div class="personal-full-word-meaning">'+
+      '<span>Nghĩa tiếng Việt</span><p>'+esc(mean||'Chưa có nghĩa')+'</p>'+
+      (knownWord?'<small>✓ Đã thuộc</small>':'')+'</div></article>';
+  }).join('');
 }
 async function openVocabularyPack(pack){
   if(!pack)return;
@@ -1318,11 +1347,12 @@ if($('#learn'))renderCard();if($('#practice'))void initReflexSourcePicker();upda
 
 window.addEventListener('katlearn-personal-pack-open',e=>{
   const words=Array.isArray(e.detail?.words)?e.detail.words:[];
-  vocab=words;
-  setVocabSource({kind:'personal',id:String(e.detail?.id||''),uid:window.studyStore?.userId||''});
+  vocab=normalizeLearningWords(words);
+  activeDeckMeta={name:String(e.detail?.name||'Bộ từ riêng'),description:String(e.detail?.description||'Toàn bộ từ vựng trong bộ riêng.'),icon:'📚'};
+  setVocabSource({kind:'personal',id:String(e.detail?.id||''),uid:String(e.detail?.uid||window.studyStore?.userId||'')});
   cardIndex=0;
   localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
-  if($('#learn'))renderCard();
+  if($('#learn')){renderCard();renderFullPersonalPack()}
   if($('#practice'))renderQuiz();
   if($('#wordTable'))renderVocabularyViews();
   void window.studyStore?.syncPersonalLearningData?.().then(()=>syncPersonalProgressFromLocal()).catch(()=>{});
