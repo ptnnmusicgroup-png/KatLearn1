@@ -382,7 +382,7 @@ function updateCardContent(v){
 function renderCard(){
   if(!vocab.length){
     updateCardContent(null);$('#cardStep').textContent='0';$('#cardTotal').textContent='0';
-    updateLearnStudySummary();renderWordList();renderVocabularyViews();setCardFlipped(false);return;
+    updateLearnStudySummary();renderWordList();renderVocabularyViews();setCardFlipped(false);renderFullPersonalPack();return;
   }
   cardIndex=((cardIndex%vocab.length)+vocab.length)%vocab.length;
   const v=vocab[cardIndex];
