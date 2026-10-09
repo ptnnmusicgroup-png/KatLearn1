@@ -247,3 +247,29 @@ body:before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opac
 .hero-content .tag{border-left:2px solid rgba(255,216,128,.8)}
 .page-intro .learning-score{border-top:2px solid rgba(201,164,92,.55)}
 .sidebar:after{content:'';position:absolute;right:-1px;bottom:72px;width:3px;height:54px;border-radius:3px 0 0 3px;background:linear-gradient(var(--vn-terracotta),var(--vn-gold));opacity:.28}
+
+
+/* Full personal pack view shown after opening a private vocabulary deck. */
+.full-personal-pack{margin:28px 0 36px;padding:clamp(16px,2.6vw,28px);border:1px solid var(--kl-line,#e7e3f3);border-radius:24px;background:var(--kl-surface,#fff);box-shadow:0 14px 36px rgba(50,42,100,.07)}
+.full-personal-pack[hidden]{display:none!important}
+.full-personal-pack-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
+.full-personal-pack-head .eyebrow{margin:0 0 6px}
+.full-personal-pack-head h2{margin:0;font-size:clamp(20px,2.4vw,28px);line-height:1.2}
+.full-personal-pack-head p:last-child{margin:7px 0 0;color:var(--kl-muted,#6f7083)}
+.full-personal-pack-count{display:flex;align-items:center;gap:7px;flex-shrink:0;padding:9px 13px;border-radius:15px;background:var(--kl-soft,#f1efff);color:var(--kl-accent,#6757d5)}
+.full-personal-pack-count b{font-size:20px}
+.full-personal-pack-count small{font-size:12px}
+.full-personal-pack-words{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.personal-full-word-row{display:grid;grid-template-columns:28px minmax(0,1fr) minmax(115px,.8fr);align-items:start;gap:12px;padding:15px;border:1px solid var(--kl-line,#e7e3f3);border-radius:16px;background:var(--kl-surface-2,#fcfbff);min-width:0}
+.personal-full-word-index{display:grid;place-items:center;width:26px;height:26px;border-radius:9px;background:var(--kl-soft,#f1efff);color:var(--kl-accent,#6757d5);font-size:12px;font-weight:800}
+.personal-full-word-main,.personal-full-word-meaning{min-width:0}
+.personal-full-word-main h3{margin:2px 0 0;overflow-wrap:anywhere;font-size:16px;line-height:1.35}
+.personal-full-word-pron,.personal-full-word-example,.personal-full-word-note{margin:6px 0 0;color:var(--kl-muted,#6f7083);font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.personal-full-word-example{color:var(--kl-ink,#36334a)}
+.personal-full-word-meaning{border-left:1px solid var(--kl-line,#e7e3f3);padding-left:12px}
+.personal-full-word-meaning>span{display:block;margin:2px 0 5px;color:var(--kl-muted,#6f7083);font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.personal-full-word-meaning p{margin:0;overflow-wrap:anywhere;font-size:14px;font-weight:700;line-height:1.5}
+.personal-full-word-meaning small{display:inline-block;margin-top:7px;color:#21845b;font-size:11px;font-weight:800}
+.personal-full-word-row.is-known{border-color:rgba(45,165,117,.35);background:rgba(45,165,117,.045)}
+@media(max-width:760px){.full-personal-pack-words{grid-template-columns:1fr}.full-personal-pack{padding:15px;border-radius:18px}.personal-full-word-row{grid-template-columns:26px minmax(0,1fr)}.personal-full-word-meaning{grid-column:2;border-left:0;border-top:1px solid var(--kl-line,#e7e3f3);padding:10px 0 0;margin-top:2px}.full-personal-pack-count{gap:5px;padding:8px 10px}}
+@media(max-width:380px){.personal-full-word-row{gap:8px;padding:12px}.personal-full-word-main h3{font-size:15px}}
