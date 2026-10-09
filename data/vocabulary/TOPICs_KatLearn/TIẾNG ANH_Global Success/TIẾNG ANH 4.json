@@ -1,0 +1,818 @@
+{
+  "id": "global-success-english-4",
+  "name": "TIẾNG ANH 4",
+  "description": "Glossary Tiếng Anh 4, Tập 1 · Global Success, trang 81–82. 90 mục từ đã chuẩn hóa, gồm phiên âm, nghĩa tiếng Việt, ví dụ và Unit.",
+  "source": "Glossary, Tiếng Anh 4 – Global Success, Tập 1, trang 81–82; danh sách do người dùng cung cấp và đã chuẩn hóa chính tả, IPA, nghĩa tiếng Việt, chủ đề Unit.",
+  "words": [
+    {
+      "word": "activity",
+      "mean": "hoạt động",
+      "pron": "/ækˈtɪvəti/",
+      "type": "noun",
+      "example": "Reading is my favourite activity.",
+      "note": "Unit 5 · Things we can do",
+      "category": "Unit 5"
+    },
+    {
+      "word": "America",
+      "mean": "nước Mỹ",
+      "pron": "/əˈmerɪkə/",
+      "type": "proper noun",
+      "example": "America is a country.",
+      "note": "Unit 1 · My friends",
+      "category": "Unit 1"
+    },
+    {
+      "word": "April",
+      "mean": "tháng Tư",
+      "pron": "/ˈeɪprəl/",
+      "type": "month",
+      "example": "My birthday is in April.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "art",
+      "mean": "môn Mĩ thuật",
+      "pron": "/ɑːt/",
+      "type": "school subject",
+      "example": "I like art.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "August",
+      "mean": "tháng Tám",
+      "pron": "/ˈɔːɡəst/",
+      "type": "month",
+      "example": "August is a summer month.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "Australia",
+      "mean": "nước Úc",
+      "pron": "/ɒˈstreɪliə/",
+      "type": "proper noun",
+      "example": "Australia is a big country.",
+      "note": "Unit 1 · My friends",
+      "category": "Unit 1"
+    },
+    {
+      "word": "Bangkok",
+      "mean": "Băng Cốc (thủ đô Thái Lan)",
+      "pron": "/bæŋˈkɒk/",
+      "type": "proper noun",
+      "example": "Bangkok is in Thailand.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "beach",
+      "mean": "bãi biển",
+      "pron": "/biːtʃ/",
+      "type": "noun",
+      "example": "We are walking on the beach.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "because",
+      "mean": "bởi vì",
+      "pron": "/bɪˈkɒz/",
+      "type": "conjunction",
+      "example": "I like English because it is fun.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "birthday",
+      "mean": "ngày sinh, sinh nhật",
+      "pron": "/ˈbɜːθdeɪ/",
+      "type": "noun",
+      "example": "Today is my birthday.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "Britain",
+      "mean": "nước Anh",
+      "pron": "/ˈbrɪtən/",
+      "type": "proper noun",
+      "example": "Britain is in Europe.",
+      "note": "Unit 1 · My friends",
+      "category": "Unit 1"
+    },
+    {
+      "word": "building",
+      "mean": "tòa nhà",
+      "pron": "/ˈbɪldɪŋ/",
+      "type": "noun",
+      "example": "That building is very tall.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "campsite",
+      "mean": "địa điểm cắm trại",
+      "pron": "/ˈkæmpsaɪt/",
+      "type": "noun",
+      "example": "We stay at a campsite.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "can",
+      "mean": "có thể, biết (làm gì)",
+      "pron": "/kən/, /kæn/",
+      "type": "modal verb",
+      "example": "I can swim.",
+      "note": "Unit 5 · Things we can do",
+      "category": "Unit 5"
+    },
+    {
+      "word": "chips",
+      "mean": "khoai tây chiên",
+      "pron": "/tʃɪps/",
+      "type": "noun",
+      "example": "I like chips.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "city",
+      "mean": "thành phố",
+      "pron": "/ˈsɪti/",
+      "type": "noun",
+      "example": "I live in a city.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "computer room",
+      "mean": "phòng máy tính",
+      "pron": "/kəmˈpjuːtə ruːm/",
+      "type": "noun",
+      "example": "Our school has a computer room.",
+      "note": "Unit 6 · Our school facilities",
+      "category": "Unit 6"
+    },
+    {
+      "word": "countryside",
+      "mean": "nông thôn, vùng quê",
+      "pron": "/ˈkʌntrisaɪd/",
+      "type": "noun",
+      "example": "My grandparents live in the countryside.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "December",
+      "mean": "tháng Mười Hai",
+      "pron": "/dɪˈsembə/",
+      "type": "month",
+      "example": "Christmas is in December.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "English",
+      "mean": "môn Tiếng Anh",
+      "pron": "/ˈɪŋɡlɪʃ/",
+      "type": "school subject",
+      "example": "I like English.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "English teacher",
+      "mean": "giáo viên tiếng Anh",
+      "pron": "/ˈɪŋɡlɪʃ ˈtiːtʃə/",
+      "type": "noun",
+      "example": "I want to be an English teacher.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "February",
+      "mean": "tháng Hai",
+      "pron": "/ˈfebruəri/",
+      "type": "month",
+      "example": "February is a short month.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "forty-five",
+      "mean": "số 45",
+      "pron": "/ˌfɔːti ˈfaɪv/",
+      "type": "number",
+      "example": "It is forty-five minutes past the hour.",
+      "note": "Unit 2 · Time and daily routines",
+      "category": "Unit 2"
+    },
+    {
+      "word": "Friday",
+      "mean": "thứ Sáu",
+      "pron": "/ˈfraɪdeɪ/",
+      "type": "day",
+      "example": "We have English on Friday.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "garden",
+      "mean": "vườn",
+      "pron": "/ˈɡɑːdən/",
+      "type": "noun",
+      "example": "There are flowers in the garden.",
+      "note": "Unit 6 · Our school facilities",
+      "category": "Unit 6"
+    },
+    {
+      "word": "get up",
+      "mean": "thức dậy",
+      "pron": "/ɡet ˈʌp/",
+      "type": "phrasal verb",
+      "example": "I get up at six o'clock.",
+      "note": "Unit 2 · Time and daily routines",
+      "category": "Unit 2"
+    },
+    {
+      "word": "go (to bed)",
+      "mean": "đi ngủ",
+      "pron": "/ɡəʊ tə ˈbed/",
+      "type": "phrase",
+      "example": "I go to bed at nine o'clock.",
+      "note": "Unit 2 · Time and daily routines",
+      "category": "Unit 2"
+    },
+    {
+      "word": "go (to school)",
+      "mean": "đi học",
+      "pron": "/ɡəʊ tə ˈskuːl/",
+      "type": "phrase",
+      "example": "I go to school every morning.",
+      "note": "Unit 2 · Time and daily routines",
+      "category": "Unit 2"
+    },
+    {
+      "word": "grape",
+      "mean": "quả nho",
+      "pron": "/ɡreɪp/",
+      "type": "noun",
+      "example": "This grape is sweet.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "hat",
+      "mean": "cái mũ",
+      "pron": "/hæt/",
+      "type": "noun",
+      "example": "I wear a hat outside.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "have (breakfast)",
+      "mean": "dùng bữa sáng",
+      "pron": "/hæv ˈbrekfəst/",
+      "type": "phrase",
+      "example": "I have breakfast at seven.",
+      "note": "Unit 2 · Time and daily routines",
+      "category": "Unit 2"
+    },
+    {
+      "word": "history and geography",
+      "mean": "môn Lịch sử và Địa lí",
+      "pron": "/ˈhɪstri ænd dʒiˈɒɡrəfi/",
+      "type": "school subject",
+      "example": "I study history and geography at school.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "housework",
+      "mean": "việc nhà",
+      "pron": "/ˈhaʊswɜːk/",
+      "type": "noun",
+      "example": "I help my family with housework.",
+      "note": "Unit 2 · Time and daily routines",
+      "category": "Unit 2"
+    },
+    {
+      "word": "IT",
+      "mean": "môn Tin học, Công nghệ thông tin",
+      "pron": "/ˌaɪ ˈtiː/",
+      "type": "school subject",
+      "example": "IT is one of my school subjects.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "jam",
+      "mean": "mứt",
+      "pron": "/dʒæm/",
+      "type": "noun",
+      "example": "I eat jam on bread.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "January",
+      "mean": "tháng Giêng",
+      "pron": "/ˈdʒænjuəri/",
+      "type": "month",
+      "example": "January is the first month of the year.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "Japan",
+      "mean": "nước Nhật",
+      "pron": "/dʒəˈpæn/",
+      "type": "proper noun",
+      "example": "Japan is a country in Asia.",
+      "note": "Unit 1 · My friends",
+      "category": "Unit 1"
+    },
+    {
+      "word": "jump",
+      "mean": "nhảy",
+      "pron": "/dʒʌmp/",
+      "type": "verb",
+      "example": "I can jump high.",
+      "note": "Unit 5 · Things we can do",
+      "category": "Unit 5"
+    },
+    {
+      "word": "last",
+      "mean": "trước, lần trước",
+      "pron": "/lɑːst/",
+      "type": "adjective/adverb",
+      "example": "I went there last week.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "lemonade",
+      "mean": "nước chanh",
+      "pron": "/ˌleməˈneɪd/",
+      "type": "noun",
+      "example": "I would like some lemonade.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "London",
+      "mean": "Luân Đôn (thủ đô nước Anh)",
+      "pron": "/ˈlʌndən/",
+      "type": "proper noun",
+      "example": "London is the capital of Britain.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "Malaysia",
+      "mean": "nước Ma-lay-xi-a",
+      "pron": "/məˈleɪziə/",
+      "type": "proper noun",
+      "example": "Malaysia is a country in Asia.",
+      "note": "Unit 1 · My friends",
+      "category": "Unit 1"
+    },
+    {
+      "word": "March",
+      "mean": "tháng Ba",
+      "pron": "/mɑːtʃ/",
+      "type": "month",
+      "example": "March comes after February.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "maths",
+      "mean": "môn Toán, toán học",
+      "pron": "/mæθs/",
+      "type": "school subject",
+      "example": "Maths is my favourite subject.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "Maths teacher",
+      "mean": "giáo viên dạy Toán",
+      "pron": "/mæθs ˈtiːtʃə/",
+      "type": "noun",
+      "example": "My maths teacher is kind.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "May",
+      "mean": "tháng Năm",
+      "pron": "/meɪ/",
+      "type": "month",
+      "example": "May comes before June.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "Monday",
+      "mean": "thứ Hai",
+      "pron": "/ˈmʌndeɪ/",
+      "type": "day",
+      "example": "We go to school on Monday.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "mountains",
+      "mean": "vùng núi, những ngọn núi",
+      "pron": "/ˈmaʊntənz/",
+      "type": "noun",
+      "example": "The mountains are beautiful.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "music",
+      "mean": "môn Âm nhạc",
+      "pron": "/ˈmjuːzɪk/",
+      "type": "school subject",
+      "example": "I like music.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "November",
+      "mean": "tháng Mười Một",
+      "pron": "/nəʊˈvembə/",
+      "type": "month",
+      "example": "My school trip is in November.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "o'clock",
+      "mean": "giờ (dùng sau giờ chẵn, ví dụ: eight o'clock)",
+      "pron": "/əˈklɒk/",
+      "type": "time expression",
+      "example": "It is eight o'clock.",
+      "note": "Unit 2 · Time and daily routines",
+      "category": "Unit 2"
+    },
+    {
+      "word": "October",
+      "mean": "tháng Mười",
+      "pron": "/ɒkˈtəʊbə/",
+      "type": "month",
+      "example": "October is in autumn.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "outdoor",
+      "mean": "ngoài trời",
+      "pron": "/ˈaʊtdɔː/",
+      "type": "adjective",
+      "example": "We enjoy outdoor activities.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "painter",
+      "mean": "họa sĩ",
+      "pron": "/ˈpeɪntə/",
+      "type": "noun",
+      "example": "I want to be a painter.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "party",
+      "mean": "buổi tiệc",
+      "pron": "/ˈpɑːti/",
+      "type": "noun",
+      "example": "We have a birthday party.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "PE",
+      "mean": "môn Thể dục, Giáo dục thể chất",
+      "pron": "/ˌpiː ˈiː/",
+      "type": "school subject",
+      "example": "We play games in PE.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "play the guitar",
+      "mean": "chơi đàn ghi-ta",
+      "pron": "/pleɪ ðə ɡɪˈtɑː/",
+      "type": "phrase",
+      "example": "I can play the guitar.",
+      "note": "Unit 5 · Things we can do",
+      "category": "Unit 5"
+    },
+    {
+      "word": "play the piano",
+      "mean": "chơi đàn piano",
+      "pron": "/pleɪ ðə piˈænəʊ/",
+      "type": "phrase",
+      "example": "She can play the piano.",
+      "note": "Unit 5 · Things we can do",
+      "category": "Unit 5"
+    },
+    {
+      "word": "ride (a bike)",
+      "mean": "đạp xe",
+      "pron": "/raɪd ə baɪk/",
+      "type": "phrase",
+      "example": "I can ride a bike.",
+      "note": "Unit 5 · Things we can do",
+      "category": "Unit 5"
+    },
+    {
+      "word": "ride (a horse)",
+      "mean": "cưỡi ngựa",
+      "pron": "/raɪd ə hɔːs/",
+      "type": "phrase",
+      "example": "I can ride a horse.",
+      "note": "Unit 5 · Things we can do",
+      "category": "Unit 5"
+    },
+    {
+      "word": "roller skate",
+      "mean": "trượt pa-tanh",
+      "pron": "/ˈrəʊlə skeɪt/",
+      "type": "verb",
+      "example": "I can roller skate.",
+      "note": "Unit 5 · Things we can do",
+      "category": "Unit 5"
+    },
+    {
+      "word": "Saturday",
+      "mean": "thứ Bảy",
+      "pron": "/ˈsætədeɪ/",
+      "type": "day",
+      "example": "I visit my grandparents on Saturday.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "school garden",
+      "mean": "vườn trường",
+      "pron": "/ˈskuːl ˌɡɑːdən/",
+      "type": "noun",
+      "example": "We grow flowers in the school garden.",
+      "note": "Unit 6 · Our school facilities",
+      "category": "Unit 6"
+    },
+    {
+      "word": "science",
+      "mean": "môn Khoa học",
+      "pron": "/ˈsaɪəns/",
+      "type": "school subject",
+      "example": "Science is an interesting subject.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "September",
+      "mean": "tháng Chín",
+      "pron": "/sepˈtembə/",
+      "type": "month",
+      "example": "School starts in September.",
+      "note": "Unit 4 · My birthday",
+      "category": "Unit 4"
+    },
+    {
+      "word": "Singapore",
+      "mean": "nước Xin-ga-po",
+      "pron": "/ˌsɪŋəˈpɔː/",
+      "type": "proper noun",
+      "example": "Singapore is a country.",
+      "note": "Unit 1 · My friends",
+      "category": "Unit 1"
+    },
+    {
+      "word": "sports day",
+      "mean": "ngày hội thể thao",
+      "pron": "/ˈspɔːts deɪ/",
+      "type": "noun",
+      "example": "We run and play on sports day.",
+      "note": "Unit 9 · Our sports day",
+      "category": "Unit 9"
+    },
+    {
+      "word": "stay at home",
+      "mean": "ở nhà",
+      "pron": "/steɪ ət ˈhəʊm/",
+      "type": "phrase",
+      "example": "I stay at home on Sunday.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "story",
+      "mean": "chuyện, câu chuyện",
+      "pron": "/ˈstɔːri/",
+      "type": "noun",
+      "example": "I read a story every night.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "study",
+      "mean": "học, nghiên cứu",
+      "pron": "/ˈstʌdi/",
+      "type": "verb",
+      "example": "I study English after school.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "subject",
+      "mean": "môn học",
+      "pron": "/ˈsʌbdʒɪkt/",
+      "type": "noun",
+      "example": "What is your favourite subject?",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "Sunday",
+      "mean": "Chủ nhật",
+      "pron": "/ˈsʌndeɪ/",
+      "type": "day",
+      "example": "Sunday is a weekend day.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "Sydney",
+      "mean": "Xít-ni (thành phố của nước Úc)",
+      "pron": "/ˈsɪdni/",
+      "type": "proper noun",
+      "example": "Sydney is a city in Australia.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "Thailand",
+      "mean": "nước Thái Lan",
+      "pron": "/ˈtaɪlænd/",
+      "type": "proper noun",
+      "example": "Thailand is in Southeast Asia.",
+      "note": "Unit 1 · My friends",
+      "category": "Unit 1"
+    },
+    {
+      "word": "thirty",
+      "mean": "số 30",
+      "pron": "/ˈθɜːti/",
+      "type": "number",
+      "example": "I can count to thirty.",
+      "note": "Unit 2 · Time and daily routines",
+      "category": "Unit 2"
+    },
+    {
+      "word": "Thursday",
+      "mean": "thứ Năm",
+      "pron": "/ˈθɜːzdeɪ/",
+      "type": "day",
+      "example": "We have music on Thursday.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "today",
+      "mean": "hôm nay",
+      "pron": "/təˈdeɪ/",
+      "type": "time expression",
+      "example": "Today is sunny.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "Tokyo",
+      "mean": "Tô-ki-ô (thủ đô nước Nhật)",
+      "pron": "/ˈtəʊkiəʊ/",
+      "type": "proper noun",
+      "example": "Tokyo is the capital of Japan.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "town",
+      "mean": "thị trấn",
+      "pron": "/taʊn/",
+      "type": "noun",
+      "example": "My aunt lives in a small town.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "Tuesday",
+      "mean": "thứ Ba",
+      "pron": "/ˈtjuːzdeɪ/",
+      "type": "day",
+      "example": "I have maths on Tuesday.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "Viet Nam",
+      "mean": "nước Việt Nam",
+      "pron": "/ˌviːet ˈnæm/",
+      "type": "proper noun",
+      "example": "Viet Nam is my country.",
+      "note": "Unit 1 · My friends",
+      "category": "Unit 1"
+    },
+    {
+      "word": "Vietnamese",
+      "mean": "môn Tiếng Việt",
+      "pron": "/ˌviːetnəˈmiːz/",
+      "type": "school subject",
+      "example": "I study Vietnamese at school.",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "village",
+      "mean": "ngôi làng",
+      "pron": "/ˈvɪlɪdʒ/",
+      "type": "noun",
+      "example": "My grandparents live in a village.",
+      "note": "Unit 10 · Our summer holidays",
+      "category": "Unit 10"
+    },
+    {
+      "word": "wash",
+      "mean": "rửa",
+      "pron": "/wɒʃ/",
+      "type": "verb",
+      "example": "I wash my hands before eating.",
+      "note": "Unit 2 · Time and daily routines",
+      "category": "Unit 2"
+    },
+    {
+      "word": "Wednesday",
+      "mean": "thứ Tư",
+      "pron": "/ˈwenzdeɪ/",
+      "type": "day",
+      "example": "Wednesday is in the middle of the week.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "weekday",
+      "mean": "ngày trong tuần (thứ Hai đến thứ Sáu)",
+      "pron": "/ˈwiːkdeɪ/",
+      "type": "noun",
+      "example": "I go to school on weekdays.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "weekend",
+      "mean": "ngày cuối tuần (thứ Bảy và Chủ nhật)",
+      "pron": "/ˌwiːkˈend/",
+      "type": "noun",
+      "example": "I play with my friends at the weekend.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "when",
+      "mean": "khi nào",
+      "pron": "/wen/",
+      "type": "question word",
+      "example": "When is your birthday?",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    },
+    {
+      "word": "why",
+      "mean": "tại sao",
+      "pron": "/waɪ/",
+      "type": "question word",
+      "example": "Why do you like art?",
+      "note": "Unit 8 · My favourite subjects",
+      "category": "Unit 8"
+    },
+    {
+      "word": "yesterday",
+      "mean": "ngày hôm qua",
+      "pron": "/ˈjestədeɪ/",
+      "type": "time expression",
+      "example": "I played football yesterday.",
+      "note": "Unit 3 · My week",
+      "category": "Unit 3"
+    }
+  ]
+}
