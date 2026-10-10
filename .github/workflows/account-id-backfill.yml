@@ -1,10 +1,12 @@
 name: Backfill Firebase account IDs
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type BACKFILL to confirm this Firestore account migration"
+        required: true
+        type: string
 
 concurrency:
   group: katlearn-account-id-backfill-main
@@ -18,6 +20,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Validate explicit confirmation
+        env:
+          CONFIRM_BACKFILL: ${{ inputs.confirm }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${CONFIRM_BACKFILL:-}" != "BACKFILL" ]; then
+            echo "::error::Type BACKFILL in the workflow input to run this Firestore migration."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
 
