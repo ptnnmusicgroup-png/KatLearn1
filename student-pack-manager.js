@@ -7,6 +7,45 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   let editingPack=null;
   let renderMinePromise=null,renderMineUid='';
   
+  function launchPersonalPack(pack,uid){
+    if(!pack)return;
+    const words=Array.isArray(pack.words)?pack.words:[];
+    const hasValidWord=words.some(word=>{
+      const term=String(word?.word||'').trim();
+      const meaning=String(word?.meaning_vi??word?.mean??word?.translation_vi??word?.translation??word?.meaning??'').trim();
+      return !!term&&!!meaning;
+    });
+    if(!hasValidWord){
+      toast('Bộ từ này chưa có dữ liệu từ hợp lệ. Hãy tải lại danh sách và thử lại nhé.');
+      return;
+    }
+
+    const launch={
+      uid:String(uid||pack.ownerUid||window.studyStore?.user?.uid||''),
+      id:String(pack.id||''),
+      name:String(pack.name||'Bộ từ riêng'),
+      description:String(pack.description||'Toàn bộ từ vựng trong bộ riêng.'),
+      words
+    };
+    const current=(location.pathname.split('/').pop()||'').toLowerCase();
+    if(current==='learn.html'){
+      window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:launch}));
+      toast('Đã mở “'+launch.name+'”.');
+      return;
+    }
+
+    // The learner deck is a separate page. Persist the payload before routing;
+    // do not dispatch on the manager page because its app instance disappears.
+    try{
+      sessionStorage.setItem('katlearn-pending-personal-pack',JSON.stringify(launch));
+    }catch(error){
+      console.warn('[KatLearn] Could not persist the pack launch payload:',error);
+      toast('Không mở được bộ từ vì trình duyệt không lưu được phiên học. Hãy thử lại trong cùng tab.');
+      return;
+    }
+    location.href='/learn.html';
+  }
+
   function row(data={}){
     const el=document.createElement('div');
     el.className='student-pack-row';
@@ -449,21 +488,9 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
             }).join('')}</div>`
           : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Tạo bộ từ đầu tiên →</a></div>';
         $('[data-my-pack-menu]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openPersonalPackMenu(btn,safePacks.find(x=>x.id===btn.dataset.myPackMenu))});
-        $('[data-my-pack]').forEach(btn=>btn.onclick=async()=>{
-          const p=safePacks.find(x=>x.id===btn.dataset.myPack);
-          if(!p)return;
-          const words=Array.isArray(p.words)?p.words:[];
-          const launch={uid, id:String(p.id||''), name:String(p.name||''), description:String(p.description||''), words};
-          try{sessionStorage.setItem('katlearn-pending-personal-pack',JSON.stringify(launch));}catch(_){}
-          // The current page is only the pack manager; the actual study deck
-          // lives on learn.html. Dispatch for same-page consumers, then route.
-          window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:launch}));
-          const current=(location.pathname.split('/').pop()||'').toLowerCase();
-          if(current!=='learn.html'){
-            location.href='/learn.html';
-            return;
-          }
-          toast(`Đã mở “${p.name}”.`);
+        $('[data-my-pack]').forEach(btn=>btn.onclick=()=>{
+          const p=safePacks.find(x=>String(x.id)===String(btn.dataset.myPack));
+          launchPersonalPack(p,uid);
         });
       }catch(e){
         console.warn('[KatLearn] Personal pack UI load failed:',e);
@@ -482,9 +509,8 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
             ? '<div class="personal-packs-title"><div><h3>Bộ từ của tôi</h3><p>'+recovered.length+' bộ từ · '+recoveredWords+' từ.</p></div></div><div class="personal-pack-grid">'+recovered.map(p=>'<article class="personal-pack-card"><span class="personal-pack-progress-icon">📚</span><div class="personal-pack-copy"><h3>'+esc(p.name||'Bộ từ chưa đặt tên')+'</h3><p>'+(Array.isArray(p.words)?p.words.length:0)+' từ vựng · bộ riêng</p></div><div class="personal-pack-actions"><button data-my-pack="'+esc(p.id)+'">Học ngay</button></div></article>').join('')+'</div>'
             : '<div class="personal-pack-empty">Chưa nhận được dữ liệu bộ từ từ máy chủ. Trang sẽ tự thử lại trong lần đồng bộ tiếp theo.</div>';
           $('#studentPersonalPacks [data-my-pack]').forEach(btn=>btn.onclick=()=>{
-            const p=recovered.find(x=>String(x.id)===String(btn.dataset.myPack));if(!p)return;
-            window.dispatchEvent(new CustomEvent('katlearn-personal-pack-open',{detail:{words:Array.isArray(p.words)?p.words:[],id:p.id,name:p.name||''}}));
-            if(typeof showPage==='function')showPage('learn');
+            const p=recovered.find(x=>String(x.id)===String(btn.dataset.myPack));
+            launchPersonalPack(p,uid);
           });
         }
       }finally{
