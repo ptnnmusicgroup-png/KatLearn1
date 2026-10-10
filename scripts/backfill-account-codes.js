@@ -74,16 +74,19 @@ async function main(){
   const missing=candidates.filter(x=>!x.code);
   if(missing.length){
     const oldSequence=sequence;
-    const newLast=oldSequence+missing.length;
+    // Reserve numbers atomically, then allocate from the committed reservation.
+    // Another writer may have advanced accountSequence after the initial reads.
+    let reservedAfter=oldSequence;
     await db.runTransaction(async tx=>{
       const snap=await tx.get(seqRef);
       const latest=Number(snap.exists ? snap.data()?.lastIssued : 0) || 0;
       const base=Math.max(latest,oldSequence);
-      sequence=base;
-      tx.set(seqRef,{lastIssued:base+missing.length,updatedAt:now()},{merge:true});
+      reservedAfter=base+missing.length;
+      tx.set(seqRef,{lastIssued:reservedAfter,updatedAt:now()},{merge:true});
     });
+    const reservedStart=reservedAfter-missing.length;
     for(let i=0;i<missing.length;i++){
-      sequence=oldSequence+i+1;
+      sequence=reservedStart+i+1;
       const item=missing[i];
       const prefix=accountPrefix(item.data);
       let code=formatAccountCode(prefix,sequence);
