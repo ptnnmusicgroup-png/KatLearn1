@@ -1,4 +1,4 @@
-import { cp, mkdir, rm } from "node:fs/promises";
+import { cp, mkdir, readdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -46,7 +46,7 @@ function shouldCopy(source) {
 await rm(publishDir, { recursive: true, force: true });
 await mkdir(publishDir, { recursive: true });
 
-for (const entry of await (await import("node:fs/promises")).readdir(projectRoot, { withFileTypes: true })) {
+for (const entry of await readdir(projectRoot, { withFileTypes: true })) {
   const source = path.join(projectRoot, entry.name);
   const destination = path.join(publishDir, entry.name);
   if (!shouldCopy(source)) continue;
