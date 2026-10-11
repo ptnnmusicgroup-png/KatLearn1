@@ -24,7 +24,7 @@ Configure these in the Netlify site dashboard. Do not paste service credentials 
 - Gemini: `GEMINI_API_KEY` or `GOOGLE_API_KEY`, plus `GEMINI_MODEL` if you have a preferred model.
 - CORS: `KATLEARN_ALLOWED_ORIGINS` — a comma-separated list containing the exact HTTPS origins allowed to call the LMS API from another browser origin. Include the Teacher Netlify origin.
 
-Keep the existing Firebase project configuration unchanged so current account UIDs, Firestore documents, vocabulary packs, learning progress, and KatCoin remain in the same database.
+Keep the existing Firebase project configuration unchanged so current account UIDs, Firestore documents, vocabulary packs, learning progress, and KatCoin remain in the same database. In Firebase Authentication settings, add both final Netlify hostnames (and any custom domains) to Authorized domains before testing popup/SSO login.
 
 ## Netlify Functions
 
