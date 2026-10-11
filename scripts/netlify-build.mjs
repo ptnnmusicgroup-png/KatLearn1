@@ -45,10 +45,16 @@ function shouldCopy(source) {
 
 await rm(publishDir, { recursive: true, force: true });
 await mkdir(publishDir, { recursive: true });
-await cp(projectRoot, publishDir, {
-  recursive: true,
-  force: true,
-  filter: shouldCopy,
-});
+
+for (const entry of await (await import("node:fs/promises")).readdir(projectRoot, { withFileTypes: true })) {
+  const source = path.join(projectRoot, entry.name);
+  const destination = path.join(publishDir, entry.name);
+  if (!shouldCopy(source)) continue;
+  await cp(source, destination, {
+    recursive: true,
+    force: true,
+    filter: shouldCopy,
+  });
+}
 
 console.log("Netlify static output prepared at dist/ (server code and secret files excluded).");
