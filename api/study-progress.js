@@ -1,4 +1,3 @@
-const crypto=require("crypto");
 const{init}=require("./_admin");
 const{FieldValue}=require("firebase-admin/firestore");
 const buckets=new Map();
@@ -95,6 +94,7 @@ module.exports=async(req,res)=>{
         :lastDay===previousStudyDay(currentDay)?currentStreak+1:1;
       transaction.set(userRef,{
         streak,lastStudyDay:currentDay,lastStudyAt:FieldValue.serverTimestamp(),
+        ...(lastDay!==currentDay?{dailyQuestions:0,dailyCorrect:0}:{}),
         updatedAt:FieldValue.serverTimestamp()
       },{merge:true});
       return{
