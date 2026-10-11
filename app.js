@@ -790,10 +790,21 @@ async function answer(btn,correct){
       if(res.ok&&data.ok){
         if(Number.isFinite(Number(data.dailyQuestions)))updateDailyGoal(data.dailyQuestions);
         serverConfirmed=typeof data.correct==='boolean';awarded=data.rewarded===true;
-        if(data.correct===true&&data.rewarded===true){
-          sessionCoins+=10;energy=Number(data.xp??energy);
-          window.katlearnCoinController?.setFromServer?.(data.coins,'reward');
-          $('#sessionCoins').textContent=sessionCoins;$('#feedback').textContent='Chính xác! +10 KatCoin 🪙';
+        if(data.streakGoal){
+          window.dispatchEvent(new CustomEvent('katlearn-streak-updated',{detail:{
+            streakGoal:data.streakGoal,streak:data.streak,lastStudyDay:studyDayClient(),
+            coins:data.coins,goalRewardCoins:Number(data.goalRewardCoins||0)
+          }}));
+        }
+        const baseReward=data.correct===true&&data.rewarded===true;
+        const goalBonus=Math.max(0,Math.floor(Number(data.goalRewardCoins||0)));
+        if(data.correct===true&&(baseReward||goalBonus>0)){
+          const roundReward=(baseReward?10:0)+goalBonus;
+          sessionCoins+=roundReward;energy=Number(data.xp??energy);
+          window.katlearnCoinController?.setFromServer?.(data.coins,goalBonus?'streak-goal-reward':'reward');
+          $('#sessionCoins').textContent=sessionCoins;
+          $('#feedback').textContent='Chính xác! '+(baseReward?'+10 KatCoin 🪙':'')+(baseReward&&goalBonus?' · ':'')+(goalBonus?'+1.000 KatCoin — hoàn thành mục tiêu streak! 🏆':'');
+          if(goalBonus)toast('🏆 Hoàn thành mục tiêu streak! Bạn nhận được 1.000 KatCoin.', 'success');
         }else if(good&&data.correct===true&&!data.rewarded){
           if(Number.isFinite(Number(data.coins)))window.katlearnCoinController?.setFromServer?.(data.coins,'reward-check');
           $('#feedback').textContent='Chính xác! 🐾 Lượt này chưa được nhận KatCoin vì nguồn từ hiện tại không thuộc diện thưởng.';
