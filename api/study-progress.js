@@ -1,6 +1,8 @@
+const crypto=require("crypto");
 const{init}=require("./_admin");
 const{FieldValue}=require("firebase-admin/firestore");
 const buckets=new Map();
+const VALID_GOALS=new Set([7,10,20,30,50]);
 
 function send(res,status,body){
   const headers={"Content-Type":"application/json","Cache-Control":"no-store"};
@@ -28,40 +30,78 @@ function previousStudyDay(day){
   d.setUTCDate(d.getUTCDate()-1);
   return d.toISOString().slice(0,10);
 }
+function profileDefaults(token){
+  return{
+    displayName:String(token.name||token.email?.split("@")[0]||"KatLearn Student").slice(0,80),
+    email:String(token.email||"").slice(0,200),
+    photoURL:String(token.picture||"").slice(0,1000),
+    provider:"firebase-auth",role:"student",coins:0,energy:0,streak:0,lastStudyDay:"",
+    dailyQuestions:0,dailyCorrect:0,questionsAnswered:0,correctAnswers:0,
+    ownedThemes:[],joinedClassIds:[],teacherUid:"",teacherUids:[],totalWords:0,vocab:[],
+    createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()
+  };
+}
+function goalState(profile={}){
+  const target=VALID_GOALS.has(Number(profile.streakGoal))?Number(profile.streakGoal):0;
+  const progress=Math.max(0,Math.min(target,Math.floor(Number(profile.streakGoalProgress)||0)));
+  const completed=Boolean(profile.streakGoalCompletedAt);
+  return{target,progress,completed,remaining:target?Math.max(0,target-progress):0};
+}
 module.exports=async(req,res)=>{
   if(req.method!=="POST")return send(res,405,{ok:false,error:"Method Not Allowed"});
   try{
     const token=await verifyUser(req);
     limit(token.uid);
-    const body=req.body||{};
-    if(String(body.action||"")!=="study")return send(res,400,{ok:false,error:"Hành động học không hợp lệ."});
+    const body=req.body||{},action=String(body.action||"");
     const{db}=init();
     const userRef=db.doc("users/"+token.uid);
+
+    if(action==="set-goal"){
+      const target=Number(body.goal);
+      if(!VALID_GOALS.has(target))return send(res,400,{ok:false,error:"Hãy chọn mục tiêu 7, 10, 20, 30 hoặc 50 ngày."});
+      const result=await db.runTransaction(async transaction=>{
+        const snap=await transaction.get(userRef);
+        const profile=snap.exists()?snap.data()||{}:profileDefaults(token);
+        const activeTarget=VALID_GOALS.has(Number(profile.streakGoal))?Number(profile.streakGoal):0;
+        const started=Number(profile.streakGoalProgress||0)>0||Boolean(profile.streakGoalLastStudyDay);
+        const completed=Boolean(profile.streakGoalCompletedAt);
+        if(activeTarget&&!completed&&started){
+          throw Object.assign(new Error("Bạn đang chinh phục mục tiêu hiện tại. Hãy hoàn thành trước khi chọn mục tiêu mới nhé!"),{status:409});
+        }
+        const currentDay=studyDay();
+        const next={
+          streakGoal:target,
+          streakGoalProgress:0,
+          streakGoalStartDay:currentDay,
+          streakGoalLastStudyDay:"",
+          streakGoalCompletedAt:"",
+          streakGoalRewardedAt:"",
+          updatedAt:FieldValue.serverTimestamp()
+        };
+        transaction.set(userRef,next,{merge:true});
+        return{ok:true,uid:token.uid,goal:{target,progress:0,completed:false,remaining:target},coins:Math.max(0,Math.floor(Number(profile.coins||0)))};
+      });
+      return send(res,200,result);
+    }
+
+    if(action!=="study")return send(res,400,{ok:false,error:"Hành động học không hợp lệ."});
     const result=await db.runTransaction(async transaction=>{
       const snap=await transaction.get(userRef);
-      if(!snap.exists){
-        transaction.set(userRef,{
-          displayName:String(token.name||token.email?.split("@")[0]||"KatLearn Student").slice(0,80),
-          email:String(token.email||"").slice(0,200),
-          photoURL:String(token.picture||"").slice(0,1000),
-          provider:"firebase-auth",
-          role:"student",
-          coins:0,energy:0,streak:0,lastStudyDay:"",
-          dailyQuestions:0,dailyCorrect:0,questionsAnswered:0,correctAnswers:0,
-          ownedThemes:[],joinedClassIds:[],teacherUid:"",teacherUids:[],totalWords:0,vocab:[],
-          createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()
-        },{merge:true});
-      }
-      const profile=snap.exists()?snap.data()||{}:{
-        streak:0,lastStudyDay:""
-      };
+      const profile=snap.exists()?snap.data()||{}:profileDefaults(token);
       const currentDay=studyDay(),lastDay=String(profile.lastStudyDay||"");
       const currentStreak=Math.max(0,Number(profile.streak||0));
       const streak=lastDay===currentDay
         ?currentStreak
         :lastDay===previousStudyDay(currentDay)?currentStreak+1:1;
-      transaction.set(userRef,{streak,lastStudyDay:currentDay,lastStudyAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()},{merge:true});
-      return{ok:true,uid:token.uid,streak,lastStudyDay:currentDay};
+      transaction.set(userRef,{
+        streak,lastStudyDay:currentDay,lastStudyAt:FieldValue.serverTimestamp(),
+        updatedAt:FieldValue.serverTimestamp()
+      },{merge:true});
+      return{
+        ok:true,uid:token.uid,streak,lastStudyDay:currentDay,
+        goal:goalState(profile),
+        coins:Math.max(0,Math.floor(Number(profile.coins||0)))
+      };
     });
     return send(res,200,result);
   }catch(error){
