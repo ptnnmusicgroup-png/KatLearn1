@@ -21,7 +21,12 @@ function createResponse() {
   const state = { statusCode: 200, headers: {}, body: "", ended: false };
 
   const res = {
-    statusCode: 200,
+    get statusCode() {
+      return state.statusCode;
+    },
+    set statusCode(code) {
+      state.statusCode = Number(code) || 200;
+    },
     setHeader(name, value) {
       state.headers[String(name)] = Array.isArray(value) ? value.join(", ") : String(value);
       return this;
