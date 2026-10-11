@@ -89,10 +89,20 @@ function findWord(words,word,meaning){
   const w=norm(word),m=norm(meaning);
   return (Array.isArray(words)?words:[]).some(item=>norm(item?.word)===w&&norm(item?.mean??item?.meaning_vi)===m);
 }
+function resolveProjectRoot(){
+  const candidates=[
+    path.resolve(__dirname,".."),
+    path.resolve(__dirname,"../.."),
+    process.cwd(),
+    path.resolve(process.cwd(),"..")
+  ];
+  return candidates.find(root=>fs.existsSync(path.join(root,"data","vocabulary")))||candidates[0];
+}
+const PROJECT_ROOT=resolveProjectRoot();
 function loadCoreWords(topicId){
   const relative=CORE_PACK_PATHS[String(topicId||'').trim()];
   if(!relative)throw Object.assign(new Error("Topic KatLearn không hợp lệ."),{status:400});
-  const file=path.join(__dirname,"..","data","vocabulary",relative);
+  const file=path.join(PROJECT_ROOT,"data","vocabulary",relative);
   try{
     const data=JSON.parse(fs.readFileSync(file,"utf8"));
     return Array.isArray(data.words)?data.words:[];
