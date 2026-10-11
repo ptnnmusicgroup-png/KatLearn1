@@ -8,7 +8,9 @@ const ALLOWED_ORIGINS=new Set([
   "https://teacher-katlearn.vercel.app",
   "https://lms-katlearn.vercel.app",
   "http://localhost:3000",
-  "http://localhost:5173"
+  "http://localhost:5173",
+  ...(String(process.env.KATLEARN_ALLOWED_ORIGINS||"").split(",").map(value=>value.trim()).filter(Boolean)),
+  ...(process.env.URL?[String(process.env.URL).replace(/\\/+$/,"")]:[])
 ]);
 
 function credentialEnvStatus(){

@@ -27,8 +27,20 @@ function writeJson(res,status,body,origin=""){
 }
 
 const LIMITS={users:300,teachers:300,classes:300,packs:300,privatePacks:300,schools:300,pending:100,activity:100};
-const DATA_DIR=path.join(__dirname,"../data/national-catalog");
-const VOCAB_DIR=path.join(__dirname,"../data/vocabulary");
+function findDataDirectory(relative) {
+  const candidates = [
+    path.join(__dirname, "..", relative),
+    path.join(process.cwd(), relative),
+    path.join(process.cwd(), "..", relative),
+    process.env.LAMBDA_TASK_ROOT ? path.join(process.env.LAMBDA_TASK_ROOT, relative) : ""
+  ].filter(Boolean);
+  return candidates.find((candidate) => {
+    try { return fs.existsSync(candidate) && fs.statSync(candidate).isDirectory(); }
+    catch (_) { return false; }
+  }) || candidates[0];
+}
+const DATA_DIR=findDataDirectory("data/national-catalog");
+const VOCAB_DIR=findDataDirectory("data/vocabulary");
 const PUBLIC_LIBRARY_DIR=path.join(VOCAB_DIR,"TOPICs_KatLearn");
 const TOTAL_SCHOOLS=22850;
 const PROVINCES=[

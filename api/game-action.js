@@ -92,12 +92,18 @@ function findWord(words,word,meaning){
 function loadCoreWords(topicId){
   const relative=CORE_PACK_PATHS[String(topicId||'').trim()];
   if(!relative)throw Object.assign(new Error("Topic KatLearn không hợp lệ."),{status:400});
-  const file=path.join(__dirname,"..","data","vocabulary",relative);
+  const candidates=[
+    path.join(__dirname,"..","data","vocabulary",relative),
+    path.join(process.cwd(),"data","vocabulary",relative),
+    path.join(process.cwd(),"..","data","vocabulary",relative),
+    process.env.LAMBDA_TASK_ROOT?path.join(process.env.LAMBDA_TASK_ROOT,"data","vocabulary",relative):""
+  ].filter(Boolean);
+  const file=candidates.find(candidate=>{try{return fs.existsSync(candidate)&&fs.statSync(candidate).isFile()}catch(_){return false}})||candidates[0];
   try{
     const data=JSON.parse(fs.readFileSync(file,"utf8"));
     return Array.isArray(data.words)?data.words:[];
   }catch(_){
-    throw Object.assign(new Error("Không tải được kho từ KatLearn."),{status:503});
+    throw Object.assign(new Error("Không tải được kho từ KatLearn trên máy chủ."),{status:503});
   }
 }
 async function validateQuizSource(db,uid,source,word,meaning,profile){
