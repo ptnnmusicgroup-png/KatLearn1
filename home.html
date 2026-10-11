@@ -17,8 +17,9 @@
   <div class="streak-goal-active" id="streakGoalActive" hidden>
     <div class="streak-goal-ring" role="img" id="streakGoalRingGraphic" aria-label="Tiến độ mục tiêu streak">
       <svg viewBox="0 0 220 220" aria-hidden="true">
+        <defs><linearGradient id="streakGoalBlueGradient" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#1677c8"></stop><stop offset="100%" stop-color="#65d2ff"></stop></linearGradient></defs>
         <circle class="streak-goal-ring-track" cx="110" cy="110" r="88"></circle>
-        <circle class="streak-goal-ring-progress" id="streakGoalRingProgress" cx="110" cy="110" r="88" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"></circle>
+        <circle class="streak-goal-ring-progress" id="streakGoalRingProgress" cx="110" cy="110" r="88" pathLength="100" transform="rotate(-90 110 110)" stroke-dasharray="100" stroke-dashoffset="100"></circle>
       </svg>
       <div class="streak-goal-ring-center"><strong id="streakGoalCount">0/7</strong><small>ngày hoàn thành</small></div>
     </div>
