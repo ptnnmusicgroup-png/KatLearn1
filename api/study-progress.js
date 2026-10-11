@@ -77,7 +77,7 @@ module.exports=async(req,res)=>{
           streakGoalRewardedAt:"",
           updatedAt:FieldValue.serverTimestamp()
         };
-        transaction.set(userRef,next,{merge:true});
+        transaction.set(userRef,{...(snap.exists()?{}:profileDefaults(token)),...next},{merge:true});
         return{ok:true,uid:token.uid,goal:{target,progress:0,completed:false,remaining:target},coins:Math.max(0,Math.floor(Number(profile.coins||0)))};
       });
       return send(res,200,result);
@@ -93,6 +93,7 @@ module.exports=async(req,res)=>{
         ?currentStreak
         :lastDay===previousStudyDay(currentDay)?currentStreak+1:1;
       transaction.set(userRef,{
+        ...(snap.exists()?{}:profileDefaults(token)),
         streak,lastStudyDay:currentDay,lastStudyAt:FieldValue.serverTimestamp(),
         ...(lastDay!==currentDay?{dailyQuestions:0,dailyCorrect:0}:{}),
         updatedAt:FieldValue.serverTimestamp()
