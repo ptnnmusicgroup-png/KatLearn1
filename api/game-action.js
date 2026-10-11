@@ -139,7 +139,7 @@ module.exports=async(req,res)=>{
   try{
     const token=await user(req);limit(token.uid,"game",60);
     const body=req.body||{},action=String(body.action||""),{db}=init();
-    const userRef=db.doc("users/"+token.uid),leaderboardRef=db.doc("leaderboard/"+leaderboardId(token.uid));
+    const userRef=db.doc("users/"+token.uid),leaderboardRef=db.doc("leaderboard/"+leaderboardId(token.uid)),challengeRef=db.doc("streakChallenges/"+token.uid);
 
     if(action==="balance"){
       const snap=await userRef.get();
@@ -180,6 +180,10 @@ module.exports=async(req,res)=>{
       const result=await db.runTransaction(async transaction=>{
         const snap=await transaction.get(userRef);
         if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
+        // Read the separate server-only challenge document before any writes.
+        // User-editable profile fields must never be trusted for streak rewards.
+        const challengeSnap=correct?await transaction.get(challengeRef):null;
+        const challenge=challengeSnap?.exists?challengeSnap.data()||{}:{};
         const profile=snap.data()||{};
         const now=Date.now();
         const attemptRef=db.collection("users").doc(token.uid).collection("attempts").doc();
@@ -200,22 +204,29 @@ module.exports=async(req,res)=>{
         // A streak challenge advances only after a server-validated correct answer.
         // Last-study-day makes progress idempotent across repeated questions/retries.
         const validGoals=[7,10,20,30,50];
-        const goalTarget=validGoals.includes(Number(profile.streakGoal))?Number(profile.streakGoal):0;
-        let goalProgress=Math.max(0,Math.floor(Number(profile.streakGoalProgress||0)));
-        let goalCompleted=Boolean(profile.streakGoalCompletedAt);
+        const goalTarget=validGoals.includes(Number(challenge.target))?Number(challenge.target):0;
+        let goalProgress=Math.max(0,Math.floor(Number(challenge.progress||0)));
+        let goalCompleted=Boolean(challenge.completedAt);
         let goalRewarded=false;
-        const goalLastDay=String(profile.streakGoalLastStudyDay||"");
+        const goalLastDay=String(challenge.lastStudyDay||"");
+        const challengeUpdates={};
         if(correct&&goalTarget&&!goalCompleted){
           if(goalLastDay!==currentStudyDay){
             goalProgress=goalLastDay===previousStudyDay(currentStudyDay)?Math.min(goalTarget,goalProgress+1):1;
-            updates.streakGoalProgress=goalProgress;
-            updates.streakGoalLastStudyDay=currentStudyDay;
+            challengeUpdates.progress=goalProgress;
+            challengeUpdates.lastStudyDay=currentStudyDay;
           }
-          if(goalProgress>=goalTarget&&!profile.streakGoalRewardedAt){
+          if(goalProgress>=goalTarget&&!challenge.rewardedAt){
             goalCompleted=true;
             goalRewarded=true;
-            updates.streakGoalCompletedAt=currentStudyDay;
-            updates.streakGoalRewardedAt=currentStudyDay;
+            challengeUpdates.completedAt=currentStudyDay;
+            challengeUpdates.rewardedAt=currentStudyDay;
+          }
+          if(Object.keys(challengeUpdates).length){
+            challengeUpdates.uid=token.uid;
+            challengeUpdates.target=goalTarget;
+            challengeUpdates.updatedAt=FieldValue.serverTimestamp();
+            transaction.set(challengeRef,challengeUpdates,{merge:true});
           }
         }
         // Ordinary game coins and the one-time challenge bonus are applied in
