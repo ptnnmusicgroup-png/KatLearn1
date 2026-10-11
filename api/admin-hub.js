@@ -38,8 +38,21 @@ function writeJson(res,status,body,origin=""){
 }
 
 const LIMITS={users:300,teachers:300,classes:300,packs:300,privatePacks:300,schools:300,pending:100,activity:100};
-const DATA_DIR=path.join(__dirname,"../data/national-catalog");
-const VOCAB_DIR=path.join(__dirname,"../data/vocabulary");
+function resolveProjectRoot(){
+  const candidates=[
+    path.resolve(__dirname,".."),
+    path.resolve(__dirname,"../.."),
+    process.cwd(),
+    path.resolve(process.cwd(),"..")
+  ];
+  return candidates.find(root=>
+    fs.existsSync(path.join(root,"data","national-catalog")) &&
+    fs.existsSync(path.join(root,"data","vocabulary"))
+  )||candidates[0];
+}
+const PROJECT_ROOT=resolveProjectRoot();
+const DATA_DIR=path.join(PROJECT_ROOT,"data","national-catalog");
+const VOCAB_DIR=path.join(PROJECT_ROOT,"data","vocabulary");
 const PUBLIC_LIBRARY_DIR=path.join(VOCAB_DIR,"TOPICs_KatLearn");
 const TOTAL_SCHOOLS=22850;
 const PROVINCES=[
