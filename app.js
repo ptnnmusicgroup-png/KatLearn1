@@ -944,8 +944,9 @@ function renderProgressColumnChart(items){
   requestAnimationFrame(()=>requestAnimationFrame(()=>box.querySelectorAll('.progress-column').forEach(column=>column.classList.add('is-animated'))));
 }
 function makeProgressChartData(profile,vocabCount,knownCount,accuracy){
-  const goalTarget=[7,10,20,30,50].includes(Number(profile?.streakGoal))?Number(profile.streakGoal):0;
-  const goalProgress=Math.max(0,Math.min(goalTarget,Math.floor(Number(profile?.streakGoalProgress)||0)));
+  const challenge=window.katlearnStreakGoalState||{};
+  const goalTarget=[7,10,20,30,50].includes(Number(challenge.target))?Number(challenge.target):0;
+  const goalProgress=Math.max(0,Math.min(goalTarget,Math.floor(Number(challenge.progress)||0)));
   const dailyCount=String(profile?.lastStudyDay||'')===studyDayClient()?Math.max(0,Math.floor(Number(profile?.dailyQuestions)||0)):0;
   const streak=Math.max(0,Math.floor(Number(profile?.streak)||0));
   const vocabularyPercent=vocabCount?Math.round(knownCount/vocabCount*100):0;
@@ -1022,6 +1023,9 @@ async function renderProgressDashboard(){
   })();
   return progressRenderPromise;
 }
+window.addEventListener('katlearn-streak-goal-state',()=>{
+  if($('#progress')?.classList.contains('active-page'))void renderProgressDashboard();
+});
 if($('#refreshProgressBtn'))$('#refreshProgressBtn').onclick=async()=>{const btn=$('#refreshProgressBtn');if(!btn)return;const old=btn.textContent;btn.disabled=true;btn.textContent='↻ Đang cập nhật...';try{await renderProgressDashboard();toast('✓ Đã cập nhật tiến độ.')}catch(e){toast('Không thể cập nhật tiến độ lúc này.')}finally{btn.disabled=false;btn.textContent=old}};
 async function renderLeaderboard(){
   const target=$('#rankingContent'),mini=$('#miniRanking');
