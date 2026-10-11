@@ -5,9 +5,20 @@ const crypto=require("crypto");
 function clean(value,max=200){
   return String(value??"").trim().slice(0,max);
 }
+function isAllowedOrigin(origin){
+  const builtIn=[
+    "https://teacher-katlearn.vercel.app",
+    "https://lms-katlearn.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173"
+  ];
+  const configured=String(process.env.KATLEARN_ALLOWED_ORIGINS||"")
+    .split(",").map(value=>value.trim()).filter(Boolean);
+  return builtIn.includes(origin)||configured.includes(origin);
+}
 function corsHeaders(origin){
   const h={"Content-Type":"application/json","Cache-Control":"no-store"};
-  if(["https://teacher-katlearn.vercel.app","https://lms-katlearn.vercel.app","http://localhost:3000","http://localhost:5173"].includes(origin)){
+  if(isAllowedOrigin(origin)){
     h["Access-Control-Allow-Origin"]=origin;
     h["Access-Control-Allow-Methods"]="GET,POST,OPTIONS";
     h["Access-Control-Allow-Headers"]="authorization,content-type,accept";
