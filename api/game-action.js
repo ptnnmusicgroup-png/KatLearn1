@@ -196,21 +196,40 @@ module.exports=async(req,res)=>{
           dailyQuestions,
           dailyCorrect
         };
-        let coins=Number(profile.coins||0),xp=Number(profile.energy||0);
-        // Every correctly answered, validated Reflex Arena question earns +10
-        // KatCoin. The old per-word/day reward claim blocked legitimate repeats.
-        const grantReward=correct&&rewardable;
-        if(correct){
-          updates.correctAnswers=FieldValue.increment(1);
-          if(grantReward){
-            updates.coins=FieldValue.increment(10);updates.energy=FieldValue.increment(10);
-            coins+=10;xp+=10;
+        let coins=Math.max(0,Math.floor(Number(profile.coins||0))),xp=Math.max(0,Math.floor(Number(profile.energy||0)));
+        // A streak challenge advances only after a server-validated correct answer.
+        // Last-study-day makes progress idempotent across repeated questions/retries.
+        const validGoals=[7,10,20,30,50];
+        const goalTarget=validGoals.includes(Number(profile.streakGoal))?Number(profile.streakGoal):0;
+        let goalProgress=Math.max(0,Math.floor(Number(profile.streakGoalProgress||0)));
+        let goalCompleted=Boolean(profile.streakGoalCompletedAt);
+        let goalRewarded=false;
+        const goalLastDay=String(profile.streakGoalLastStudyDay||"");
+        if(correct&&goalTarget&&!goalCompleted){
+          if(goalLastDay!==currentStudyDay){
+            goalProgress=goalLastDay===previousStudyDay(currentStudyDay)?Math.min(goalTarget,goalProgress+1):1;
+            updates.streakGoalProgress=goalProgress;
+            updates.streakGoalLastStudyDay=currentStudyDay;
+          }
+          if(goalProgress>=goalTarget&&!profile.streakGoalRewardedAt){
+            goalCompleted=true;
+            goalRewarded=true;
+            updates.streakGoalCompletedAt=currentStudyDay;
+            updates.streakGoalRewardedAt=currentStudyDay;
           }
         }
+        // Ordinary game coins and the one-time challenge bonus are applied in
+        // one atomic profile transaction, never from client-side state.
+        const grantReward=correct&&rewardable;
+        const coinReward=(grantReward?10:0)+(goalRewarded?1000:0);
+        if(correct)updates.correctAnswers=FieldValue.increment(1);
+        if(grantReward){updates.energy=FieldValue.increment(10);xp+=10;}
+        if(coinReward){updates.coins=FieldValue.increment(coinReward);coins+=coinReward;}
         transaction.set(userRef,updates,{merge:true});
-        transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,rewarded:grantReward,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
+        transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,rewarded:grantReward,streakGoalRewarded:goalRewarded,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
         transaction.set(leaderboardRef,publicScore(profile.displayName,coins,xp),{merge:true});
-        return{ok:true,correct,rewarded:grantReward,coins,xp,dailyQuestions,dailyCorrect,streak};
+        const streakGoal=goalTarget?{target:goalTarget,progress:Math.min(goalTarget,goalProgress),completed:goalCompleted,remaining:Math.max(0,goalTarget-goalProgress),rewarded:goalRewarded}:null;
+        return{ok:true,correct,rewarded:grantReward,coins,xp,dailyQuestions,dailyCorrect,streak,streakGoal,goalRewardCoins:goalRewarded?1000:0,coinReward};
       });
       return send(res,200,result);
     }
