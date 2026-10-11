@@ -235,7 +235,7 @@
         const existing=await api.getDoc(ref);
         if(currentUser?.uid!==uid)return null;
         const payload={...data};
-        ['__coinsAuthoritative','coins','energy','streak','lastStudyDay','dailyQuestions','dailyCorrect','questionsAnswered','correctAnswers','ownedThemes','teacherUid','teacherUids','studentAccountType','classId','className','catalogClassId','schoolId','schoolName','province','ward','teacherName','teacherEmail'].forEach(k=>delete payload[k]);
+        ['__coinsAuthoritative','coins','energy','streak','lastStudyDay','dailyQuestions','dailyCorrect','questionsAnswered','correctAnswers','streakGoal','streakGoalProgress','streakGoalStartDay','streakGoalLastStudyDay','streakGoalCompletedAt','streakGoalRewardedAt','ownedThemes','teacherUid','teacherUids','studentAccountType','classId','className','catalogClassId','schoolId','schoolName','province','ward','teacherName','teacherEmail'].forEach(k=>delete payload[k]);
         if(!existing.exists()){
           const base={
             displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
