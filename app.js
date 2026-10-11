@@ -932,7 +932,7 @@ function renderProgressColumnChart(items){
   const rows=Array.isArray(items)?items:[];
   box.innerHTML=rows.map((item,index)=>{
     const value=Math.max(0,Math.min(100,Math.round(Number(item.value)||0)));
-    return '<article class="progress-column" style="--column-index:'+index+'" aria-label="'+esc(item.label)+': '+value+' phần trăm">'+
+    return '<article class="progress-column" style="--column-index:'+index+';--column-delay:'+(index*110)+'ms" aria-label="'+esc(item.label)+': '+value+' phần trăm">'+
       '<div class="progress-column-value">'+esc(item.display||value+'%')+'</div>'+
       '<div class="progress-column-track" role="progressbar" aria-label="'+esc(item.label)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+value+'">'+
         '<span class="progress-column-fill '+esc(item.tone||'blue')+'" style="--progress-scale:'+(value/100).toFixed(3)+'"></span>'+
