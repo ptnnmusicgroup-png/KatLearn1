@@ -1,0 +1,142 @@
+/* KatLearn learning goals + progress analytics */
+:root{
+  --kl-goal-blue:#1677c8;
+  --kl-goal-blue-deep:#0b4678;
+  --kl-goal-sky:#6fd3ff;
+  --kl-goal-mint:#39b990;
+  --kl-goal-line:#d9eafa;
+}
+body[data-page="home"] .greeting-row{align-items:stretch;gap:clamp(18px,3vw,32px)}
+body[data-page="home"] .greeting-row>div:first-child{flex:1;min-width:220px;align-self:center}
+.streak-card.streak-goal-card{
+  box-sizing:border-box;display:flex;flex-direction:column;gap:16px;
+  width:min(100%,500px);min-width:0;flex:0 1 500px;align-self:stretch;
+  margin:0;padding:clamp(18px,2.4vw,26px);
+  border:1px solid rgba(167,211,241,.75);border-radius:28px;
+  color:#123b5b;background:
+    radial-gradient(circle at 91% 6%,rgba(111,211,255,.22),transparent 36%),
+    linear-gradient(145deg,rgba(255,255,255,.98),rgba(237,248,255,.96));
+  box-shadow:0 18px 44px rgba(28,104,155,.11);
+  overflow:hidden;position:relative;isolation:isolate;
+}
+.streak-goal-card:before{content:"";position:absolute;inset:auto -45px -85px auto;width:210px;height:210px;border-radius:50%;background:rgba(111,211,255,.12);pointer-events:none;z-index:-1}
+.streak-goal-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.streak-goal-current{display:flex;align-items:center;gap:12px;min-width:0}
+.streak-goal-flame{display:grid;place-items:center;flex:0 0 auto;width:48px;height:48px;border-radius:17px;background:linear-gradient(140deg,#fff0d4,#ffe0a2);font-size:27px;box-shadow:0 7px 18px rgba(232,156,48,.12)}
+.streak-goal-current b{display:block;font:800 23px/1.05 "Baloo 2","Fredoka",sans-serif!important;color:#123b5b}
+.streak-goal-current small{display:block;margin-top:5px;font-size:11px;color:#7390a4}
+.streak-goal-status{padding:7px 10px;border:1px solid #d9ecfa;border-radius:999px;background:rgba(255,255,255,.8);font-size:9px;font-weight:800;color:#3377a7;text-align:center;white-space:nowrap}
+.streak-goal-intro h3,.streak-goal-copy h3{margin:0;color:#123b5b;font:800 22px/1.12 "Baloo 2","Fredoka",sans-serif}
+.streak-goal-intro p,.streak-goal-copy>p:not(.streak-goal-eyebrow){margin:7px 0 0;color:#6e8da4;font-size:11px;line-height:1.65}
+.streak-goal-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:16px}
+.streak-goal-options button{
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0;
+  min-height:72px;padding:8px 4px;border:1px solid #d8eaf8;border-radius:17px;
+  background:rgba(255,255,255,.92);color:#24628f;cursor:pointer;
+  box-shadow:0 4px 12px rgba(30,105,158,.045);
+  transition:transform 220ms cubic-bezier(.2,.75,.25,1),background-color 180ms ease,border-color 180ms ease,box-shadow 180ms ease;
+}
+.streak-goal-options button strong{font:800 25px/1.05 "Baloo 2","Fredoka",sans-serif}
+.streak-goal-options button small{margin-top:4px;font-size:9px;font-weight:700;color:#80a0b6}
+.streak-goal-options button:hover{transform:translateY(-3px);border-color:#77c8f2;background:#f7fcff;box-shadow:0 10px 20px rgba(23,119,200,.12)}
+.streak-goal-options button:focus-visible{outline:3px solid rgba(22,119,200,.25);outline-offset:2px}
+.streak-goal-options button:disabled{opacity:.55;cursor:wait;transform:none}
+.streak-goal-note{margin:13px 0 0;padding-top:12px;border-top:1px solid rgba(199,226,244,.75);font-size:10px;color:#7595aa}
+.streak-goal-note strong{color:#1677c8}
+.streak-goal-active{display:grid;grid-template-columns:minmax(175px,230px) minmax(0,1fr);gap:clamp(15px,2vw,25px);align-items:center}
+.streak-goal-ring{position:relative;width:min(100%,230px);aspect-ratio:1;margin:0 auto;filter:drop-shadow(0 9px 13px rgba(17,108,173,.08))}
+.streak-goal-ring svg{display:block;width:100%;height:100%;overflow:visible}
+.streak-goal-ring-track{fill:none;stroke:#dceefa;stroke-width:14}
+.streak-goal-ring-progress{fill:none;stroke:url(#streakGoalBlueGradient);stroke:#1689d2;stroke-width:14;stroke-linecap:round;transform:rotate(-90deg);transform-origin:110px 110px;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset 900ms cubic-bezier(.16,1,.3,1)}
+.streak-goal-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.streak-goal-ring-center strong{font:800 clamp(30px,3vw,40px)/1 "Baloo 2","Fredoka",sans-serif;letter-spacing:-.035em;color:#0e507f;font-variant-numeric:tabular-nums}
+.streak-goal-ring-center small{margin-top:7px;color:#7193aa;font-size:10px;font-weight:700}
+.streak-goal-copy{min-width:0}
+.streak-goal-eyebrow{margin:0 0 6px!important;color:#2b9bd8!important;font-size:9px!important;font-weight:900;letter-spacing:.12em}
+.streak-goal-copy h3{font-size:clamp(20px,2.2vw,26px)}
+.streak-goal-copy>p:not(.streak-goal-eyebrow){margin-top:8px}
+.streak-goal-reward{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px;border:1px solid #d4f0e4;border-radius:15px;background:linear-gradient(135deg,#f0fff7,#fff);animation:klGoalRewardIn 460ms cubic-bezier(.16,1,.3,1) both}
+.streak-goal-reward>span{display:grid;place-items:center;width:37px;height:37px;flex:0 0 auto;border-radius:12px;background:#dff8ed;font-size:22px}
+.streak-goal-reward strong,.streak-goal-reward small{display:block}
+.streak-goal-reward strong{font:800 15px/1.1 "Baloo 2","Fredoka",sans-serif;color:#14885c}
+.streak-goal-reward small{margin-top:4px;font-size:9px;color:#6f9b88}
+.streak-goal-new,.streak-goal-change{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:41px;
+  margin-top:13px;padding:0 14px;border:0;border-radius:13px;
+  background:linear-gradient(135deg,#1677c8,#45b6ed);color:#fff;
+  font:800 11px "Be Vietnam Pro",sans-serif;cursor:pointer;
+  box-shadow:0 8px 18px rgba(22,119,200,.16);
+  transition:transform 180ms ease,box-shadow 180ms ease,filter 180ms ease;
+}
+.streak-goal-new:hover,.streak-goal-change:hover{transform:translateY(-2px);filter:saturate(1.08);box-shadow:0 12px 22px rgba(22,119,200,.22)}
+.streak-goal-change{margin-left:7px;background:#edf7ff;color:#2874a5;box-shadow:none;border:1px solid #d6ebf9}
+.streak-goal-message{min-height:0;margin:0;color:#297da9;font-size:10px;line-height:1.5}
+.streak-goal-message:empty{display:none}
+.streak-goal-message.is-error{color:#bd5260}
+.streak-goal-message.is-success{color:#13835b;font-weight:800}
+.streak-goal-card [hidden]{display:none!important}
+
+/* Progress page: vertical, staggered bars that rise from a shared baseline. */
+.progress-analytics{margin-top:30px}
+.progress-analytics .section-heading{margin-bottom:14px}
+.progress-chart-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:stretch}
+.progress-column{
+  min-width:0;display:flex;flex-direction:column;align-items:center;
+  padding:18px 12px 15px;border:1px solid #dcebf6;border-radius:20px;
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(247,252,255,.98));
+  box-shadow:0 7px 22px rgba(18,73,112,.055);
+  text-align:center;
+}
+.progress-column-value{min-height:25px;color:#174e76;font:800 17px/1.25 "Baloo 2","Fredoka",sans-serif;font-variant-numeric:tabular-nums}
+.progress-column-track{
+  position:relative;isolation:isolate;display:flex;align-items:flex-end;justify-content:center;
+  width:64px;height:156px;max-width:100%;margin:9px 0 13px;overflow:hidden;
+  border-radius:18px;background:linear-gradient(180deg,#f2f8fc,#eaf4fb);
+  box-shadow:inset 0 0 0 1px rgba(190,220,239,.34);
+}
+.progress-column-fill{
+  display:block;position:absolute;inset:0;border-radius:inherit;
+  transform:scaleY(0);transform-origin:bottom center;
+  transition:transform 850ms cubic-bezier(.16,1,.3,1);
+  transition-delay:calc(var(--column-index,0)*110ms);
+  will-change:transform;
+}
+.progress-column.is-animated .progress-column-fill{transform:scaleY(var(--progress-scale,0))}
+.progress-column-fill:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.24),transparent 38%);border-radius:inherit}
+.progress-column-fill.blue{background:linear-gradient(180deg,#66d1ff,#1683d0)}
+.progress-column-fill.mint{background:linear-gradient(180deg,#72dfb6,#24a980)}
+.progress-column-fill.coral{background:linear-gradient(180deg,#ffa9a0,#ed6c78)}
+.progress-column-fill.violet{background:linear-gradient(180deg,#b8a6ff,#7565df)}
+.progress-column-label{font-size:11px;line-height:1.35;color:#2b4760}
+.progress-column-detail{max-width:100%;margin-top:5px;color:#8298aa;font-size:9px;line-height:1.5;overflow-wrap:anywhere}
+@keyframes klGoalRewardIn{from{opacity:0;transform:translateY(7px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:1120px){
+  .streak-goal-active{grid-template-columns:minmax(150px,190px) minmax(0,1fr)}
+  .streak-goal-ring{width:min(100%,195px)}
+  .progress-chart-grid{gap:10px}
+  .progress-column{padding:15px 8px}
+}
+@media(max-width:860px){
+  body[data-page="home"] .greeting-row{align-items:stretch;flex-direction:column}
+  .streak-card.streak-goal-card{width:100%;max-width:none;flex:1}
+  .streak-goal-active{grid-template-columns:minmax(175px,220px) minmax(0,1fr)}
+  .streak-goal-ring{width:min(100%,220px)}
+  .progress-chart-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:480px){
+  .streak-card.streak-goal-card{padding:17px;border-radius:23px}
+  .streak-goal-current b{font-size:21px!important}
+  .streak-goal-status{max-width:124px;white-space:normal}
+  .streak-goal-options{gap:5px}
+  .streak-goal-options button{min-height:63px;border-radius:13px}
+  .streak-goal-options button strong{font-size:22px}
+  .streak-goal-active{grid-template-columns:1fr;gap:12px}
+  .streak-goal-ring{width:min(100%,218px)}
+  .streak-goal-copy{text-align:center}
+  .streak-goal-reward{text-align:left}
+  .progress-column-track{height:132px;width:54px}
+}
+@media(prefers-reduced-motion:reduce){
+  .streak-goal-ring-progress,.progress-column-fill,.streak-goal-reward,.streak-goal-options button,.streak-goal-new,.streak-goal-change{transition:none!important;animation:none!important}
+  .progress-column-fill{transform:scaleY(var(--progress-scale,0))}
+}
