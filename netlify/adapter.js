@@ -35,8 +35,8 @@ function allowedOrigins() {
   return new Set([
     ...DEFAULT_ALLOWED_ORIGINS,
     ...(process.env.URL ? [String(process.env.URL).replace(/\/+$/, "")] : []),
-    ...(process.env.KATLEARN_LMS_SITE_URL ? [String(process.env.KATLEARN_LMS_SITE_URL).replace(/\\/+$/, "")] : []),
-    ...(process.env.KATLEARN_TEACHER_SITE_URL ? [String(process.env.KATLEARN_TEACHER_SITE_URL).replace(/\\/+$/, "")] : []),
+    ...(process.env.KATLEARN_LMS_SITE_URL ? [String(process.env.KATLEARN_LMS_SITE_URL).replace(/\/+$/, "")] : []),
+    ...(process.env.KATLEARN_TEACHER_SITE_URL ? [String(process.env.KATLEARN_TEACHER_SITE_URL).replace(/\/+$/, "")] : []),
     ...configured
   ]);
 }
