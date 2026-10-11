@@ -1,30 +1,54 @@
 # KatLearn — Netlify migration
 
-The `migration/netlify` branch contains the Netlify adapter and static publish configuration. It deliberately leaves the current Vercel deployment untouched while the Netlify deployment is validated.
+This branch prepares the LMS for a staged Netlify deployment. It does not change the current Vercel production site, Firebase project, or data.
 
-## Build settings
+## Build and publish
 
 - Build command: `node scripts/netlify-build.mjs`
 - Publish directory: `dist`
 - Functions directory: `netlify/functions`
 - Node.js: `22`
 
-The build copies public site files into `dist/` while excluding `api/`, `netlify/`, development scripts, Git/Vercel metadata, dependency folders, and likely credential files. API paths stay compatible: `/api/*` rewrites to Netlify Functions.
+The build publishes the public website and public catalog files while excluding the server-side `api/` source, Netlify function source, Git/Vercel metadata, dependency folders, development scripts, and credential-looking files. It injects `site-config.js` into the published HTML so the LMS and Teacher site URLs can be configured per Netlify environment.
 
-## Environment variables
+## Netlify environment variables
 
-Copy the existing production runtime variables into the KatLearn Netlify site's **Functions** runtime scope. Never commit secret values.
+Configure these in the Netlify site dashboard. Do not paste service credentials into GitHub or any public file.
 
-- Firebase Admin: use the same configured service-account variable currently used by the project (preferred: `FIREBASE_SERVICE_ACCOUNT_JSON`; supported alternatives are defined in `api/_admin.js`).
-- Gemini: preserve `GEMINI_API_KEY` or `GOOGLE_API_KEY`, and `GEMINI_MODEL` if configured.
-- CORS: after the Netlify site names are chosen, set `KATLEARN_ALLOWED_ORIGINS` to a comma-separated list of the exact HTTPS origins that need browser access, including the Teacher site's `.netlify.app` origin.
+**Build-time site URLs**
+- `KATLEARN_LMS_URL`: this LMS site's final HTTPS origin.
+- `KATLEARN_TEACHER_URL`: the Teacher site's final HTTPS origin.
 
-## Cutover sequence
+**Functions/runtime variables**
+- Firebase Admin: use the existing production credential variable configured for the project. Preferred is `FIREBASE_SERVICE_ACCOUNT_JSON`; supported alternatives are implemented in `api/_admin.js`.
+- Gemini: `GEMINI_API_KEY` or `GOOGLE_API_KEY`, plus `GEMINI_MODEL` if you have a preferred model.
+- CORS: `KATLEARN_ALLOWED_ORIGINS` — a comma-separated list containing the exact HTTPS origins allowed to call the LMS API from another browser origin. Include the Teacher Netlify origin.
 
-1. Create a Netlify site from this repository and select the `migration/netlify` branch.
-2. Add the runtime environment variables above in Netlify; do not copy secrets into this file or GitHub.
-3. Deploy a preview and smoke-test login, vocabulary, assigned packs, streak updates, games/shop, and Admin actions.
-4. Configure the Teacher site's `LMS_ADMIN_URL` to this site's final HTTPS URL plus `/api/admin-hub`.
-5. After both Netlify previews pass, point custom domains (if any) to Netlify. Keep the Vercel sites live until that test passes.
+Keep the existing Firebase project configuration unchanged so current account UIDs, Firestore documents, vocabulary packs, learning progress, and KatCoin remain in the same database.
 
-Netlify synchronous Functions have a 60-second execution limit. The long-running catalog/admin operations must be tested against that limit before production cutover.
+## Netlify Functions
+
+The branch adds Netlify adapters for:
+- `/api/admin-hub`
+- `/api/game-action`
+- `/api/study-progress`
+- `/api/student-assigned-packs`
+- `/api/student-school-request`
+- `/api/personal-packs`
+- `/api/personal-pack`
+- `/api/personal-pack-action`
+- `/api/vocab-assist`
+- `/api/study-coach`
+- `/api/ai-pack`
+
+The original `/api/*` URL shape is preserved through Netlify rewrites. Each adapter translates Netlify events to the existing API handler; it does not replace Firebase Auth or Firestore.
+
+## Release checklist
+
+1. Deploy this branch to a new Netlify site and set the variables above. Do not disable or overwrite the existing Vercel site.
+2. Open the Netlify URL and verify static assets, login/signup, personal vocabulary packs, assigned packs, study progress/streaks, KatCoin, themes/shop, AI vocabulary assistance, AI study studio, school requests, and Admin functions.
+3. Verify that the Teacher preview can sign in through SSO and can reach the same existing Firebase data.
+4. Check the deployment's function logs. Netlify's synchronous Functions have an execution-time limit, so longer bulk school-catalog/Admin operations must pass the real preview test before release.
+5. Only after both sites pass end-to-end tests, configure custom domains and DNS for Netlify. Keep Vercel available for rollback during cutover.
+
+No Firebase data migration is needed for a hosting-only move. Do not delete any Firestore data or old deployment until the new pair of sites is verified.
