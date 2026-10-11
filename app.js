@@ -926,6 +926,36 @@ function renderPersonalPackProgressList(){
   }).join('');
 }
 setTimeout(()=>{try{hydrateKatIcons()}catch(_){}},0);
+function renderProgressColumnChart(items){
+  const box=$('#progressBarChart');
+  if(!box)return;
+  const rows=Array.isArray(items)?items:[];
+  box.innerHTML=rows.map((item,index)=>{
+    const value=Math.max(0,Math.min(100,Math.round(Number(item.value)||0)));
+    return '<article class="progress-column" style="--column-index:'+index+'" aria-label="'+esc(item.label)+': '+value+' phần trăm">'+
+      '<div class="progress-column-value">'+esc(item.display||value+'%')+'</div>'+
+      '<div class="progress-column-track" role="progressbar" aria-label="'+esc(item.label)+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+value+'">'+
+        '<span class="progress-column-fill '+esc(item.tone||'blue')+'" style="--progress-scale:'+(value/100).toFixed(3)+'"></span>'+
+      '</div>'+
+      '<b class="progress-column-label">'+esc(item.label)+'</b>'+
+      '<small class="progress-column-detail">'+esc(item.detail||'Chưa có dữ liệu')+'</small>'+
+    '</article>';
+  }).join('');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>box.querySelectorAll('.progress-column').forEach(column=>column.classList.add('is-animated'))));
+}
+function makeProgressChartData(profile,vocabCount,knownCount,accuracy){
+  const goalTarget=[7,10,20,30,50].includes(Number(profile?.streakGoal))?Number(profile.streakGoal):0;
+  const goalProgress=Math.max(0,Math.min(goalTarget,Math.floor(Number(profile?.streakGoalProgress)||0)));
+  const dailyCount=String(profile?.lastStudyDay||'')===studyDayClient()?Math.max(0,Math.floor(Number(profile?.dailyQuestions)||0)):0;
+  const streak=Math.max(0,Math.floor(Number(profile?.streak)||0));
+  const vocabularyPercent=vocabCount?Math.round(knownCount/vocabCount*100):0;
+  return [
+    {label:'Từ đã thuộc',value:vocabularyPercent,display:vocabularyPercent+'%',detail:vocabCount?(knownCount.toLocaleString('vi-VN')+' / '+vocabCount.toLocaleString('vi-VN')+' từ'):'Chưa có bộ từ',tone:'blue'},
+    {label:'Độ chính xác',value:accuracy,display:accuracy+'%',detail:Math.max(0,Number(profile?.correctAnswers)||0).toLocaleString('vi-VN')+' câu đúng',tone:'mint'},
+    {label:'Mục tiêu streak',value:goalTarget?Math.round(goalProgress/goalTarget*100):0,display:goalTarget?(goalProgress+'/'+goalTarget):'—',detail:goalTarget?(goalProgress>=goalTarget?'Đã hoàn thành mục tiêu':'Còn '+Math.max(0,goalTarget-goalProgress)+' ngày'):'Chưa chọn mục tiêu',tone:'coral'},
+    {label:'Mục tiêu hôm nay',value:Math.min(100,Math.round(dailyCount/10*100)),display:Math.min(dailyCount,10)+'/10',detail:dailyCount>=10?'Đã hoàn thành mục tiêu':(10-Math.min(dailyCount,10))+' câu nữa để đủ 10',tone:'violet'}
+  ];
+}
 let progressRenderPromise=null;
 async function renderProgressDashboard(){
   const user=await window.studyStore?.waitForAuth?.().catch(()=>null);
@@ -939,6 +969,7 @@ async function renderProgressDashboard(){
     if(streakMeta)streakMeta.textContent='Đăng nhập để theo dõi chuỗi';
     if(coinsEl)coinsEl.textContent='0';
     if(coinsMeta)coinsMeta.textContent='Đăng nhập để xem số dư';
+    renderProgressColumnChart(makeProgressChartData({},0,0,0));
     return null;
   }
   const uid=String(user.uid||'');
@@ -979,6 +1010,7 @@ async function renderProgressDashboard(){
       if(streakMeta)streakMeta.textContent=streak?'Ngày học liên tiếp':'Chưa có chuỗi học';
       if(coinsEl)coinsEl.textContent=balance.toLocaleString('vi-VN');
       if(coinsMeta)coinsMeta.textContent='Số dư KatCoin hiện tại';
+      renderProgressColumnChart(makeProgressChartData(profile,vocabCount,knownCount,accuracy));
       renderPersonalPackProgressList();
       return profile;
     }catch(error){
