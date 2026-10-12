@@ -41,3 +41,7 @@ jobs:
           grep -q 'src="/site-config.js"' dist/home.html
           test ! -d dist/api
           test ! -d dist/netlify
+          test -f netlify/functions/context-example.js
+          test -f netlify/functions/ai-regenerate-word.js
+          grep -q "context-example" app.js
+          grep -q "ai-regenerate-word" ai-pack-generator.js
