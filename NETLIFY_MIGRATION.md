@@ -43,6 +43,8 @@ The branch adds Netlify adapters for:
 - `/api/vocab-assist`
 - `/api/study-coach`
 - `/api/ai-pack`
+- `/api/context-example`
+- `/api/ai-regenerate-word`
 
 The original `/api/*` URL shape is preserved through Netlify rewrites. Each adapter translates Netlify events to the existing API handler; it does not replace Firebase Auth or Firestore.
 
