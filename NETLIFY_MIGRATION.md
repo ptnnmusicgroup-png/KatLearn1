@@ -1,6 +1,6 @@
 # KatLearn — Netlify migration
 
-This branch prepares the LMS for a staged Netlify deployment. It does not change the current Vercel production site, Firebase project, or data.
+This branch prepares KatLearn LMS for Netlify hosting. These repository changes do not switch production until the migration pull request is merged and Netlify is configured. The Firebase project and all existing data remain unchanged.
 
 ## Build and publish
 
@@ -9,7 +9,7 @@ This branch prepares the LMS for a staged Netlify deployment. It does not change
 - Functions directory: `netlify/functions`
 - Node.js: `22`
 
-The build publishes the public website and public catalog files while excluding the server-side `api/` source, Netlify function source, Git/Vercel metadata, dependency folders, development scripts, and credential-looking files. It injects `site-config.js` into the published HTML so the LMS and Teacher site URLs can be configured per Netlify environment.
+The build publishes the public website and public catalog files while excluding the server-side `api/` source, Netlify function source, Git metadata, dependency folders, development scripts, and credential-looking files. It injects `site-config.js` into the published HTML so the LMS and Teacher site URLs can be configured per Netlify environment.
 
 ## Netlify environment variables
 
@@ -48,10 +48,10 @@ The original `/api/*` URL shape is preserved through Netlify rewrites. Each adap
 
 ## Release checklist
 
-1. Deploy this branch to a new Netlify site and set the variables above. Do not disable or overwrite the existing Vercel site.
+1. Deploy this branch to the Netlify site and set the variables above. Keep the current production deployment available until end-to-end checks pass.
 2. Open the Netlify URL and verify static assets, login/signup, personal vocabulary packs, assigned packs, study progress/streaks, KatCoin, themes/shop, AI vocabulary assistance, AI study studio, school requests, and Admin functions.
 3. Verify that the Teacher preview can sign in through SSO and can reach the same existing Firebase data.
 4. Check the deployment's function logs. Netlify's synchronous Functions have an execution-time limit, so longer bulk school-catalog/Admin operations must pass the real preview test before release.
-5. Only after both sites pass end-to-end tests, configure custom domains and DNS for Netlify. Keep Vercel available for rollback during cutover.
+5. Only after both sites pass end-to-end tests, configure custom domains and DNS for Netlify. Keep the previous production deployment available for rollback until the cutover is stable.
 
-No Firebase data migration is needed for a hosting-only move. Do not delete any Firestore data or old deployment until the new pair of sites is verified.
+No Firebase data migration is needed for a hosting-only move. Do not delete any Firestore data or the previous deployment until the new pair of sites is verified.
