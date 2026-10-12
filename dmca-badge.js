@@ -2,7 +2,7 @@
 (function(){
   const PROTECTION_ID='755dcf1e-2d8c-4315-8cd3-9f29b4ca890e';
   const BADGE_URL='https://images.dmca.com/Badges/dmca_protected_16_120.png?ID='+PROTECTION_ID;
-  const STATUS_URL='https://www.dmca.com/Protection/Status.aspx?ID='+PROTECTION_ID+'&refurl=https://lms-katlearn.vercel.app/';
+  const STATUS_URL='https://www.dmca.com/Protection/Status.aspx?ID='+PROTECTION_ID+'&refurl='+encodeURIComponent(location.origin+'/');
 
   function mount(){
     const footer=document.getElementById('katlearnFooter');
