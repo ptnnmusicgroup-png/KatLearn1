@@ -19,6 +19,9 @@ Configure these in the Netlify site dashboard. Do not paste service credentials 
 - `KATLEARN_LMS_URL`: `https://lms-katlearn.netlify.app`.
 - `KATLEARN_TEACHER_URL`: `https://teacher-katlearn.netlify.app`.
 
+**Netlify secrets scanning — false positive**
+- `GEMINI_MODEL` is a model identifier, not a credential. If Netlify has marked this variable as secret and scanning fails on the matching fallback in `api/_kat-ai.js`, add a site-level environment variable `SECRETS_SCAN_OMIT_KEYS=GEMINI_MODEL` in Netlify Project configuration → Environment variables. Apply it to the affected deploy contexts and ensure Builds scope is enabled. This omits only the non-sensitive model-name key from value matching; keep secrets scanning enabled for `GEMINI_API_KEY` and Firebase credentials.
+
 **Functions/runtime variables**
 - Firebase Admin: use the existing production credential variable configured for the project. Preferred is `FIREBASE_SERVICE_ACCOUNT_JSON`; supported alternatives are implemented in `api/_admin.js`.
 - Gemini: `GEMINI_API_KEY` or `GOOGLE_API_KEY`, plus `GEMINI_MODEL` if you have a preferred model.
