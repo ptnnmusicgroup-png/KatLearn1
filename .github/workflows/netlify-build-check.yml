@@ -47,6 +47,14 @@ jobs:
             fi
             test -f "netlify/functions/${endpoint}.js"
           done
+      - name: Verify cross-app SSO uses configured Netlify origins
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Cross-app SSO must resolve through generated Netlify configuration, not a legacy host.
+          grep -Fq 'window.KATLEARN_CONFIG?.teacherUrl' home-account.js
+          grep -Fq 'window.KATLEARN_CONFIG?.teacherUrl' sso-bridge.html
+          grep -Fq 'window.KATLEARN_CONFIG?.lmsUrl' sso-bridge.html
       - name: Verify publish output, route coverage, and legacy URL cleanup
         shell: bash
         run: |
