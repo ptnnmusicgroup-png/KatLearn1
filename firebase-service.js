@@ -554,7 +554,7 @@
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
   };
-  const TEACHER_HOME=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://teacher-katlearn.vercel.app').replace(/\/+$/,''),SSO_EXCHANGE=TEACHER_HOME+'/api/auth-exchange';
+  const TEACHER_HOME=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://teacher-katlearn.netlify.app').replace(/\/+$/,''),SSO_EXCHANGE=TEACHER_HOME+'/api/auth-exchange';
   const isMainLms=()=>{const p=location.pathname;return(p==='/'||p.endsWith('/index.html'))&&!/login\.html|signup\.html|sso-bridge\.html/.test(p)};
   let guardStarted=false;
   async function handleLmsSso(){
