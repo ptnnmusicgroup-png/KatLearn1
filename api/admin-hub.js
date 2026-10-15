@@ -5,9 +5,20 @@ const crypto=require("crypto");
 function clean(value,max=200){
   return String(value??"").trim().slice(0,max);
 }
+function isAllowedOrigin(origin){
+  const builtIn=[
+    "https://teacher-katlearn.netlify.app",
+    "https://lms-katlearn.netlify.app",
+    "http://localhost:3000",
+    "http://localhost:5173"
+  ];
+  const configured=String(process.env.KATLEARN_ALLOWED_ORIGINS||"")
+    .split(",").map(value=>value.trim()).filter(Boolean);
+  return builtIn.includes(origin)||configured.includes(origin);
+}
 function corsHeaders(origin){
   const h={"Content-Type":"application/json","Cache-Control":"no-store"};
-  if(["https://teacher-katlearn.vercel.app","https://lms-katlearn.vercel.app","http://localhost:3000","http://localhost:5173"].includes(origin)){
+  if(isAllowedOrigin(origin)){
     h["Access-Control-Allow-Origin"]=origin;
     h["Access-Control-Allow-Methods"]="GET,POST,OPTIONS";
     h["Access-Control-Allow-Headers"]="authorization,content-type,accept";
@@ -27,8 +38,21 @@ function writeJson(res,status,body,origin=""){
 }
 
 const LIMITS={users:300,teachers:300,classes:300,packs:300,privatePacks:300,schools:300,pending:100,activity:100};
-const DATA_DIR=path.join(__dirname,"../data/national-catalog");
-const VOCAB_DIR=path.join(__dirname,"../data/vocabulary");
+function resolveProjectRoot(){
+  const candidates=[
+    path.resolve(__dirname,".."),
+    path.resolve(__dirname,"../.."),
+    process.cwd(),
+    path.resolve(process.cwd(),"..")
+  ];
+  return candidates.find(root=>
+    fs.existsSync(path.join(root,"data","national-catalog")) &&
+    fs.existsSync(path.join(root,"data","vocabulary"))
+  )||candidates[0];
+}
+const PROJECT_ROOT=resolveProjectRoot();
+const DATA_DIR=path.join(PROJECT_ROOT,"data","national-catalog");
+const VOCAB_DIR=path.join(PROJECT_ROOT,"data","vocabulary");
 const PUBLIC_LIBRARY_DIR=path.join(VOCAB_DIR,"TOPICs_KatLearn");
 const TOTAL_SCHOOLS=22850;
 const PROVINCES=[

@@ -223,7 +223,7 @@
           <div class="footer-stack">
             <span class="footer-chip">⌘ GitHub</span>
             <span class="footer-chip">🔥 Firebase</span>
-            <span class="footer-chip">▲ Vercel</span>
+            <span class="footer-chip">◆ Netlify</span>
           </div>
         </div>
 
