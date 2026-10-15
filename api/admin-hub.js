@@ -7,8 +7,8 @@ function clean(value,max=200){
 }
 function isAllowedOrigin(origin){
   const builtIn=[
-    "https://teacher-katlearn.netlify.app",
-    "https://lms-katlearn.netlify.app",
+    "https://katlearn-teacher.pages.dev",
+    "https://katlearn-lms.pages.dev",
     "http://localhost:3000",
     "http://localhost:5173"
   ];

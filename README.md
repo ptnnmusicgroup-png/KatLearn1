@@ -1,16 +1,21 @@
-# KatLearn | English Learning Platform
+# KatLearn — LMS
 
-## CHÀO MỪNG BẠN ĐẾN VỚI TRANG PRJ CHÍNH THỨC CỦA KATLEARN, SAU ĐÂY LÀ MỘT SỐ THÔNG TIN ĐỂ BẠN NẮM BẮT:
-KatLearn - Ứng dụng học từ vựng Tiếng Anh được cải tiến một cách hiệu quả, hệ thống chống gian lận, học tập các pack từ vựng của chúng mình đều được làm chỉnh chu để mang lại trải nghiệm tốt nhất cho bạn.
-## LINK DỰ ÁN:
-(PAGE ĐƯỢC TẠO BỞI NGUYỄN ĐẶNG PHƯƠNG - 8B! - TRƯỞNG THCS CHU VĂN AN)
-Link: https://lms-katlearn.netlify.app
-Teacher Page: https://teacher-katlearn.netlify.app
-## Các app được sử dụng trong dự án:
-GitHub: Lưu trữ dự án
-Google Firebase: Cung cấp hệ thống đăng nhập và quản lý các dữ liệu trường & lớp & ... (dữ liệu mật)
-Google Gemini: Được tích hợp dưới dạng API gán thẳng để giúp người dùng tạo từ vựng dễ hơn chỉ với một câu lệnh
-Netlify: Máy chủ website và Functions
-DMCA: Bảo vệ bản quyền website
+KatLearn is an English vocabulary learning platform for Vietnamese students.
 
-## Cảm ơn mọi người vì đã trải nghiệm dự án của chúng mình.
+## Cloudflare deployment
+
+- LMS Pages project: `katlearn-lms` (use the actual assigned URL in the Pages build variable)
+- Teacher Pages project: `katlearn-teacher` (use the actual assigned URL in the Pages build variable)
+- API runtime: Cloudflare Workers Containers, using Node.js 22 and the existing Firebase Admin API handlers.
+- Data/auth: Firebase project `elp---katlearn`.
+
+See [CLOUDFLARE_PAGES_MIGRATION.md](CLOUDFLARE_PAGES_MIGRATION.md) for the deployment order, Worker secrets and Pages settings. Keep all service-account and Gemini secrets in Cloudflare Worker secrets, never in Git.
+
+## Build
+
+Cloudflare Pages build command: `node scripts/cloudflare-pages-build.mjs`
+Build output: `dist`
+API Worker config: `wrangler-api.toml`
+Pages config: `wrangler.toml`
+
+Cloudflare Workers Containers require the Workers Paid plan and are billed by usage. Do not switch production domains until the Pages preview and authenticated API smoke tests pass.

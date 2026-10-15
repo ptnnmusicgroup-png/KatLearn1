@@ -5,8 +5,8 @@ const{getFirestore}=require("firebase-admin/firestore");
 const ADMIN_EMAIL="katlearn.admin@gmail.com";
 const EXPECTED_FIREBASE_PROJECT_ID="elp---katlearn";
 const ALLOWED_ORIGINS=new Set([
-  "https://teacher-katlearn.netlify.app",
-  "https://lms-katlearn.netlify.app",
+  "https://katlearn-teacher.pages.dev",
+  "https://katlearn-lms.pages.dev",
   "http://localhost:3000",
   "http://localhost:5173"
 ]);
