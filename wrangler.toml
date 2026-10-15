@@ -1,4 +1,7 @@
-# Cloudflare Pages project configuration for KatLearn LMS.
-# Pages Functions are in ./functions; static assets are built into ./dist.
+name = "katlearn-lms"
 pages_build_output_dir = "./dist"
 compatibility_date = "2026-10-15"
+
+[[services]]
+binding = "KATLEARN_API"
+service = "katlearn-lms-api"
