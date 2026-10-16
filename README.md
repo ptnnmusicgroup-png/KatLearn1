@@ -5,7 +5,7 @@ KatLearn - Ứng dụng học từ vựng Tiếng Anh được cải tiến mộ
 ## LINK DỰ ÁN:
 (PAGE ĐƯỢC TẠO BỞI NGUYỄN ĐẶNG PHƯƠNG - 8B! - TRƯỞNG THCS CHU VĂN AN)
 Link: https://lms-katlearn.netlify.app
-Teacher Page: https://teacher-katlearn.netlify.app
+Teacher Page: https://teacher-katlearn1.netlify.app
 ## Các app được sử dụng trong dự án:
 GitHub: Lưu trữ dự án
 Google Firebase: Cung cấp hệ thống đăng nhập và quản lý các dữ liệu trường & lớp & ... (dữ liệu mật)
