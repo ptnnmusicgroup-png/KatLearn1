@@ -113,6 +113,7 @@
         backdrop-filter:blur(12px);
         -webkit-backdrop-filter:blur(12px);
         font-size:9px;
+        text-decoration:none;
         box-shadow:0 4px 12px rgba(74,62,48,.035);
       }
       #katlearnFooter .footer-protection{
@@ -223,7 +224,7 @@
           <div class="footer-stack">
             <span class="footer-chip">⌘ GitHub</span>
             <span class="footer-chip">🔥 Firebase</span>
-            <span class="footer-chip">◆ Netlify</span>
+            <a class="footer-chip" href="https://www.netlify.com/" target="_blank" rel="noopener noreferrer">This site is powered by Netlify</a>
           </div>
         </div>
 
