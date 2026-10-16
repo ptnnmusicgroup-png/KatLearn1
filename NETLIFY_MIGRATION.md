@@ -16,8 +16,8 @@ Set these on the LMS site:
 - `GEMINI_API_KEY` — server-side Gemini key (secret).
 - `GEMINI_MODEL` — optional model override.
 - `KATLEARN_LMS_SITE_URL` — exact LMS Netlify site URL, e.g. `https://lms-katlearn.netlify.app`.
-- `KATLEARN_TEACHER_SITE_URL` — exact Teacher Netlify site URL, e.g. `https://teacher-katlearn.netlify.app`.
-- `KATLEARN_ALLOWED_ORIGINS` — comma-separated exact origins, e.g. `https://lms-katlearn.netlify.app,https://teacher-katlearn.netlify.app`.
+- `KATLEARN_TEACHER_SITE_URL` — exact Teacher Netlify site URL, e.g. `https://teacher-katlearn1.netlify.app`.
+- `KATLEARN_ALLOWED_ORIGINS` — comma-separated exact origins, e.g. `https://lms-katlearn.netlify.app,https://teacher-katlearn1.netlify.app`.
 
 The two `*_SITE_URL` variables are build-time configuration and should be available during Builds and Functions; `KATLEARN_ALLOWED_ORIGINS`, Firebase and Gemini settings must be available to Functions. If you use different Netlify site names, update the values consistently in both sites before redeploying.
 
