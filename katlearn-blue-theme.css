@@ -1,4 +1,4 @@
-@import url("/katlearn-astra.css?v=20261016-astra1");
+@import url("/katlearn-astra.css?v=20261016-astra2");
 /* KatLearn Blue Ocean Theme — global visual layer */
 :root{--kl-bg:#eef7ff;--kl-surface:#fff;--kl-surface-2:#f6fbff;--kl-ink:#12304a;--kl-muted:#668197;--kl-line:#d7e8f5;--kl-accent:#1677c8;--kl-accent-2:#54b7f5;--kl-soft:#e5f4ff;--kl-navy:#0b3b66;--kl-cyan:#6fd3ff;--kl-pastel:#dff4ff;--kl-good:#159b83;--kl-danger:#dc5b70;--kl-shadow:0 18px 55px rgba(18,73,112,.10);--kl-shadow-sm:0 8px 26px rgba(18,73,112,.07)}
 html{background:var(--kl-bg)!important}body{background:linear-gradient(180deg,#eef8ff 0%,#f7fbff 42%,#eef7ff 100%)!important;color:var(--kl-ink)!important}*{scrollbar-color:#a9d5ee transparent}::selection{background:#bfe8ff!important;color:#08375d!important}
