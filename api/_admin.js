@@ -7,6 +7,9 @@ const EXPECTED_FIREBASE_PROJECT_ID="elp---katlearn";
 const ALLOWED_ORIGINS=new Set([
   "https://katlearn-teacher.pages.dev",
   "https://katlearn-lms.pages.dev",
+  "https://teacher-katlearn.netlify.app",
+  "https://lms-katlearn.netlify.app",
+  ...String(process.env.KATLEARN_ALLOWED_ORIGINS || "").split(",").map((value) => value.trim()).filter(Boolean),
   "http://localhost:3000",
   "http://localhost:5173"
 ]);
