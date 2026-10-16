@@ -7,7 +7,7 @@ function clean(value,max=200){
 }
 function corsHeaders(origin){
   const h={"Content-Type":"application/json","Cache-Control":"no-store"};
-  if(["https://teacher-katlearn.netlify.app","https://lms-katlearn.netlify.app","http://localhost:3000","http://localhost:5173"].includes(origin)){
+  if(["https://teacher-katlearn1.netlify.app","https://lms-katlearn.netlify.app","http://localhost:3000","http://localhost:5173"].includes(origin)){
     h["Access-Control-Allow-Origin"]=origin;
     h["Access-Control-Allow-Methods"]="GET,POST,OPTIONS";
     h["Access-Control-Allow-Headers"]="authorization,content-type,accept";
