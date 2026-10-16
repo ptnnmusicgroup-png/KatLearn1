@@ -1,0 +1,28 @@
+[build]
+  command = "node scripts/build-netlify.js"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["firebase-admin", "@google/genai"]
+
+[functions."api-admin-hub"]
+  included_files = ["data/national-catalog/**/*.json", "data/vocabulary/**/*.json"]
+
+[functions."api-game-action"]
+  included_files = ["data/vocabulary/**/*.json"]
+
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon.svg"
+  status = 200
+
+[[redirects]]
+  from = "/api/:endpoint"
+  to = "/.netlify/functions/api-:endpoint"
+  status = 200
+  force = true

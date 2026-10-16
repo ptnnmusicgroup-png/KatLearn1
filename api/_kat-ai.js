@@ -30,7 +30,7 @@ async function requireUser(req){
     if(code==="auth/id-token-revoked"||raw.includes("revoked"))
       throw Object.assign(new Error("Phiên đăng nhập đã bị thu hồi. Hãy đăng nhập lại nhé."),{status:401,code:"ai_token_revoked"});
     if(code==="auth/id-token-project-id-mismatch"||raw.includes("project id")||raw.includes("audience"))
-      throw Object.assign(new Error("ID token đang thuộc Firebase project khác với server KatLearn. Kiểm tra biến môi trường Firebase Admin trên Netlify."),{status:503,code:"ai_token_project_mismatch"});
+      throw Object.assign(new Error("ID token đang thuộc Firebase project khác với server KatLearn. Kiểm tra Firebase Admin credentials trên máy chủ."),{status:503,code:"ai_token_project_mismatch"});
     if(code==="auth/invalid-id-token"||raw.includes("incorrect claim")||raw.includes("invalid id token"))
       throw Object.assign(new Error("ID token Firebase không hợp lệ. Hãy tải lại trang và đăng nhập lại."),{status:401,code:"ai_token_invalid"});
     throw Object.assign(new Error("Server không xác thực được phiên Firebase của bạn ("+code+")."),{status:503,code:"ai_token_verify_failed"});

@@ -1,6 +1,7 @@
 const{init}=require("./_admin");
 const{FieldValue}=require("firebase-admin/firestore");
 const buckets=new Map();
+const VALID_GOALS=new Set([7,10,20,30,50]);
 
 function send(res,status,body){
   const headers={"Content-Type":"application/json","Cache-Control":"no-store"};
@@ -28,40 +29,92 @@ function previousStudyDay(day){
   d.setUTCDate(d.getUTCDate()-1);
   return d.toISOString().slice(0,10);
 }
+function profileDefaults(token){
+  return{
+    displayName:String(token.name||token.email?.split("@")[0]||"KatLearn Student").slice(0,80),
+    email:String(token.email||"").slice(0,200),
+    photoURL:String(token.picture||"").slice(0,1000),
+    provider:"firebase-auth",role:"student",coins:0,energy:0,streak:0,lastStudyDay:"",
+    dailyQuestions:0,dailyCorrect:0,questionsAnswered:0,correctAnswers:0,
+    ownedThemes:[],joinedClassIds:[],teacherUid:"",teacherUids:[],totalWords:0,vocab:[],
+    createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()
+  };
+}
+function goalState(challenge={}){
+  const target=VALID_GOALS.has(Number(challenge.target))?Number(challenge.target):0;
+  const progress=target?Math.max(0,Math.min(target,Math.floor(Number(challenge.progress)||0))):0;
+  const completed=Boolean(challenge.completedAt);
+  return{target,progress,completed,remaining:target?Math.max(0,target-progress):0,rewarded:Boolean(challenge.rewardedAt)};
+}
 module.exports=async(req,res)=>{
   if(req.method!=="POST")return send(res,405,{ok:false,error:"Method Not Allowed"});
   try{
     const token=await verifyUser(req);
     limit(token.uid);
-    const body=req.body||{};
-    if(String(body.action||"")!=="study")return send(res,400,{ok:false,error:"Hành động học không hợp lệ."});
+    const body=req.body||{},action=String(body.action||"");
     const{db}=init();
     const userRef=db.doc("users/"+token.uid);
+    // This collection is intentionally server-only (default-deny Firestore rules).
+    // Client-editable user profile fields are never trusted for streak rewards.
+    const challengeRef=db.doc("streakChallenges/"+token.uid);
+
+    if(action==="get-goal"){
+      const [challengeSnap,profileSnap]=await Promise.all([challengeRef.get(),userRef.get()]);
+      const profile=profileSnap.exists?profileSnap.data()||{}:{};
+      return send(res,200,{
+        ok:true,uid:token.uid,goal:goalState(challengeSnap.exists?challengeSnap.data()||{}:{}),
+        streak:Math.max(0,Math.floor(Number(profile.streak)||0)),
+        coins:Math.max(0,Math.floor(Number(profile.coins||0)))
+      });
+    }
+
+    if(action==="set-goal"){
+      const target=Number(body.goal);
+      if(!VALID_GOALS.has(target))return send(res,400,{ok:false,error:"Hãy chọn mục tiêu 7, 10, 20, 30 hoặc 50 ngày."});
+      const result=await db.runTransaction(async transaction=>{
+        const [challengeSnap,profileSnap]=await Promise.all([transaction.get(challengeRef),transaction.get(userRef)]);
+        const challenge=challengeSnap.exists?challengeSnap.data()||{}:{};
+        const profile=profileSnap.exists?profileSnap.data()||{}:{};
+        const activeTarget=VALID_GOALS.has(Number(challenge.target))?Number(challenge.target):0;
+        const started=Number(challenge.progress||0)>0||Boolean(challenge.lastStudyDay);
+        const completed=Boolean(challenge.completedAt);
+        if(activeTarget&&!completed&&started){
+          throw Object.assign(new Error("Bạn đang chinh phục mục tiêu hiện tại. Hãy hoàn thành trước khi chọn mục tiêu mới nhé!"),{status:409});
+        }
+        const currentDay=studyDay();
+        const next={
+          uid:token.uid,target,progress:0,startDay:currentDay,lastStudyDay:"",
+          completedAt:"",rewardedAt:"",
+          createdAt:challenge.createdAt||FieldValue.serverTimestamp(),
+          updatedAt:FieldValue.serverTimestamp()
+        };
+        transaction.set(challengeRef,next,{merge:false});
+        return{ok:true,uid:token.uid,goal:goalState(next),coins:Math.max(0,Math.floor(Number(profile.coins||0)))};
+      });
+      return send(res,200,result);
+    }
+
+    if(action!=="study")return send(res,400,{ok:false,error:"Hành động học không hợp lệ."});
     const result=await db.runTransaction(async transaction=>{
-      const snap=await transaction.get(userRef);
-      if(!snap.exists){
-        transaction.set(userRef,{
-          displayName:String(token.name||token.email?.split("@")[0]||"KatLearn Student").slice(0,80),
-          email:String(token.email||"").slice(0,200),
-          photoURL:String(token.picture||"").slice(0,1000),
-          provider:"firebase-auth",
-          role:"student",
-          coins:0,energy:0,streak:0,lastStudyDay:"",
-          dailyQuestions:0,dailyCorrect:0,questionsAnswered:0,correctAnswers:0,
-          ownedThemes:[],joinedClassIds:[],teacherUid:"",teacherUids:[],totalWords:0,vocab:[],
-          createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()
-        },{merge:true});
-      }
-      const profile=snap.exists()?snap.data()||{}:{
-        streak:0,lastStudyDay:""
-      };
+      const [snap,challengeSnap]=await Promise.all([transaction.get(userRef),transaction.get(challengeRef)]);
+      const profile=snap.exists?snap.data()||{}:profileDefaults(token);
+      const challenge=challengeSnap.exists?challengeSnap.data()||{}:{};
       const currentDay=studyDay(),lastDay=String(profile.lastStudyDay||"");
       const currentStreak=Math.max(0,Number(profile.streak||0));
       const streak=lastDay===currentDay
         ?currentStreak
         :lastDay===previousStudyDay(currentDay)?currentStreak+1:1;
-      transaction.set(userRef,{streak,lastStudyDay:currentDay,lastStudyAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()},{merge:true});
-      return{ok:true,uid:token.uid,streak,lastStudyDay:currentDay};
+      transaction.set(userRef,{
+        ...(snap.exists?{}:profileDefaults(token)),
+        streak,lastStudyDay:currentDay,lastStudyAt:FieldValue.serverTimestamp(),
+        ...(lastDay!==currentDay?{dailyQuestions:0,dailyCorrect:0}:{}),
+        updatedAt:FieldValue.serverTimestamp()
+      },{merge:true});
+      return{
+        ok:true,uid:token.uid,streak,lastStudyDay:currentDay,
+        goal:goalState(challenge),
+        coins:Math.max(0,Math.floor(Number(profile.coins||0)))
+      };
     });
     return send(res,200,result);
   }catch(error){

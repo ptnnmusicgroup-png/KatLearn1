@@ -5,10 +5,14 @@ const{getFirestore}=require("firebase-admin/firestore");
 const ADMIN_EMAIL="katlearn.admin@gmail.com";
 const EXPECTED_FIREBASE_PROJECT_ID="elp---katlearn";
 const ALLOWED_ORIGINS=new Set([
-  "https://katlearn-teacher.pages.dev",
-  "https://katlearn-lms.pages.dev",
+  "https://teacher-katlearn.netlify.app",
+  "https://lms-katlearn.netlify.app",
   "http://localhost:3000",
-  "http://localhost:5173"
+  "http://localhost:5173",
+  ...(String(process.env.KATLEARN_ALLOWED_ORIGINS||"").split(",").map(value=>value.trim()).filter(Boolean)),
+  ...(process.env.KATLEARN_LMS_SITE_URL?[String(process.env.KATLEARN_LMS_SITE_URL).replace(/\/+$/,"")]:[]),
+  ...(process.env.KATLEARN_TEACHER_SITE_URL?[String(process.env.KATLEARN_TEACHER_SITE_URL).replace(/\/+$/,"")]:[]),
+  ...(process.env.URL?[String(process.env.URL).replace(/\/+$/,"")]:[])
 ]);
 
 function credentialEnvStatus(){

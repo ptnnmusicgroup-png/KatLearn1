@@ -89,25 +89,21 @@ function findWord(words,word,meaning){
   const w=norm(word),m=norm(meaning);
   return (Array.isArray(words)?words:[]).some(item=>norm(item?.word)===w&&norm(item?.mean??item?.meaning_vi)===m);
 }
-function resolveProjectRoot(){
-  const candidates=[
-    path.resolve(__dirname,".."),
-    path.resolve(__dirname,"../.."),
-    process.cwd(),
-    path.resolve(process.cwd(),"..")
-  ];
-  return candidates.find(root=>fs.existsSync(path.join(root,"data","vocabulary")))||candidates[0];
-}
-const PROJECT_ROOT=resolveProjectRoot();
 function loadCoreWords(topicId){
   const relative=CORE_PACK_PATHS[String(topicId||'').trim()];
   if(!relative)throw Object.assign(new Error("Topic KatLearn không hợp lệ."),{status:400});
-  const file=path.join(PROJECT_ROOT,"data","vocabulary",relative);
+  const candidates=[
+    path.join(__dirname,"..","data","vocabulary",relative),
+    path.join(process.cwd(),"data","vocabulary",relative),
+    path.join(process.cwd(),"..","data","vocabulary",relative),
+    process.env.LAMBDA_TASK_ROOT?path.join(process.env.LAMBDA_TASK_ROOT,"data","vocabulary",relative):""
+  ].filter(Boolean);
+  const file=candidates.find(candidate=>{try{return fs.existsSync(candidate)&&fs.statSync(candidate).isFile()}catch(_){return false}})||candidates[0];
   try{
     const data=JSON.parse(fs.readFileSync(file,"utf8"));
     return Array.isArray(data.words)?data.words:[];
   }catch(_){
-    throw Object.assign(new Error("Không tải được kho từ KatLearn."),{status:503});
+    throw Object.assign(new Error("Không tải được kho từ KatLearn trên máy chủ."),{status:503});
   }
 }
 async function validateQuizSource(db,uid,source,word,meaning,profile){
@@ -149,7 +145,7 @@ module.exports=async(req,res)=>{
   try{
     const token=await user(req);limit(token.uid,"game",60);
     const body=req.body||{},action=String(body.action||""),{db}=init();
-    const userRef=db.doc("users/"+token.uid),leaderboardRef=db.doc("leaderboard/"+leaderboardId(token.uid));
+    const userRef=db.doc("users/"+token.uid),leaderboardRef=db.doc("leaderboard/"+leaderboardId(token.uid)),challengeRef=db.doc("streakChallenges/"+token.uid);
 
     if(action==="balance"){
       const snap=await userRef.get();
@@ -190,6 +186,10 @@ module.exports=async(req,res)=>{
       const result=await db.runTransaction(async transaction=>{
         const snap=await transaction.get(userRef);
         if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
+        // Read the separate server-only challenge document before any writes.
+        // User-editable profile fields must never be trusted for streak rewards.
+        const challengeSnap=correct?await transaction.get(challengeRef):null;
+        const challenge=challengeSnap?.exists?challengeSnap.data()||{}:{};
         const profile=snap.data()||{};
         const now=Date.now();
         const attemptRef=db.collection("users").doc(token.uid).collection("attempts").doc();
@@ -206,21 +206,47 @@ module.exports=async(req,res)=>{
           dailyQuestions,
           dailyCorrect
         };
-        let coins=Number(profile.coins||0),xp=Number(profile.energy||0);
-        // Every correctly answered, validated Reflex Arena question earns +10
-        // KatCoin. The old per-word/day reward claim blocked legitimate repeats.
-        const grantReward=correct&&rewardable;
-        if(correct){
-          updates.correctAnswers=FieldValue.increment(1);
-          if(grantReward){
-            updates.coins=FieldValue.increment(10);updates.energy=FieldValue.increment(10);
-            coins+=10;xp+=10;
+        let coins=Math.max(0,Math.floor(Number(profile.coins||0))),xp=Math.max(0,Math.floor(Number(profile.energy||0)));
+        // A streak challenge advances only after a server-validated correct answer.
+        // Last-study-day makes progress idempotent across repeated questions/retries.
+        const validGoals=[7,10,20,30,50];
+        const goalTarget=validGoals.includes(Number(challenge.target))?Number(challenge.target):0;
+        let goalProgress=Math.max(0,Math.floor(Number(challenge.progress||0)));
+        let goalCompleted=Boolean(challenge.completedAt);
+        let goalRewarded=false;
+        const goalLastDay=String(challenge.lastStudyDay||"");
+        const challengeUpdates={};
+        if(correct&&goalTarget&&!goalCompleted){
+          if(goalLastDay!==currentStudyDay){
+            goalProgress=goalLastDay===previousStudyDay(currentStudyDay)?Math.min(goalTarget,goalProgress+1):1;
+            challengeUpdates.progress=goalProgress;
+            challengeUpdates.lastStudyDay=currentStudyDay;
+          }
+          if(goalProgress>=goalTarget&&!challenge.rewardedAt){
+            goalCompleted=true;
+            goalRewarded=true;
+            challengeUpdates.completedAt=currentStudyDay;
+            challengeUpdates.rewardedAt=currentStudyDay;
+          }
+          if(Object.keys(challengeUpdates).length){
+            challengeUpdates.uid=token.uid;
+            challengeUpdates.target=goalTarget;
+            challengeUpdates.updatedAt=FieldValue.serverTimestamp();
+            transaction.set(challengeRef,challengeUpdates,{merge:true});
           }
         }
+        // Ordinary game coins and the one-time challenge bonus are applied in
+        // one atomic profile transaction, never from client-side state.
+        const grantReward=correct&&rewardable;
+        const coinReward=(grantReward?10:0)+(goalRewarded?1000:0);
+        if(correct)updates.correctAnswers=FieldValue.increment(1);
+        if(grantReward){updates.energy=FieldValue.increment(10);xp+=10;}
+        if(coinReward){updates.coins=FieldValue.increment(coinReward);coins+=coinReward;}
         transaction.set(userRef,updates,{merge:true});
-        transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,rewarded:grantReward,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
+        transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,rewarded:grantReward,streakGoalRewarded:goalRewarded,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
         transaction.set(leaderboardRef,publicScore(profile.displayName,coins,xp),{merge:true});
-        return{ok:true,correct,rewarded:grantReward,coins,xp,dailyQuestions,dailyCorrect,streak};
+        const streakGoal=goalTarget?{target:goalTarget,progress:Math.min(goalTarget,goalProgress),completed:goalCompleted,remaining:Math.max(0,goalTarget-goalProgress),rewarded:goalRewarded}:null;
+        return{ok:true,correct,rewarded:grantReward,coins,xp,dailyQuestions,dailyCorrect,streak,streakGoal,goalRewardCoins:goalRewarded?1000:0,coinReward};
       });
       return send(res,200,result);
     }

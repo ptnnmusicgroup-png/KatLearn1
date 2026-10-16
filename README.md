@@ -1,22 +1,16 @@
-# KatLearn — LMS
+# KatLearn | English Learning Platform
 
-KatLearn is an English vocabulary learning platform for Vietnamese students.
+## CHÀO MỪNG BẠN ĐẾN VỚI TRANG PRJ CHÍNH THỨC CỦA KATLEARN, SAU ĐÂY LÀ MỘT SỐ THÔNG TIN ĐỂ BẠN NẮM BẮT:
+KatLearn - Ứng dụng học từ vựng Tiếng Anh được cải tiến một cách hiệu quả, hệ thống chống gian lận, học tập các pack từ vựng của chúng mình đều được làm chỉnh chu để mang lại trải nghiệm tốt nhất cho bạn.
+## LINK DỰ ÁN:
+(PAGE ĐƯỢC TẠO BỞI NGUYỄN ĐẶNG PHƯƠNG - 8B! - TRƯỞNG THCS CHU VĂN AN)
+Link: https://lms-katlearn.netlify.app
+Teacher Page: https://teacher-katlearn.netlify.app
+## Các app được sử dụng trong dự án:
+GitHub: Lưu trữ dự án
+Google Firebase: Cung cấp hệ thống đăng nhập và quản lý các dữ liệu trường & lớp & ... (dữ liệu mật)
+Google Gemini: Được tích hợp dưới dạng API gán thẳng để giúp người dùng tạo từ vựng dễ hơn chỉ với một câu lệnh
+Netlify: Máy chủ 24/7
+DMCA: Bảo vệ bản quyền website
 
-## Cloudflare Workers deployment
-
-- Frontend Worker: lms-katlearn
-- Other frontend Worker: teacher-katlearn
-- API Worker: katlearn-lms-api, using Cloudflare Workers Containers with Node.js 22 and the existing Firebase Admin API handlers.
-- Data/auth: Firebase project elp---katlearn.
-
-See CLOUDFLARE_WORKERS_MIGRATION.md for build settings, API deployment, secrets and smoke tests. Keep all service-account credentials and API keys in Cloudflare Worker secrets, never in Git.
-
-## Build and deploy
-
-Build command: node scripts/cloudflare-workers-build.mjs
-Deploy command: npx wrangler deploy
-Static assets output: dist
-Frontend Worker config: wrangler.toml
-API Worker config: wrangler-api.toml
-
-Workers Containers require the Workers Paid plan and incur usage-based charges. Deploy the API Worker before deploying the frontend Worker because the frontend's KATLEARN_API service binding targets the API Worker. Do not switch production domains until both frontend Workers and authenticated API smoke tests pass.
+## Cảm ơn mọi người vì đã trải nghiệm dự án của chúng mình.

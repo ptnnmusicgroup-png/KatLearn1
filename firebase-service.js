@@ -235,7 +235,7 @@
         const existing=await api.getDoc(ref);
         if(currentUser?.uid!==uid)return null;
         const payload={...data};
-        ['__coinsAuthoritative','coins','energy','streak','lastStudyDay','dailyQuestions','dailyCorrect','questionsAnswered','correctAnswers','ownedThemes','teacherUid','teacherUids','studentAccountType','classId','className','catalogClassId','schoolId','schoolName','province','ward','teacherName','teacherEmail'].forEach(k=>delete payload[k]);
+        ['__coinsAuthoritative','coins','energy','streak','lastStudyDay','dailyQuestions','dailyCorrect','questionsAnswered','correctAnswers','streakGoal','streakGoalProgress','streakGoalStartDay','streakGoalLastStudyDay','streakGoalCompletedAt','streakGoalRewardedAt','ownedThemes','teacherUid','teacherUids','studentAccountType','classId','className','catalogClassId','schoolId','schoolName','province','ward','teacherName','teacherEmail'].forEach(k=>delete payload[k]);
         if(!existing.exists()){
           const base={
             displayName:user.displayName||user.email?.split('@')[0]||'KatLearn Student',
@@ -554,7 +554,7 @@
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
   };
-  const TEACHER_HOME=String(window.KATLEARN_CONFIG?.teacherUrl||'https://katlearn-teacher.pages.dev').replace(/\/+$/,''),SSO_EXCHANGE=TEACHER_HOME+'/api/auth-exchange';
+  const TEACHER_HOME=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://teacher-katlearn.netlify.app').replace(/\/+$/,''),SSO_EXCHANGE=TEACHER_HOME+'/api/auth-exchange';
   const isMainLms=()=>{const p=location.pathname;return(p==='/'||p.endsWith('/index.html'))&&!/login\.html|signup\.html|sso-bridge\.html/.test(p)};
   let guardStarted=false;
   async function handleLmsSso(){
