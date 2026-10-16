@@ -9,6 +9,8 @@ function isAllowedOrigin(origin){
   const builtIn=[
     "https://katlearn-teacher.pages.dev",
     "https://katlearn-lms.pages.dev",
+    "https://teacher-katlearn.netlify.app",
+    "https://lms-katlearn.netlify.app",
     "http://localhost:3000",
     "http://localhost:5173"
   ];
