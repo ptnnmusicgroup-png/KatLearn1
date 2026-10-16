@@ -1,0 +1,133 @@
+/* KatLearn UI Polish — October 2026
+   Additive presentation layer. Keeps learning, auth and data logic unchanged. */
+:root{
+  --klp-ease:cubic-bezier(.22,1,.36,1);
+  --klp-fast:180ms;
+  --klp-card-radius:20px;
+  --klp-ring:0 0 0 4px color-mix(in srgb,var(--kl-accent,#1677c8) 16%,transparent);
+}
+html{scroll-padding-top:88px;text-rendering:optimizeLegibility}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+::selection{background:color-mix(in srgb,var(--kl-accent,#1677c8) 20%,white);color:var(--kl-ink,#12304a)}
+:where(button,a,input,textarea,select,[tabindex]):focus-visible{
+  outline:3px solid color-mix(in srgb,var(--kl-accent,#1677c8) 35%,transparent);
+  outline-offset:3px;
+}
+:where(input,textarea,select){accent-color:var(--kl-accent,#1677c8)}
+:where(input,textarea,select):disabled{cursor:not-allowed;opacity:.66}
+:where(button,[role="button"]){-webkit-tap-highlight-color:transparent}
+button:not(:disabled){touch-action:manipulation}
+button:disabled{cursor:not-allowed;filter:saturate(.72)}
+button:not(:disabled):active{transform:translateY(1px) scale(.99)}
+a{text-underline-offset:3px}
+.app-shell{isolation:isolate}
+.sidebar{overscroll-behavior:contain}
+.sidebar nav{scrollbar-gutter:stable}
+.nav-item{min-height:44px!important;gap:10px}
+.nav-item:focus-visible{position:relative;z-index:2}
+.page{overflow-wrap:anywhere}
+.page.active-page{animation:klp-page-enter .34s var(--klp-ease) both}
+@keyframes klp-page-enter{
+  from{opacity:0;transform:translate3d(0,9px,0);filter:blur(1.5px)}
+  to{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}
+}
+@keyframes klp-card-enter{
+  from{opacity:0;transform:translate3d(0,8px,0) scale(.99)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+.page.active-page :is(.activity-grid,.mode-grid,.pack-library,.dashboard-grid,.shop-grid)>*{
+  animation:klp-card-enter .38s var(--klp-ease) both;
+}
+.page.active-page :is(.activity-grid,.mode-grid,.pack-library,.dashboard-grid,.shop-grid)>:nth-child(1){animation-delay:20ms}
+.page.active-page :is(.activity-grid,.mode-grid,.pack-library,.dashboard-grid,.shop-grid)>:nth-child(2){animation-delay:55ms}
+.page.active-page :is(.activity-grid,.mode-grid,.pack-library,.dashboard-grid,.shop-grid)>:nth-child(3){animation-delay:90ms}
+.page.active-page :is(.activity-grid,.mode-grid,.pack-library,.dashboard-grid,.shop-grid)>:nth-child(4){animation-delay:125ms}
+.page.active-page :is(.activity-grid,.mode-grid,.pack-library,.dashboard-grid,.shop-grid)>:nth-child(5){animation-delay:160ms}
+.page.active-page :is(.activity-grid,.mode-grid,.pack-library,.dashboard-grid,.shop-grid)>:nth-child(6){animation-delay:195ms}
+
+@media (hover:hover){
+  :is(.activity-card,.mode-card,.pack-tile,.shop-item,.shop-theme-card,.daily-goal,.mini-ranking,.word-table-card,.stat-grid>div,.pack-summary>div,.word-summary>div,.leaderboard){
+    transition:transform 220ms var(--klp-ease),box-shadow 220ms ease,border-color 180ms ease,background 180ms ease;
+  }
+  :is(.activity-card,.mode-card,.pack-tile,.shop-item,.shop-theme-card):hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 38px rgba(20,65,98,.11)!important;
+  }
+  .nav-item:hover{transform:translateX(2px)}
+  :is(.primary-btn,.add-word-btn,.create-pack-btn,.login-btn,.know-btn):hover{
+    filter:brightness(1.035);
+    box-shadow:0 13px 28px color-mix(in srgb,var(--kl-accent,#1677c8) 23%,transparent);
+  }
+}
+:where(.primary-btn,.add-word-btn,.create-pack-btn,.login-btn,.know-btn){
+  min-height:44px;
+  border-radius:14px!important;
+  font-weight:800!important;
+}
+:where(.primary-btn,.add-word-btn,.create-pack-btn,.login-btn,.know-btn):focus-visible{outline-offset:4px}
+:where(.search,.word-search,input,textarea,select){
+  transition:border-color 180ms ease,box-shadow 180ms ease,background-color 180ms ease;
+}
+:where(.search,input,textarea,select):focus-visible{box-shadow:var(--klp-ring)}
+:where(input,textarea,select){max-width:100%}
+:where(.page-intro,.section-heading) p{line-height:1.65}
+:where(.subtext,.section-heading p,.hero-content p){text-wrap:pretty}
+.hero-card{isolation:isolate}
+.hero-card:before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.34) 48%,transparent 70%);
+  transform:translateX(-105%);animation:klp-hero-sheen 1s .25s ease-out both;
+}
+.hero-content,.hero-art{position:relative;z-index:1}
+@keyframes klp-hero-sheen{to{transform:translateX(105%)}}
+:where(.progress-line span,.quiz-progress i){
+  transition:width 550ms var(--klp-ease),background-color 200ms ease;
+  will-change:width;
+}
+.progress-line,.quiz-progress{overflow:hidden}
+:where(.progress-line span,.quiz-progress i){border-radius:999px}
+.modal-card{
+  animation:klp-modal-enter .24s var(--klp-ease) both;
+}
+@keyframes klp-modal-enter{
+  from{opacity:0;transform:translateY(10px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.toast{animation:klp-toast-enter .24s var(--klp-ease) both}
+@keyframes klp-toast-enter{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+:where(.word-item,.answer,.rank-list-row,.rank-row){transition:background-color 160ms ease,border-color 160ms ease}
+:where(.word-item,.answer):focus-visible{outline-offset:1px}
+:where(.empty,.empty-state){line-height:1.65}
+:where(.word-table-head,.word-table-row){min-width:0}
+:where(.word-table-tools,.word-table-card){min-width:0}
+@media(max-width:900px){
+  .page{padding-top:23px!important}
+  .hero-content{padding:clamp(20px,4vw,30px)!important}
+  .flash-stage,.quiz-panel{padding:clamp(16px,3vw,22px)!important}
+}
+@media(max-width:620px){
+  html{scroll-padding-top:72px}
+  .topbar{gap:10px!important}
+  .page{padding-inline:14px!important;padding-bottom:34px!important}
+  .page-intro,.greeting-row{align-items:flex-start!important;gap:12px;flex-wrap:wrap}
+  .page-intro h1{font-size:clamp(26px,7vw,34px)!important;line-height:1.12!important}
+  .section-heading{margin-top:26px!important}
+  .activity-grid,.mode-grid,.pack-library{gap:10px!important}
+  :where(.hero-card,.flash-stage,.quiz-panel,.modal-card){border-radius:18px!important}
+  .search{max-width:none}
+  .site-footer{padding-inline:14px!important;line-height:1.7!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{
+    animation-duration:.01ms!important;animation-iteration-count:1!important;
+    scroll-behavior:auto!important;transition-duration:.01ms!important;
+  }
+}
+@media(forced-colors:active){
+  :where(button,a,input,textarea,select):focus-visible{outline:2px solid Highlight}
+  .progress-line span,.quiz-progress i{forced-color-adjust:none;background:Highlight}
+}

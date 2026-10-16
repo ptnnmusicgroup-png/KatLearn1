@@ -45,20 +45,28 @@ module.exports=async(req,res)=>{
       const display=displayPart(user.displayName||String(user.email||"").split("@")[0]||"student","Student");
       const sequenceRef=profileDb.collection("system").doc("accountSequence");
       const code=await profileDb.runTransaction(async tx=>{
+        // Re-read the user profile inside the transaction. If two pack-save
+        // requests run together, the loser observes the winner's accountCode
+        // instead of allocating a second account namespace for the same UID.
+        const currentProfile=await tx.get(profileRef);
+        const currentCode=String(currentProfile.data()?.accountCode||"").trim();
+        if(currentCode)return currentCode;
+
         const seqSnap=await tx.get(sequenceRef);
         const next=Number(seqSnap.exists?seqSnap.data()?.lastIssued:0)+1;
         const nextCode=login+"_"+display+"_"+String(next).padStart(3,"0");
-        tx.set(sequenceRef,{lastIssued:next,updatedAt:new Date()},{merge:true});
+        const now=new Date();
+        tx.set(sequenceRef,{lastIssued:next,updatedAt:now},{merge:true});
         tx.set(profileDb.collection("accounts").doc(nextCode),{
           accountCode:nextCode,uid:user.uid,email:user.email||"",displayName:user.displayName||"",
-          loginName:login,createdAt:new Date(),updatedAt:new Date()
+          loginName:login,createdAt:now,updatedAt:now
         },{merge:false});
         tx.set(profileDb.collection("accounts").doc(nextCode).collection("memory").doc("meta"),{
-          accountCode:nextCode,uid:user.uid,createdAt:new Date(),updatedAt:new Date()
+          accountCode:nextCode,uid:user.uid,createdAt:now,updatedAt:now
         },{merge:true});
+        tx.set(profileRef,{accountCode:nextCode,updatedAt:now},{merge:true});
         return nextCode;
       });
-      await profileRef.set({accountCode:code,updatedAt:new Date()},{merge:true});
       return code;
     }
 

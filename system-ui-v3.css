@@ -745,3 +745,44 @@ button:disabled{filter:saturate(.7)}
 .flashcard:not(.flipped) .card-back{opacity:0!important;visibility:hidden!important;transform:rotateY(-90deg)!important;-webkit-transform:rotateY(-90deg)!important;pointer-events:none!important}
 .flashcard.flipped .card-front{opacity:0!important;visibility:hidden!important;transform:rotateY(90deg)!important;-webkit-transform:rotateY(90deg)!important;pointer-events:none!important}
 .flashcard.flipped .card-back{opacity:1!important;visibility:visible!important;transform:rotateY(0deg)!important;-webkit-transform:rotateY(0deg)!important;pointer-events:auto!important}
+
+/* ===== UI audit pass · 2026-10-15 ===== */
+/* Reliable focus, touch, and overflow behavior without changing app logic. */
+:where(button,a,input,select,textarea,[tabindex]):focus-visible{
+  outline:3px solid rgba(117,98,232,.55)!important;
+  outline-offset:3px!important;
+}
+:where(button,a){-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:disabled,[aria-disabled="true"]{
+  cursor:not-allowed!important;opacity:.62;transform:none!important;
+  box-shadow:none!important;filter:saturate(.72)
+}
+:where(input,select,textarea){min-width:0;max-width:100%}
+:where(input,select,textarea)[aria-invalid="true"]{
+  border-color:#d95d71!important;
+  box-shadow:0 0 0 3px rgba(217,93,113,.12)!important
+}
+.modal,.modal-overlay{overscroll-behavior:contain}
+.modal-box,.modal-card,.modal-content{
+  max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);
+  overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch
+}
+@media(hover:hover) and (pointer:fine){
+  .activity-card:hover,.mode-card:hover,.shop-grid article:hover{
+    box-shadow:0 16px 36px rgba(59,48,104,.10)
+  }
+}
+@media(max-width:620px){
+  .page,.page.active-page,main{min-width:0}
+  .greeting-row,.page-intro{flex-wrap:wrap}
+  .page-intro h1,.greeting-row h1{overflow-wrap:anywhere}
+  .topbar{gap:8px}
+  .top-actions{gap:6px;min-width:0}
+  .account-panel{width:min(360px,calc(100vw - 24px));max-width:calc(100vw - 24px)}
+  .modal-box,.modal-card,.modal-content{width:min(560px,calc(100vw - 24px));margin:12px}
+  .study-layout,.progress-content,.bottom-grid{min-width:0}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}

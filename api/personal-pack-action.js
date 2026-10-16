@@ -67,17 +67,15 @@ module.exports=async(req,res)=>{
 
     if(action==="delete"){
       const batch=db.batch();
-      // Always remove the canonical UID copy, then the mirrored account copy.
-      // When the legacy account namespace is the document we found, avoid
-      // scheduling the same Firestore document for deletion twice.
+      // Always remove the canonical UID copy. Remove exactly one legacy/mirror
+      // document so a batch never schedules duplicate writes to one Firestore path.
       const userRef=db.collection("users").doc(user.uid).collection("personalPacks").doc(packId);
       batch.delete(userRef);
-      if(found.accountCode){
-        const accountRef=db.collection("accounts").doc(found.accountCode).collection("memory").doc(packId);
-        if(found.source!=="accounts" || String(found.ref.path)!==String(accountRef.path))batch.delete(found.ref);
-        batch.delete(accountRef);
-      }else if(found.source!=="users"){
+      if(found.source==="accounts"){
         batch.delete(found.ref);
+      }else if(found.accountCode){
+        const accountRef=db.collection("accounts").doc(found.accountCode).collection("memory").doc(packId);
+        batch.delete(accountRef);
       }
       await batch.commit();
       return send(res,200,{ok:true,id:packId,action:"delete"});
@@ -103,11 +101,11 @@ module.exports=async(req,res)=>{
     const batch=db.batch();
     const userRef=db.collection("users").doc(user.uid).collection("personalPacks").doc(packId);
     batch.set(userRef,payload,{merge:true});
-    if(found.accountCode){
+    if(found.source==="accounts"){
+      batch.set(found.ref,payload,{merge:true});
+    }else if(found.accountCode){
       const accountRef=db.collection("accounts").doc(found.accountCode).collection("memory").doc(packId);
       batch.set(accountRef,payload,{merge:true});
-    }else{
-      batch.set(found.ref,payload,{merge:true});
     }
     await batch.commit();
     const snap=await userRef.get();
