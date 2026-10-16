@@ -2,7 +2,7 @@
 
 const DEFAULT_ALLOWED_ORIGINS = [
   "https://lms-katlearn.netlify.app",
-  "https://teacher-katlearn.netlify.app",
+  "https://teacher-katlearn1.netlify.app",
   "http://localhost:3000",
   "http://localhost:5173"
 ];
