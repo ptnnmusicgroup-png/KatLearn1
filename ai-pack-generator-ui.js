@@ -164,6 +164,7 @@
 
       const btn = document.getElementById('generatePackBtn');
       btn.disabled = true;
+      btn.setAttribute('aria-busy', 'true');
       btn.textContent = '⏳ Đang tạo pack...';
 
       try {
@@ -182,6 +183,7 @@
         window.dispatchEvent(new CustomEvent('toast', { detail: `❌ ${error.message}` }));
       } finally {
         btn.disabled = false;
+        btn.removeAttribute('aria-busy');
         btn.textContent = '✨ Tạo Pack';
       }
     },
