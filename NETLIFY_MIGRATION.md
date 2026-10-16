@@ -8,7 +8,7 @@ The repository defines:
 - Functions directory: `netlify/functions`
 - Node.js version: `22`
 
-The configuration exposes existing LMS handlers via `/api/*` and keeps API source outside the static publish directory.
+The configuration exposes existing LMS handlers via `/api/*` and keeps API source outside the static publish directory. During each build, the required linked text `This site is powered by Netlify` is injected into every published HTML page, including login/admin pages.
 
 ## Environment variables
 Set these on the LMS site:
