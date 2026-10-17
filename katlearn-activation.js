@@ -480,8 +480,8 @@ function installThemeRuntime(){
       return id;
     }
     window.katlearnTheme={apply,themes:Object.freeze(themes)};
-    let initial=localStorage.getItem('katlearn-theme')||'default';
-    apply(initial,{persist:false});
+    // Astra Dark is the platform default. Restore a selected store theme only after the signed-in profile is resolved.
+    apply('default',{persist:false});
     async function syncThemeFromProfile(profile){
       const currentUid=String(window.studyStore?.user?.uid||'');
       if(!currentUid){
