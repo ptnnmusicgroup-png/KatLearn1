@@ -29,12 +29,26 @@ function previousStudyDay(day){
   d.setUTCDate(d.getUTCDate()-1);
   return d.toISOString().slice(0,10);
 }
+function missedStudyDays(lastDay,currentDay){
+  const last=Date.parse(String(lastDay||"")+"T00:00:00Z"),current=Date.parse(String(currentDay||"")+"T00:00:00Z");
+  if(!Number.isFinite(last)||!Number.isFinite(current)||current<=last)return 0;
+  return Math.max(0,Math.round((current-last)/86400000)-1);
+}
+function nextStreak(profile,currentDay){
+  const lastDay=String(profile.lastStudyDay||""),currentStreak=Math.max(0,Number(profile.streak||0));
+  const freezeStreak=Math.max(0,Math.floor(Number(profile.freezeStreak||0)));
+  if(lastDay===currentDay)return{streak:currentStreak,freezeStreak,freezeUsed:0,revived:false};
+  if(lastDay===previousStudyDay(currentDay))return{streak:currentStreak+1,freezeStreak,freezeUsed:0,revived:false};
+  const missed=missedStudyDays(lastDay,currentDay);
+  if(lastDay&&missed>0&&freezeStreak>=missed)return{streak:currentStreak+missed+1,freezeStreak:freezeStreak-missed,freezeUsed:missed,revived:true};
+  return{streak:1,freezeStreak,freezeUsed:0,revived:false};
+}
 function profileDefaults(token){
   return{
     displayName:String(token.name||token.email?.split("@")[0]||"KatLearn Student").slice(0,80),
     email:String(token.email||"").slice(0,200),
     photoURL:String(token.picture||"").slice(0,1000),
-    provider:"firebase-auth",role:"student",coins:0,energy:0,streak:0,lastStudyDay:"",
+    provider:"firebase-auth",role:"student",coins:0,energy:0,streak:0,lastStudyDay:"",freezeStreak:0,
     dailyQuestions:0,dailyCorrect:0,questionsAnswered:0,correctAnswers:0,
     ownedThemes:[],joinedClassIds:[],teacherUid:"",teacherUids:[],totalWords:0,vocab:[],
     createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()
@@ -64,7 +78,8 @@ module.exports=async(req,res)=>{
       return send(res,200,{
         ok:true,uid:token.uid,goal:goalState(challengeSnap.exists?challengeSnap.data()||{}:{}),
         streak:Math.max(0,Math.floor(Number(profile.streak)||0)),
-        coins:Math.max(0,Math.floor(Number(profile.coins||0)))
+        coins:Math.max(0,Math.floor(Number(profile.coins||0))),
+        freezeStreak:Math.max(0,Math.floor(Number(profile.freezeStreak||0)))
       });
     }
 
@@ -100,20 +115,20 @@ module.exports=async(req,res)=>{
       const profile=snap.exists?snap.data()||{}:profileDefaults(token);
       const challenge=challengeSnap.exists?challengeSnap.data()||{}:{};
       const currentDay=studyDay(),lastDay=String(profile.lastStudyDay||"");
-      const currentStreak=Math.max(0,Number(profile.streak||0));
-      const streak=lastDay===currentDay
-        ?currentStreak
-        :lastDay===previousStudyDay(currentDay)?currentStreak+1:1;
+      const streakState=nextStreak(profile,currentDay);
+      const streak=streakState.streak;
       transaction.set(userRef,{
         ...(snap.exists?{}:profileDefaults(token)),
         streak,lastStudyDay:currentDay,lastStudyAt:FieldValue.serverTimestamp(),
+        ...(streakState.freezeUsed?{freezeStreak:streakState.freezeStreak}:{}),
         ...(lastDay!==currentDay?{dailyQuestions:0,dailyCorrect:0}:{}),
         updatedAt:FieldValue.serverTimestamp()
       },{merge:true});
       return{
         ok:true,uid:token.uid,streak,lastStudyDay:currentDay,
         goal:goalState(challenge),
-        coins:Math.max(0,Math.floor(Number(profile.coins||0)))
+        coins:Math.max(0,Math.floor(Number(profile.coins||0))),
+        freezeStreak:streakState.freezeStreak,freezeUsed:streakState.freezeUsed,streakRevived:streakState.revived
       };
     });
     return send(res,200,result);

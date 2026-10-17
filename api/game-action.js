@@ -43,12 +43,12 @@ const CORE_PACK_PATHS={
   'katlearn-irregular-verbs':'TOPICs_KatLearn/KatLearn_Irregular_Verbs.json'
 };
 const SHOP_ITEMS={
-  'theme-night':{name:'Night Study',price:120},
-  'theme-sky':{name:'Sky Day',price:150},
-  'theme-pink':{name:'Pink Mood',price:180},
-  'theme-ocean':{name:'Ocean Calm',price:220},
-  'theme-lavender':{name:'Lavender Dream',price:260},
-  'theme-sen-viet':{name:'Sen Việt',price:320},
+  'theme-night':{name:'Night Study',price:1000},
+  'theme-sky':{name:'Sky Day',price:1200},
+  'theme-pink':{name:'Pink Mood',price:1400},
+  'theme-ocean':{name:'Ocean Calm',price:1600},
+  'theme-lavender':{name:'Lavender Dream',price:1800},
+  'theme-sen-viet':{name:'Sen Việt',price:2000},
   'shop-cat-nap':{name:'Cat Nap',price:3000,image:'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&q=82'},
   'shop-tabby-cozy':{name:'Cozy Tabby',price:3000,image:'https://images.unsplash.com/photo-1543852786-1cf6624b9987?auto=format&fit=crop&w=900&q=82'},
   'shop-sleepy-cat':{name:'Sleepy Kitty',price:3000,image:'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=900&q=82'},
@@ -84,6 +84,22 @@ function previousStudyDay(day){
   const d=new Date(day+"T00:00:00Z");
   d.setUTCDate(d.getUTCDate()-1);
   return d.toISOString().slice(0,10);
+}
+function missedStudyDays(lastDay,currentDay){
+  const last=Date.parse(String(lastDay||"")+"T00:00:00Z"),current=Date.parse(String(currentDay||"")+"T00:00:00Z");
+  if(!Number.isFinite(last)||!Number.isFinite(current)||current<=last)return 0;
+  return Math.max(0,Math.round((current-last)/86400000)-1);
+}
+function nextStreak(profile,currentDay){
+  const lastDay=String(profile.lastStudyDay||""),currentStreak=Math.max(0,Number(profile.streak||0));
+  const freezeStreak=Math.max(0,Math.floor(Number(profile.freezeStreak||0)));
+  if(lastDay===currentDay)return{streak:currentStreak,freezeStreak,freezeUsed:0,revived:false};
+  if(lastDay===previousStudyDay(currentDay))return{streak:currentStreak+1,freezeStreak,freezeUsed:0,revived:false};
+  const missed=missedStudyDays(lastDay,currentDay);
+  if(lastDay&&missed>0&&freezeStreak>=missed){
+    return{streak:currentStreak+missed+1,freezeStreak:freezeStreak-missed,freezeUsed:missed,revived:true};
+  }
+  return{streak:1,freezeStreak,freezeUsed:0,revived:false};
 }
 function findWord(words,word,meaning){
   const w=norm(word),m=norm(meaning);
@@ -153,7 +169,7 @@ module.exports=async(req,res)=>{
         return send(res,404,{ok:false,error:"Chưa có hồ sơ người dùng.",coins:0});
       }
       const profile=snap.data()||{};
-      return send(res,200,{ok:true,uid:token.uid,coins:Math.max(0,Math.floor(Number(profile.coins||0))),energy:Math.max(0,Math.floor(Number(profile.energy||0)))});
+      return send(res,200,{ok:true,uid:token.uid,coins:Math.max(0,Math.floor(Number(profile.coins||0))),energy:Math.max(0,Math.floor(Number(profile.energy||0))),freezeStreak:Math.max(0,Math.floor(Number(profile.freezeStreak||0)))});
     }
 
     if(action==="answer"){
@@ -171,7 +187,7 @@ module.exports=async(req,res)=>{
           photoURL:String(token.picture||"").slice(0,1000),
           provider:"firebase-auth",
           role:"student",
-          coins:0,energy:0,streak:0,lastStudyDay:"",
+          coins:0,energy:0,streak:0,lastStudyDay:"",freezeStreak:0,
           dailyQuestions:0,dailyCorrect:0,questionsAnswered:0,correctAnswers:0,
           ownedThemes:[],joinedClassIds:[],teacherUid:"",teacherUids:[],totalWords:0,vocab:[],
           createdAt:FieldValue.serverTimestamp(),updatedAt:FieldValue.serverTimestamp()
@@ -194,8 +210,8 @@ module.exports=async(req,res)=>{
         const now=Date.now();
         const attemptRef=db.collection("users").doc(token.uid).collection("attempts").doc();
         const sameStudyDay=String(profile.lastStudyDay||"")===currentStudyDay;
-        const currentStreak=Math.max(0,Number(profile.streak||0));
-        const streak=sameStudyDay?currentStreak:(String(profile.lastStudyDay||"")===previousStudyDay(currentStudyDay)?currentStreak+1:1);
+        const streakState=nextStreak(profile,currentStudyDay);
+        const streak=streakState.streak;
         const dailyQuestions=sameStudyDay?Math.max(0,Number(profile.dailyQuestions||0))+1:1;
         const dailyCorrect=sameStudyDay?Math.max(0,Number(profile.dailyCorrect||0))+(correct?1:0):(correct?1:0);
         const updates={
@@ -204,7 +220,8 @@ module.exports=async(req,res)=>{
           streak,
           lastStudyDay:currentStudyDay,
           dailyQuestions,
-          dailyCorrect
+          dailyCorrect,
+          ...(streakState.freezeUsed?{freezeStreak:streakState.freezeStreak}: {})
         };
         let coins=Math.max(0,Math.floor(Number(profile.coins||0))),xp=Math.max(0,Math.floor(Number(profile.energy||0)));
         // A streak challenge advances only after a server-validated correct answer.
@@ -246,7 +263,7 @@ module.exports=async(req,res)=>{
         transaction.set(attemptRef,{word,meaning,mode,correct,sourceKind,rewarded:grantReward,streakGoalRewarded:goalRewarded,sourceId:String(source?.id||"").slice(0,160),createdAt:FieldValue.serverTimestamp(),reviewDueAt:now+30*24*60*60*1000},{merge:false});
         transaction.set(leaderboardRef,publicScore(profile.displayName,coins,xp),{merge:true});
         const streakGoal=goalTarget?{target:goalTarget,progress:Math.min(goalTarget,goalProgress),completed:goalCompleted,remaining:Math.max(0,goalTarget-goalProgress),rewarded:goalRewarded}:null;
-        return{ok:true,correct,rewarded:grantReward,coins,xp,dailyQuestions,dailyCorrect,streak,streakGoal,goalRewardCoins:goalRewarded?1000:0,coinReward};
+        return{ok:true,correct,rewarded:grantReward,coins,xp,dailyQuestions,dailyCorrect,streak,freezeStreak:streakState.freezeStreak,freezeUsed:streakState.freezeUsed,streakRevived:streakState.revived,streakGoal,goalRewardCoins:goalRewarded?1000:0,coinReward};
       });
       return send(res,200,result);
     }
@@ -264,6 +281,23 @@ module.exports=async(req,res)=>{
         if(!owned&&!itemSnap.exists)throw Object.assign(new Error("Bạn chưa mua theme này."),{status:403});
         transaction.update(userRef,{themeId:itemId,updatedAt:FieldValue.serverTimestamp()});
         return{ok:true,themeId:itemId,coins:Math.max(0,Number(profile.coins||0)),item:{id:itemId,name:item.name,price:item.price}};
+      });
+      return send(res,200,result);
+    }
+
+    if(action==="purchase-freeze-streak"){
+      const quantity=Math.floor(Number(body.quantity));
+      if(!Number.isInteger(quantity)||quantity<1||quantity>14)return send(res,400,{error:"Mỗi lần chỉ có thể mua từ 1 đến 14 Freeze Streak."});
+      const unitPrice=100,totalPrice=quantity*unitPrice;
+      const result=await db.runTransaction(async transaction=>{
+        const snap=await transaction.get(userRef);
+        if(!snap.exists)throw Object.assign(new Error("Chưa có hồ sơ người dùng."),{status:404});
+        const profile=snap.data()||{},coins=Math.max(0,Math.floor(Number(profile.coins||0))),xp=Math.max(0,Math.floor(Number(profile.energy||0)));
+        if(coins<totalPrice)throw Object.assign(new Error("Không đủ KatCoin."),{status:400});
+        const freezeStreak=Math.max(0,Math.floor(Number(profile.freezeStreak||0)))+quantity;
+        transaction.update(userRef,{coins:coins-totalPrice,freezeStreak,updatedAt:FieldValue.serverTimestamp()});
+        transaction.set(leaderboardRef,publicScore(profile.displayName,coins-totalPrice,xp),{merge:true});
+        return{ok:true,coins:coins-totalPrice,freezeStreak,quantity,unitPrice,totalPrice};
       });
       return send(res,200,result);
     }
