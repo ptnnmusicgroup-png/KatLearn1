@@ -2,7 +2,7 @@
 function installThemeRuntime(){
     if(window.katlearnTheme?.apply)return;
     const themes={
-      default:{accent:'#6d5efc',accent2:'#8c7eff',bg:'#f7f8fc',surface:'#ffffff',surface2:'#fbfbfe',text:'#24364b',muted:'#8290a3',line:'#ebedf4',soft:'#f1efff',top:'#ffffff',meta:'#f6f7fb',hero1:'#6153ef',hero2:'#a296fc',shadow:'rgba(44,54,94,.08)',themeColor:'#f7f5ff'},
+      default:{accent:'#a99cff',accent2:'#38b7dc',bg:'#080711',surface:'#12101f',surface2:'#191729',text:'#f3f0ff',muted:'#aaa4c4',line:'rgba(190,178,255,.16)',soft:'rgba(121,101,232,.16)',top:'rgba(12,10,23,.94)',meta:'rgba(255,255,255,.045)',hero1:'#1f1939',hero2:'#11192b',shadow:'rgba(0,0,0,.38)',themeColor:'#080711'},
       night:{accent:'#a99cff',accent2:'#f39bb1',bg:'#141327',surface:'#211f38',surface2:'#2a2745',text:'#f6f2ff',muted:'#b7aecb',line:'rgba(255,255,255,.10)',soft:'rgba(169,156,255,.16)',top:'rgba(27,24,49,.94)',meta:'rgba(255,255,255,.08)',hero1:'#40356f',hero2:'#8d5d86',shadow:'rgba(0,0,0,.25)',themeColor:'#17152f'},
       sky:{accent:'#3289c7',accent2:'#79c8ee',bg:'#eef8ff',surface:'rgba(255,255,255,.82)',surface2:'#f7fcff',text:'#25445c',muted:'#71889a',line:'rgba(79,145,183,.15)',soft:'#e8f5fc',top:'rgba(255,255,255,.86)',meta:'rgba(255,255,255,.72)',hero1:'#4b9fd1',hero2:'#8bcfed',shadow:'rgba(38,98,133,.10)',themeColor:'#9edcff'},
       pink:{accent:'#d65c8a',accent2:'#f39fbd',bg:'#fff4f8',surface:'rgba(255,255,255,.86)',surface2:'#fff9fb',text:'#563446',muted:'#987985',line:'rgba(214,92,138,.14)',soft:'#fff0f5',top:'rgba(255,255,255,.88)',meta:'rgba(255,255,255,.74)',hero1:'#d66392',hero2:'#f5b2c8',shadow:'rgba(158,73,110,.10)',themeColor:'#ffd6e1'},
