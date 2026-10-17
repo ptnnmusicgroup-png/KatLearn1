@@ -558,10 +558,14 @@ function installThemeRuntime(){
 
 (function(){
   function boot(){
-    const ready=()=>{ installThemeRuntime();
+    const ready=()=>{
+      // Render the shop catalog first so an unrelated AI/theme initializer
+      // cannot leave the cute-products section empty if it throws.
+      try{addCuteShopItems()}catch(error){console.error('[KatLearn shop] Could not render product catalog',error)}
+      installThemeRuntime();
       if(window.aiPackGeneratorUI?.init) window.aiPackGeneratorUI.init();
       if(window.packPreviewModal?.init) window.packPreviewModal.init();
-      installManualAI(); addAiButton(); wirePackSave(); addCuteShopItems();
+      installManualAI(); addAiButton(); wirePackSave();
     };
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',ready,{once:true}); else ready();
   }
