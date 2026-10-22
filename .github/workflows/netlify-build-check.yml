@@ -26,7 +26,6 @@ jobs:
         run: |
           set -euo pipefail
           test -s katlearn-defaultdarkmode.css
-          test -s dist/katlearn-defaultdarkmode.css || true
           noncentral_links="$(grep -RIn --include='*.html' '<link rel="stylesheet"' . | grep -v 'katlearn-defaultdarkmode.css' || true)"
           if [ -n "$noncentral_links" ]; then
             echo "::error::HTML still references a non-central stylesheet:"
@@ -44,6 +43,7 @@ jobs:
         run: |
           set -euo pipefail
           test -s dist/index.html
+          test -s dist/katlearn-defaultdarkmode.css
           test -s dist/deployment-config.js
           test ! -e dist/api
           test ! -e dist/netlify
