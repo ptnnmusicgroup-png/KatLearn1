@@ -185,29 +185,6 @@ function playCorrectSparkles(target){
   el.classList.remove('kat-correct-pop');
   void el.offsetWidth;
   el.classList.add('kat-correct-pop');
-  if(!document.getElementById('kat-correct-motion-style')){
-    const style=document.createElement('style');
-    style.id='kat-correct-motion-style';
-    style.textContent=`
-      .kat-sparkle-burst{position:fixed;left:0;top:0;width:1px;height:1px;pointer-events:none;z-index:99999}
-      .kat-sparkle-burst .kat-sparkle{position:absolute;left:-7px;top:-7px;font-size:var(--size,18px);line-height:1;color:var(--sparkle,#ffd86b);filter:drop-shadow(0 2px 8px rgba(255,202,78,.45));opacity:0;transform:translate(0,0) scale(.2) rotate(0deg);animation:katSparkle .72s cubic-bezier(.15,.7,.2,1) var(--delay,0ms) forwards}
-      @keyframes katSparkle{
-        0%{opacity:0;transform:translate(0,0) scale(.15) rotate(0deg)}
-        18%{opacity:1;transform:translate(calc(var(--dx)*.18),calc(var(--dy)*.18)) scale(1.15) rotate(45deg)}
-        65%{opacity:1;transform:translate(calc(var(--dx)*.72),calc(var(--dy)*.72)) scale(.92) rotate(160deg)}
-        100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.25) rotate(260deg)}
-      }
-      .kat-correct-pop{animation:katCorrectPop .42s ease-out}
-      @keyframes katCorrectPop{
-        0%{transform:scale(1)}
-        45%{transform:scale(1.035)}
-        100%{transform:scale(1)}
-      }
-      @media (prefers-reduced-motion:reduce){
-        .kat-sparkle-burst .kat-sparkle,.kat-correct-pop{animation:none!important}
-      }`;
-    document.head.appendChild(style);
-  }
   const rect=el.getBoundingClientRect();
   const layer=document.createElement('div');
   layer.className='kat-sparkle-burst';

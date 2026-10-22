@@ -3,8 +3,8 @@
 <meta name="theme-color" content="#080711"><title>KatLearn | Kiểm tra từ vựng</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="katlearn-blue-theme.css?v=20261001-1"><link rel="stylesheet" href="test.css?v=20261007-1"><link rel="stylesheet" href="system-ui-v3.css?v=20261003-1"><link rel="stylesheet" href="/baloo-typography.css"><link rel="stylesheet" href="/katlearn-astra.css?v=20261017-dark-default3"></head>
+
+<link rel="stylesheet" href="/katlearn-defaultdarkmode.css?v=20261022-1"></head>
 <body>
 <aside class="test-sidebar" aria-label="KatLearn navigation">
   <a class="test-sidebar-brand" href="/home.html"><span><img src="/favicon.svg" alt="" aria-hidden="true"></span><b>Kat<span>Learn</span></b></a>
@@ -28,7 +28,7 @@
 <div class="pack-toolbar"><div class="pack-toolbar-note">Đã chọn <b id="selectedPackCount">0</b> bộ · <b id="selectedWordCount">0</b> từ hợp lệ</div><div class="pack-actions"><button id="selectAll" type="button">Chọn tất cả</button><button id="clearAll" type="button">Bỏ chọn</button></div></div>
 <div id="packList" class="pack-grid"></div>
 <div class="test-config"><label class="test-field"><span>SỐ CÂU</span><select id="questionCount"><option value="10">10 câu · nhanh</option><option value="15" selected>15 câu · tiêu chuẩn</option><option value="20">20 câu · đầy đủ</option><option value="30">30 câu · thử thách</option></select></label>
-<div class="test-field"><span>NGUYÊN TẮC</span><div style="height:46px;display:flex;align-items:center;padding:0 13px;border:1px solid var(--test-line);border-radius:14px;background:#fff;color:#756a80;font-size:10px;font-weight:800">🎲 Trộn lại mỗi đề</div></div>
+<div class="test-field"><span>NGUYÊN TẮC</span><div class="test-principle">🎲 Trộn lại mỗi đề</div></div>
 <button id="startTest" class="test-start" type="button" disabled>Cần ít nhất 4 từ</button></div>
 <p class="test-hint" id="setupStatus">Không bắt buộc toàn màn hình. Nên mở rộng tối đa cửa sổ bài kiểm tra để có không gian làm bài tốt nhất.</p></section>
 <section id="testRun" class="test-run"><div class="test-hud"><span id="testCounter" class="test-counter">CÂU 1 / 15</span><div class="test-progress-wrap"><div id="testProgress" class="test-progress"></div></div><span class="test-score">Điểm <b id="testScore">0</b></span><span id="testTimer" class="test-timer">⏱ 00:00</span></div>

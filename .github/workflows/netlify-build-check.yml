@@ -18,9 +18,49 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js arcade-games.js; do
+          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js arcade-games.js app.js home-account.js dmca-badge.js theme-shop.js site-footer.js katlearn-activation.js; do
             node --check "$file"
           done
+      - name: Verify one central UI stylesheet is used
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s katlearn-defaultdarkmode.css
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = process.cwd();
+          const skipped = new Set(['.git', 'node_modules', 'dist', '.netlify']);
+          const pages = [];
+          function walk(dir) {
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              if (entry.isDirectory()) {
+                if (!skipped.has(entry.name)) walk(path.join(dir, entry.name));
+              } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.html') && entry.name.toLowerCase() !== 'dmca-validation.html') {
+                pages.push(path.join(dir, entry.name));
+              }
+            }
+          }
+          walk(root);
+          const issues = [];
+          for (const file of pages) {
+            const html = fs.readFileSync(file, 'utf8');
+            const styleLinks = (html.match(/<link\b[^>]*>/gi) || []).filter(tag => /\brel=["']stylesheet["']/i.test(tag));
+            const centralLinks = styleLinks.filter(tag => /\bhref=["'][^"']*katlearn-defaultdarkmode\.css/i.test(tag));
+            if (styleLinks.length !== 1 || centralLinks.length !== 1) {
+              issues.push(path.relative(root, file) + ': expected exactly one katlearn-defaultdarkmode.css link, found ' + styleLinks.length + ' stylesheet link(s).');
+            }
+            if (/<style\b[^>]*>[\s\S]*?<\/style>/i.test(html)) {
+              issues.push(path.relative(root, file) + ': inline <style> block remains');
+            }
+          }
+          if (issues.length) {
+            console.error('::error::Every HTML page must use only katlearn-defaultdarkmode.css');
+            console.error(issues.join('\n'));
+            process.exit(1);
+          }
+          console.log('Verified ' + pages.length + ' HTML pages use the single Default Dark Mode stylesheet.');
+          NODE
       - name: Build Netlify static output
         env:
           KATLEARN_LMS_SITE_URL: https://lms-katlearn.netlify.app
@@ -32,6 +72,7 @@ jobs:
         run: |
           set -euo pipefail
           test -s dist/index.html
+          test -s dist/katlearn-defaultdarkmode.css
           test -s dist/deployment-config.js
           test ! -e dist/api
           test ! -e dist/netlify
