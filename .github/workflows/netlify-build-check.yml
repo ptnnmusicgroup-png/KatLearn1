@@ -18,7 +18,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js; do
+          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js arcade-games.js; do
             node --check "$file"
           done
       - name: Build Netlify static output
