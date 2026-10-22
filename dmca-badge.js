@@ -9,27 +9,6 @@
     const protection=footer?.querySelector('.footer-protection');
     if(!footer||!protection||protection.querySelector('.dmca-badge'))return false;
 
-    if(!document.getElementById('dmcaBadgeStyle')){
-      const style=document.createElement('style');
-      style.id='dmcaBadgeStyle';
-      style.textContent=`
-        #katlearnFooter .footer-protection .dmca-status-row{
-          display:flex;
-          align-items:center;
-          justify-content:space-between;
-          gap:10px;
-          margin-top:8px;
-        }
-        @media(max-width:620px){
-          #katlearnFooter .footer-protection .dmca-status-row{
-            align-items:flex-start;
-            flex-direction:column;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
     const wrap=document.createElement('div');
     wrap.className='dmca-badge-wrap';
     wrap.innerHTML=`
