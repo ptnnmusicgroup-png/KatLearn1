@@ -26,12 +26,42 @@ jobs:
         run: |
           set -euo pipefail
           test -s katlearn-defaultdarkmode.css
-          noncentral_links="$(grep -RIn --include='*.html' '<link rel="stylesheet"' . | grep -v 'katlearn-defaultdarkmode.css' || true)"
-          if [ -n "$noncentral_links" ]; then
-            echo "::error::HTML still references a non-central stylesheet:"
-            echo "$noncentral_links"
-            exit 1
-          fi
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = process.cwd();
+          const skipped = new Set(['.git', 'node_modules', 'dist', '.netlify']);
+          const pages = [];
+          function walk(dir) {
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              if (entry.isDirectory()) {
+                if (!skipped.has(entry.name)) walk(path.join(dir, entry.name));
+              } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.html')) {
+                pages.push(path.join(dir, entry.name));
+              }
+            }
+          }
+          walk(root);
+          const issues = [];
+          for (const file of pages) {
+            const html = fs.readFileSync(file, 'utf8');
+            for (const tag of html.match(/<link\\b[^>]*>/gi) || []) {
+              if (!/\\brel=["']stylesheet["']/i.test(tag)) continue;
+              if (!/\\bhref=["'][^"']*katlearn-defaultdarkmode\\.css(?:[?"'][^>]*)/i.test(tag)) {
+                issues.push(path.relative(root, file) + ': ' + tag);
+              }
+            }
+            if (/<style\\b[^>]*>[\\s\\S]*?<\\/style>/i.test(html)) {
+              issues.push(path.relative(root, file) + ': inline <style> block remains');
+            }
+          }
+          if (issues.length) {
+            console.error('::error::Every HTML page must use only katlearn-defaultdarkmode.css');
+            console.error(issues.join('\\n'));
+            process.exit(1);
+          }
+          console.log('Verified ' + pages.length + ' HTML pages use the single Default Dark Mode stylesheet.');
+          NODE
       - name: Build Netlify static output
         env:
           KATLEARN_LMS_SITE_URL: https://lms-katlearn.netlify.app
