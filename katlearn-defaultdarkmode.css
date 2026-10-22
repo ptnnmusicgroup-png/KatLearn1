@@ -899,6 +899,39 @@ kbd{padding:3px 6px;border:1px solid var(--kl-line-strong);border-bottom-width:2
 @media(max-width:760px){.kl-word-head{display:none}.kl-word-row{grid-template-columns:1fr;position:relative;padding:12px}.kl-remove-row{position:absolute;right:8px;top:8px}.kl-pack-card{padding:19px}.kl-pack-actions{align-items:stretch;flex-direction:column}.kl-pack-actions>div{width:100%}.kl-btn{flex:1}.freeze-streak-card{grid-template-columns:auto minmax(0,1fr);padding:17px}.freeze-streak-actions{grid-column:1/-1}.freeze-streak-buy{flex:1}#katlearnFooter .footer-grid{grid-template-columns:1fr 1fr}#katlearnFooter .footer-left{grid-column:1/-1}#katlearnFooter{padding:22px 15px}#katlearnFooter .footer-bottom{flex-direction:column}#katlearnFooter .footer-bottom span:last-child{text-align:left}}
 @media(max-width:560px){#homeAccount .ha-btn{padding:0 8px;font-size:9px}#homeAccount .ha-user{max-width:142px;padding:0 7px}#homeAccount .ha-user>span:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#homeAccount .ha-panel{right:-2px}.freeze-streak-card{grid-template-columns:1fr}.freeze-streak-actions{grid-column:auto}.kl-pack-actions>div{display:grid;grid-template-columns:1fr 1fr}}
 
+
+/* Hierarchical vocabulary library */
+.kat-library-toolbar,.kat-library-folder-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+.kat-library-toolbar>div{min-width:0}
+.kat-library-toolbar b,.kat-library-toolbar small{display:block}
+.kat-library-toolbar b{color:var(--kl-ink);font-size:14px}
+.kat-library-toolbar small{font-size:9px}
+.kat-library-back{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 11px;border:1px solid var(--kl-line);border-radius:10px;background:var(--kl-surface);color:var(--kl-muted);font-size:10px;font-weight:800}
+.kat-library-back:hover{background:var(--kl-soft);color:var(--kl-accent)}
+.kat-library-folder-head h2{margin:0 0 5px;font-size:24px}
+.kat-library-folder-head p{margin:0;font-size:10px;line-height:1.7}
+.kat-library-folder-count{padding:7px 10px;border:1px solid var(--kl-line);border-radius:10px;background:var(--kl-surface);color:var(--kl-muted);font-size:9px;font-weight:800;white-space:nowrap}
+.kat-library-folder-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.kat-library-folder{display:flex;align-items:center;gap:10px;min-width:0;padding:13px;border:1px solid var(--kl-line);border-radius:15px;background:var(--kl-surface);color:var(--kl-ink);text-align:left;cursor:pointer;transition:transform .18s,border-color .18s,background .18s}
+.kat-library-folder:hover{transform:translateY(-2px);border-color:var(--kl-line-strong);background:var(--kl-surface-2)}
+.kat-library-folder-icon{display:grid;place-items:center;flex:0 0 39px;width:39px;height:39px;border:1px solid var(--kl-line);border-radius:12px;background:var(--kl-soft);font-size:19px}
+.kat-library-folder-copy{min-width:0;flex:1}
+.kat-library-folder-copy b,.kat-library-folder-copy small{display:block}
+.kat-library-folder-copy b{color:var(--kl-ink);font-size:11px;overflow-wrap:anywhere}
+.kat-library-folder-copy small{margin-top:3px;font-size:9px}
+.kat-library-folder-arrow{color:var(--kl-accent);font-size:20px}
+.kat-library-leaf-card{display:flex;align-items:center;gap:14px;padding:18px;border:1px solid var(--kl-line);border-radius:18px;background:var(--kl-surface);box-shadow:var(--kl-shadow-sm)}
+.kat-library-leaf-card>span{display:grid;place-items:center;flex:0 0 47px;width:47px;height:47px;border-radius:14px;background:var(--kl-soft);font-size:24px}
+.kat-library-leaf-card>div{min-width:0;flex:1}
+.kat-library-leaf-card h3{margin:0 0 4px;font-size:17px}
+.kat-library-leaf-card p{margin:0;font-size:10px;line-height:1.7}
+.kat-library-leaf-card button{min-height:39px;padding:8px 12px;border:1px solid transparent;border-radius:11px;background:linear-gradient(135deg,var(--kl-accent),var(--kl-accent-2));color:#100d23;font-size:10px;font-weight:900;white-space:nowrap}
+.revision-exam-home-cta{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:9px 12px;border:1px solid var(--kl-line);border-radius:12px;background:var(--kl-surface-2);color:var(--kl-accent);font-size:10px;font-weight:800}
+.revision-exam-home-cta:hover{background:var(--kl-soft);border-color:var(--kl-line-strong)}
+.revision-exam-home-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--kl-soft);color:var(--kl-accent)}
+@media(max-width:920px){.kat-library-folder-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.kat-library-folder-head{align-items:flex-start;flex-direction:column}.kat-library-folder-grid{grid-template-columns:1fr}.kat-library-leaf-card{align-items:flex-start;flex-wrap:wrap}.kat-library-leaf-card button{width:100%}}
+
 /* Small standalone helpers */
 .settings-locked,.locked-card{margin-top:14px}
 [class*="loading"]{scroll-margin-top:80px}
