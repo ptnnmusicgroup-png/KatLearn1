@@ -45,11 +45,10 @@ jobs:
           const issues = [];
           for (const file of pages) {
             const html = fs.readFileSync(file, 'utf8');
-            for (const tag of html.match(/<link\b[^>]*>/gi) || []) {
-              if (!/\brel=["']stylesheet["']/i.test(tag)) continue;
-              if (!/\bhref=["'][^"']*katlearn-defaultdarkmode\.css/i.test(tag)) {
-                issues.push(path.relative(root, file) + ': ' + tag);
-              }
+            const styleLinks = (html.match(/<link\b[^>]*>/gi) || []).filter(tag => /\brel=["']stylesheet["']/i.test(tag));
+            const centralLinks = styleLinks.filter(tag => /\bhref=["'][^"']*katlearn-defaultdarkmode\.css/i.test(tag));
+            if (styleLinks.length !== 1 || centralLinks.length !== 1) {
+              issues.push(path.relative(root, file) + ': expected exactly one katlearn-defaultdarkmode.css link, found ' + styleLinks.length + ' stylesheet link(s).');
             }
             if (/<style\b[^>]*>[\s\S]*?<\/style>/i.test(html)) {
               issues.push(path.relative(root, file) + ': inline <style> block remains');
