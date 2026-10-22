@@ -18,9 +18,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js arcade-games.js; do
+          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js arcade-games.js app.js home-account.js dmca-badge.js theme-shop.js site-footer.js katlearn-activation.js; do
             node --check "$file"
           done
+      - name: Verify one central UI stylesheet is used
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s katlearn-defaultdarkmode.css
+          test -s dist/katlearn-defaultdarkmode.css || true
+          noncentral_links="$(grep -RIn --include='*.html' '<link rel="stylesheet"' . | grep -v 'katlearn-defaultdarkmode.css' || true)"
+          if [ -n "$noncentral_links" ]; then
+            echo "::error::HTML still references a non-central stylesheet:"
+            echo "$noncentral_links"
+            exit 1
+          fi
       - name: Build Netlify static output
         env:
           KATLEARN_LMS_SITE_URL: https://lms-katlearn.netlify.app
