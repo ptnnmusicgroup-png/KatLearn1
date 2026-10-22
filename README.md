@@ -14,3 +14,4 @@ Netlify: Máy chủ 24/7
 DMCA: Bảo vệ bản quyền website
 
 ## Cảm ơn mọi người vì đã trải nghiệm dự án của chúng mình.
+*đây là repo bản nguồn mở của KatLearn, ai cũng lấy thoải mái để phát triển sản phẩm của mình. Để biết thêm thông tin, vui lòng đọc LICENSE của chúng tôi. Xin cảm ơn!*
