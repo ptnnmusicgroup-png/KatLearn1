@@ -815,6 +815,90 @@ kbd{padding:3px 6px;border:1px solid var(--kl-line-strong);border-bottom-width:2
 #packPreviewModal .words-list{display:grid;gap:8px}
 #packPreviewModal .word-item{border:1px solid var(--kl-line);border-radius:12px;background:var(--kl-surface-2);box-shadow:none}
 
+
+/* Account menu injected by home-account.js */
+#homeAccount{position:relative;display:flex;align-items:center;gap:7px;min-width:0}
+#homeAccount .ha-btn,#homeAccount .ha-user{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:0 11px;border:1px solid var(--kl-line);border-radius:11px;background:var(--kl-surface);color:var(--kl-ink);font-size:10px;font-weight:800;cursor:pointer;box-shadow:var(--kl-shadow-sm)}
+#homeAccount .ha-btn:hover,#homeAccount .ha-user:hover{border-color:var(--kl-line-strong);background:var(--kl-surface-2)}
+#homeAccount .ha-signup{border-color:transparent;background:linear-gradient(135deg,var(--kl-accent),var(--kl-accent-2));color:#110e23}
+#homeAccount .ha-avatar{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border:1px solid var(--kl-line);border-radius:9px;background:var(--kl-soft);color:var(--kl-accent);font-size:10px;font-weight:900}
+#homeAccount .ha-panel{position:absolute;right:0;top:calc(100% + 8px);z-index:130;width:min(300px,calc(100vw - 24px));padding:14px;border:1px solid var(--kl-line-strong);border-radius:17px;background:var(--kl-surface);color:var(--kl-ink);box-shadow:var(--kl-shadow)}
+#homeAccount .ha-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#homeAccount .ha-avatar.large{width:41px;height:41px;flex:none;border-radius:13px;font-size:14px}
+#homeAccount .ha-head b{display:block;color:var(--kl-ink);font-size:12px;overflow-wrap:anywhere}
+#homeAccount .ha-head small{display:block;max-width:205px;margin-top:3px;color:var(--kl-muted);font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#homeAccount .ha-class-info{margin:0 0 11px;padding:9px 10px;border:1px solid var(--kl-line);border-radius:10px;background:var(--kl-surface-2);color:var(--kl-muted);font-size:10px;font-weight:700;line-height:1.5}
+#homeAccount .ha-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:10px 0 12px}
+#homeAccount .ha-stat{min-width:0;padding:9px 5px;border:1px solid var(--kl-line);border-radius:10px;background:var(--kl-surface-2);text-align:center}
+#homeAccount .ha-stat span,#homeAccount .ha-stat b,#homeAccount .ha-stat small{display:block}
+#homeAccount .ha-stat span{font-size:15px}
+#homeAccount .ha-stat b{margin-top:2px;color:var(--kl-ink);font:700 15px "Baloo 2",sans-serif}
+#homeAccount .ha-stat small{margin-top:2px;font-size:8px}
+#homeAccount .ha-menu{width:100%;margin-top:5px;padding:10px;border:1px solid var(--kl-line);border-radius:10px;background:var(--kl-surface-2);color:var(--kl-ink);text-align:left;font-size:10px;font-weight:800;cursor:pointer}
+#homeAccount .ha-menu:hover{background:var(--kl-soft);border-color:var(--kl-line-strong)}
+#homeAccount .ha-menu.danger{color:var(--kl-danger)}
+#homeAccount[hidden],#homeAccount .ha-class-info[hidden]{display:none!important}
+
+/* Shop UI injected by the shop logic remains styled by the central theme. */
+.shop-theme-card{position:relative;overflow:hidden;padding:13px;border:1px solid var(--kl-line);border-radius:20px;background:linear-gradient(145deg,var(--kl-surface),var(--kl-surface-2));box-shadow:var(--kl-shadow-sm);transition:transform .2s var(--kl-motion),box-shadow .2s,border-color .2s}
+.shop-theme-card:hover{transform:translateY(-3px);border-color:var(--kl-line-strong);box-shadow:var(--kl-shadow)}
+.shop-theme-preview{position:relative;height:155px;margin-bottom:12px;overflow:hidden;border:1px solid var(--kl-line);border-radius:15px;background:var(--kl-surface-2);background-size:cover;background-position:center}
+.shop-theme-preview:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(5,5,18,.52));border-radius:inherit;pointer-events:none}
+.theme-card-icon{position:absolute;top:22px;left:22px;z-index:1;display:grid;place-items:center;width:38px;height:38px;border:1px solid rgba(255,255,255,.22);border-radius:12px;background:rgba(13,11,25,.7);color:#fff;box-shadow:var(--kl-shadow-sm);font-size:18px}
+.shop-theme-card h3{margin:4px 0;color:var(--kl-ink);font:700 18px "Baloo 2",sans-serif}
+.shop-theme-card p{margin:0 0 10px;color:var(--kl-muted);font-size:10px}
+.shop-theme-card>b{display:block;margin-bottom:10px;color:var(--kl-ink)}
+.theme-card-price{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--kl-line);border-radius:99px;background:var(--kl-soft);color:var(--kl-accent);font-size:11px;font-weight:900}
+.shop-theme-card button{min-height:35px;margin:4px 6px 0 0;padding:7px 11px;border:1px solid var(--kl-line);border-radius:10px;background:var(--kl-surface-2);color:var(--kl-ink);font-size:10px;font-weight:800}
+.shop-theme-card .shop-apply-theme{border-color:transparent;background:linear-gradient(135deg,var(--kl-accent),var(--kl-accent-2));color:#110e24}
+.shop-theme-card button:disabled{opacity:.48;cursor:not-allowed}
+.freeze-streak-card{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;overflow:hidden;margin:20px 0 28px;padding:20px;border:1px solid var(--kl-line);border-radius:21px;background:radial-gradient(circle at 95% 8%,var(--kl-soft),transparent 40%),var(--kl-surface);box-shadow:var(--kl-shadow-sm)}
+.freeze-streak-card:after{content:"";position:absolute;right:-70px;top:-115px;width:210px;height:210px;border-radius:50%;background:var(--kl-soft);pointer-events:none}
+.freeze-icon{position:relative;z-index:1;display:grid;place-items:center;width:53px;height:53px;border:1px solid var(--kl-line);border-radius:17px;background:var(--kl-surface-2);font-size:27px}
+.freeze-streak-card .eyebrow{margin:0 0 4px;color:var(--kl-accent);font-size:9px;font-weight:900;letter-spacing:.11em}
+.freeze-streak-card h2{margin:0;color:var(--kl-ink);font:700 21px "Baloo 2",sans-serif}
+.freeze-streak-card p{margin:5px 0 0;color:var(--kl-muted);font-size:11px;line-height:1.6}
+.freeze-streak-actions{position:relative;z-index:1;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.freeze-streak-balance{min-width:65px;padding:8px 10px;border:1px solid var(--kl-line);border-radius:11px;background:var(--kl-surface-2);color:var(--kl-muted);text-align:center;font-size:10px;font-weight:800}
+.freeze-streak-balance b{display:block;color:var(--kl-accent);font:700 18px "Baloo 2",sans-serif}
+.freeze-streak-select{width:auto;min-width:86px;min-height:37px;padding:6px 8px}
+.freeze-streak-buy{min-height:37px;padding:0 12px;border:1px solid transparent;border-radius:10px;background:linear-gradient(135deg,var(--kl-accent),var(--kl-accent-2));color:#100d23;font-size:10px;font-weight:900;cursor:pointer}
+.freeze-streak-note{display:block;width:100%;color:var(--kl-muted);font-size:9px;font-weight:700}
+
+/* Personal pack editing dialog */
+.kl-pack-overlay{position:fixed;inset:0;z-index:1500;display:none;place-items:center;overflow:auto;padding:18px;background:rgba(2,2,12,.75);backdrop-filter:blur(12px)}
+.kl-pack-overlay.show{display:grid}
+.kl-pack-card{width:min(980px,96vw);max-height:88dvh;overflow:auto;padding:clamp(18px,3vw,27px);border:1px solid var(--kl-line-strong);border-radius:23px;background:var(--kl-surface);color:var(--kl-ink);box-shadow:0 28px 90px rgba(0,0,0,.48);font-family:"Be Vietnam Pro",sans-serif}
+.kl-pack-card h2{margin:0 0 6px;color:var(--kl-ink);font:700 25px "Baloo 2",sans-serif}
+.kl-pack-card>p{margin:0 0 17px;color:var(--kl-muted);font-size:10px;line-height:1.7}
+.kl-pack-name{display:block;margin-bottom:15px;color:var(--kl-muted);font-size:10px;font-weight:800}
+.kl-pack-name input{display:block;width:100%;margin-top:6px;padding:11px 12px;border:1px solid var(--kl-line-strong);border-radius:11px;background:var(--kl-surface-2);color:var(--kl-ink)}
+.kl-word-head,.kl-word-row{display:grid;grid-template-columns:1.15fr 1.35fr 1fr 1.2fr 34px;gap:8px;align-items:center}
+.kl-word-head{padding:0 8px 7px;color:var(--kl-muted);font-size:9px;font-weight:900}
+.kl-word-row{margin-bottom:8px;padding:8px;border:1px solid var(--kl-line);border-radius:12px;background:var(--kl-surface-2)}
+.kl-word-row input,.kl-word-row textarea{width:100%;min-width:0;min-height:39px;padding:9px;border:1px solid var(--kl-line);border-radius:9px;background:var(--kl-bg-elevated);color:var(--kl-ink);font-size:10px;outline:none}
+.kl-word-row textarea{resize:vertical}
+.kl-word-row input.ai-filling{background:var(--kl-soft);border-color:var(--kl-accent)}
+.kl-remove-row{display:grid;place-items:center;width:30px;height:30px;border:1px solid color-mix(in srgb,var(--kl-danger) 30%,var(--kl-line));border-radius:9px;background:color-mix(in srgb,var(--kl-danger) 12%,var(--kl-surface));color:var(--kl-danger);font-size:18px;cursor:pointer}
+.kl-pack-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}
+.kl-pack-actions>div{display:flex;gap:8px;flex-wrap:wrap}
+.kl-btn{min-height:39px;padding:9px 13px;border:1px solid var(--kl-line);border-radius:10px;font-size:10px;font-weight:900;cursor:pointer}
+.kl-btn.secondary{background:var(--kl-soft);color:var(--kl-accent)}
+.kl-btn.primary{border-color:transparent;background:linear-gradient(135deg,var(--kl-accent),var(--kl-accent-2));color:#100d23}
+.kl-btn.ghost{background:var(--kl-surface-2);color:var(--kl-muted)}
+.kl-ai-note{color:var(--kl-muted);font-size:9px}
+.kl-ai-note b{color:var(--kl-accent)}
+.kl-pack-success{display:none;margin-top:11px;padding:9px 11px;border:1px solid color-mix(in srgb,var(--kl-good) 28%,var(--kl-line));border-radius:10px;background:color-mix(in srgb,var(--kl-good) 10%,var(--kl-surface));color:var(--kl-good);font-size:10px}
+.kl-pack-success.show{display:block}
+#katlearnFooter .footer-protection .dmca-status-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.kat-sparkle-burst{position:fixed;left:0;top:0;width:1px;height:1px;pointer-events:none;z-index:1900}
+.kat-sparkle-burst .kat-sparkle{position:absolute;left:-7px;top:-7px;font-size:var(--size,18px);line-height:1;color:var(--sparkle,#ffd86b);filter:drop-shadow(0 2px 8px rgba(255,202,78,.45));opacity:0;transform:translate(0,0) scale(.2) rotate(0deg);animation:katSparkle .72s cubic-bezier(.15,.7,.2,1) var(--delay,0ms) forwards}
+@keyframes katSparkle{0%{opacity:0;transform:translate(0,0) scale(.15) rotate(0deg)}18%{opacity:1;transform:translate(calc(var(--dx)*.18),calc(var(--dy)*.18)) scale(1.15) rotate(45deg)}65%{opacity:1;transform:translate(calc(var(--dx)*.72),calc(var(--dy)*.72)) scale(.92) rotate(160deg)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.25) rotate(260deg)}}
+.kat-correct-pop{animation:katCorrectPop .42s ease-out}
+@keyframes katCorrectPop{0%{transform:scale(1)}45%{transform:scale(1.035)}100%{transform:scale(1)}}
+@media(max-width:760px){.kl-word-head{display:none}.kl-word-row{grid-template-columns:1fr;position:relative;padding:12px}.kl-remove-row{position:absolute;right:8px;top:8px}.kl-pack-card{padding:19px}.kl-pack-actions{align-items:stretch;flex-direction:column}.kl-pack-actions>div{width:100%}.kl-btn{flex:1}.freeze-streak-card{grid-template-columns:auto minmax(0,1fr);padding:17px}.freeze-streak-actions{grid-column:1/-1}.freeze-streak-buy{flex:1}#katlearnFooter .footer-grid{grid-template-columns:1fr 1fr}#katlearnFooter .footer-left{grid-column:1/-1}#katlearnFooter{padding:22px 15px}#katlearnFooter .footer-bottom{flex-direction:column}#katlearnFooter .footer-bottom span:last-child{text-align:left}}
+@media(max-width:560px){#homeAccount .ha-btn{padding:0 8px;font-size:9px}#homeAccount .ha-user{max-width:142px;padding:0 7px}#homeAccount .ha-user>span:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#homeAccount .ha-panel{right:-2px}.freeze-streak-card{grid-template-columns:1fr}.freeze-streak-actions{grid-column:auto}.kl-pack-actions>div{display:grid;grid-template-columns:1fr 1fr}}
+
 /* Small standalone helpers */
 .settings-locked,.locked-card{margin-top:14px}
 [class*="loading"]{scroll-margin-top:80px}
