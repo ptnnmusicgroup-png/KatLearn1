@@ -1030,6 +1030,12 @@ kbd{padding:3px 6px;border:1px solid var(--kl-line-strong);border-bottom-width:2
 @media(max-width:900px){.cp-hero,.cp-workspace{grid-template-columns:1fr}.cp-account{gap:13px}.cp-workspace{align-items:stretch}.cp-inline{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.cp-page{width:calc(100% - 22px);padding-top:10px}.cp-top{align-items:flex-start;flex-wrap:wrap}.cp-hero-card{padding:21px}.cp-hero-card h1{font-size:31px}.cp-card{padding:13px}.cp-editor{padding:0}.cp-editor-head{align-items:flex-start;flex-direction:column;padding:14px}.cp-editor-meta{justify-content:flex-start}.cp-table-head,.cp-row{min-width:960px}.cp-footer{align-items:stretch;flex-direction:column;padding:12px}.cp-footer-actions{display:grid;grid-template-columns:.8fr 1.2fr}.cp-inline{grid-template-columns:1fr}.cp-mode-tabs{grid-template-columns:1fr}.cp-mode-tab{min-height:38px}}
 
+
+/* Lightweight SSO bridge status */
+body.sso-bridge{display:grid;place-items:center;padding:18px;background:radial-gradient(circle at 15% 5%,var(--kl-soft),transparent 34rem),var(--kl-bg)}
+.sso-box{width:min(520px,100%);padding:clamp(24px,4vw,36px);border:1px solid var(--kl-line-strong);border-radius:22px;background:var(--kl-surface);color:var(--kl-ink);box-shadow:var(--kl-shadow);text-align:center;font-size:13px;font-weight:800}
+.sso-box small{display:block;margin-top:9px;color:var(--kl-muted);font-size:10px;font-weight:500;line-height:1.7}
+
 /* Small standalone helpers */
 .settings-locked,.locked-card{margin-top:14px}
 [class*="loading"]{scroll-margin-top:80px}
