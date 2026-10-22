@@ -1036,6 +1036,10 @@ body.sso-bridge{display:grid;place-items:center;padding:18px;background:radial-g
 .sso-box{width:min(520px,100%);padding:clamp(24px,4vw,36px);border:1px solid var(--kl-line-strong);border-radius:22px;background:var(--kl-surface);color:var(--kl-ink);box-shadow:var(--kl-shadow);text-align:center;font-size:13px;font-weight:800}
 .sso-box small{display:block;margin-top:9px;color:var(--kl-muted);font-size:10px;font-weight:500;line-height:1.7}
 
+
+body.redirect-bridge{display:grid;place-items:center;padding:18px;background:var(--kl-bg)}
+.redirect-bridge p{width:min(420px,100%);margin:0;padding:22px;border:1px solid var(--kl-line);border-radius:17px;background:var(--kl-surface);color:var(--kl-muted);box-shadow:var(--kl-shadow-sm);text-align:center;font-size:11px}
+
 /* Small standalone helpers */
 .settings-locked,.locked-card{margin-top:14px}
 [class*="loading"]{scroll-margin-top:80px}
