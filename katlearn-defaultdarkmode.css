@@ -1040,6 +1040,57 @@ body.sso-bridge{display:grid;place-items:center;padding:18px;background:radial-g
 body.redirect-bridge{display:grid;place-items:center;padding:18px;background:var(--kl-bg)}
 .redirect-bridge p{width:min(420px,100%);margin:0;padding:22px;border:1px solid var(--kl-line);border-radius:17px;background:var(--kl-surface);color:var(--kl-muted);box-shadow:var(--kl-shadow-sm);text-align:center;font-size:11px}
 
+
+/* Unified signup-specific controls and school-suggestion dialog */
+.auth-signup-screen .hero{max-width:620px}
+.auth-signup-screen .steps{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.auth-signup-screen .step{padding:8px 10px;border:1px solid var(--kl-line);border-radius:11px;background:var(--kl-surface);color:var(--kl-muted);font-size:9px;font-weight:800}
+.auth-screen .tabs>a{display:flex;align-items:center;justify-content:center;flex:1;min-height:37px;padding:7px 10px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--kl-muted);font-size:10px;font-weight:900;text-decoration:none}
+.auth-screen .tabs>a.active{border-color:var(--kl-line);background:var(--kl-soft);color:var(--kl-accent)}
+.auth-screen .account-types{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:9px 0 14px}
+.auth-screen .account-type{position:relative;display:grid;gap:5px;min-width:0;margin:0;padding:13px;border:1px solid var(--kl-line);border-radius:14px;background:var(--kl-surface-2);color:var(--kl-ink);cursor:pointer;transition:border-color .18s,background .18s,transform .18s}
+.auth-screen .account-type:hover{transform:translateY(-1px);border-color:var(--kl-line-strong)}
+.auth-screen .account-type input{position:absolute;top:12px;right:12px;width:15px;min-height:15px;margin:0;accent-color:var(--kl-accent)}
+.auth-screen .account-type b{display:block;padding-right:20px;color:var(--kl-ink);font-size:10px;line-height:1.6}
+.auth-screen .account-type small{display:block;color:var(--kl-muted);font-size:9px;line-height:1.6}
+.auth-screen .account-type:has(input:checked){border-color:var(--kl-accent);background:var(--kl-soft);box-shadow:0 0 0 2px color-mix(in srgb,var(--kl-accent) 9%,transparent)}
+.auth-screen .class-fields{display:none;margin-top:12px;padding:14px;border:1px solid var(--kl-line);border-radius:15px;background:var(--kl-surface-2)}
+.auth-screen .class-fields.show{display:grid;gap:11px}
+.auth-screen .class-fields .hint{margin:0;padding:10px 11px;border:1px solid var(--kl-line);border-radius:10px;background:var(--kl-surface);color:var(--kl-muted);font-size:9px;line-height:1.7}
+.auth-screen .missing-school{margin:0;padding:10px;border:1px solid var(--kl-line);border-radius:10px;background:var(--kl-surface);color:var(--kl-muted);font-size:9px;line-height:1.7}
+.auth-screen .missing-school button{border:0;background:transparent;color:var(--kl-accent);font:inherit;font-weight:900;text-decoration:underline}
+.school-suggestion-backdrop{position:fixed;inset:0;z-index:2000;display:none;place-items:center;overflow:auto;padding:20px;background:rgba(2,2,12,.78);backdrop-filter:blur(12px)}
+.school-suggestion-backdrop.show{display:grid}
+.school-suggestion{width:min(590px,100%);max-height:min(90dvh,850px);overflow:auto;padding:clamp(19px,3vw,28px);border:1px solid var(--kl-line-strong);border-radius:22px;background:var(--kl-surface);color:var(--kl-ink);box-shadow:0 30px 90px rgba(0,0,0,.5)}
+.school-suggestion h3{margin:0 0 7px;color:var(--kl-ink);font:700 24px "Baloo 2",sans-serif}
+.school-suggestion>p{margin:0 0 17px;color:var(--kl-muted);font-size:10px;line-height:1.75}
+.school-suggestion form{display:grid;gap:12px}
+.school-suggestion label{display:grid;gap:6px;color:var(--kl-muted);font-size:10px;font-weight:800}
+.school-suggestion input,.school-suggestion textarea{width:100%;min-height:42px;padding:10px 12px;border:1px solid var(--kl-line-strong);border-radius:11px;background:var(--kl-surface-2);color:var(--kl-ink);font-size:11px}
+.school-suggestion textarea{min-height:90px;resize:vertical}
+.school-suggestion input:focus,.school-suggestion textarea:focus{border-color:var(--kl-accent);box-shadow:var(--kl-focus)}
+.school-suggestion-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:8px}
+.school-suggestion-actions button{min-height:39px;padding:0 13px;border:1px solid var(--kl-line);border-radius:11px;background:var(--kl-surface-2);color:var(--kl-ink);font-size:10px;font-weight:900}
+.school-suggestion-actions .send{border-color:transparent;background:linear-gradient(135deg,var(--kl-accent),var(--kl-accent-2));color:#100d23}
+.school-suggestion-status{min-height:18px;color:var(--kl-muted);font-size:10px}
+.admin-entry{display:flex;align-items:center;gap:10px;margin-top:14px;padding:11px;border:1px solid var(--kl-line);border-radius:13px;background:var(--kl-surface-2);color:var(--kl-muted);transition:transform .18s,border-color .18s,background .18s}
+.admin-entry:hover{transform:translateY(-1px);border-color:var(--kl-line-strong);background:var(--kl-soft);color:var(--kl-ink)}
+.admin-entry-icon{display:grid;place-items:center;flex:0 0 31px;width:31px;height:31px;border-radius:10px;background:var(--kl-soft);color:var(--kl-accent);font-size:16px}
+.admin-entry span:nth-child(2){min-width:0;flex:1}
+.admin-entry b{display:block;color:var(--kl-ink);font-size:10px}
+.admin-entry small{display:block;margin-top:2px;color:var(--kl-muted);font-size:8px}
+.admin-entry-arrow{color:var(--kl-accent);font-weight:900}
+
+/* Central replacements for the final hand-written inline styles */
+.create-personal-pack-link{display:inline-flex;align-items:center;gap:6px;padding:10px 2px;color:var(--kl-accent);font-size:11px;font-weight:800;text-decoration:none;white-space:nowrap}
+.create-personal-pack-link:hover{color:var(--kl-accent-2)}
+.test-principle{display:flex;align-items:center;height:46px;padding:0 13px;border:1px solid var(--kl-line);border-radius:14px;background:var(--kl-surface-2);color:var(--kl-muted);font-size:10px;font-weight:800}
+.study-upload-row-spaced{margin-top:12px}
+.study-image-label{font-size:10px;color:var(--kl-ink)}
+.study-image-help{display:block;margin-top:4px;color:var(--kl-muted);font-size:9px}
+@media(max-width:860px){.auth-screen{grid-template-columns:1fr;width:min(700px,calc(100% - 32px));gap:24px}.auth-screen .hero{max-width:none}.auth-screen .back{margin-bottom:19px}}
+@media(max-width:560px){.auth-screen{width:calc(100% - 24px);padding:18px 0}.auth-screen .hero h1{font-size:38px}.auth-screen .card{padding:20px}.auth-screen .account-types{grid-template-columns:1fr}.auth-screen .providers{grid-template-columns:1fr}.school-suggestion-backdrop{padding:12px}.school-suggestion{max-height:calc(100svh - 24px);padding:18px}.school-suggestion h3{font-size:22px}.school-suggestion-actions{flex-direction:column}.school-suggestion-actions button{width:100%}}
+
 /* Small standalone helpers */
 .settings-locked,.locked-card{margin-top:14px}
 [class*="loading"]{scroll-margin-top:80px}
