@@ -45,19 +45,19 @@ jobs:
           const issues = [];
           for (const file of pages) {
             const html = fs.readFileSync(file, 'utf8');
-            for (const tag of html.match(/<link\\b[^>]*>/gi) || []) {
-              if (!/\\brel=["']stylesheet["']/i.test(tag)) continue;
-              if (!/\\bhref=["'][^"']*katlearn-defaultdarkmode\\.css(?:[?"'][^>]*)/i.test(tag)) {
+            for (const tag of html.match(/<link\b[^>]*>/gi) || []) {
+              if (!/\brel=["']stylesheet["']/i.test(tag)) continue;
+              if (!/\bhref=["'][^"']*katlearn-defaultdarkmode\.css/i.test(tag)) {
                 issues.push(path.relative(root, file) + ': ' + tag);
               }
             }
-            if (/<style\\b[^>]*>[\\s\\S]*?<\\/style>/i.test(html)) {
+            if (/<style\b[^>]*>[\s\S]*?<\/style>/i.test(html)) {
               issues.push(path.relative(root, file) + ': inline <style> block remains');
             }
           }
           if (issues.length) {
             console.error('::error::Every HTML page must use only katlearn-defaultdarkmode.css');
-            console.error(issues.join('\\n'));
+            console.error(issues.join('\n'));
             process.exit(1);
           }
           console.log('Verified ' + pages.length + ' HTML pages use the single Default Dark Mode stylesheet.');
