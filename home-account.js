@@ -1,6 +1,6 @@
 /* KatLearn Home account UI: Firebase session is the source of truth. */
 (function(){
-  const LOGIN='/login.html', SIGNUP='/signup.html', ADMIN_EMAIL='katlearn.admin@gmail.com', ADMIN_HOME=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://teacher-katlearn1.netlify.app').replace(/\/+$/,'')+'/admin.html';
+  const LOGIN='/login.html', SIGNUP='/signup.html', ADMIN_EMAIL='katlearn.admin@gmail.com', ADMIN_HOME=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://quanly-giaovien-katlearn.netlify.app').replace(/\/+$/,'')+'/admin.html';
 
   function el(tag,attrs={},html=''){const x=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>{if(k==='class')x.className=v;else if(k==='text')x.textContent=v;else x.setAttribute(k,v)});if(html)x.innerHTML=html;return x}
   function render(){
