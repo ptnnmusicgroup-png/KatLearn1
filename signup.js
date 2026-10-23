@@ -2,7 +2,7 @@
 (function(){
   if(window.__KATLEARN_AUTH_UI_LOADED)return;
   window.__KATLEARN_AUTH_UI_LOADED=true;
-  const TEACHER_URL=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://teacher-katlearn1.netlify.app').replace(/\/+$/,'');
+  const TEACHER_URL=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://quanly-giaovien-katlearn.netlify.app').replace(/\/+$/,'');
   const $=s=>document.querySelector(s);
 
   function styles(){

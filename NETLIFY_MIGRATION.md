@@ -15,8 +15,8 @@ The application keeps the existing `/api/*` routes and serves their handlers thr
 Set these in the LMS Netlify site's environment settings:
 
 - `KATLEARN_LMS_SITE_URL=https://lms-katlearn.netlify.app`
-- `KATLEARN_TEACHER_SITE_URL=https://teacher-katlearn1.netlify.app`
-- `KATLEARN_ALLOWED_ORIGINS=https://lms-katlearn.netlify.app,https://teacher-katlearn1.netlify.app`
+- `KATLEARN_TEACHER_SITE_URL=https://quanly-giaovien-katlearn.netlify.app`
+- `KATLEARN_ALLOWED_ORIGINS=https://lms-katlearn.netlify.app,https://quanly-giaovien-katlearn.netlify.app`
 - `FIREBASE_SERVICE_ACCOUNT_JSON`: full service-account JSON for Firebase project `elp---katlearn` (secret).
 - `GEMINI_API_KEY`: server-side key for Kat AI (secret).
 - `GEMINI_MODEL`: optional model override.

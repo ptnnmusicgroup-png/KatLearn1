@@ -1,5 +1,5 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KatLearn SSO</title><link rel="stylesheet" href="/katlearn-defaultdarkmode.css?v=20261022-1"></head><body class="sso-bridge"><div class="sso-box">🔐 Đang đồng bộ tài khoản KatLearn…<small>Vui lòng chờ một chút.</small></div><script src="firebase-service.js?v=20260930-10"></script><script>
-const TEACHER=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://teacher-katlearn1.netlify.app').replace(/\/+$/,'');
+const TEACHER=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://quanly-giaovien-katlearn.netlify.app').replace(/\/+$/,'');
 const LMS=String(window.KATLEARN_DEPLOYMENT_CONFIG?.lmsUrl||'https://lms-katlearn.netlify.app').replace(/\/+$/,'');
 const LOGIN=LMS+'/login.html';
 const qs=new URLSearchParams(location.search);const target=qs.get('return')||'teacher';const back=target==='teacher'?TEACHER:LMS;
