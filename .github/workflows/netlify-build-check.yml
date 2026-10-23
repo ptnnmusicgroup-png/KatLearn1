@@ -64,8 +64,8 @@ jobs:
       - name: Build Netlify static output
         env:
           KATLEARN_LMS_SITE_URL: https://lms-katlearn.netlify.app
-          KATLEARN_TEACHER_SITE_URL: https://teacher-katlearn1.netlify.app
-          KATLEARN_ALLOWED_ORIGINS: https://lms-katlearn.netlify.app,https://teacher-katlearn1.netlify.app
+          KATLEARN_TEACHER_SITE_URL: https://quanly-giaovien-katlearn.netlify.app
+          KATLEARN_ALLOWED_ORIGINS: https://lms-katlearn.netlify.app,https://quanly-giaovien-katlearn.netlify.app
         run: node scripts/build-netlify.js
       - name: Verify static publish excludes server files and settings
         shell: bash
