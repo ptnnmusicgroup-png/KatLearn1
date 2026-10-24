@@ -18,7 +18,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js arcade-games.js app.js home-account.js dmca-badge.js theme-shop.js site-footer.js katlearn-activation.js; do
+          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js arcade-games.js app.js test.js learning-goals.js katlearn-motion.js home-account.js dmca-badge.js theme-shop.js site-footer.js katlearn-activation.js; do
             node --check "$file"
           done
       - name: Verify one central UI stylesheet is used
@@ -73,7 +73,26 @@ jobs:
           set -euo pipefail
           test -s dist/index.html
           test -s dist/katlearn-defaultdarkmode.css
+          test -s dist/katlearn-motion.js
           test -s dist/deployment-config.js
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = path.resolve('dist');
+          const pages = fs.readdirSync(root).filter(name => name.toLowerCase().endsWith('.html'));
+          const missing = pages.filter(name => name.toLowerCase() !== 'dmca-validation.html' &&
+            !/src=["']\\/katlearn-motion\\.js\\?v=20261024-1["']/i.test(fs.readFileSync(path.join(root, name), 'utf8')));
+          if (missing.length) {
+            console.error('::error::Motion runtime missing from published pages: ' + missing.join(', '));
+            process.exit(1);
+          }
+          const tokenPage = fs.readFileSync(path.join(root, 'dmca-validation.html'), 'utf8');
+          if (/katlearn-motion\\.js/i.test(tokenPage)) {
+            console.error('::error::Motion runtime must not be injected into the DMCA validation token page.');
+            process.exit(1);
+          }
+          console.log('Verified motion runtime injection across ' + (pages.length - 1) + ' UI pages; DMCA validation remains untouched.');
+          NODE
           test ! -e dist/api
           test ! -e dist/netlify
           test ! -e dist/scripts
