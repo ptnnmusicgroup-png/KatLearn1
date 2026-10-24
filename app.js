@@ -1,6 +1,6 @@
 let vocab=[];
 try{const savedVocab=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(Array.isArray(savedVocab))vocab=savedVocab}catch(e){}
-let coins=0,coinBalanceReady=false,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
+let coins=0,coinBalanceReady=false,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,cardMotionBusy=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
 let activeVocabSource={kind:'legacy'};try{const raw=localStorage.getItem('katlearn-vocab-source');if(raw)activeVocabSource=JSON.parse(raw)||activeVocabSource}catch(_){}
 let personalLearningSnapshot={uid:'',packs:[],words:[],knownKeys:new Set(),totalWords:0,knownWords:0,personalPacksCount:0};
 let progressVisitRecordedUid='';
@@ -68,6 +68,7 @@ function updateDailyGoal(count){
   if(bar)bar.style.width=(done*10)+'%';
   if(label)label.textContent=done+' / 10';
   if(percent)percent.textContent=(done*10)+'%';
+  window.dispatchEvent(new CustomEvent('katlearn-daily-goal-state',{detail:{done,complete:done>=10}}));
 }
 function updateCoins(){const label=coinBalanceReady?format(coins):(window.studyStore?.user?'—':'0');['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=label});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
 function applyServerProfile(profile){
@@ -374,24 +375,37 @@ function renderCard(){
 }
 
 function markCurrentCard(knownValue){
-  if(!vocab.length)return;
-  const v=vocab[cardIndex],key=vocabKey(v);
-  if(knownValue)knownWordKeys.add(key);else knownWordKeys.delete(key);
-  saveKnownState();
-  if(knownValue)playCorrectSparkles($('#knowBtn'));
-  void recordStudyActivity();
-  if(activeVocabSource?.kind==='personal'&&personalLearningSnapshot.uid===String(window.studyStore?.user?.uid||'')){
-    void syncPersonalProgressFromLocal().then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
-  }else{
-    void syncProfile({knownWords:known}).then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
-  }
-  if(knownValue&&known>=vocab.length){
+  if(!vocab.length||cardMotionBusy)return;
+  const card=$('#flashcard'),v=vocab[cardIndex],key=vocabKey(v);
+  cardMotionBusy=true;
+  const finish=()=>{
+    card?.classList.remove('kl-card-swipe-right','kl-card-swipe-left');
+    cardMotionBusy=false;
+    if(knownValue)knownWordKeys.add(key);else knownWordKeys.delete(key);
+    saveKnownState();
+    if(knownValue)playCorrectSparkles($('#knowBtn'));
+    void recordStudyActivity();
+    if(activeVocabSource?.kind==='personal'&&personalLearningSnapshot.uid===String(window.studyStore?.user?.uid||'')){
+      void syncPersonalProgressFromLocal().then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
+    }else{
+      void syncProfile({knownWords:known}).then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
+    }
+    const deckComplete=knownValue&&vocab.every(word=>knownWordKeys.has(vocabKey(word)));
+    if(deckComplete){
+      window.dispatchEvent(new CustomEvent('katlearn-deck-complete',{detail:{total:vocab.length}}));
+      renderCard();
+      toast('🎉 Bạn đã nhớ toàn bộ bộ từ này!');
+      return;
+    }
+    cardIndex=(cardIndex+1)%vocab.length;
     renderCard();
-    toast('🎉 Bạn đã nhớ toàn bộ bộ từ này!');
-    return;
-  }
-  cardIndex=(cardIndex+1)%vocab.length;
-  renderCard();
+  };
+  if(card&&!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches){
+    card.classList.remove('kl-card-swipe-right','kl-card-swipe-left');
+    void card.offsetWidth;
+    card.classList.add(knownValue?'kl-card-swipe-right':'kl-card-swipe-left');
+    window.setTimeout(finish,290);
+  }else finish();
 }
 function speakCurrentCard(){
   if(!vocab.length||!('speechSynthesis' in window))return toast('Thiết bị này chưa hỗ trợ phát âm tự động.');
