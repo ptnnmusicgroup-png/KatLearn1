@@ -26,7 +26,7 @@
   function renderGoal(raw,options={}){
     state=normalizeGoal(raw);
     window.katlearnStreakGoalState={...state};
-    window.dispatchEvent(new CustomEvent('katlearn-streak-goal-state',{detail:{...state}}));
+    window.dispatchEvent(new CustomEvent('katlearn-streak-goal-state',{detail:{...state,justCompleted:Boolean(options.justCompleted)}}));
     const target=state.target,progress=state.progress,completed=state.completed;
     const status=$('streakGoalStatus');
     if(!target){
