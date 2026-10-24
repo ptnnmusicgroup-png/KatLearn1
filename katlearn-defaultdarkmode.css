@@ -1307,3 +1307,227 @@ button.is-loading::after{content:"";display:inline-block;width:12px;height:12px;
   body.kl-motion-enter,.kl-reveal,.kl-card-swipe-right,.kl-card-swipe-left,.kl-feedback-pop,.kl-feedback-shake,.kl-confetti-layer{animation:none!important}
   .kl-confetti-layer{display:none!important}
 }
+
+
+/* =========================================================
+   KatLearn Liquid Glass — immersive surfaces + fluid navigation
+   ========================================================= */
+:root{
+  --kl-radius-sm:16px;
+  --kl-radius:22px;
+  --kl-radius-lg:30px;
+  --kl-radius-xl:36px;
+  --kl-motion-glass:cubic-bezier(.22,.72,.18,1);
+  --kl-motion-morph:cubic-bezier(.18,.9,.22,1);
+  --kl-glass-edge:rgba(255,255,255,.17);
+  --kl-glass-highlight:rgba(255,255,255,.115);
+  --kl-glass-shadow:0 22px 66px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.12);
+}
+html{scroll-behavior:smooth;scroll-padding-top:104px}
+body{isolation:isolate;background-color:var(--kl-bg)}
+body::before{
+  content:"";position:fixed;inset:-18%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 18% 18%,color-mix(in srgb,var(--kl-accent) 19%,transparent),transparent 34%),
+    radial-gradient(ellipse at 78% 22%,color-mix(in srgb,var(--kl-accent-2) 15%,transparent),transparent 31%),
+    radial-gradient(ellipse at 56% 83%,color-mix(in srgb,var(--kl-pink) 10%,transparent),transparent 37%);
+  filter:blur(42px);opacity:.78;transform:translate3d(0,0,0);
+  animation:kl-glass-ambient 26s ease-in-out infinite alternate;
+}
+@keyframes kl-glass-ambient{
+  0%{transform:translate3d(-1.5%,0,0) scale(1)}
+  50%{transform:translate3d(1.8%,-1%,0) scale(1.035)}
+  100%{transform:translate3d(-.4%,1.5%,0) scale(1.015)}
+}
+
+/* Floating navigation glass: bright edge, translucent body and soft depth. */
+.sidebar{
+  border-right:1px solid rgba(255,255,255,.13);
+  border-radius:0 30px 30px 0;
+  background:
+    linear-gradient(155deg,rgba(255,255,255,.075),rgba(255,255,255,.012) 46%,color-mix(in srgb,var(--kl-accent) 5%,transparent)),
+    color-mix(in srgb,var(--kl-bg-elevated) 56%,transparent);
+  box-shadow:14px 0 44px rgba(0,0,0,.16),inset -1px 0 rgba(255,255,255,.08),inset 0 1px rgba(255,255,255,.1);
+  backdrop-filter:blur(38px) saturate(185%) contrast(104%);
+  -webkit-backdrop-filter:blur(38px) saturate(185%) contrast(104%);
+  view-transition-name:kl-sidebar;
+}
+.sidebar .brand{border-radius:20px;transition:background .28s var(--kl-motion-glass),border-color .28s,transform .36s var(--kl-motion-glass),box-shadow .28s}
+.sidebar .brand:hover{transform:translateY(-1px) scale(1.015);box-shadow:inset 0 1px rgba(255,255,255,.1),0 8px 24px rgba(0,0,0,.12)}
+.sidebar nav{gap:7px;padding:4px 2px 13px;scrollbar-color:rgba(255,255,255,.16) transparent}
+.nav-item{
+  position:relative;isolation:isolate;min-height:46px;padding:0 14px;border-radius:999px;
+  transition:background .32s var(--kl-motion-glass),border-color .32s,color .28s,transform .36s var(--kl-motion-spring),box-shadow .32s;
+}
+.nav-item::before{
+  content:"";position:absolute;inset:1px;z-index:-1;border-radius:inherit;opacity:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.025) 65%,color-mix(in srgb,var(--kl-accent) 10%,transparent));
+  transition:opacity .3s var(--kl-motion-glass);
+}
+.nav-item:hover{transform:translateX(3px) scale(1.012);background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.12);box-shadow:0 7px 24px rgba(0,0,0,.11)}
+.nav-item:hover::before{opacity:1}
+.nav-item.active{
+  view-transition-name:kl-active-nav;
+  color:var(--kl-ink);border-color:rgba(255,255,255,.2);
+  background:linear-gradient(110deg,color-mix(in srgb,var(--kl-accent) 22%,rgba(255,255,255,.07)),rgba(255,255,255,.035));
+  box-shadow:inset 0 1px rgba(255,255,255,.16),0 8px 24px rgba(0,0,0,.16),0 0 24px color-mix(in srgb,var(--kl-accent) 7%,transparent);
+  backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
+}
+.nav-item.active::before{opacity:1}
+.nav-item.active span{color:var(--kl-accent-2)}
+.topbar{
+  top:9px;margin:9px 14px 0;min-height:68px;padding:10px clamp(14px,2.4vw,30px);
+  border:1px solid rgba(255,255,255,.15);border-radius:30px;
+  background:
+    linear-gradient(140deg,rgba(255,255,255,.09),rgba(255,255,255,.025) 44%,color-mix(in srgb,var(--kl-accent) 5%,transparent)),
+    color-mix(in srgb,var(--kl-bg-elevated) 45%,transparent);
+  box-shadow:0 18px 50px rgba(0,0,0,.14),inset 0 1px rgba(255,255,255,.13);
+  backdrop-filter:blur(36px) saturate(190%) contrast(104%);
+  -webkit-backdrop-filter:blur(36px) saturate(190%) contrast(104%);
+  view-transition-name:kl-topbar;
+}
+.search,.top-actions button:not(.login-btn),.menu-toggle,.account-panel,.account-menu-btn,.account-stats>div{
+  border-color:rgba(255,255,255,.14);
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.025) 75%),color-mix(in srgb,var(--kl-surface) 48%,transparent);
+  box-shadow:inset 0 1px rgba(255,255,255,.1),0 8px 22px rgba(0,0,0,.09);
+  backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);
+}
+.search{border-radius:999px}
+.top-actions button:not(.login-btn),.menu-toggle{border-radius:999px;transition:transform .35s var(--kl-motion-glass),border-color .28s,background .28s,box-shadow .28s}
+.top-actions button:not(.login-btn):hover,.menu-toggle:hover{transform:translateY(-2px) scale(1.025);box-shadow:0 10px 26px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.16)}
+.top-actions .login-btn,.primary-btn,.create-pack-btn,.add-word-btn,.teacher-btn,.test-start,.test-submit,.test-next,.study-primary,.auth-screen .submit{
+  position:relative;overflow:hidden;border-radius:18px;
+  box-shadow:0 10px 28px color-mix(in srgb,var(--kl-accent) 18%,transparent),inset 0 1px rgba(255,255,255,.34);
+  transition:transform .38s var(--kl-motion-spring),filter .3s,box-shadow .32s;
+}
+.top-actions .login-btn:hover,.primary-btn:hover,.create-pack-btn:hover,.add-word-btn:hover,.teacher-btn:hover,.test-start:hover,.test-submit:hover,.test-next:hover,.study-primary:hover,.auth-screen .submit:hover{
+  transform:translateY(-2px) scale(1.018);box-shadow:0 15px 36px color-mix(in srgb,var(--kl-accent) 25%,transparent),inset 0 1px rgba(255,255,255,.4)
+}
+.account-panel{top:calc(100% + 13px);border-radius:28px;box-shadow:0 26px 80px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.14)}
+
+/* Deep glass material for cards, sheets, pickers and study surfaces. */
+.activity-card,.mode-card,.answer,.pack-tile,.personal-pack-card,.shop-grid article,.chart-card,.weak-card,
+.word-list,.flash-stage,.quiz-panel,.teacher-card-panel,.daily-goal,.mini-ranking,.metric,.streak-card,
+.word-table-card,.test-card,.study-panel,.settings-card,.settings-hero,.progress-pack-card,
+.revision-exam-card,.student-pack-create-panel,.cp-card,.published-packs,.full-personal-pack,
+.reflex-source-picker,.reflex-pack-section,.reflex-hud-card,.arcade-hub,.arcade-card,.arcade-hud-card,
+.test-hero,.test-config,.test-run,.test-result,.study-hero,.study-output,.settings-hero,.settings-summary,
+.student-class-card,.student-assigned-pack,.school-suggestion,.auth-screen .card,.auth-screen .class-fields,
+.auth-screen .class-fields .hint,.auth-screen .missing-school,.auth-screen .account-type,
+.auth-screen .provider,.auth-screen .admin-entry,.auth-screen .step,.auth-screen .cat-pill,
+.word-modal,.result-stats,.result-card,.result-panel,.streak-goal-current,.streak-goal-active,
+.streak-goal-setup,.streak-goal-reward,.freeze-streak-card,.ranking-card,.rank-list-row,.chart-panel,
+.progress-column,.progress-pack-card{
+  border:1px solid rgba(255,255,255,.145);
+  background:
+    linear-gradient(140deg,rgba(255,255,255,.09),rgba(255,255,255,.022) 48%,color-mix(in srgb,var(--kl-accent) 5%,transparent)),
+    color-mix(in srgb,var(--kl-surface) 53%,transparent);
+  box-shadow:0 18px 48px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.11);
+  backdrop-filter:blur(28px) saturate(175%) contrast(103%);
+  -webkit-backdrop-filter:blur(28px) saturate(175%) contrast(103%);
+}
+.activity-card,.mode-card,.answer,.pack-tile,.personal-pack-card,.shop-grid article,.chart-card,.weak-card,
+.word-list,.flash-stage,.quiz-panel,.teacher-card-panel,.daily-goal,.mini-ranking,.metric,.streak-card,
+.word-table-card,.test-card,.study-panel,.settings-card,.settings-hero,.progress-pack-card,
+.revision-exam-card,.student-pack-create-panel,.cp-card,.published-packs,.full-personal-pack,
+.reflex-source-picker,.reflex-pack-section,.reflex-hud-card,.arcade-hub,.arcade-card,.test-hero,.test-config,
+.test-run,.test-result,.study-hero,.study-output,.student-class-card,.student-assigned-pack,
+.freeze-streak-card,.ranking-card,.chart-panel,.progress-column{border-radius:26px}
+.activity-card,.mode-card,.answer,.pack-tile,.personal-pack-card,.arcade-card,.reflex-pack-card,.test-option,.word-item,.progress-pack-card,.settings-nav-item,.account-menu-btn{
+  transition:transform .38s var(--kl-motion-spring),background .34s var(--kl-motion-glass),border-color .34s,box-shadow .34s;
+}
+.activity-card:hover,.mode-card:hover,.pack-tile:hover,.personal-pack-card:hover,.arcade-card:hover,.reflex-pack-card:hover,.progress-pack-card:hover{
+  transform:translateY(-4px) scale(1.012);border-color:rgba(255,255,255,.27);
+  box-shadow:0 24px 58px rgba(0,0,0,.23),inset 0 1px rgba(255,255,255,.16);
+}
+.answer,.test-option,.reflex-pack-card,.word-item,.account-menu-btn,.learn-tool-btn,.flash-nav-btn,.secondary-btn,.settings-back,.settings-cancel,.ghost-btn,.reflex-source-option,.reflex-length,.study-mode,.study-mode-card{
+  border-radius:18px;
+  background:linear-gradient(140deg,rgba(255,255,255,.08),rgba(255,255,255,.018)),color-mix(in srgb,var(--kl-surface-2) 56%,transparent);
+  backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+}
+.answer.correct,.test-option.correct{border-color:color-mix(in srgb,var(--kl-good) 68%,rgba(255,255,255,.18));box-shadow:0 0 0 1px color-mix(in srgb,var(--kl-good) 20%,transparent),0 10px 28px color-mix(in srgb,var(--kl-good) 11%,transparent),inset 0 1px rgba(255,255,255,.12)}
+.answer.wrong,.test-option.wrong{border-color:color-mix(in srgb,var(--kl-danger) 62%,rgba(255,255,255,.12));box-shadow:0 0 0 1px color-mix(in srgb,var(--kl-danger) 15%,transparent),inset 0 1px rgba(255,255,255,.09)}
+.activity-card,.mode-card,.answer,.pack-tile,.personal-pack-card,.arcade-card,.reflex-pack-card{transform-origin:center}
+input,textarea,select,.search,.word-list-filter,.study-field,.test-input,.cp-input{
+  border-radius:17px;
+  border-color:rgba(255,255,255,.16);
+  background:linear-gradient(140deg,rgba(255,255,255,.07),rgba(255,255,255,.015)),color-mix(in srgb,var(--kl-surface-2) 48%,transparent);
+  box-shadow:inset 0 1px rgba(255,255,255,.08);
+  backdrop-filter:blur(16px) saturate(155%);-webkit-backdrop-filter:blur(16px) saturate(155%);
+  transition:border-color .28s,box-shadow .32s,background .28s,transform .32s var(--kl-motion-glass);
+}
+input:focus,textarea:focus,select:focus{background:color-mix(in srgb,var(--kl-surface-2) 62%,transparent);box-shadow:0 0 0 4px color-mix(in srgb,var(--kl-accent) 13%,transparent),inset 0 1px rgba(255,255,255,.11)}
+.primary-btn,.create-pack-btn,.add-word-btn,.teacher-btn,.test-start,.test-submit,.test-next,.study-primary{border-radius:18px}
+button.secondary,.secondary-btn,.learn-tool-btn,.flash-nav-btn,.settings-back,.settings-cancel,.ghost-btn{border-radius:999px}
+.hero-card{
+  overflow:hidden;border:1px solid rgba(255,255,255,.2);border-radius:34px;
+  box-shadow:0 30px 80px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.18);
+  backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
+}
+.hero-content,.hero-art{position:relative;z-index:2}
+.hero-content{isolation:isolate}
+.hero-card::after{z-index:0;
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(130deg,rgba(255,255,255,.13),transparent 26%,transparent 70%,rgba(255,255,255,.045));
+  opacity:.8;
+}
+.flash-stage{position:relative;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.02)),color-mix(in srgb,var(--kl-surface) 38%,transparent)}
+.flashcard{border-color:rgba(255,255,255,.22);border-radius:30px;box-shadow:0 26px 70px rgba(0,0,0,.26),inset 0 1px rgba(255,255,255,.18)}
+.flashcard .card-face{border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px rgba(255,255,255,.16)}
+.flashcard .card-front{background:linear-gradient(135deg,color-mix(in srgb,var(--kl-theme-hero1,#33275f) 72%,transparent),color-mix(in srgb,var(--kl-theme-hero2,#1a233b) 67%,transparent)),color-mix(in srgb,var(--kl-surface) 50%,transparent);backdrop-filter:blur(30px) saturate(165%);-webkit-backdrop-filter:blur(30px) saturate(165%)}
+.flashcard .card-back{background:linear-gradient(135deg,color-mix(in srgb,var(--kl-accent) 68%,transparent),color-mix(in srgb,var(--kl-accent-2) 58%,transparent)),color-mix(in srgb,var(--kl-surface) 44%,transparent);backdrop-filter:blur(30px) saturate(175%);-webkit-backdrop-filter:blur(30px) saturate(175%)}
+.learn-progress-track,.progress-line,.quiz-progress,.reflex-time-track{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.09);box-shadow:inset 0 1px 3px rgba(0,0,0,.12)}
+#learnProgressBar,#dailyProgress,.quiz-progress i,#quizProgress,#testProgress,.reflex-time-fill,.progress-line span{border-radius:999px;box-shadow:0 0 16px color-mix(in srgb,var(--kl-accent) 27%,transparent)}
+.modal{background:rgba(4,3,15,.46);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}
+.modal-card,.modal-box,.modal-content,.student-pack-modal,.school-suggestion{
+  border:1px solid rgba(255,255,255,.2);border-radius:32px;
+  background:linear-gradient(145deg,rgba(255,255,255,.115),rgba(255,255,255,.028) 55%,color-mix(in srgb,var(--kl-accent) 6%,transparent)),color-mix(in srgb,var(--kl-bg-elevated) 64%,transparent);
+  box-shadow:0 36px 100px rgba(0,0,0,.36),inset 0 1px rgba(255,255,255,.17);
+  backdrop-filter:blur(34px) saturate(180%);-webkit-backdrop-filter:blur(34px) saturate(180%);
+}
+#accountPanel:not([hidden]),[id$="Modal"].show .modal-card,.school-suggestion-backdrop[aria-hidden="false"] .school-suggestion,
+.streak-goal-setup:not([hidden]),.streak-goal-active:not([hidden]){
+  animation:kl-glass-expand .42s var(--kl-motion-spring) both;transform-origin:top center
+}
+@keyframes kl-glass-expand{0%{opacity:0;translate:0 12px;scale:.965;filter:blur(5px)}70%{opacity:1;filter:blur(0);scale:1.01}100%{opacity:1;translate:0 0;scale:1;filter:blur(0)}}
+#toast.show,.toast.show{border:1px solid rgba(255,255,255,.19);border-radius:20px;background:linear-gradient(140deg,rgba(255,255,255,.12),rgba(255,255,255,.035)),color-mix(in srgb,var(--kl-surface) 62%,transparent);box-shadow:0 18px 52px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.13);backdrop-filter:blur(26px) saturate(180%);-webkit-backdrop-filter:blur(26px) saturate(180%)}
+.nav-item.active::after{content:"";position:absolute;right:10px;width:5px;height:5px;border-radius:50%;background:var(--kl-accent-2);box-shadow:0 0 14px color-mix(in srgb,var(--kl-accent-2) 72%,transparent)}
+.account-avatar,.brand-mark,.reflex-game-mark,.arcade-art,.streak-goal-flame{border-radius:17px;box-shadow:inset 0 1px rgba(255,255,255,.17),0 8px 23px rgba(0,0,0,.13)}
+:focus-visible{outline:2px solid color-mix(in srgb,var(--kl-accent-2) 82%,white);outline-offset:4px;box-shadow:0 0 0 6px color-mix(in srgb,var(--kl-accent-2) 14%,transparent)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{border:3px solid transparent;border-radius:999px;background:rgba(255,255,255,.15);background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.25);background-clip:padding-box}
+
+/* Cross-document navigation: the active glass pill and toolbar flow between pages. */
+@view-transition{navigation:auto}
+::view-transition-group(root){animation-duration:.42s;animation-timing-function:var(--kl-motion-morph)}
+::view-transition-old(root){animation:kl-view-out .18s ease-in both}
+::view-transition-new(root){animation:kl-view-in .42s var(--kl-motion-morph) both}
+::view-transition-group(kl-sidebar),::view-transition-group(kl-topbar),::view-transition-group(kl-active-nav){
+  animation-duration:.48s;animation-timing-function:var(--kl-motion-spring)
+}
+::view-transition-old(kl-active-nav){animation:kl-nav-out .2s ease-in both}
+::view-transition-new(kl-active-nav){animation:kl-nav-in .42s var(--kl-motion-spring) both}
+@keyframes kl-view-out{to{opacity:0;translate:0 -5px;filter:blur(2px)}}
+@keyframes kl-view-in{from{opacity:0;translate:0 13px;filter:blur(4px)}to{opacity:1;translate:0 0;filter:blur(0)}}
+@keyframes kl-nav-out{to{opacity:.25;scale:.93}}
+@keyframes kl-nav-in{from{opacity:.35;scale:.92}to{opacity:1;scale:1}}
+@media(max-width:820px){
+  .topbar{top:8px;margin:8px 8px 0;min-height:60px;padding:8px 10px;border-radius:26px}
+  .sidebar{border:1px solid rgba(255,255,255,.17);border-radius:0 30px 30px 0;background:linear-gradient(145deg,rgba(255,255,255,.1),rgba(255,255,255,.02)),color-mix(in srgb,var(--kl-bg-elevated) 66%,transparent);backdrop-filter:blur(42px) saturate(190%);-webkit-backdrop-filter:blur(42px) saturate(190%)}
+  .app-shell:has(.sidebar.open)::before{content:"";position:fixed;inset:0;z-index:1199;pointer-events:none;background:rgba(4,3,12,.42);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+  .activity-card,.mode-card,.answer,.pack-tile,.personal-pack-card,.arcade-card,.reflex-pack-card{border-radius:23px}
+  .flash-stage{padding:15px;border-radius:26px}
+}
+@media(max-width:560px){
+  .topbar{border-radius:23px}
+  .sidebar{border-radius:0 26px 26px 0}
+  .auth-screen .card{border-radius:28px}
+  .modal{padding:10px}
+  .modal-card,.modal-box,.modal-content,.school-suggestion{border-radius:26px}
+}
+@media(prefers-reduced-motion:reduce){
+  body::before{animation:none!important}
+  ::view-transition-old(root),::view-transition-new(root),::view-transition-old(kl-active-nav),::view-transition-new(kl-active-nav){animation:none!important}
+}
