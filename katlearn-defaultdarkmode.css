@@ -1464,8 +1464,9 @@ button.secondary,.secondary-btn,.learn-tool-btn,.flash-nav-btn,.settings-back,.s
   box-shadow:0 30px 80px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.18);
   backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
 }
+.hero-content,.hero-art{position:relative;z-index:2}
 .hero-content{isolation:isolate}
-.hero-card::after{
+.hero-card::after{z-index:0;
   content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
   background:linear-gradient(130deg,rgba(255,255,255,.13),transparent 26%,transparent 70%,rgba(255,255,255,.045));
   opacity:.8;
@@ -1528,6 +1529,5 @@ button.secondary,.secondary-btn,.learn-tool-btn,.flash-nav-btn,.settings-back,.s
 }
 @media(prefers-reduced-motion:reduce){
   body::before{animation:none!important}
-  @view-transition{navigation:none}
   ::view-transition-old(root),::view-transition-new(root),::view-transition-old(kl-active-nav),::view-transition-new(kl-active-nav){animation:none!important}
 }
