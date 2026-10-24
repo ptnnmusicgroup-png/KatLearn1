@@ -980,14 +980,57 @@ async function teacherChange(db,decoded,uid,mode){
  const province=clean(profile.province),ward=clean(profile.ward);
  const requestedSchoolName=clean(verification.requestedSchoolName);
  const requestedClassName=clean(verification.requestedClassName);
-
- if(schoolId){
-  const school=await db.collection("schools").doc(schoolId).get();
-  if(!school.exists||clean(school.data()?.province)!==province||clean(school.data()?.ward)!==ward){
-   schoolId="";
-  }else{
-   schoolName=clean(school.data()?.name)||schoolName;
-  }
+ const rawCatalogSchool=verification.catalogSchool&&typeof verification.catalogSchool==="object"
+  ?verification.catalogSchool:null;
+ const catalogName=clean(rawCatalogSchool?.name,180);
+ const catalogProvince=clean(rawCatalogSchool?.province,160);
+ const catalogWard=clean(rawCatalogSchool?.ward,160);
+ const catalogProvinceId=clean(rawCatalogSchool?.provinceId,8);
+ const catalogWardId=clean(rawCatalogSchool?.wardId,32);
+ const catalogSourceSchoolId=clean(rawCatalogSchool?.sourceSchoolId,80);
+ const catalogSourceProvinceId=clean(rawCatalogSchool?.sourceProvinceId,80);
+ const catalogLevel=clean(rawCatalogSchool?.schoolLevel,24).toLowerCase();
+ const catalogGrades={
+  primary:["1","2","3","4","5"],
+  middle:["6","7","8","9"],
+  high:["10","11","12"],
+  combined:["1","2","3","4","5","6","7","8","9","10","11","12"]
+ };
+ const verifiedCatalogSchool=Boolean(
+  rawCatalogSchool&&
+  /^sch_[a-f0-9]{28}$/.test(clean(rawCatalogSchool.schoolId,40))&&
+  clean(rawCatalogSchool.schoolId,40)===schoolId&&
+  catalogName&&catalogProvince===province&&catalogWard===ward&&
+  catalogProvinceId&&catalogWardId&&catalogSourceSchoolId&&
+  Object.prototype.hasOwnProperty.call(catalogGrades,catalogLevel)&&
+  catalogSchoolId(catalogProvinceId+"|"+catalogSourceSchoolId+"|"+catalogName.toLowerCase())===schoolId
+ );
+ const schoolRef=schoolId?db.collection("schools").doc(schoolId):null;
+ let existingSchool=schoolRef?await schoolRef.get():null;
+ if(existingSchool?.exists&&clean(existingSchool.data()?.province)===province&&clean(existingSchool.data()?.ward)===ward){
+  schoolName=clean(existingSchool.data()?.name)||schoolName;
+ }else if(verifiedCatalogSchool){
+  // A school selected from the LMS national catalog may not have been mirrored
+  // into Firestore yet. Provision its canonical record during approval instead
+  // of rejecting the teacher with teacher_school_missing.
+  schoolId=clean(rawCatalogSchool.schoolId,40);
+  schoolName=catalogName;
+  const now=Date.now();
+  const catalogRecord={
+   name:catalogName,schoolId,province,provinceId:catalogProvinceId,
+   ward,wardId:catalogWardId,sourceSchoolId:catalogSourceSchoolId,
+   sourceProvinceId:catalogSourceProvinceId,schoolLevel:catalogLevel,
+   source:"lms_national_catalog",sourceType:"lms_national_catalog",
+   createdAt:existingSchool?.exists?(existingSchool.data()?.createdAt||now):now,
+   updatedAt:now
+  };
+  await Promise.all([
+   db.collection("schools").doc(schoolId).set(catalogRecord,{merge:true}),
+   db.collection("KatLearn_TRUONGHOC_1").doc(schoolId).set(catalogRecord,{merge:true}),
+   db.collection("KatLearn_Teacher_Schools").doc(schoolId).set(catalogRecord,{merge:true})
+  ]);
+ }else{
+  schoolId="";
  }
  if(!schoolId&&requestedSchoolName){
   const same=await db.collection("schools").where("name","==",requestedSchoolName).limit(20).get();
@@ -1003,11 +1046,36 @@ async function teacherChange(db,decoded,uid,mode){
    schoolName=requestedSchoolName;
   }
  }
- if(!schoolId)throw fail(new Error("Hồ sơ chưa có trường hợp lệ."),400,"teacher_school_missing");
+ if(!schoolId)throw fail(new Error("Hồ sơ chưa có trường hợp lệ. Hãy chọn lại trường từ danh mục LMS hoặc nhập tên trường mới."),400,"teacher_school_missing");
 
  await db.collection("KatLearn_Teacher_Schools").doc(schoolId).set({
-  name:schoolName,schoolId,province,ward,source:"teacher_verification",updatedAt:Date.now()
+  name:schoolName,schoolId,province,ward,
+  ...(verifiedCatalogSchool?{
+   provinceId:catalogProvinceId,wardId:catalogWardId,
+   sourceSchoolId:catalogSourceSchoolId,sourceProvinceId:catalogSourceProvinceId,
+   schoolLevel:catalogLevel,source:"lms_national_catalog"
+  }:{source:"teacher_verification"}),
+  updatedAt:Date.now()
  },{merge:true});
+
+ if(verifiedCatalogSchool){
+  const now=Date.now();
+  const grades=catalogGrades[catalogLevel];
+  const jobs=[];
+  for(const grade of grades){
+   const classId=schoolId+"-"+grade;
+   const classRecord={
+    classId,name:"Lớp "+grade,grade:String(grade),schoolId,schoolName,
+    province,ward,provinceId:catalogProvinceId,wardId:catalogWardId,
+    schoolLevel:catalogLevel,isTemplate:true,source:"lms_national_catalog",updatedAt:now
+   };
+   jobs.push(
+    db.collection("schools").doc(schoolId).collection("classes").doc(classId).set(classRecord,{merge:true}),
+    db.collection("KatLearn_LOPHOC_1").doc(classId).set(classRecord,{merge:true})
+   );
+  }
+  await Promise.all(jobs);
+ }
 
  const classIds=Array.isArray(profile.classIds)
   ?[...new Set(profile.classIds.map(x=>clean(x,160)).filter(Boolean))].slice(0,20)
