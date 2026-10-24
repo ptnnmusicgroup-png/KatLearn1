@@ -1108,7 +1108,7 @@ async function teacherChange(db,decoded,uid,mode){
    const data=top.data()||{};
    // Catalog grade rows are shared templates, not a teacher-owned class.
    // Never claim a national class template for one teacher.
-   if(isRequestedTemplate&&data.isTemplate===true)continue;
+   if(isRequestedTemplate)continue;
    if(clean(data.schoolId)===schoolId){
     const owner=clean(data.teacherUid,160);
     if(owner&&owner!==uid)throw fail(new Error("Lớp này đang được một giáo viên khác quản lý. Hãy chọn lại lớp từ danh mục LMS."),409,"teacher_class_conflict");
@@ -1119,7 +1119,7 @@ async function teacherChange(db,decoded,uid,mode){
     const nested=await nestedRef.get();
     if(nested.exists&&clean(nested.data()?.schoolId||schoolId)===schoolId){
      const nestedData=nested.data()||{};
-     if(isRequestedTemplate&&nestedData.isTemplate===true)continue;
+     if(isRequestedTemplate)continue;
      const owner=clean(nestedData.teacherUid,160);
      if(owner&&owner!==uid)throw fail(new Error("Lớp này đang được một giáo viên khác quản lý."),409,"teacher_class_conflict");
      valid.push(classId);
@@ -1132,7 +1132,7 @@ async function teacherChange(db,decoded,uid,mode){
   const nested=await nestedRef.get();
   if(nested.exists&&clean(nested.data()?.schoolId||schoolId)===schoolId){
    const nestedData=nested.data()||{};
-   if(isRequestedTemplate&&nestedData.isTemplate===true)continue;
+   if(isRequestedTemplate)continue;
    const owner=clean(nestedData.teacherUid,160);
    if(owner&&owner!==uid)throw fail(new Error("Lớp này đang được một giáo viên khác quản lý."),409,"teacher_class_conflict");
    valid.push(classId);
