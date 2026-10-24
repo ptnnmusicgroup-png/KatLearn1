@@ -35,10 +35,7 @@ function visitHtml(directory) {
     if (!entry.isFile() || !entry.name.toLowerCase().endsWith(".html")) continue;
     let html = fs.readFileSync(absolute, "utf8");
     if (!/src=["']\/?deployment-config\.js["']/i.test(html)) {
-      html = html.replace(/<head(\b[^>]*)>/i, '    if (!/src=["']\/?deployment-config\.js["']/i.test(html)) {
       html = html.replace(/<head(\b[^>]*)>/i, '$&\n  <script src="/deployment-config.js"></script>');
-    }
-    if (!/class=["']netlify-attribution["']/i.test(html)) {\n  <script src="/deployment-config.js"></script>');
     }
     if (entry.name.toLowerCase() !== "dmca-validation.html" && !/src=["']\/?katlearn-motion\.js(?:\?[^"']*)?["']/i.test(html)) {
       const motionScript = '<script defer src="/katlearn-motion.js?v=20261024-1"></script>';
