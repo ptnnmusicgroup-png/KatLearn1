@@ -150,6 +150,7 @@
   function finish(){
     clearInterval(timerId);timerId=null;testActive=false;answered=false;
     const total=questions.length,pct=Math.round(score/total*100),elapsed=Date.now()-startedAt;
+    window.dispatchEvent(new CustomEvent('katlearn-test-complete',{detail:{score,total,pct}}));
     $('#testProgress').style.width='100%';$('#testRun').classList.remove('active');$('#testResult').classList.add('active');
     $('#resultRing').style.setProperty('--score',pct+'%');$('#resultPercent').textContent=pct+'%';
     $('#resultTitle').textContent=pct>=90?'Quá đỉnh! 🐱':pct>=75?'Rất tốt! ✨':pct>=60?'Khá ổn rồi! 🌱':'Ôn thêm một vòng nữa nhé 💙';
