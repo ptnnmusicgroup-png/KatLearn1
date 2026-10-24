@@ -897,6 +897,22 @@ function readProvince(code){
 function catalogSchoolId(value){
   return "sch_"+crypto.createHash("sha256").update(String(value)).digest("hex").slice(0,28);
 }
+async function uniqueClassJoinCode(db, classId, preferred=""){
+  const cleanCode=value=>clean(value,16).toUpperCase();
+  const wanted=cleanCode(preferred);
+  if(wanted){
+    const existing=await db.collection("classInvites").doc(wanted).get();
+    if(!existing.exists||clean(existing.data()?.classId,160)===classId)return wanted;
+  }
+  const alphabet="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  for(let attempt=0;attempt<10;attempt++){
+    const bytes=crypto.randomBytes(6);
+    const code=[...bytes].map(byte=>alphabet[byte%alphabet.length]).join("");
+    const existing=await db.collection("classInvites").doc(code).get();
+    if(!existing.exists)return code;
+  }
+  throw fail(new Error("Không tạo được mã lớp duy nhất. Hãy thử lại."),503,"class_join_code_unavailable");
+}
 const gradeTemplates={
   primary:["1","2","3","4","5"],
   middle:["6","7","8","9"],
@@ -980,14 +996,57 @@ async function teacherChange(db,decoded,uid,mode){
  const province=clean(profile.province),ward=clean(profile.ward);
  const requestedSchoolName=clean(verification.requestedSchoolName);
  const requestedClassName=clean(verification.requestedClassName);
-
- if(schoolId){
-  const school=await db.collection("schools").doc(schoolId).get();
-  if(!school.exists||clean(school.data()?.province)!==province||clean(school.data()?.ward)!==ward){
-   schoolId="";
-  }else{
-   schoolName=clean(school.data()?.name)||schoolName;
-  }
+ const rawCatalogSchool=verification.catalogSchool&&typeof verification.catalogSchool==="object"
+  ?verification.catalogSchool:null;
+ const catalogName=clean(rawCatalogSchool?.name,180);
+ const catalogProvince=clean(rawCatalogSchool?.province,160);
+ const catalogWard=clean(rawCatalogSchool?.ward,160);
+ const catalogProvinceId=clean(rawCatalogSchool?.provinceId,8);
+ const catalogWardId=clean(rawCatalogSchool?.wardId,32);
+ const catalogSourceSchoolId=clean(rawCatalogSchool?.sourceSchoolId,80);
+ const catalogSourceProvinceId=clean(rawCatalogSchool?.sourceProvinceId,80);
+ const catalogLevel=clean(rawCatalogSchool?.schoolLevel,24).toLowerCase();
+ const catalogGrades={
+  primary:["1","2","3","4","5"],
+  middle:["6","7","8","9"],
+  high:["10","11","12"],
+  combined:["1","2","3","4","5","6","7","8","9","10","11","12"]
+ };
+ const verifiedCatalogSchool=Boolean(
+  rawCatalogSchool&&
+  /^sch_[a-f0-9]{28}$/.test(clean(rawCatalogSchool.schoolId,40))&&
+  clean(rawCatalogSchool.schoolId,40)===schoolId&&
+  catalogName&&catalogProvince===province&&catalogWard===ward&&
+  catalogProvinceId&&catalogWardId&&catalogSourceSchoolId&&
+  Object.prototype.hasOwnProperty.call(catalogGrades,catalogLevel)&&
+  catalogSchoolId(catalogProvinceId+"|"+catalogSourceSchoolId+"|"+catalogName.toLowerCase())===schoolId
+ );
+ const schoolRef=schoolId?db.collection("schools").doc(schoolId):null;
+ let existingSchool=schoolRef?await schoolRef.get():null;
+ if(existingSchool?.exists&&clean(existingSchool.data()?.province)===province&&clean(existingSchool.data()?.ward)===ward){
+  schoolName=clean(existingSchool.data()?.name)||schoolName;
+ }else if(verifiedCatalogSchool){
+  // A school selected from the LMS national catalog may not have been mirrored
+  // into Firestore yet. Provision its canonical record during approval instead
+  // of rejecting the teacher with teacher_school_missing.
+  schoolId=clean(rawCatalogSchool.schoolId,40);
+  schoolName=catalogName;
+  const now=Date.now();
+  const catalogRecord={
+   name:catalogName,schoolId,province,provinceId:catalogProvinceId,
+   ward,wardId:catalogWardId,sourceSchoolId:catalogSourceSchoolId,
+   sourceProvinceId:catalogSourceProvinceId,schoolLevel:catalogLevel,
+   source:"lms_national_catalog",sourceType:"lms_national_catalog",
+   createdAt:existingSchool?.exists?(existingSchool.data()?.createdAt||now):now,
+   updatedAt:now
+  };
+  await Promise.all([
+   db.collection("schools").doc(schoolId).set(catalogRecord,{merge:true}),
+   db.collection("KatLearn_TRUONGHOC_1").doc(schoolId).set(catalogRecord,{merge:true}),
+   db.collection("KatLearn_Teacher_Schools").doc(schoolId).set(catalogRecord,{merge:true})
+  ]);
+ }else{
+  schoolId="";
  }
  if(!schoolId&&requestedSchoolName){
   const same=await db.collection("schools").where("name","==",requestedSchoolName).limit(20).get();
@@ -1003,11 +1062,36 @@ async function teacherChange(db,decoded,uid,mode){
    schoolName=requestedSchoolName;
   }
  }
- if(!schoolId)throw fail(new Error("Hồ sơ chưa có trường hợp lệ."),400,"teacher_school_missing");
+ if(!schoolId)throw fail(new Error("Hồ sơ chưa có trường hợp lệ. Hãy chọn lại trường từ danh mục LMS hoặc nhập tên trường mới."),400,"teacher_school_missing");
 
  await db.collection("KatLearn_Teacher_Schools").doc(schoolId).set({
-  name:schoolName,schoolId,province,ward,source:"teacher_verification",updatedAt:Date.now()
+  name:schoolName,schoolId,province,ward,
+  ...(verifiedCatalogSchool?{
+   provinceId:catalogProvinceId,wardId:catalogWardId,
+   sourceSchoolId:catalogSourceSchoolId,sourceProvinceId:catalogSourceProvinceId,
+   schoolLevel:catalogLevel,source:"lms_national_catalog"
+  }:{source:"teacher_verification"}),
+  updatedAt:Date.now()
  },{merge:true});
+
+ if(verifiedCatalogSchool){
+  const now=Date.now();
+  const grades=catalogGrades[catalogLevel];
+  const jobs=[];
+  for(const grade of grades){
+   const classId=schoolId+"-"+grade;
+   const classRecord={
+    classId,name:"Lớp "+grade,grade:String(grade),schoolId,schoolName,
+    province,ward,provinceId:catalogProvinceId,wardId:catalogWardId,
+    schoolLevel:catalogLevel,isTemplate:true,source:"lms_national_catalog",updatedAt:now
+   };
+   jobs.push(
+    db.collection("schools").doc(schoolId).collection("classes").doc(classId).set(classRecord,{merge:true}),
+    db.collection("KatLearn_LOPHOC_1").doc(classId).set(classRecord,{merge:true})
+   );
+  }
+  await Promise.all(jobs);
+ }
 
  const classIds=Array.isArray(profile.classIds)
   ?[...new Set(profile.classIds.map(x=>clean(x,160)).filter(Boolean))].slice(0,20)
@@ -1015,22 +1099,29 @@ async function teacherChange(db,decoded,uid,mode){
  const valid=[];
  const classData=new Map();
 
+ const requestedCatalogClassId=clean(profile.catalogClassId||verification.catalogClassId,160);
  for(const classId of classIds){
+  const isRequestedTemplate=verifiedCatalogSchool&&classId===requestedCatalogClassId;
   const topRef=db.collection("classes").doc(classId);
   const top=await topRef.get();
   if(top.exists){
    const data=top.data()||{};
+   // Catalog grade rows are shared templates, not a teacher-owned class.
+   // Never claim a national class template for one teacher.
+   if(isRequestedTemplate)continue;
    if(clean(data.schoolId)===schoolId){
     const owner=clean(data.teacherUid,160);
-    if(owner&&owner!==uid)throw fail(new Error("Một lớp trong hồ sơ này đã thuộc giáo viên khác."),409,"teacher_class_conflict");
+    if(owner&&owner!==uid)throw fail(new Error("Lớp này đang được một giáo viên khác quản lý. Hãy chọn lại lớp từ danh mục LMS."),409,"teacher_class_conflict");
     valid.push(classId);
     classData.set(classId,{...data});
    }else{
     const nestedRef=db.collection("schools").doc(schoolId).collection("classes").doc(classId);
     const nested=await nestedRef.get();
     if(nested.exists&&clean(nested.data()?.schoolId||schoolId)===schoolId){
-     const nestedData=nested.data()||{},owner=clean(nestedData.teacherUid,160);
-     if(owner&&owner!==uid)throw fail(new Error("Một lớp trong hồ sơ này đã thuộc giáo viên khác."),409,"teacher_class_conflict");
+     const nestedData=nested.data()||{};
+     if(isRequestedTemplate)continue;
+     const owner=clean(nestedData.teacherUid,160);
+     if(owner&&owner!==uid)throw fail(new Error("Lớp này đang được một giáo viên khác quản lý."),409,"teacher_class_conflict");
      valid.push(classId);
      classData.set(classId,{...nestedData});
     }
@@ -1040,60 +1131,97 @@ async function teacherChange(db,decoded,uid,mode){
   const nestedRef=db.collection("schools").doc(schoolId).collection("classes").doc(classId);
   const nested=await nestedRef.get();
   if(nested.exists&&clean(nested.data()?.schoolId||schoolId)===schoolId){
-   const nestedData=nested.data()||{},owner=clean(nestedData.teacherUid,160);
-   if(owner&&owner!==uid)throw fail(new Error("Một lớp trong hồ sơ này đã thuộc giáo viên khác."),409,"teacher_class_conflict");
+   const nestedData=nested.data()||{};
+   if(isRequestedTemplate)continue;
+   const owner=clean(nestedData.teacherUid,160);
+   if(owner&&owner!==uid)throw fail(new Error("Lớp này đang được một giáo viên khác quản lý."),409,"teacher_class_conflict");
    valid.push(classId);
    classData.set(classId,{...nestedData});
   }
  }
 
  if(!valid.length&&requestedClassName){
-  const topMatches=await db.collection("classes").where("name","==",requestedClassName).limit(20).get();
-  const topExisting=topMatches.docs.map(d=>({id:d.id,...d.data()}))
-   .find(x=>clean(x.schoolId)===schoolId);
-  if(topExisting){
-   const owner=clean(topExisting.teacherUid,160);
-   if(owner&&owner!==uid)throw fail(new Error("Lớp này đã thuộc một giáo viên khác."),409,"teacher_class_conflict");
-   valid.push(topExisting.id);
-   classData.set(topExisting.id,{...topExisting});
+  const canonicalGrade=requestedCatalogClassId.startsWith(schoolId+"-")
+   ?requestedCatalogClassId.slice((schoolId+"-").length):"";
+  const canonicalIsAllowed=verifiedCatalogSchool&&
+   (catalogGrades[catalogLevel]||[]).includes(canonicalGrade)&&
+   requestedClassName==="Lớp "+canonicalGrade;
+  if(canonicalIsAllowed){
+   // Instantiate a teacher-owned class from the shared LMS grade template.
+   // The canonical school-grade ID remains in catalogClassId; each teacher
+   // receives a unique active class ID and invite code.
+   const activeRef=db.collection("classes").doc();
+   const classId=activeRef.id,now=Date.now();
+   const joinCode=await uniqueClassJoinCode(db,classId);
+   const classRecord={
+    classId,name:requestedClassName,grade:canonicalGrade,description:"",
+    schoolId,schoolName,province,ward,provinceId:catalogProvinceId,wardId:catalogWardId,
+    schoolLevel:catalogLevel,catalogClassId:requestedCatalogClassId,
+    teacherUid:uid,teacherEmail:clean(profile.email,320),
+    joinCode,studentCount:0,createdAt:now,updatedAt:now,source:"teacher_registration"
+   };
+   await Promise.all([
+    activeRef.set(classRecord),
+    db.collection("schools").doc(schoolId).collection("classes").doc(classId).set(classRecord)
+   ]);
+   await db.collection("classInvites").doc(joinCode).set({
+    classId,className:requestedClassName,teacherUid:uid,active:true,createdAt:now,updatedAt:now
+   });
+   valid.push(classId);
+   classData.set(classId,classRecord);
   }else{
-   const sameClass=await db.collection("schools").doc(schoolId).collection("classes")
-    .where("name","==",requestedClassName).limit(5).get();
-   if(sameClass.docs[0]){
-    const d=sameClass.docs[0],data=d.data()||{},owner=clean(data.teacherUid,160);
+   const topMatches=await db.collection("classes").where("name","==",requestedClassName).limit(20).get();
+   const topExisting=topMatches.docs.map(d=>({id:d.id,...d.data()}))
+    .find(x=>clean(x.schoolId)===schoolId);
+   if(topExisting){
+    const owner=clean(topExisting.teacherUid,160);
     if(owner&&owner!==uid)throw fail(new Error("Lớp này đã thuộc một giáo viên khác."),409,"teacher_class_conflict");
-    valid.push(d.id);
-    classData.set(d.id,{...data});
+    valid.push(topExisting.id);
+    classData.set(topExisting.id,{...topExisting});
    }else{
-    const created=await db.collection("schools").doc(schoolId).collection("classes").add({
-     name:requestedClassName,
-     createdBy:uid,
-     teacherUid:uid,
-     schoolId,
-     schoolName,
-     province,
-     ward,
-     createdAt:Date.now(),
-     updatedAt:Date.now()
-    });
-    valid.push(created.id);
-    classData.set(created.id,{
-     name:requestedClassName,createdBy:uid,teacherUid:uid,schoolId,schoolName,province,ward,
-     createdAt:Date.now(),updatedAt:Date.now()
-    });
+    const sameClass=await db.collection("schools").doc(schoolId).collection("classes")
+     .where("name","==",requestedClassName).limit(5).get();
+    if(sameClass.docs[0]){
+     const d=sameClass.docs[0],data=d.data()||{},owner=clean(data.teacherUid,160);
+     if(owner&&owner!==uid)throw fail(new Error("Lớp này đã thuộc một giáo viên khác."),409,"teacher_class_conflict");
+     valid.push(d.id);
+     classData.set(d.id,{...data});
+    }else{
+     const createdRef=db.collection("schools").doc(schoolId).collection("classes").doc();
+     const createdId=createdRef.id,now=Date.now();
+     const joinCode=await uniqueClassJoinCode(db,createdId);
+     const data={
+      classId:createdId,name:requestedClassName,createdBy:uid,teacherUid:uid,
+      teacherEmail:clean(profile.email,320),schoolId,schoolName,province,ward,
+      studentCount:0,joinCode,createdAt:now,updatedAt:now,source:"teacher_registration"
+     };
+     await Promise.all([
+      createdRef.set(data),
+      db.collection("classes").doc(createdId).set(data)
+     ]);
+     await db.collection("classInvites").doc(joinCode).set({
+      classId:createdId,className:requestedClassName,teacherUid:uid,active:true,createdAt:now,updatedAt:now
+     });
+     valid.push(createdId);
+     classData.set(createdId,data);
+    }
    }
   }
  }
 
  if(!valid.length)throw fail(new Error("Hồ sơ chưa có lớp hợp lệ."),400,"teacher_class_missing");
 
- const catalogClassId=clean(
-  valid.includes(profile.catalogClassId)?profile.catalogClassId:valid[0]
- );
+ const requestedCatalogGrade=requestedCatalogClassId.startsWith(schoolId+"-")
+  ?requestedCatalogClassId.slice((schoolId+"-").length):"";
+ const catalogClassId=verifiedCatalogSchool&&
+  (catalogGrades[catalogLevel]||[]).includes(requestedCatalogGrade)
+  ?requestedCatalogClassId
+  :clean(valid.includes(profile.catalogClassId)?profile.catalogClassId:valid[0]);
 
  for(const classId of valid){
   const now=Date.now();
   const base=classData.get(classId)||{};
+  const joinCode=await uniqueClassJoinCode(db,classId,base.joinCode);
   const classRecord={
    ...base,
    classId,
@@ -1103,11 +1231,21 @@ async function teacherChange(db,decoded,uid,mode){
    ward,
    teacherUid:uid,
    teacherEmail:clean(profile.email,320),
+   studentCount:Math.max(0,Number(base.studentCount)||0),
+   joinCode,
+   createdAt:base.createdAt||now,
    updatedAt:now
   };
-  await db.collection("schools").doc(schoolId).collection("classes").doc(classId)
-   .set(classRecord,{merge:true});
-  await db.collection("classes").doc(classId).set(classRecord,{merge:true});
+  // Active class instances must never be confused with shared catalog templates.
+  delete classRecord.isTemplate;
+  await Promise.all([
+   db.collection("schools").doc(schoolId).collection("classes").doc(classId).set(classRecord,{merge:true}),
+   db.collection("classes").doc(classId).set(classRecord,{merge:true}),
+   db.collection("classInvites").doc(joinCode).set({
+    classId,className:classRecord.name||requestedClassName,teacherUid:uid,
+    active:true,createdAt:classRecord.createdAt,updatedAt:now
+   },{merge:true})
+  ]);
  }
 
  await ref.set({
