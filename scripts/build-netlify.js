@@ -35,7 +35,15 @@ function visitHtml(directory) {
     if (!entry.isFile() || !entry.name.toLowerCase().endsWith(".html")) continue;
     let html = fs.readFileSync(absolute, "utf8");
     if (!/src=["']\/?deployment-config\.js["']/i.test(html)) {
+      html = html.replace(/<head(\b[^>]*)>/i, '    if (!/src=["']\/?deployment-config\.js["']/i.test(html)) {
       html = html.replace(/<head(\b[^>]*)>/i, '$&\n  <script src="/deployment-config.js"></script>');
+    }
+    if (!/class=["']netlify-attribution["']/i.test(html)) {\n  <script src="/deployment-config.js"></script>');
+    }
+    if (entry.name.toLowerCase() !== "dmca-validation.html" && !/src=["']\/?katlearn-motion\.js(?:\?[^"']*)?["']/i.test(html)) {
+      const motionScript = '<script defer src="/katlearn-motion.js?v=20261024-1"></script>';
+      if (/<\/body\s*>/i.test(html)) html = html.replace(/<\/body\s*>/i, motionScript + '\n</body>');
+      else html += '\n' + motionScript + '\n';
     }
     if (!/class=["']netlify-attribution["']/i.test(html)) {
       const attribution = '<div class="netlify-attribution" style="margin:18px auto 10px;padding:0 12px;text-align:center;font:500 10px/1.5 system-ui,sans-serif;color:#777"><a href="https://www.netlify.com/" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline">This site is powered by Netlify</a></div>';
