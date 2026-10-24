@@ -81,7 +81,6 @@ jobs:
           const root = path.resolve('dist');
           const pages = fs.readdirSync(root).filter(name => name.toLowerCase().endsWith('.html'));
           const missing = pages.filter(name => name.toLowerCase() !== 'dmca-validation.html' && !fs.readFileSync(path.join(root, name), 'utf8').includes('src="/katlearn-motion.js?v=20261024-1"'));
-          const missing = pages.filter(name => name.toLowerCase() !== 'dmca-validation.html' && !fs.readFileSync(path.join(root, name), 'utf8').includes('src="/katlearn-motion.js?v=20261024-1"'));
           if (missing.length) {
             console.error('::error::Motion runtime missing from published pages: ' + missing.join(', '));
             process.exit(1);
