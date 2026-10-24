@@ -211,6 +211,10 @@
         if (!node.classList.contains('correct') && !node.classList.contains('wrong')) delete node.dataset.klMotionFeedback;
         if (node.matches(COUNTERS)) initCounter(node, false);
       }
+      if (record.type === 'characterData' || record.type === 'childList') {
+        const counter = record.target instanceof Element ? record.target : record.target.parentElement;
+        if (counter?.matches?.(COUNTERS)) initCounter(counter, false);
+      }
       for (const added of record.addedNodes || []) {
         if (!(added instanceof Element)) continue;
         inspectFeedback(added);
@@ -256,7 +260,6 @@
       try { localStorage.setItem('katlearn-motion-sound', enabled ? 'on' : 'off'); } catch (_) {}
     }
   });
-  const originalPlayCorrectTone = playCorrectTone;
   // Respect an optional user preference while keeping feedback short and quiet.
   const toneAllowed = () => {
     try { return localStorage.getItem('katlearn-motion-sound') !== 'off'; } catch (_) { return true; }
