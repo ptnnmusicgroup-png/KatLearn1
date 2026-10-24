@@ -80,14 +80,14 @@ jobs:
           const path = require('node:path');
           const root = path.resolve('dist');
           const pages = fs.readdirSync(root).filter(name => name.toLowerCase().endsWith('.html'));
-          const missing = pages.filter(name => name.toLowerCase() !== 'dmca-validation.html' &&
-            !/src=["']\\/katlearn-motion\\.js\\?v=20261024-1["']/i.test(fs.readFileSync(path.join(root, name), 'utf8')));
+          const missing = pages.filter(name => name.toLowerCase() !== 'dmca-validation.html' && !fs.readFileSync(path.join(root, name), 'utf8').includes('src="/katlearn-motion.js?v=20261024-1"'));
+          const missing = pages.filter(name => name.toLowerCase() !== 'dmca-validation.html' && !fs.readFileSync(path.join(root, name), 'utf8').includes('src="/katlearn-motion.js?v=20261024-1"'));
           if (missing.length) {
             console.error('::error::Motion runtime missing from published pages: ' + missing.join(', '));
             process.exit(1);
           }
           const tokenPage = fs.readFileSync(path.join(root, 'dmca-validation.html'), 'utf8');
-          if (/katlearn-motion\\.js/i.test(tokenPage)) {
+          if (tokenPage.includes('katlearn-motion.js')) {
             console.error('::error::Motion runtime must not be injected into the DMCA validation token page.');
             process.exit(1);
           }
