@@ -217,37 +217,47 @@
     ctx.save();
     ctx.translate(asteroid.x, asteroid.y);
     ctx.rotate(asteroid.rotation);
-    ctx.shadowColor = asteroid.target ? '#ff789d' : '#6f74ff';
-    ctx.shadowBlur = asteroid.target ? 25 : 12;
+    ctx.shadowColor = asteroid.target ? '#77eaff' : '#8f88ff';
+    ctx.shadowBlur = asteroid.target ? 20 : 8;
     const gradient = ctx.createLinearGradient(-r, -r, r, r);
-    gradient.addColorStop(0, asteroid.target ? '#ffb18c' : '#7f80da');
-    gradient.addColorStop(1, asteroid.target ? '#db4e83' : '#363a75');
+    gradient.addColorStop(0, asteroid.target ? '#c4fbff' : '#c6c3ff');
+    gradient.addColorStop(.48, asteroid.target ? '#4ab7d4' : '#726fbd');
+    gradient.addColorStop(1, asteroid.target ? '#234b82' : '#302c61');
     ctx.fillStyle = gradient;
-    ctx.strokeStyle = asteroid.target ? '#ffd3df' : 'rgba(185,193,255,.6)';
-    ctx.lineWidth = asteroid.target ? 3 : 1.5;
+    ctx.strokeStyle = asteroid.target ? 'rgba(205,252,255,.95)' : 'rgba(205,203,255,.6)';
+    ctx.lineWidth = asteroid.target ? 2.5 : 1.25;
     ctx.beginPath();
-    for (let i = 0; i < 10; i += 1) {
-      const angle = (Math.PI * 2 * i) / 10;
-      const radius = r * (i % 2 ? 0.84 : 1 + Math.sin(i * 3.4) * 0.06);
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    for (let i = 0; i < 12; i += 1) {
+      const angle = Math.PI * 2 * i / 12;
+      const radius = r * (i % 2 ? .88 : .97 + Math.sin(i * 2.7) * .035);
+      const x = Math.cos(angle) * radius, y = Math.sin(angle) * radius;
+      if (i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
     }
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    ctx.closePath(); ctx.fill(); ctx.stroke();
     ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(10,18,48,.2)';
+    [[-.34,-.2,.12],[.28,.28,.1],[-.05,.42,.07]].forEach(function (spot) {
+      ctx.beginPath(); ctx.arc(spot[0]*r,spot[1]*r,spot[2]*r,0,Math.PI*2); ctx.fill();
+    });
     ctx.rotate(-asteroid.rotation);
-    ctx.fillStyle = '#ffffff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const maxFont = asteroid.label.length > 13 ? 13 : asteroid.label.length > 9 ? 15 : 18;
-    ctx.font = '800 ' + maxFont + 'px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(asteroid.label, 0, 0, r * 1.65);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     if (asteroid.target) {
-      ctx.fillStyle = '#ffe2a1';
-      ctx.font = '800 10px "Be Vietnam Pro", sans-serif';
-      ctx.fillText('MỤC TIÊU', 0, r + 12);
+      // Keep the target word hidden so players must recall it from the Vietnamese meaning.
+      ctx.fillStyle = '#fff';
+      ctx.font = '800 27px "Be Vietnam Pro", sans-serif';
+      ctx.fillText('?',0,-2);
+      ctx.fillStyle = '#d7fbff';
+      ctx.font = '800 9px "Be Vietnam Pro", sans-serif';
+      ctx.fillText('MỤC TIÊU',0,r+12);
+      ctx.strokeStyle = 'rgba(131,244,255,.8)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(0,0,r+7,0,Math.PI*2); ctx.stroke();
+    } else {
+      const label=String(asteroid.label||'');
+      const size=label.length>13?10:label.length>9?12:label.length>6?14:16;
+      ctx.fillStyle='#f8f6ff';
+      ctx.font='800 '+size+'px "Be Vietnam Pro", sans-serif';
+      ctx.fillText(label,0,0,r*1.55);
     }
     ctx.restore();
   }
@@ -440,29 +450,38 @@
   }
 
   function drawFlappyBird(ctx) {
+    // A friendly original KatLearn space-kitten glider.
+    const wingBeat=Math.sin(performance.now()/90)*3;
     ctx.save();
-    ctx.translate(170, flappy.birdY);
+    ctx.translate(170,flappy.birdY);
     ctx.rotate(flappy.birdAngle);
-    ctx.shadowColor = '#79efff';
-    ctx.shadowBlur = 18;
-    const bird = ctx.createLinearGradient(-18, -18, 20, 18);
-    bird.addColorStop(0, '#fff0a9');
-    bird.addColorStop(1, '#ff9f9c');
-    ctx.fillStyle = bird;
-    ctx.strokeStyle = '#fff6d9';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 20, 16, 0, 0, Math.PI * 2);
-    ctx.fill(); ctx.stroke();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = '#f9ffff';
-    ctx.beginPath(); ctx.arc(8, -5, 6, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#18213e';
-    ctx.beginPath(); ctx.arc(10, -5, 2.5, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#f77b84';
-    ctx.beginPath(); ctx.moveTo(17, 1); ctx.lineTo(30, 5); ctx.lineTo(17, 8); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#f6b5ca';
-    ctx.beginPath(); ctx.ellipse(-7, 5, 8, 5 + Math.sin(performance.now() / 85) * 2, -0.3, 0, Math.PI * 2); ctx.fill();
+    const trail=ctx.createLinearGradient(-38,0,-4,0);
+    trail.addColorStop(0,'rgba(75,218,255,0)');
+    trail.addColorStop(1,'rgba(75,218,255,.58)');
+    ctx.fillStyle=trail;
+    ctx.beginPath();ctx.moveTo(-32,-5);ctx.lineTo(-56,0);ctx.lineTo(-31,5);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#9e91ff';ctx.lineWidth=4;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(-16,7);ctx.quadraticCurveTo(-28,18,-20,22);ctx.stroke();
+    ctx.fillStyle='#a7a0ff';
+    ctx.beginPath();ctx.moveTo(-15,-11);ctx.lineTo(-17,-27);ctx.lineTo(-3,-17);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(4,-17);ctx.lineTo(16,-28);ctx.lineTo(17,-9);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#ffc0dd';
+    ctx.beginPath();ctx.moveTo(-12,-15);ctx.lineTo(-14,-22);ctx.lineTo(-7,-17);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(8,-17);ctx.lineTo(14,-23);ctx.lineTo(14,-14);ctx.closePath();ctx.fill();
+    ctx.shadowColor='#63e6ff';ctx.shadowBlur=16;
+    const body=ctx.createLinearGradient(-20,-18,22,19);
+    body.addColorStop(0,'#f4ffff');body.addColorStop(.45,'#8defff');body.addColorStop(1,'#8e8bff');
+    ctx.fillStyle=body;ctx.strokeStyle='#e5fcff';ctx.lineWidth=1.8;
+    ctx.beginPath();ctx.ellipse(0,0,22,17,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#4caed8';
+    ctx.beginPath();ctx.ellipse(-8,5+wingBeat,8,4.5,-.25,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(9,-5,5.5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#1b2451';ctx.beginPath();ctx.arc(11,-5,2.4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#ff9ec8';ctx.beginPath();ctx.ellipse(9,4,3.5,2,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff5bb';ctx.beginPath();ctx.moveTo(18,0);ctx.lineTo(27,4);ctx.lineTo(18,7);ctx.closePath();ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.9)';
+    ctx.beginPath();ctx.moveTo(-4,-26);ctx.lineTo(-1,-21);ctx.lineTo(4,-19);ctx.lineTo(-1,-17);ctx.lineTo(-4,-12);ctx.lineTo(-6,-17);ctx.lineTo(-11,-19);ctx.lineTo(-6,-21);ctx.closePath();ctx.fill();
     ctx.restore();
   }
 
