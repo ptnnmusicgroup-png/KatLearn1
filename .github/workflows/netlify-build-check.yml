@@ -31,7 +31,7 @@ jobs:
           const katfly = fs.readFileSync('katfly.js', 'utf8');
           const practice = fs.readFileSync('practice.html', 'utf8');
           const failures = [];
-          if (!/function\s+distractors\s*\\(/.test(meteor)) failures.push('Meteor Match is missing its distractor selector.');
+          if (!/function\s+distractors\s*\(/.test(meteor)) failures.push('Meteor Match is missing its distractor selector.');
           const startAt = katfly.indexOf('async function startFlappy()');
           const startBody = startAt >= 0 ? katfly.slice(startAt) : '';
           const runningAt = startBody.indexOf('state.running = true');
