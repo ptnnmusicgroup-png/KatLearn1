@@ -299,16 +299,16 @@
         meteor.bestCombo = Math.max(meteor.bestCombo, meteor.combo);
         if (result.awarded) state.coins += 10 + (result.bonus || 0);
         else if (result.bonus) state.coins += result.bonus;
-        flashFeedback('meteor', '✨ Chính xác! ' + (result.awarded || result.bonus ? result.message : result.message || 'Kết quả đã được ghi nhận trong phiên.'), result.awarded ? 'good' : 'neutral');
+        flashFeedback('✨ Chính xác! ' + (result.awarded || result.bonus ? result.message : result.message || 'Kết quả đã được ghi nhận trong phiên.'), result.awarded ? 'good' : 'neutral');
         spawnMeteorWave(target);
       } else {
         meteor.combo = 0;
-        flashFeedback('meteor', 'Chưa đúng từ rồi! Thử nhớ lại nghĩa và gõ lại nhé.', 'bad');
+        flashFeedback('Chưa đúng từ rồi! Thử nhớ lại nghĩa và gõ lại nhé.', 'bad');
         meteor.input.select();
       }
       updateMeteorHud();
     } catch (error) {
-      flashFeedback('meteor', '⚠️ Lỗi kết nối: ' + (error.message || 'chưa xác nhận được kết quả.'), 'bad');
+      flashFeedback('⚠️ Lỗi kết nối: ' + (error.message || 'chưa xác nhận được kết quả.'), 'bad');
     } finally {
       meteor.busy = false;
       if (state.running && state.game === 'meteor') meteor.input.focus({ preventScroll: true });
@@ -318,8 +318,8 @@
   function loseMeteorLife() {
     meteor.lives -= 1;
     meteor.combo = 0;
-    if (meteor.target) flashFeedback('meteor', 'Mục tiêu đã đi qua! Từ cần nhớ là: ' + meteor.target.word, 'bad');
-    if (meteor.lives <= 0) return endGame('meteor', 'Hết mạng rồi! Thử lại để phá kỷ lục nhé.');
+    if (meteor.target) flashFeedback('Mục tiêu đã đi qua! Từ cần nhớ là: ' + meteor.target.word, 'bad');
+    if (meteor.lives <= 0) return endGame('Hết mạng rồi! Thử lại để phá kỷ lục nhé.');
     const old = meteor.target;
     spawnMeteorWave(old);
     updateMeteorHud();
@@ -333,7 +333,7 @@
     if (meteor.asteroids.some(function (asteroid) { return asteroid.target && asteroid.missed; })) loseMeteorLife();
     drawMeteor(dt);
     updateMeteorHud();
-    if (meteor.time <= 0) endGame('meteor', 'Hết giờ! Mục tiêu đã hoàn thành.');
+    if (meteor.time <= 0) endGame('Hết giờ! Mục tiêu đã hoàn thành.');
   }
   function animate(timestamp) {
     if (!state.running || coordinator.active !== GAME) { stopAnimation(); return; }
