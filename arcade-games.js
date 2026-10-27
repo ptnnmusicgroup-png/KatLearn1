@@ -344,10 +344,10 @@
     ctx.fillStyle = '#f4f5ff';
     ctx.font = '700 12px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('GÕ TỪ TIẾNG ANH ĐỂ BẮN ĐÚNG THIÊN THẠCH', 18, height - 13);
+    ctx.fillText('GÕ ĐÚNG TỪ ĐỂ NHẬN DIỆN MỤC TIÊU', 18, height - 13);
     ctx.textAlign = 'right';
     ctx.fillStyle = '#9ea8e9';
-    ctx.fillText('LỆCH MỤC TIÊU = MẤT 1 MẠNG', width - 18, height - 13);
+    ctx.fillText('BỎ LỠ MỤC TIÊU = MẤT 1 MẠNG', width - 18, height - 13);
     ctx.restore();
   }
 
@@ -378,11 +378,11 @@
         meteor.bestCombo = Math.max(meteor.bestCombo, meteor.combo);
         if (result.awarded) state.coins += 10 + (result.bonus || 0);
         else if (result.bonus) state.coins += result.bonus;
-        flashFeedback('meteor', '🎯 Chính xác! ' + (result.awarded || result.bonus ? result.message : result.message || 'Lưu kết quả chưa được xác nhận.'), result.awarded ? 'good' : 'neutral');
+        flashFeedback('meteor', '✨ Chính xác! ' + (result.awarded || result.bonus ? result.message : result.message || 'Kết quả đã được ghi nhận trong phiên.'), result.awarded ? 'good' : 'neutral');
         spawnMeteorWave(target);
       } else {
         meteor.combo = 0;
-        flashFeedback('meteor', '💥 Chưa trúng rồi! Thử gõ lại từ tiếng Anh ứng với nghĩa này nhé.', 'bad');
+        flashFeedback('meteor', 'Chưa đúng từ rồi! Thử nhớ lại nghĩa và gõ lại nhé.', 'bad');
         meteor.input.select();
       }
       updateMeteorHud();
@@ -397,7 +397,7 @@
   function loseMeteorLife() {
     meteor.lives -= 1;
     meteor.combo = 0;
-    if (meteor.target) flashFeedback('meteor', '☄️ Thiên thạch mục tiêu lọt qua! Từ đúng là: ' + meteor.target.word, 'bad');
+    if (meteor.target) flashFeedback('meteor', 'Mục tiêu đã đi qua! Từ cần nhớ là: ' + meteor.target.word, 'bad');
     if (meteor.lives <= 0) return endGame('meteor', 'Hết mạng rồi! Thử lại để phá kỷ lục nhé.');
     const old = meteor.target;
     spawnMeteorWave(old);
@@ -418,13 +418,13 @@
   function spawnFlappyPipe(previous) {
     const item = chooseWord(previous);
     if (!item) return;
-    const gap = 148;
+    const gap = 170;
     flappy.pipe = {
       x: flappy.canvas.width + 12,
-      width: 86,
+      width: 74,
       gapY: random(124, flappy.canvas.height - 124),
       gap: gap,
-      speed: 198 + Math.min(65, flappy.score * 1.1),
+      speed: 178 + Math.min(48, flappy.score * 0.8),
       item: item,
       answer: '',
       resolved: false,
