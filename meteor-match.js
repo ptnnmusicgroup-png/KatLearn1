@@ -61,6 +61,21 @@
     while (previous && item.word === previous.word && guard < 12) { item = pick(deck); guard += 1; }
     return item;
   }
+  function distractors(target, count) {
+    const seen = new Set([normalize(target.word)]);
+    const options = state.deck.filter(function (item) {
+      const key = normalize(item.word);
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    for (let i = options.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+    return options.slice(0, count);
+  }
+
   async function submitResult(item, guess, gameMode) {
     const user = await window.studyStore?.waitForAuth?.().catch(function () { return null; });
     if (!user) return { confirmed: false, awarded: false, message: 'Đáp án đúng! Đăng nhập để lưu tiến độ và nhận KatCoin.' };
