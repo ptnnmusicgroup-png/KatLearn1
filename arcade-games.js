@@ -669,7 +669,7 @@
     spawnMeteorWave(null);
     updateMeteorHud();
     $('#meteorRestart')?.removeAttribute('hidden');
-    setMessage('#meteorMessage', 'Gõ từ tiếng Anh ứng với nghĩa tiếng Việt để bắn mục tiêu!', 'neutral');
+    setMessage('#meteorMessage', 'Gõ từ tiếng Anh ứng với nghĩa tiếng Việt để nhận diện mục tiêu!', 'neutral');
     state.running = true; state.lastFrame = 0; state.raf = requestAnimationFrame(animate);
   }
 
