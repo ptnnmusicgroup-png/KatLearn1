@@ -18,7 +18,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js arcade-games.js app.js test.js learning-goals.js katlearn-motion.js home-account.js dmca-badge.js theme-shop.js site-footer.js katlearn-activation.js; do
+          for file in scripts/build-netlify.js netlify/adapter.js netlify/functions/*.js api/*.js meteor-match.js katfly.js app.js test.js learning-goals.js katlearn-motion.js home-account.js dmca-badge.js theme-shop.js site-footer.js katlearn-activation.js; do
             node --check "$file"
           done
       - name: Verify one central UI stylesheet is used
