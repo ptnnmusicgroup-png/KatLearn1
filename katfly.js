@@ -393,10 +393,13 @@
     }
     stopAnimation(); claimGame(); showGame();
     flappy.time = 75; flappy.score = 0; flappy.lives = 3; flappy.birdY = flappy.canvas.height / 2; flappy.birdV = 0; flappy.birdAngle = 0; flappy.pipe = null; flappy.answer = ''; flappy.busy = false; flappy.particles = [];
-    seedStars(flappy, flappy.canvas.width, flappy.canvas.height, 82); startNextFlappyPipe(null); updateFlappyHud();
+    seedStars(flappy, flappy.canvas.width, flappy.canvas.height, 82);
+    // The pipe spawner checks state.running; mark the round active before creating its first gate.
+    state.running = true; state.lastFrame = 0;
+    startNextFlappyPipe(null); updateFlappyHud();
     $('#flappyRestart')?.removeAttribute('hidden');
     flashFeedback('Gõ từ tiếng Anh rồi bấm Enter. Vượt qua cổng bằng ↑, click hoặc nút Bay!', 'neutral');
-    state.running = true; state.lastFrame = 0; state.raf = requestAnimationFrame(animate);
+    state.raf = requestAnimationFrame(animate);
     flappy.input.focus({ preventScroll: true });
   }
   $('#flappyForm')?.addEventListener('submit', function (event) {
