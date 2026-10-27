@@ -313,18 +313,18 @@
     const correct = normalize(pipe.answer) === normalize(pipe.item.word);
     if (!correct) {
       flappy.lives -= 1;
-      flashFeedback('flappy', '😵 Chưa nhập đúng từ cho cổng này. Từ cần nhớ: ' + pipe.item.word, 'bad');
-      if (flappy.lives <= 0) return endGame('flappy', 'Hết lượt bay rồi! Thử lại để vượt thêm cổng nhé.');
+      flashFeedback('😵 Chưa nhập đúng từ cho cổng này. Từ cần nhớ: ' + pipe.item.word, 'bad');
+      if (flappy.lives <= 0) return endGame('Hết lượt bay rồi! Thử lại để vượt thêm cổng nhé.');
     } else {
       flappy.score += 1;
-      flashFeedback('flappy', '🐦 Qua cổng thành công! Đang lưu kết quả…', 'good');
+      flashFeedback('🐦 Qua cổng thành công! Đang lưu kết quả…', 'good');
       try {
         const result = await submitResult(pipe.item, pipe.answer, 'flappy');
         if (result.awarded) state.coins += 10 + (result.bonus || 0);
         else if (result.bonus) state.coins += result.bonus;
-        flashFeedback('flappy', '🐦 Cổng đã vượt! ' + result.message, result.awarded ? 'good' : 'neutral');
+        flashFeedback('🐦 Cổng đã vượt! ' + result.message, result.awarded ? 'good' : 'neutral');
       } catch (error) {
-        flashFeedback('flappy', 'Cổng đã vượt, nhưng chưa đồng bộ KatCoin: ' + (error.message || 'Lỗi kết nối.'), 'bad');
+        flashFeedback('Cổng đã vượt, nhưng chưa đồng bộ KatCoin: ' + (error.message || 'Lỗi kết nối.'), 'bad');
       }
     }
     updateFlappyHud();
@@ -337,8 +337,8 @@
     flappy.lives -= 1;
     flappy.birdY = clamp(flappy.birdY, 45, flappy.canvas.height - 45);
     flappy.birdV = -100;
-    flashFeedback('flappy', '💫 ' + message, 'bad');
-    if (flappy.lives <= 0) endGame('flappy', 'Hết lượt bay rồi! Thử lại để vượt thêm cổng nhé.');
+    flashFeedback('💫 ' + message, 'bad');
+    if (flappy.lives <= 0) endGame('Hết lượt bay rồi! Thử lại để vượt thêm cổng nhé.');
     updateFlappyHud();
   }
 
@@ -364,7 +364,7 @@
       startNextFlappyPipe(previous);
     }
     updateFlappyHud();
-    if (flappy.time <= 0) endGame('flappy', 'Hết giờ bay! Cố thêm một lượt để phá kỷ lục nhé.');
+    if (flappy.time <= 0) endGame('Hết giờ bay! Cố thêm một lượt để phá kỷ lục nhé.');
   }
   function animate(timestamp) {
     if (!state.running || coordinator.active !== GAME) { stopAnimation(); return; }
