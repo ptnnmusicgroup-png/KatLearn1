@@ -486,68 +486,68 @@
   }
 
   function drawPipe(ctx, pipe) {
-    const width = flappy.canvas.width, height = flappy.canvas.height;
-    const top = pipe.gapY - pipe.gap / 2;
-    const bottom = pipe.gapY + pipe.gap / 2;
-    const gradient = ctx.createLinearGradient(pipe.x, 0, pipe.x + pipe.width, 0);
-    gradient.addColorStop(0, '#3ac2b2');
-    gradient.addColorStop(0.5, '#67e2c5');
-    gradient.addColorStop(1, '#328eaa');
-    ctx.fillStyle = gradient;
-    ctx.strokeStyle = '#a5fff1';
-    ctx.lineWidth = 2;
-    ctx.shadowColor = 'rgba(66, 231, 199, .25)';
-    ctx.shadowBlur = 12;
-    ctx.fillRect(pipe.x, 0, pipe.width, top);
-    ctx.strokeRect(pipe.x, 0, pipe.width, top);
-    ctx.fillRect(pipe.x - 7, top - 22, pipe.width + 14, 22);
-    ctx.strokeRect(pipe.x - 7, top - 22, pipe.width + 14, 22);
-    ctx.fillRect(pipe.x, bottom, pipe.width, height - bottom);
-    ctx.strokeRect(pipe.x, bottom, pipe.width, height - bottom);
-    ctx.fillRect(pipe.x - 7, bottom, pipe.width + 14, 22);
-    ctx.strokeRect(pipe.x - 7, bottom, pipe.width + 14, 22);
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(10, 26, 54, .82)';
-    ctx.fillRect(pipe.x - 16, pipe.gapY - 24, pipe.width + 32, 48);
-    ctx.strokeStyle = '#d7fff6';
-    ctx.strokeRect(pipe.x - 16, pipe.gapY - 24, pipe.width + 32, 48);
-    ctx.fillStyle = '#effffc';
-    ctx.font = '800 12px "Be Vietnam Pro", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('GATE', pipe.x + pipe.width / 2, pipe.gapY - 5);
-    ctx.font = '700 9px "Be Vietnam Pro", sans-serif';
-    ctx.fillStyle = '#8ee9dc';
-    ctx.fillText('NHỚ TỪ', pipe.x + pipe.width / 2, pipe.gapY + 10);
+    const width=flappy.canvas.width,height=flappy.canvas.height;
+    const top=pipe.gapY-pipe.gap/2,bottom=pipe.gapY+pipe.gap/2;
+    const x=pipe.x,w=pipe.width;
+    const drawPillar=function(y,h,capAtBottom){
+      if(h<=0)return;
+      ctx.save();
+      const gradient=ctx.createLinearGradient(x,0,x+w,0);
+      gradient.addColorStop(0,'#183a70');gradient.addColorStop(.45,'#2d8ba9');gradient.addColorStop(1,'#1b3b69');
+      ctx.fillStyle=gradient;ctx.shadowColor='rgba(83,228,255,.18)';ctx.shadowBlur=15;
+      ctx.beginPath();ctx.roundRect(x,y,w,h,12);ctx.fill();
+      ctx.shadowBlur=0;ctx.strokeStyle='rgba(143,247,255,.8)';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.fillStyle='rgba(136,248,255,.15)';
+      ctx.beginPath();ctx.roundRect(x+8,y+8,5,Math.max(0,h-16),3);ctx.fill();
+      ctx.strokeStyle='rgba(143,247,255,.28)';ctx.lineWidth=1;
+      for(let yy=y+22;yy<y+h-8;yy+=28){ctx.beginPath();ctx.moveTo(x+19,yy);ctx.lineTo(x+w-8,yy);ctx.stroke()}
+      const capY=capAtBottom?y+h-14:y;
+      ctx.fillStyle='#76f0ed';ctx.globalAlpha=.95;
+      ctx.beginPath();ctx.roundRect(x-5,capY,w+10,14,7);ctx.fill();
+      ctx.globalAlpha=1;ctx.fillStyle='#efffff';
+      ctx.beginPath();ctx.roundRect(x+6,capY+4,w-12,3,2);ctx.fill();
+      ctx.restore();
+    };
+    drawPillar(0,top,true);drawPillar(bottom,height-bottom,false);
+    ctx.save();
+    ctx.shadowColor='#8df7ff';ctx.shadowBlur=18;ctx.strokeStyle='rgba(135,248,255,.82)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.roundRect(x-8,top+8,w+16,pipe.gap-16,18);ctx.stroke();
+    ctx.shadowBlur=0;ctx.fillStyle='rgba(8,24,57,.76)';
+    ctx.beginPath();ctx.roundRect(x+8,pipe.gapY-17,w-16,34,10);ctx.fill();
+    ctx.fillStyle='#f1ffff';ctx.font='800 11px "Be Vietnam Pro", sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('KAT GATE',x+w/2,pipe.gapY-3);
+    ctx.fillStyle='#92f7ff';ctx.font='700 8px "Be Vietnam Pro", sans-serif';
+    ctx.fillText('BAY QUA',x+w/2,pipe.gapY+10);
+    ctx.restore();
   }
 
   function drawFlappy(dt) {
-    const ctx = flappy.ctx, width = flappy.canvas.width, height = flappy.canvas.height;
-    drawStars(ctx, flappy.stars, width, height, dt, 16);
-    const floor = ctx.createLinearGradient(0, height - 24, 0, height);
-    floor.addColorStop(0, '#2b426b');
-    floor.addColorStop(1, '#131b3a');
-    ctx.fillStyle = floor;
-    ctx.fillRect(0, height - 19, width, 19);
-    ctx.strokeStyle = 'rgba(132, 184, 255, .18)';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < width; x += 42) {
-      ctx.beginPath(); ctx.moveTo(x, height - 19); ctx.lineTo(x - 14, height); ctx.stroke();
+    const ctx=flappy.ctx,width=flappy.canvas.width,height=flappy.canvas.height;
+    drawStars(ctx,flappy.stars,width,height,dt,10);
+    const haze=ctx.createRadialGradient(width*.72,height*.2,6,width*.72,height*.2,height*.85);
+    haze.addColorStop(0,'rgba(108,99,223,.19)');haze.addColorStop(.5,'rgba(35,112,171,.07)');haze.addColorStop(1,'rgba(5,9,29,0)');
+    ctx.fillStyle=haze;ctx.fillRect(0,0,width,height);
+    ctx.fillStyle='rgba(95,120,206,.11)';ctx.beginPath();ctx.arc(width*.78,height*.23,42,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(147,164,255,.18)';ctx.lineWidth=2;
+    ctx.beginPath();ctx.ellipse(width*.78,height*.23,59,14,-.2,0,Math.PI*2);ctx.stroke();
+    const floor=ctx.createLinearGradient(0,height-24,0,height);
+    floor.addColorStop(0,'#233a69');floor.addColorStop(1,'#0b132c');
+    ctx.fillStyle=floor;ctx.fillRect(0,height-19,width,19);
+    ctx.strokeStyle='rgba(132,184,255,.16)';ctx.lineWidth=1;
+    for(let x=0;x<width;x+=42){ctx.beginPath();ctx.moveTo(x,height-19);ctx.lineTo(x-14,height);ctx.stroke()}
+    if(flappy.pipe){
+      if(state.running&&!flappy.pipe.resolved)flappy.pipe.x-=flappy.pipe.speed*dt;
+      drawPipe(ctx,flappy.pipe);
     }
-    if (flappy.pipe) {
-      if (state.running && !flappy.pipe.resolved) flappy.pipe.x -= flappy.pipe.speed * dt;
-      drawPipe(ctx, flappy.pipe);
+    if(state.running){
+      flappy.birdV+=690*dt;
+      flappy.birdY+=flappy.birdV*dt;
+      flappy.birdAngle=clamp(flappy.birdV/780,-.32,.72);
     }
-    if (state.running) {
-      flappy.birdV += 760 * dt;
-      flappy.birdY += flappy.birdV * dt;
-      flappy.birdAngle = clamp(flappy.birdV / 700, -0.4, 0.9);
-    }
-    drawFlappyBird(ctx);
-    drawParticles(ctx, flappy, dt);
-    if (flappy.birdY < -5 || flappy.birdY > height - 19) {
-      if (state.running && flappy.pipe && !flappy.pipe.resolved) failFlappyPipe('Chim bay lệch đường! Giữ nhịp bấm ↑ hoặc chạm nút Flap nhé.');
-      else if (state.running) { flappy.birdY = height / 2; flappy.birdV = 0; }
+    drawFlappyBird(ctx);drawParticles(ctx,flappy,dt);
+    if(flappy.birdY<8||flappy.birdY>height-22){
+      if(state.running&&flappy.pipe&&!flappy.pipe.resolved)failFlappyPipe('Lệch khỏi đường bay! Bấm nhẹ và đều để quay lại quỹ đạo nhé.');
+      else if(state.running){flappy.birdY=clamp(flappy.birdY,22,height-22);flappy.birdV=-60}
     }
   }
 
