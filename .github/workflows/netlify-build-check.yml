@@ -74,6 +74,8 @@ jobs:
           test -s dist/index.html
           test -s dist/katlearn-defaultdarkmode.css
           test -s dist/katlearn-motion.js
+          test -s dist/meteor-match.js
+          test -s dist/katfly.js
           test -s dist/deployment-config.js
           node <<'NODE'
           const fs = require('node:fs');
