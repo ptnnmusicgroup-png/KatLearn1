@@ -794,6 +794,13 @@
     $('#arcadeGameCards')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  // A personal pack can route directly here from "Chơi game".
+  // app.js restores its deck before this event is emitted.
+  window.addEventListener('katlearn-personal-pack-restored', event=>{
+    if(event.detail?.launchMode!=='game')return;
+    window.setTimeout(()=>{if(!state.running)void startMeteor();},0);
+  });
+
   $('#meteorForm')?.addEventListener('submit', submitMeteorAnswer);
   $('#flappyForm')?.addEventListener('submit', function (event) {
     event.preventDefault();

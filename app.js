@@ -70,7 +70,7 @@ function updateDailyGoal(count){
   if(percent)percent.textContent=(done*10)+'%';
   window.dispatchEvent(new CustomEvent('katlearn-daily-goal-state',{detail:{done,complete:done>=10}}));
 }
-function updateCoins(){const label=coinBalanceReady?format(coins):(window.studyStore?.user?'—':'0');['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=label});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
+function updateCoins(){const label=coinBalanceReady?format(coins):(window.studyStore?.user?'—':'0');['#coinCount','#shopCoins','#panelCoins','#haCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=label});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
 function applyServerProfile(profile){
   if(!profile)return;
   const energyValue=Number(profile.energy);
@@ -1086,6 +1086,8 @@ async function restorePendingPersonalPack(){
   cardIndex=0;
   localStorage.setItem('katlearn-vocab',JSON.stringify(vocab));
   if($('#learn')){renderCard();updateLearnStudySummary?.();renderWordList?.();renderFullPersonalPack()}
+  if($('#practice')){void initReflexSourcePicker?.();renderQuiz?.()}
+  window.dispatchEvent(new CustomEvent('katlearn-personal-pack-restored',{detail:{...pending,words:vocab}}));
   try{sessionStorage.removeItem('katlearn-pending-personal-pack')}catch(_){}
   return true;
 }
@@ -1383,7 +1385,9 @@ window.addEventListener('katlearn-personal-learning-synced',e=>{
 });
 window.addEventListener('katlearn-account-ready',()=>{void renderProgressDashboard()});
 window.addEventListener('katlearn-account-ready',e=>{const profile=e.detail?.profile||null;updateHomeHeader(profile);updateDailyGoal(profile?.dailyQuestions||0)});renderAuth(null);renderAdmin(null);const loginModal=$('#loginModal');if(loginModal)loginModal.querySelector('.modal-close')?.addEventListener('click',()=>loginModal.classList.remove('show'));if(loginModal)loginModal.onclick=e=>{if(e.target===loginModal)loginModal.classList.remove('show')};function authError(err){if(err.code==='auth/unauthorized-domain')return `Firebase chưa cho phép domain “${location.hostname}”. Vào Authentication → Settings → Authorized domains để thêm domain này.`;const messages={'auth/operation-not-allowed':'Hãy bật Email/Password trong Firebase Authentication trước.','auth/email-already-in-use':'Email này đã có tài khoản. Hãy đăng nhập.','auth/invalid-credential':'Email hoặc mật khẩu không đúng.','auth/weak-password':'Mật khẩu cần ít nhất 6 ký tự.'};return messages[err.code]||'Không thể thực hiện: '+err.message}async function providerLogin(provider){try{const user=await window.studyStore.signIn(provider);$('#loginModal').classList.remove('show');renderAuth(user);toast(`Chào mừng ${user.displayName||'bạn'}! Dữ liệu đang được đồng bộ.`)}catch(err){toast(authError(err))}}async function emailLogin(create){const email=$('#authEmail').value.trim(),password=$('#authPassword').value;if(!email||!password)return;try{const user=await window.studyStore.signInEmail(email,password,create);$('#loginModal').classList.remove('show');renderAuth(user);toast(create?'Đã tạo tài khoản thành công!':'Đăng nhập thành công!')}catch(err){toast(authError(err))}}const emailLoginForm=$('#emailLoginForm'),emailRegister=$('#emailRegister'),googleLogin=$('#googleLogin'),appleLogin=$('#appleLogin'),logoutBtn=$('#logoutBtn'),openProgress=$('#openProgress');if(emailLoginForm)emailLoginForm.onsubmit=e=>{e.preventDefault();emailLogin(false)};if(emailRegister)emailRegister.onclick=()=>emailLogin(true);if(googleLogin)googleLogin.onclick=()=>providerLogin('google');if(appleLogin)appleLogin.onclick=()=>providerLogin('apple');if(logoutBtn)logoutBtn.onclick=async()=>{try{await window.studyStore.signOut();toast('Đã đăng xuất.');setTimeout(()=>location.replace('/login.html'),100)}catch(e){toast('❌ Không thể đăng xuất: '+(e.message||'Lỗi không xác định'))}};if(openProgress)openProgress.onclick=()=>{showPage('progress');$('#accountPanel').hidden=true};document.addEventListener('click',e=>{const topActions=$('.top-actions'),panel=$('#accountPanel');if(topActions&&!topActions.contains(e.target)&&panel)panel.hidden=true});
-if($('#learn'))renderCard();if($('#practice'))void initReflexSourcePicker();updateCoins();openInitialPage();if($('#packLibrary')||$('#publishedPacks'))void renderPublicPacks();
+if($('#learn'))renderCard();if($('#practice'))void initReflexSourcePicker();
+Promise.resolve(window.studyStore?.waitForAuth?.()).then(user=>{if(user)void restorePendingPersonalPack()}).catch(()=>{});
+updateCoins();openInitialPage();if($('#packLibrary')||$('#publishedPacks'))void renderPublicPacks();
 
 window.addEventListener('katlearn-personal-pack-open',e=>{
   const words=Array.isArray(e.detail?.words)?e.detail.words:[];

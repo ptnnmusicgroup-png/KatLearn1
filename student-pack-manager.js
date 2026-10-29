@@ -7,7 +7,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
   let editingPack=null;
   let renderMinePromise=null,renderMineUid='';
   
-  function launchPersonalPack(pack,uid){
+  function launchPersonalPack(pack,uid,mode='learn'){
     if(!pack)return;
     const words=Array.isArray(pack.words)?pack.words:[];
     const hasValidWord=words.some(word=>{
@@ -25,7 +25,8 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       id:String(pack.id||''),
       name:String(pack.name||'Bộ từ riêng'),
       description:String(pack.description||'Toàn bộ từ vựng trong bộ riêng.'),
-      words
+      words,
+      launchMode:mode==='game'?'game':'learn'
     };
     const current=(location.pathname.split('/').pop()||'').toLowerCase();
     if(current==='learn.html'){
@@ -43,7 +44,7 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
       toast('Không mở được bộ từ vì trình duyệt không lưu được phiên học. Hãy thử lại trong cùng tab.');
       return;
     }
-    location.href='/learn.html';
+    location.href=mode==='game'?'/practice.html?arcade=meteor':'/learn.html';
   }
 
   function row(data={}){
@@ -484,13 +485,17 @@ async function aiHeaders(){const h={'Content-Type':'application/json'};try{const
         box.innerHTML=safePacks.length
           ?`<div class="personal-packs-title"><div><h3><span class="kl-icon-slot">${window.katIcon?.('layers',18)||''}</span> Bộ từ của tôi</h3><p>${safePacks.length} bộ từ · ${totalWords} từ · đồng bộ riêng theo tài khoản.</p></div><span class="personal-pack-account-pill"><span class="kl-icon-slot">${window.katIcon?.('shield',14)||''}</span> ${esc(String(safePacks[0]?.ownerAccountCode||safePacks[0]?.accountCode||'').trim()||'Mã tài khoản đang đồng bộ')}</span></div><div class="personal-pack-grid">${safePacks.map(p=>{
               const progress=progressById.get(String(p.id))||{total:Array.isArray(p.words)?p.words.length:0,known:0,unknown:Array.isArray(p.words)?p.words.length:0,percentage:0,state:'low'};
-              return `<article class="personal-pack-card"><span class="personal-pack-progress-icon">${window.katIcon?.('book',19)||''}</span><div class="personal-pack-copy"><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${progress.total} từ vựng · bộ riêng</p></div><div class="personal-pack-actions"><button data-my-pack="${esc(p.id)}"><span class="kl-icon-slot">${window.katIcon?.('play',13)||''}</span> Học ngay</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn"><span class="kl-icon-slot">${window.katIcon?.('more',16)||''}</span></button></div><div class="personal-pack-progress"><div class="personal-pack-progress-top"><small>Tiến độ học</small><strong class="is-${progress.state}">${progress.percentage}%</strong></div><div class="pack-progress-track" role="progressbar" aria-label="Tiến độ ${esc(p.name||'bộ từ')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress.percentage}"><span class="pack-progress-fill is-${progress.state}" style="width:${progress.percentage}%"></span></div><div class="pack-progress-meta"><span class="known">${window.katIcon?.('checkCircle',12)||''} ${progress.known} đã thuộc</span><span class="unknown">${window.katIcon?.('target',12)||''} ${progress.unknown} chưa thuộc</span></div></div></article>`;
+              return `<article class="personal-pack-card"><span class="personal-pack-progress-icon">${window.katIcon?.('book',19)||''}</span><div class="personal-pack-copy"><h3>${esc(p.name||'Bộ từ chưa đặt tên')}</h3><p>${progress.total} từ vựng · bộ riêng</p></div><div class="personal-pack-actions"><button data-my-pack="${esc(p.id)}"><span class="kl-icon-slot">${window.katIcon?.('play',13)||''}</span> Học ngay</button><button type="button" class="personal-pack-game" data-my-pack-game="${esc(p.id)}"><span class="kl-icon-slot">${window.katIcon?.('target',13)||''}</span> Chơi game</button><button type="button" class="personal-pack-more" data-my-pack-menu="${esc(p.id)}" aria-label="Tùy chọn"><span class="kl-icon-slot">${window.katIcon?.('more',16)||''}</span></button></div><div class="personal-pack-progress"><div class="personal-pack-progress-top"><small>Tiến độ học</small><strong class="is-${progress.state}">${progress.percentage}%</strong></div><div class="pack-progress-track" role="progressbar" aria-label="Tiến độ ${esc(p.name||'bộ từ')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress.percentage}"><span class="pack-progress-fill is-${progress.state}" style="width:${progress.percentage}%"></span></div><div class="pack-progress-meta"><span class="known">${window.katIcon?.('checkCircle',12)||''} ${progress.known} đã thuộc</span><span class="unknown">${window.katIcon?.('target',12)||''} ${progress.unknown} chưa thuộc</span></div></div></article>`;
             }).join('')}</div>`
           : '<div class="personal-pack-empty">Bạn chưa có bộ từ riêng. <a href="/create-pack.html" style="color:#6757d5;font-weight:800;text-decoration:none">Tạo bộ từ đầu tiên →</a></div>';
         $('[data-my-pack-menu]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();openPersonalPackMenu(btn,safePacks.find(x=>x.id===btn.dataset.myPackMenu))});
         $('[data-my-pack]').forEach(btn=>btn.onclick=()=>{
           const p=safePacks.find(x=>String(x.id)===String(btn.dataset.myPack));
-          launchPersonalPack(p,uid);
+          launchPersonalPack(p,uid,'learn');
+        });
+        $('[data-my-pack-game]').forEach(btn=>btn.onclick=()=>{
+          const p=safePacks.find(x=>String(x.id)===String(btn.dataset.myPackGame));
+          launchPersonalPack(p,uid,'game');
         });
       }catch(e){
         console.warn('[KatLearn] Personal pack UI load failed:',e);
