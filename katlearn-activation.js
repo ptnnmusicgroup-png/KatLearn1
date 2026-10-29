@@ -260,3 +260,108 @@ function installThemeRuntime(){
   function toast(msg){if(typeof window.toast==='function')return window.toast(msg);const el=document.getElementById('toast');if(!el)return;el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600)}
   boot();
 })();
+
+
+/* Global navigation and KatLearn vocabulary search. */
+(function(){
+  const $=selector=>document.querySelector(selector);
+  const normalize=value=>String(value||'').trim().toLocaleLowerCase('vi');
+  function flattenLibrary(nodes,out=[]){
+    (Array.isArray(nodes)?nodes:[]).forEach(node=>{
+      out.push(node);
+      flattenLibrary(node.children,out);
+    });
+    return out;
+  }
+  function addOrbitStar(card){
+    if(!card||card.querySelector('.kl-hover-star'))return;
+    const star=document.createElement('span');star.className='kl-hover-star';star.setAttribute('aria-hidden','true');card.appendChild(star);
+  }
+  function wireOrbitStars(){
+    document.addEventListener('pointerover',event=>{
+      const card=event.target.closest?.('.nav-item,.activity-card,.mode-card,.pack-tile,.personal-pack-card,.shop-item,.shop-theme-card,.metric,.arcade-card,.reflex-pack-card');
+      if(card&&!card.contains(event.relatedTarget))addOrbitStar(card);
+    });
+    document.addEventListener('pointerout',event=>{
+      const card=event.target.closest?.('.nav-item,.activity-card,.mode-card,.pack-tile,.personal-pack-card,.shop-item,.shop-theme-card,.metric,.arcade-card,.reflex-pack-card');
+      if(card&&!card.contains(event.relatedTarget))card.querySelector('.kl-hover-star')?.remove();
+    });
+  }
+  function wireNavigation(){
+    const sidebar=$('.sidebar'),toggle=$('.menu-toggle');
+    if(!sidebar||!toggle)return;
+    const desktop=()=>window.matchMedia('(min-width:821px)').matches;
+    if(desktop()&&localStorage.getItem('katlearn-nav-collapsed')==='1')sidebar.classList.add('nav-collapsed');
+    toggle.setAttribute('aria-label','Thu gọn hoặc mở rộng menu');
+    toggle.addEventListener('click',()=>{
+      if(!desktop())return;
+      sidebar.classList.toggle('nav-collapsed');
+      localStorage.setItem('katlearn-nav-collapsed',sidebar.classList.contains('nav-collapsed')?'1':'0');
+      toggle.setAttribute('aria-expanded',String(!sidebar.classList.contains('nav-collapsed')));
+    });
+  }
+  function resultButton(icon,title,description,data){
+    const button=document.createElement('button');button.type='button';button.className='kl-search-result';
+    button.innerHTML='<i>'+icon+'</i><span><b></b><small></small></span>';
+    button.querySelector('b').textContent=title;button.querySelector('small').textContent=description;
+    button.addEventListener('click',()=>{
+      try{localStorage.setItem('katlearn-global-search',JSON.stringify(data))}catch(_){}
+      window.location.href=data.kind==='pack'?'/packs.html':'/vocabulary.html';
+    });
+    return button;
+  }
+  function wireGlobalSearch(){
+    const search=$('.search');if(!search||search.dataset.klSearchReady)return;
+    search.dataset.klSearchReady='1';search.classList.add('kl-global-search');search.replaceChildren();
+    const icon=document.createElement('span');icon.className='kl-search-icon';icon.textContent='⌕';
+    const input=document.createElement('input');input.type='search';input.autocomplete='off';input.placeholder='Tìm từ, chủ đề, bộ IELTS...';input.setAttribute('aria-label','Tìm trong kho từ vựng KatLearn');
+    const results=document.createElement('div');results.className='kl-search-results';results.hidden=true;results.setAttribute('role','listbox');
+    search.append(icon,input,results);
+    let timer=0,searchGeneration=0;
+    const render=()=>{
+      const query=normalize(input.value),generation=++searchGeneration;results.replaceChildren();
+      if(query.length<2){results.hidden=true;return}
+      const addTitle=label=>{const title=document.createElement('span');title.className='kl-search-title';title.textContent=label;results.appendChild(title)};
+      const core=window.katlearnCoreVocabulary||{};
+      const nodes=flattenLibrary(core.library||[]);
+      const packs=(core.topics||[]).filter(pack=>normalize(pack.name+' '+pack.category+' '+pack.id).includes(query)).slice(0,6);
+      const packNodes=nodes.filter(node=>node.packId&&normalize(node.name+' '+node.packId).includes(query)).slice(0,4);
+      const vocabulary=(Array.isArray(window.vocab)?window.vocab:[]).filter(word=>normalize((word.word||'')+' '+(word.mean||word.meaning_vi||word.meaning||'')).includes(query)).slice(0,7);
+      const guided=nodes.filter(node=>Array.isArray(node.words)&&node.words.some(word=>normalize(word).includes(query))).slice(0,5);
+      if(vocabulary.length){addTitle('Từ trong bộ bạn đang học');vocabulary.forEach(word=>results.appendChild(resultButton('Aa',word.word,word.mean||word.meaning_vi||word.meaning||'Từ vựng KatLearn',{kind:'word',word:word.word,meaning:word.mean||word.meaning_vi||word.meaning||''})))}
+      if(packs.length||packNodes.length||guided.length){addTitle('Chủ đề & bộ từ KatLearn');[...packs,...packNodes,...guided].slice(0,9).forEach(item=>results.appendChild(resultButton(item.icon||'📚',item.name,item.category||item.packId||'Bộ từ KatLearn',{kind:'pack',packId:item.packId||item.id,name:item.name})))}
+      if(!results.childElementCount){const empty=document.createElement('span');empty.className='kl-search-empty';empty.textContent='Đang tìm trong kho từ KatLearn…';results.appendChild(empty)}
+      results.hidden=false;
+      // Search words across the curated topic library as well, not only the active pack.
+      // The core loader caches every pack after the first lookup.
+      if(query.length>=3&&typeof core.load==='function'&&Array.isArray(core.topics)){
+        Promise.allSettled(core.topics.map(topic=>core.load(topic.id))).then(loaded=>{
+          if(generation!==searchGeneration||normalize(input.value)!==query)return;
+          const matches=[];
+          loaded.forEach((entry,index)=>{
+            if(entry.status!=='fulfilled')return;
+            const pack=entry.value||{},topic=core.topics[index]||{};
+            (Array.isArray(pack.words)?pack.words:[]).some(word=>{
+              const english=String(word.word||''),meaning=String(word.mean||word.meaning_vi||word.meaning||'');
+              if(normalize(english+' '+meaning).includes(query)){matches.push({english,meaning,topic:pack.name||topic.name||'KatLearn'});return matches.length>=8}
+              return false;
+            });
+          });
+          if(!matches.length)return;
+          results.querySelector('.kl-search-empty')?.remove();
+          addTitle('Từ trong kho KatLearn');
+          matches.slice(0,8).forEach(item=>results.appendChild(resultButton('🔎',item.english,item.meaning+' · '+item.topic,{kind:'word',word:item.english,meaning:item.meaning,pack:item.topic})));
+          results.hidden=false;
+        });
+      }
+    };
+    input.addEventListener('input',()=>{clearTimeout(timer);timer=window.setTimeout(render,120)});
+    input.addEventListener('focus',render);
+    document.addEventListener('pointerdown',event=>{if(!search.contains(event.target))results.hidden=true});
+    input.addEventListener('keydown',event=>{if(event.key==='Escape'){results.hidden=true;input.blur()}});
+  }
+  function boot(){
+    wireNavigation();wireOrbitStars();wireGlobalSearch();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
