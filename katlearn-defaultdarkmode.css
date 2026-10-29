@@ -1778,3 +1778,10 @@ input,textarea,select,.search,.word-list-filter,.study-field,.test-input,.cp-inp
   .kl-global-search{width:min(52vw,420px)!important}
 }
 @media(max-width:560px){.kl-global-search{width:42px!important}.kl-global-search input{position:absolute;right:0;top:0;width:min(77vw,330px);opacity:0;pointer-events:none;background:var(--kl-surface)!important;border:1px solid var(--kl-line)!important;border-radius:13px!important}.kl-global-search:focus-within{width:42px!important}.kl-global-search:focus-within input{opacity:1;pointer-events:auto}.kl-search-results{left:auto;right:0;width:min(92vw,430px)}}
+
+
+/* Personal pack actions */
+.personal-pack-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.personal-pack-actions button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:0 12px;border:1px solid var(--kl-line);border-radius:12px;background:var(--kl-surface-2);color:var(--kl-ink);font-size:10px;font-weight:850}
+.personal-pack-actions .personal-pack-game{background:linear-gradient(135deg,color-mix(in srgb,var(--kl-accent-2) 82%,#14364f),color-mix(in srgb,var(--kl-accent) 70%,#271f54));border-color:color-mix(in srgb,var(--kl-accent-2) 45%,var(--kl-line));color:#f7fbff}
+.personal-pack-actions .personal-pack-more{width:38px;padding:0}
