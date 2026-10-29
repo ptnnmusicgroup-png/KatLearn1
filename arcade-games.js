@@ -40,9 +40,12 @@
   const flappy = {
     canvas: $('#flappyCanvas'),
     ctx: null,
-    time: 75,
+    time: 0,
     score: 0,
     lives: 3,
+    question: 1,
+    maxQuestions: 10,
+    energy: 0,
     birdY: 190,
     birdV: 0,
     birdAngle: 0,
@@ -544,10 +547,20 @@
   }
 
   function updateFlappyHud() {
-    updateHud('flappyScore', flappy.score);
+    updateHud('flappyQuestion', flappy.question + ' / ' + flappy.maxQuestions);
     updateHud('flappyLives', '♥ '.repeat(Math.max(0, flappy.lives)).trim() || '—');
-    updateHud('flappyTime', Math.max(0, Math.ceil(flappy.time)) + 's');
+    updateHud('flappyEnergy', flappy.energy);
     updateHud('flappyCoins', state.coins);
+  }
+  function nextFlappyQuestion(previous) {
+    if (flappy.question >= flappy.maxQuestions) {
+      endGame('flappy', 'Hoàn thành ' + flappy.maxQuestions + ' câu hỏi!');
+      return false;
+    }
+    flappy.question += 1;
+    startNextFlappyPipe(previous);
+    updateFlappyHud();
+    return true;
   }
 
   function startNextFlappyPipe(previous) {
@@ -576,6 +589,7 @@
         flashFeedback('flappy', 'Cổng đã vượt, nhưng chưa đồng bộ KatCoin: ' + (error.message || 'Lỗi kết nối.'), 'bad');
       }
     }
+    if (Number.isFinite(Number(result?.energy)) && Number(result.energy) >= 0) flappy.energy = Number(result.energy);
     updateFlappyHud();
   }
 
@@ -610,10 +624,9 @@
     }
     if (flappy.pipe && flappy.pipe.resolved && flappy.pipe.x + flappy.pipe.width < -5) {
       const previous = flappy.pipe.item;
-      startNextFlappyPipe(previous);
+      nextFlappyQuestion(previous);
     }
     updateFlappyHud();
-    if (flappy.time <= 0) endGame('flappy', 'Hết giờ bay! Cố thêm một lượt để phá kỷ lục nhé.');
   }
 
   function animate(timestamp) {
@@ -676,7 +689,7 @@
     }
     stopAnimation();
     showGame('flappy');
-    flappy.time = 75; flappy.score = 0; flappy.lives = 3; flappy.birdY = flappy.canvas.height / 2; flappy.birdV = 0; flappy.birdAngle = 0; flappy.pipe = null; flappy.answer = ''; flappy.busy = false; flappy.particles = [];
+    flappy.time = 0; flappy.score = 0; flappy.lives = 3; flappy.question = 1; flappy.maxQuestions = 10; flappy.energy = Math.max(0, Math.floor(Number(window.katlearnAccount?.profile?.energy || 0))); flappy.birdY = flappy.canvas.height / 2; flappy.birdV = 0; flappy.birdAngle = 0; flappy.pipe = null; flappy.answer = ''; flappy.busy = false; flappy.particles = [];
     seedStars(flappy, flappy.canvas.width, flappy.canvas.height, 82);
     // The gate must be created after the game becomes active. Previously
     // startNextFlappyPipe returned early here, leaving only the bird visible.
@@ -687,6 +700,7 @@
     $('#flappyRestart')?.removeAttribute('hidden');
     setMessage('#flappyMessage', 'Gõ từ tiếng Anh, khóa đáp án, rồi vỗ cánh bay qua khe hở giữa hai ống!', 'neutral');
     state.raf = requestAnimationFrame(animate);
+    enterFlappyFullscreen();
     flappy.input.focus({ preventScroll: true });
   }
 
@@ -747,6 +761,31 @@
     $('#arcadeGameCards')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  function enterFlappyFullscreen() {
+    const shell = $('#arcadeShell');
+    if (!shell) return;
+    shell.classList.add('flappy-fullscreen');
+    if (document.fullscreenElement || typeof shell.requestFullscreen !== 'function') return;
+    Promise.resolve(shell.requestFullscreen()).catch(function () {});
+  }
+  function exitFlappyFullscreen() {
+    const shell = $('#arcadeShell');
+    shell?.classList.remove('flappy-fullscreen');
+    if (document.fullscreenElement === shell && typeof document.exitFullscreen === 'function') {
+      Promise.resolve(document.exitFullscreen()).catch(function () {});
+    }
+  }
+  function exitFlappyGame() {
+    if (state.game === 'flappy') stopAnimation();
+    exitFlappyFullscreen();
+    state.game = '';
+    $('#flappyGame')?.setAttribute('hidden', '');
+    $('#arcadeShell')?.setAttribute('hidden', '');
+    $('#arcadeGameCards')?.removeAttribute('hidden');
+    $('#arcadeExit')?.setAttribute('hidden', '');
+    $('#arcadeGameCards')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   function stopCurrentGame() {
     stopAnimation();
     state.game = '';
@@ -772,8 +811,10 @@
   $('#meteorRestart')?.addEventListener('click', function () { void startMeteor(); });
   $('#meteorExit')?.addEventListener('click', exitMeteorGame);
   $('#flappyRestart')?.addEventListener('click', function () { void startFlappy(); });
+  $('#flappyExit')?.addEventListener('click', exitFlappyGame);
   $('#arcadeExit')?.addEventListener('click', function () {
     if (state.game === 'meteor') exitMeteorFullscreen();
+    if (state.game === 'flappy') exitFlappyFullscreen();
     stopCurrentGame();
   });
   $('#flappyFlap')?.addEventListener('click', flapBird);
