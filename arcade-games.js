@@ -584,12 +584,12 @@
         const result = await submitResult(pipe.item, pipe.answer, 'flappy');
         if (result.awarded) state.coins += 10 + (result.bonus || 0);
         else if (result.bonus) state.coins += result.bonus;
+        if (Number.isFinite(Number(result.energy)) && Number(result.energy) >= 0) flappy.energy = Number(result.energy);
         flashFeedback('flappy', '🐦 Cổng đã vượt! ' + result.message, result.awarded ? 'good' : 'neutral');
       } catch (error) {
         flashFeedback('flappy', 'Cổng đã vượt, nhưng chưa đồng bộ KatCoin: ' + (error.message || 'Lỗi kết nối.'), 'bad');
       }
     }
-    if (Number.isFinite(Number(result?.energy)) && Number(result.energy) >= 0) flappy.energy = Number(result.energy);
     updateFlappyHud();
   }
 
@@ -606,7 +606,6 @@
   }
 
   function tickFlappy(dt) {
-    flappy.time -= dt;
     drawFlappy(dt);
     if (flappy.pipe && !flappy.pipe.resolved) {
       const pipe = flappy.pipe;
