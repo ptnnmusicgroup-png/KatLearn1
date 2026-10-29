@@ -317,9 +317,9 @@ function installThemeRuntime(){
     const input=document.createElement('input');input.type='search';input.autocomplete='off';input.placeholder='Tìm từ, chủ đề, bộ IELTS...';input.setAttribute('aria-label','Tìm trong kho từ vựng KatLearn');
     const results=document.createElement('div');results.className='kl-search-results';results.hidden=true;results.setAttribute('role','listbox');
     search.append(icon,input,results);
-    let timer=0;
+    let timer=0,searchGeneration=0;
     const render=()=>{
-      const query=normalize(input.value);results.replaceChildren();
+      const query=normalize(input.value),generation=++searchGeneration;results.replaceChildren();
       if(query.length<2){results.hidden=true;return}
       const addTitle=label=>{const title=document.createElement('span');title.className='kl-search-title';title.textContent=label;results.appendChild(title)};
       const core=window.katlearnCoreVocabulary||{};
@@ -330,8 +330,30 @@ function installThemeRuntime(){
       const guided=nodes.filter(node=>Array.isArray(node.words)&&node.words.some(word=>normalize(word).includes(query))).slice(0,5);
       if(vocabulary.length){addTitle('Từ trong bộ bạn đang học');vocabulary.forEach(word=>results.appendChild(resultButton('Aa',word.word,word.mean||word.meaning_vi||word.meaning||'Từ vựng KatLearn',{kind:'word',word:word.word,meaning:word.mean||word.meaning_vi||word.meaning||''})))}
       if(packs.length||packNodes.length||guided.length){addTitle('Chủ đề & bộ từ KatLearn');[...packs,...packNodes,...guided].slice(0,9).forEach(item=>results.appendChild(resultButton(item.icon||'📚',item.name,item.category||item.packId||'Bộ từ KatLearn',{kind:'pack',packId:item.packId||item.id,name:item.name})))}
-      if(!results.childElementCount){const empty=document.createElement('span');empty.className='kl-search-empty';empty.textContent='Không tìm thấy. Hãy thử tên từ tiếng Anh, nghĩa tiếng Việt, IELTS hoặc chủ đề.';results.appendChild(empty)}
+      if(!results.childElementCount){const empty=document.createElement('span');empty.className='kl-search-empty';empty.textContent='Đang tìm trong kho từ KatLearn…';results.appendChild(empty)}
       results.hidden=false;
+      // Search words across the curated topic library as well, not only the active pack.
+      // The core loader caches every pack after the first lookup.
+      if(query.length>=3&&typeof core.load==='function'&&Array.isArray(core.topics)){
+        Promise.allSettled(core.topics.map(topic=>core.load(topic.id))).then(loaded=>{
+          if(generation!==searchGeneration||normalize(input.value)!==query)return;
+          const matches=[];
+          loaded.forEach((entry,index)=>{
+            if(entry.status!=='fulfilled')return;
+            const pack=entry.value||{},topic=core.topics[index]||{};
+            (Array.isArray(pack.words)?pack.words:[]).some(word=>{
+              const english=String(word.word||''),meaning=String(word.mean||word.meaning_vi||word.meaning||'');
+              if(normalize(english+' '+meaning).includes(query)){matches.push({english,meaning,topic:pack.name||topic.name||'KatLearn'});return matches.length>=8}
+              return false;
+            });
+          });
+          if(!matches.length)return;
+          results.querySelector('.kl-search-empty')?.remove();
+          addTitle('Từ trong kho KatLearn');
+          matches.slice(0,8).forEach(item=>results.appendChild(resultButton('🔎',item.english,item.meaning+' · '+item.topic,{kind:'word',word:item.english,meaning:item.meaning,pack:item.topic})));
+          results.hidden=false;
+        });
+      }
     };
     input.addEventListener('input',()=>{clearTimeout(timer);timer=window.setTimeout(render,120)});
     input.addEventListener('focus',render);
