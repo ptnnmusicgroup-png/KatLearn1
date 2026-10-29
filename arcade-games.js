@@ -665,11 +665,15 @@
     showGame('flappy');
     flappy.time = 75; flappy.score = 0; flappy.lives = 3; flappy.birdY = flappy.canvas.height / 2; flappy.birdV = 0; flappy.birdAngle = 0; flappy.pipe = null; flappy.answer = ''; flappy.busy = false; flappy.particles = [];
     seedStars(flappy, flappy.canvas.width, flappy.canvas.height, 82);
+    // The gate must be created after the game becomes active. Previously
+    // startNextFlappyPipe returned early here, leaving only the bird visible.
+    state.running = true;
+    state.lastFrame = 0;
     startNextFlappyPipe(null);
     updateFlappyHud();
     $('#flappyRestart')?.removeAttribute('hidden');
-    setMessage('#flappyMessage', 'Gõ từ tiếng Anh rồi bấm Enter. Vượt qua cổng bằng ↑, click hoặc nút Flap!', 'neutral');
-    state.running = true; state.lastFrame = 0; state.raf = requestAnimationFrame(animate);
+    setMessage('#flappyMessage', 'Gõ từ tiếng Anh, khóa đáp án, rồi vỗ cánh bay qua khe hở giữa hai ống!', 'neutral');
+    state.raf = requestAnimationFrame(animate);
     flappy.input.focus({ preventScroll: true });
   }
 
