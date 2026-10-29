@@ -1638,3 +1638,44 @@ input,textarea,select,.search,.word-list-filter,.study-field,.test-input,.cp-inp
   body::before{animation:none}
   .streak-goal-card.streak-goal-complete{animation:none}
 }
+
+
+/* ==========================================================
+   Astra motion layer — all effects use dark-mode tokens.
+   ========================================================== */
+:root{--astra-violet:#aa9bff;--astra-cyan:#59d9ff;--astra-pink:#ff9fc4}
+@media(prefers-reduced-motion:no-preference){
+  /* 1. Ambient Aurora Float + 9. Floating Particle Field */
+  body{isolation:isolate}
+  body::before{content:"";position:fixed;z-index:0;pointer-events:none;inset:auto auto 12% -9rem;width:31rem;height:31rem;border-radius:50%;background:radial-gradient(circle,rgba(170,155,255,.19),rgba(89,217,255,.08) 42%,transparent 71%);filter:blur(24px);animation:astra-aurora-float 17s ease-in-out infinite alternate}
+  body::after{content:"";position:fixed;z-index:0;pointer-events:none;right:12%;bottom:10%;width:3px;height:3px;border-radius:50%;background:#d1c8ff;opacity:.58;box-shadow:12vw 8vh #77dcff,-7vw -10vh #edbcff,18vw -2vh #9acfff,5vw 17vh #ffc1d9,-15vw 13vh #b7abff,-23vw -4vh #80d5ee,25vw 18vh #c9c1ff;animation:astra-particle-field 11s ease-in-out infinite alternate}
+  .app-shell{position:relative;z-index:1}
+  /* 2. Shimmering Text Gradient */
+  :where(.hero-content h2,.teacher-hero h1,.astra-shimmer-text){background:linear-gradient(105deg,#f7f8ff 0%,var(--astra-violet) 34%,var(--astra-cyan) 52%,var(--astra-pink) 68%,#f7f8ff 100%);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:astra-text-shimmer 6s linear infinite}
+  /* 3. Spinning Conic Border Glow */
+  :where(.activity-card,.pack-tile,.personal-pack-card,.teacher-card-panel,.modal-card,.modal-box){position:relative;isolation:isolate}
+  :where(.activity-card,.pack-tile,.personal-pack-card,.teacher-card-panel,.modal-card,.modal-box)::after{content:"";position:absolute;inset:-1px;padding:1px;border-radius:inherit;pointer-events:none;opacity:0;background:conic-gradient(from 0deg,transparent 0 56%,var(--astra-violet),var(--astra-cyan),var(--astra-pink),transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;transition:opacity .25s;animation:astra-conic-border 3.8s linear infinite}
+  :where(.activity-card,.pack-tile,.personal-pack-card,.teacher-card-panel,.modal-card,.modal-box):hover::after,.modal.show :where(.modal-card,.modal-box)::after{opacity:.9}
+  /* 4. Pill Beacon Pulse */
+  :where(.ai-online,.ai-status,.ai-badge,[data-ai-status="online"]){position:relative}
+  :where(.ai-online,.ai-status,.ai-badge,[data-ai-status="online"])::before{content:"";display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:#57d9a1;box-shadow:0 0 0 0 rgba(87,217,161,.44);animation:astra-beacon-pulse 1.9s infinite}
+  /* 5. Spring Card Elevation */
+  :where(.activity-card,.pack-tile,.personal-pack-card,.teacher-card-panel,.metric,.shop-item,.mode-card){transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s,border-color .28s}
+  :where(.activity-card,.pack-tile,.personal-pack-card,.teacher-card-panel,.metric,.shop-item,.mode-card):hover{transform:translateY(-5px) scale(1.008);box-shadow:0 22px 46px rgba(0,0,0,.34)}
+  /* 6. Glass Input Focal Beam */
+  :where(input,textarea,select,.search,.word-search):focus,:where(input,textarea,select,.search,.word-search):focus-within{border-color:var(--astra-violet)!important;box-shadow:0 0 0 4px rgba(170,155,255,.16),0 0 30px rgba(89,217,255,.14)!important;animation:astra-input-beam 1.8s ease-in-out infinite alternate}
+  /* 7. Light Streak Sweep CTA */
+  :where(.primary-btn,.create-pack-btn,.login-btn,.teacher-btn,.add-word-btn,.start-lesson){position:relative;overflow:hidden}
+  :where(.primary-btn,.create-pack-btn,.login-btn,.teacher-btn,.add-word-btn,.start-lesson)::before{content:"";position:absolute;inset:-70% auto -70% -45%;width:34%;pointer-events:none;background:linear-gradient(105deg,transparent,rgba(255,255,255,.48),transparent);transform:skewX(-18deg) translateX(-260%)}
+  :where(.primary-btn,.create-pack-btn,.login-btn,.teacher-btn,.add-word-btn,.start-lesson):hover::before{animation:astra-light-streak .72s cubic-bezier(.22,1,.36,1) forwards}
+  /* 8. AI Wave Skeleton: ai-filling is toggled by the real AI vocab assist flow. */
+  :where(.ai-loading,.skeleton,.loading-skeleton,.ai-filling,[aria-busy="true"]){background:linear-gradient(100deg,#1a2032 8%,#2e3855 24%,#1e495b 42%,#1a2032 58%)!important;background-size:220% 100%!important;animation:astra-ai-skeleton 1.45s linear infinite}
+}
+@keyframes astra-aurora-float{to{transform:translate3d(55px,-36px,0) scale(1.15)}}
+@keyframes astra-particle-field{to{transform:translate3d(-18px,-34px,0);opacity:.9}}
+@keyframes astra-text-shimmer{to{background-position:220% center}}
+@keyframes astra-conic-border{to{transform:rotate(1turn)}}
+@keyframes astra-beacon-pulse{70%{box-shadow:0 0 0 9px rgba(87,217,161,0)}100%{box-shadow:0 0 0 0 rgba(87,217,161,0)}}
+@keyframes astra-input-beam{to{filter:brightness(1.08)}}
+@keyframes astra-light-streak{to{transform:skewX(-18deg) translateX(700%)}}
+@keyframes astra-ai-skeleton{to{background-position:-220% 0}}
