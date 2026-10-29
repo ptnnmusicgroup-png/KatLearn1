@@ -70,7 +70,7 @@ function updateDailyGoal(count){
   if(percent)percent.textContent=(done*10)+'%';
   window.dispatchEvent(new CustomEvent('katlearn-daily-goal-state',{detail:{done,complete:done>=10}}));
 }
-function updateCoins(){const label=coinBalanceReady?format(coins):(window.studyStore?.user?'—':'0');['#coinCount','#shopCoins','#panelCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=label});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
+function updateCoins(){const label=coinBalanceReady?format(coins):(window.studyStore?.user?'—':'0');['#coinCount','#shopCoins','#panelCoins','#haCoins'].forEach(s=>{const el=$(s);if(el)el.textContent=label});const energyEl=$('#panelEnergy'),wordsEl=$('#panelWords');if(energyEl)energyEl.textContent=format(energy);if(wordsEl)wordsEl.textContent=String(vocab.length)}
 function applyServerProfile(profile){
   if(!profile)return;
   const energyValue=Number(profile.energy);
