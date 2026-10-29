@@ -1679,3 +1679,27 @@ input,textarea,select,.search,.word-list-filter,.study-field,.test-input,.cp-inp
 @keyframes astra-input-beam{to{filter:brightness(1.08)}}
 @keyframes astra-light-streak{to{transform:skewX(-18deg) translateX(700%)}}
 @keyframes astra-ai-skeleton{to{background-position:-220% 0}}
+
+
+/* Meteor Hunt full-screen session */
+#arcadeShell.meteor-fullscreen{
+  position:fixed;inset:0;z-index:2200;display:flex;flex-direction:column;width:100vw;max-width:none;
+  height:100dvh;margin:0;padding:clamp(14px,2.4vw,32px);overflow:auto;border:0;border-radius:0;
+  background:radial-gradient(circle at 85% 10%,rgba(89,217,255,.13),transparent 32%),radial-gradient(circle at 8% 90%,rgba(170,155,255,.17),transparent 36%),#070914;
+}
+#arcadeShell.meteor-fullscreen .arcade-game-head{display:none}
+#arcadeShell.meteor-fullscreen #meteorGame{display:flex;flex:1;flex-direction:column;width:min(1500px,100%);margin:auto}
+#arcadeShell.meteor-fullscreen .meteor-session-hud{grid-template-columns:repeat(4,minmax(0,1fr)) auto;align-items:stretch;gap:10px;margin:0 0 14px}
+#arcadeShell.meteor-fullscreen .meteor-session-hud .arcade-hud-item{min-height:66px;background:rgba(17,23,39,.88)}
+#arcadeShell.meteor-fullscreen .meteor-exit{min-height:66px;padding-inline:18px;white-space:nowrap;background:rgba(255,255,255,.07);color:var(--kl-ink)}
+#arcadeShell.meteor-fullscreen .arcade-prompt{margin:0 0 13px;padding:15px 19px}
+#arcadeShell.meteor-fullscreen .arcade-canvas-frame{flex:1;display:grid;min-height:min(58vh,660px);margin:0 0 13px}
+#arcadeShell.meteor-fullscreen .arcade-canvas-frame canvas{width:100%;height:100%;max-height:none;object-fit:fill}
+#arcadeShell.meteor-fullscreen .arcade-form{margin-top:0}
+#arcadeShell.meteor-fullscreen .arcade-controls{margin-top:12px}
+@media(max-width:720px){
+  #arcadeShell.meteor-fullscreen{padding:12px}
+  #arcadeShell.meteor-fullscreen .meteor-session-hud{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #arcadeShell.meteor-fullscreen .meteor-exit{min-height:48px}
+  #arcadeShell.meteor-fullscreen .arcade-canvas-frame{min-height:42vh}
+}
