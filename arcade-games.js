@@ -19,9 +19,12 @@
   const meteor = {
     canvas: $('#meteorCanvas'),
     ctx: null,
-    time: 55,
+    time: 0,
     score: 0,
     lives: 3,
+    question: 1,
+    maxQuestions: 10,
+    energy: 0,
     combo: 0,
     bestCombo: 0,
     target: null,
@@ -181,6 +184,7 @@
       awarded: award,
       bonus: bonus,
       coins: Number(data.coins || 0),
+      energy: Number(data.xp || 0),
       message: award ? ('+' + (10 + bonus) + ' KatCoin đã được xác nhận!') : (bonus ? '+1.000 KatCoin hoàn thành mục tiêu!' : 'Đáp án đã được lưu.')
     };
   }
@@ -342,12 +346,20 @@
   }
 
   function updateMeteorHud() {
-    updateHud('meteorScore', meteor.score);
+    updateHud('meteorQuestion', meteor.question + ' / ' + meteor.maxQuestions);
     updateHud('meteorLives', '♥ '.repeat(Math.max(0, meteor.lives)).trim() || '—');
-    updateHud('meteorCombo', meteor.combo + '×');
-    updateHud('meteorTime', Math.max(0, Math.ceil(meteor.time)) + 's');
-    updateHud('meteorBest', meteor.bestCombo + '×');
+    updateHud('meteorEnergy', meteor.energy);
     updateHud('meteorCoins', state.coins);
+  }
+  function nextMeteorQuestion(previousTarget) {
+    if (meteor.question >= meteor.maxQuestions) {
+      endGame('meteor', 'Hoàn thành ' + meteor.maxQuestions + ' câu hỏi!');
+      return false;
+    }
+    meteor.question += 1;
+    spawnMeteorWave(previousTarget);
+    updateMeteorHud();
+    return true;
   }
 
   async function submitMeteorAnswer(event) {
@@ -368,8 +380,9 @@
         meteor.bestCombo = Math.max(meteor.bestCombo, meteor.combo);
         if (result.awarded) state.coins += 10 + (result.bonus || 0);
         else if (result.bonus) state.coins += result.bonus;
+        if (Number.isFinite(result.energy) && result.energy >= 0) meteor.energy = result.energy;
         flashFeedback('meteor', '🎯 Chính xác! ' + (result.awarded || result.bonus ? result.message : result.message || 'Lưu kết quả chưa được xác nhận.'), result.awarded ? 'good' : 'neutral');
-        spawnMeteorWave(target);
+        nextMeteorQuestion(target);
       } else {
         meteor.combo = 0;
         flashFeedback('meteor', '💥 Chưa trúng rồi! Thử gõ lại từ tiếng Anh ứng với nghĩa này nhé.', 'bad');
@@ -390,19 +403,17 @@
     if (meteor.target) flashFeedback('meteor', '☄️ Thiên thạch mục tiêu lọt qua! Từ đúng là: ' + meteor.target.word, 'bad');
     if (meteor.lives <= 0) return endGame('meteor', 'Hết mạng rồi! Thử lại để phá kỷ lục nhé.');
     const old = meteor.target;
-    spawnMeteorWave(old);
+    nextMeteorQuestion(old);
     updateMeteorHud();
   }
 
   function tickMeteor(dt) {
-    meteor.time -= dt;
     meteor.asteroids.forEach(function (asteroid) {
       if (asteroid.target && asteroid.y > meteor.canvas.height - 70 && !meteor.busy) asteroid.missed = true;
     });
     if (meteor.asteroids.some(function (asteroid) { return asteroid.target && asteroid.missed; })) loseMeteorLife();
     drawMeteor(dt);
     updateMeteorHud();
-    if (meteor.time <= 0) endGame('meteor', 'Hết giờ! Mục tiêu đã hoàn thành.');
   }
 
   function spawnFlappyPipe(previous) {
@@ -645,13 +656,15 @@
     }
     stopAnimation();
     showGame('meteor');
-    meteor.time = 55; meteor.score = 0; meteor.lives = 3; meteor.combo = 0; meteor.bestCombo = 0; meteor.busy = false; meteor.particles = [];
+    meteor.time = 0; meteor.score = 0; meteor.lives = 3; meteor.question = 1; meteor.maxQuestions = 10; meteor.combo = 0; meteor.bestCombo = 0; meteor.busy = false; meteor.particles = [];
+    meteor.energy = Math.max(0, Math.floor(Number(window.katlearnAccount?.profile?.energy || 0)));
     seedStars(meteor, meteor.canvas.width, meteor.canvas.height, 72);
     spawnMeteorWave(null);
     updateMeteorHud();
     $('#meteorRestart')?.removeAttribute('hidden');
     setMessage('#meteorMessage', 'Gõ từ tiếng Anh ứng với nghĩa tiếng Việt để bắn mục tiêu!', 'neutral');
     state.running = true; state.lastFrame = 0; state.raf = requestAnimationFrame(animate);
+    enterMeteorFullscreen();
   }
 
   async function startFlappy() {
@@ -707,6 +720,33 @@
     }
   }
 
+  function enterMeteorFullscreen() {
+    const shell = $('#arcadeShell');
+    if (!shell) return;
+    shell.classList.add('meteor-fullscreen');
+    // Native fullscreen may be blocked after async deck loading; the CSS fullscreen
+    // class is an intentional, complete fallback.
+    if (document.fullscreenElement || typeof shell.requestFullscreen !== 'function') return;
+    Promise.resolve(shell.requestFullscreen()).catch(function () {});
+  }
+  function exitMeteorFullscreen() {
+    const shell = $('#arcadeShell');
+    shell?.classList.remove('meteor-fullscreen');
+    if (document.fullscreenElement === shell && typeof document.exitFullscreen === 'function') {
+      Promise.resolve(document.exitFullscreen()).catch(function () {});
+    }
+  }
+  function exitMeteorGame() {
+    if (state.game === 'meteor') stopAnimation();
+    exitMeteorFullscreen();
+    state.game = '';
+    $('#meteorGame')?.setAttribute('hidden', '');
+    $('#arcadeShell')?.setAttribute('hidden', '');
+    $('#arcadeGameCards')?.removeAttribute('hidden');
+    $('#arcadeExit')?.setAttribute('hidden', '');
+    $('#arcadeGameCards')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   function stopCurrentGame() {
     stopAnimation();
     state.game = '';
@@ -730,8 +770,12 @@
   $('#arcadeMeteorStart')?.addEventListener('click', function () { void startMeteor(); });
   $('#arcadeFlappyStart')?.addEventListener('click', function () { void startFlappy(); });
   $('#meteorRestart')?.addEventListener('click', function () { void startMeteor(); });
+  $('#meteorExit')?.addEventListener('click', exitMeteorGame);
   $('#flappyRestart')?.addEventListener('click', function () { void startFlappy(); });
-  $('#arcadeExit')?.addEventListener('click', stopCurrentGame);
+  $('#arcadeExit')?.addEventListener('click', function () {
+    if (state.game === 'meteor') exitMeteorFullscreen();
+    stopCurrentGame();
+  });
   $('#flappyFlap')?.addEventListener('click', flapBird);
   flappy.canvas.addEventListener('pointerdown', flapBird);
 
