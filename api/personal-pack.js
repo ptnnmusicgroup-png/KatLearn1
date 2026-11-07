@@ -57,7 +57,14 @@ module.exports=async(req,res)=>{
         // instead of allocating a second account namespace for the same UID.
         const currentProfile=await tx.get(profileRef);
         const currentCode=String(currentProfile.data()?.accountCode||"").trim();
-        if(currentCode)return currentCode;
+        if(currentCode){
+          const currentAccountSnap=await tx.get(profileDb.collection("accounts").doc(currentCode));
+          const currentAccount=currentAccountSnap.exists?currentAccountSnap.data()||{}:{};
+          if(!currentAccountSnap.exists||String(currentAccount.uid||"")!==String(user.uid)||String(currentAccount.accountCode||"")!==currentCode){
+            throw Object.assign(new Error("Mã namespace của tài khoản không khớp hồ sơ. Hãy liên hệ Admin để đồng bộ lại an toàn."),{status:409,code:"account_namespace_mismatch"});
+          }
+          return currentCode;
+        }
 
         const seqSnap=await tx.get(sequenceRef);
         const next=Number(seqSnap.exists?seqSnap.data()?.lastIssued:0)+1;
