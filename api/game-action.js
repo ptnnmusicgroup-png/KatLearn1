@@ -144,9 +144,16 @@ async function validateQuizSource(db,uid,source,word,meaning,profile){
       if(legacySnap.exists&&findWord(legacySnap.data()?.words,word,meaning))return "personal";
       const accountCode=String(profile?.accountCode||"").trim();
       if(accountCode){
-        const memorySnap=await db.collection("accounts").doc(accountCode).collection("memory").doc(packId).get();
-        const memoryData=memorySnap.exists?memorySnap.data()||{}:{};
-        if(memorySnap.exists&&(!memoryData.ownerUid||String(memoryData.ownerUid)===uid)&&findWord(memoryData.words,word,meaning))return "personal";
+        const namespaceSnap=await db.collection("accounts").doc(accountCode).get();
+        const namespace=namespaceSnap.exists?namespaceSnap.data()||{}:{};
+        const ownsNamespace=namespaceSnap.exists
+          &&String(namespace.uid||"")===uid
+          &&String(namespace.accountCode||"")===accountCode;
+        if(ownsNamespace){
+          const memorySnap=await db.collection("accounts").doc(accountCode).collection("memory").doc(packId).get();
+          const memoryData=memorySnap.exists?memorySnap.data()||{}:{};
+          if(memorySnap.exists&&(!memoryData.ownerUid||String(memoryData.ownerUid)===uid)&&findWord(memoryData.words,word,meaning))return "personal";
+        }
       }
     }
     if(findWord(profile.vocab,word,meaning))return "personal";
