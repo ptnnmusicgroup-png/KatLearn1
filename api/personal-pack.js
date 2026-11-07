@@ -37,7 +37,14 @@ module.exports=async(req,res)=>{
 
     async function ensureAccountCode(){
       const existing=String(profile.accountCode||"").trim();
-      if(existing)return existing;
+      if(existing){
+        const accountSnap=await profileDb.collection("accounts").doc(existing).get();
+        const account=accountSnap.exists?accountSnap.data()||{}:{};
+        if(!accountSnap.exists||String(account.uid||"")!==String(user.uid)||String(account.accountCode||"")!==existing){
+          throw Object.assign(new Error("Mã namespace của tài khoản không khớp hồ sơ. Hãy liên hệ Admin để đồng bộ lại an toàn."),{status:409,code:"account_namespace_mismatch"});
+        }
+        return existing;
+      }
       const stripVietnamese=value=>String(value||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"");
       const part=(value,fallback)=>stripVietnamese(value).trim().replace(/[^a-zA-Z0-9.@_-]+/g,"")||fallback;
       const displayPart=(value,fallback)=>stripVietnamese(value).trim().replace(/[^a-zA-Z0-9]+/g,"")||fallback;
