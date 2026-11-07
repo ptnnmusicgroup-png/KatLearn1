@@ -39,12 +39,19 @@ async function findPack(db,uid,packId){
 
   // Compatibility fallback for packs created before user-namespace sync.
   if(accountCode){
-    const accountRef=db.collection("accounts").doc(accountCode).collection("memory").doc(packId);
-    const accountSnap=await accountRef.get();
-    if(accountSnap.exists&&accountSnap.data()?.kind==="personalPack"
-      &&String(accountSnap.data()?.ownerUid||uid)===uid
-      &&(!accountSnap.data()?.ownerAccountCode||String(accountSnap.data()?.ownerAccountCode)===accountCode)){
-      return {ref:accountRef,snap:accountSnap,source:"accounts",accountCode,userRef,accountSnap};
+    const namespaceSnap=await db.collection("accounts").doc(accountCode).get();
+    const namespace=namespaceSnap.exists?namespaceSnap.data()||{}:{};
+    const ownsNamespace=namespaceSnap.exists
+      &&String(namespace.uid||"")===uid
+      &&String(namespace.accountCode||"")===accountCode;
+    if(ownsNamespace){
+      const accountRef=db.collection("accounts").doc(accountCode).collection("memory").doc(packId);
+      const accountSnap=await accountRef.get();
+      if(accountSnap.exists&&accountSnap.data()?.kind==="personalPack"
+        &&String(accountSnap.data()?.ownerUid||uid)===uid
+        &&(!accountSnap.data()?.ownerAccountCode||String(accountSnap.data()?.ownerAccountCode)===accountCode)){
+        return {ref:accountRef,snap:accountSnap,source:"accounts",accountCode,userRef,accountSnap};
+      }
     }
   }
   return null;
