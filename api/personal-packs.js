@@ -36,29 +36,37 @@ module.exports=async(req,res)=>{
     // Keep compatibility with the account namespace and transparently backfill
     // any older account-only pack into the user's own namespace.
     if(accountCode){
-      try{
-        const memorySnap=await db.collection("accounts").doc(accountCode).collection("memory").where("kind","==","personalPack").limit(100).get();
-        const backfill=db.batch();
-        let backfillCount=0;
-        for(const doc of memorySnap.docs){
-          const data=doc.data()||{};
-          if(String(data.kind)!=="personalPack")continue;
-          if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
-          if(data.ownerAccountCode&&String(data.ownerAccountCode)!==accountCode)continue;
-          if(seen.has(doc.id))continue;
-          seen.add(doc.id);
-          const payload={...data,ownerUid:uid,ownerAccountCode:accountCode};
-          const userRef=db.collection("users").doc(uid).collection("personalPacks").doc(doc.id);
-          backfill.set(userRef,payload,{merge:true});
-          backfillCount++;
-          merged.push(packData(doc.id,payload,"users"));
+      const namespaceSnap=await db.collection("accounts").doc(accountCode).get();
+      const namespace=namespaceSnap.exists?namespaceSnap.data()||{}:{};
+      const ownsNamespace=namespaceSnap.exists
+        &&String(namespace.uid||"")===uid
+        &&String(namespace.accountCode||"")===accountCode;
+      if(ownsNamespace){
+        try{
+          const memorySnap=await db.collection("accounts").doc(accountCode).collection("memory").where("kind","==","personalPack").limit(100).get();
+          const backfill=db.batch();
+          let backfillCount=0;
+          for(const doc of memorySnap.docs){
+            const data=doc.data()||{};
+            if(String(data.kind)!=="personalPack")continue;
+            if(data.ownerUid&&String(data.ownerUid)!==uid)continue;
+            if(data.ownerAccountCode&&String(data.ownerAccountCode)!==accountCode)continue;
+            if(seen.has(doc.id))continue;
+            seen.add(doc.id);
+            const payload={...data,ownerUid:uid,ownerAccountCode:accountCode};
+            const userRef=db.collection("users").doc(uid).collection("personalPacks").doc(doc.id);
+            backfill.set(userRef,payload,{merge:true});
+            backfillCount++;
+            merged.push(packData(doc.id,payload,"users"));
+          }
+          if(backfillCount)await backfill.commit();
+        }catch(accountError){
+          console.warn("[KatLearn] Account-memory personal packs unavailable:",accountError?.message||accountError);
         }
-        if(backfillCount)await backfill.commit();
-      }catch(accountError){
-        console.warn("[KatLearn] Account-memory personal packs unavailable:",accountError?.message||accountError);
+      }else{
+        console.warn("[KatLearn] Refused to read account memory not owned by current UID.");
       }
     }
-
 
     merged.sort((a,b)=>{
       const ta=Number(a.createdAt?.seconds||a.createdAt||0);
