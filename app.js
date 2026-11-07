@@ -705,18 +705,29 @@ function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answ
   $('#questionHint').textContent=hint;$('#questionWord').innerHTML=mode==='context'?word:esc(word);$('#questionPronounce').textContent=pron;$('#questionNumber').textContent=question;
   $('#reflexQuestionTotal').textContent=reflexSessionLength;$('#reflexSessionLabel').textContent=reflexSessionLength+' câu';$('#feedback').textContent='';
 
-  // Always build choices around the current target:
-  // 1) lock the correct answer in;
-  // 2) select up to three UNIQUE distractors that are different from it;
-  // 3) shuffle only after the four-choice set is complete.
+  // Build four genuinely distinct choices. A pack can have four rows but
+  // fewer than four unique meanings (for example, two synonyms translated
+  // identically); never render an incomplete or duplicated MCQ.
   const normalizedCorrect=String(correct??'').trim();
+  const normalizeChoice=value=>String(value??'').trim().toLocaleLowerCase();
+  const correctKey=normalizeChoice(normalizedCorrect);
+  const uniqueOptionValues=values=>{
+    const map=new Map();
+    for(const value of values){
+      const label=String(value??'').trim();
+      const key=normalizeChoice(label);
+      if(key&&!map.has(key))map.set(key,label);
+    }
+    return [...map.values()];
+  };
+  const uniquePool=uniqueOptionValues(candidateLabels);
+  if(!correctKey||!uniquePool.some(value=>normalizeChoice(value)===correctKey)||uniquePool.length<4){
+    $('#answers').innerHTML='<button class="answer" disabled><b>!</b><span>Chưa đủ 4 đáp án khác nhau.</span></button>';
+    $('#feedback').textContent='Bộ từ cần ít nhất 4 nghĩa/từ khác nhau để tạo câu trắc nghiệm chính xác. Kat không tự bịa đáp án nhé 🐱';
+    updateReflexHud(reflexTimeLimit);
+    return;
+  }
   const targetIndex=Math.max(0,vocab.indexOf(v));
-  const uniqueDistractors=[...new Set(candidateLabels.map(a=>String(a??'').trim()).filter(Boolean))]
-    .filter(a=>a.toLowerCase()!==normalizedCorrect.toLowerCase());
-
-  // Prefer distractors close to the target inside the SAME vocabulary pack.
-  // This keeps choices semantically related instead of mixing in random words
-  // such as transport terms for an environment question.
   const nearbyIndices=[];
   for(let distance=1;distance<vocab.length;distance++){
     const left=targetIndex-distance,right=targetIndex+distance;
@@ -727,19 +738,25 @@ function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answ
   const nearbyCandidates=nearbyIndices
     .map(i=>candidateLabels[i])
     .map(a=>String(a??'').trim())
-    .filter(Boolean)
-    .filter(a=>a.toLowerCase()!==normalizedCorrect.toLowerCase());
-  const orderedDistractors=[...new Set([...nearbyCandidates,...shuffle(uniqueDistractors)])];
+    .filter(a=>normalizeChoice(a)!==correctKey);
+  const orderedDistractors=uniqueOptionValues([...nearbyCandidates,...shuffle(uniquePool)])
+    .filter(a=>normalizeChoice(a)!==correctKey);
   const distractors=orderedDistractors.slice(0,3);
-  let quizAnswers=shuffle([normalizedCorrect,...distractors]);
-
-  // Hard invariant: exactly one correct answer must be present.
-  const correctCount=quizAnswers.filter(a=>a.toLowerCase()===normalizedCorrect.toLowerCase()).length;
-  if(correctCount!==1){
-    const filtered=quizAnswers.filter(a=>a.toLowerCase()!==normalizedCorrect.toLowerCase()).slice(0,3);
-    quizAnswers=shuffle([normalizedCorrect,...filtered]);
+  if(distractors.length!==3){
+    $('#answers').innerHTML='<button class="answer" disabled><b>!</b><span>Chưa đủ 4 đáp án khác nhau.</span></button>';
+    $('#feedback').textContent='Bộ từ cần thêm các nghĩa/từ không trùng nhau trước khi chơi nhé 🐱';
+    updateReflexHud(reflexTimeLimit);
+    return;
   }
-
+  const quizAnswers=shuffle([normalizedCorrect,...distractors]);
+  const answerKeys=quizAnswers.map(normalizeChoice);
+  const correctCount=answerKeys.filter(key=>key===correctKey).length;
+  if(quizAnswers.length!==4||new Set(answerKeys).size!==4||correctCount!==1){
+    $('#answers').innerHTML='<button class="answer" disabled><b>!</b><span>Không thể tạo bộ đáp án hợp lệ.</span></button>';
+    $('#feedback').textContent='Kat đã dừng câu hỏi này để tránh chấm đáp án sai. Hãy kiểm tra lại bộ từ nhé.';
+    updateReflexHud(reflexTimeLimit);
+    return;
+  }
   const labels=['A','B','C','D'];
   $('#answers').innerHTML=quizAnswers.map((a,i)=>`<button class="answer" data-answer="${esc(a)}" data-right="${a.toLowerCase()===normalizedCorrect.toLowerCase()}"><b>${labels[i]}</b><span>${esc(a)}</span></button>`).join('');
   $$('.answer').forEach(btn=>btn.onclick=()=>answer(btn,correct));
