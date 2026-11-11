@@ -73,9 +73,12 @@ for (const name of fs.readdirSync(root)) {
 // preview's temporary origin and must never become the LMS return address.
 const lmsUrl = "https://lms-katlearn.netlify.app";
 const teacherPreviewUrl = "https://deploy-preview-41--quanly-giaovien-katlearn.netlify.app";
-// During LMS Deploy Preview review, open the matching new Teacher UI preview.
-// Production and ordinary builds continue using the canonical Teacher hostname.
-const teacherUrl = process.env.CONTEXT === "deploy-preview"
+// Only this LMS integration PR is paired with Teacher PR #41. Other Deploy
+// Previews and all production builds continue using the canonical Teacher host.
+const isTeacherLinkIntegrationPreview =
+  process.env.CONTEXT === "deploy-preview" &&
+  String(process.env.REVIEW_ID || "").trim() === "88";
+const teacherUrl = isTeacherLinkIntegrationPreview
   ? teacherPreviewUrl
   : cleanUrl(
       process.env.KATLEARN_TEACHER_SITE_URL,
