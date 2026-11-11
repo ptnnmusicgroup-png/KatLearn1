@@ -39,29 +39,25 @@
 
   const flappy = {
     canvas: $('#flappyCanvas'),
-    ctx: null,
     time: 0,
     score: 0,
     lives: 3,
     question: 1,
     maxQuestions: 10,
     energy: 0,
-    birdY: 190,
-    birdV: 0,
-    birdAngle: 0,
     pipe: null,
     answer: '',
-    particles: [],
-    stars: [],
     busy: false,
     feedback: '',
     feedbackUntil: 0,
     input: $('#flappyInput')
   };
+  let flappyEngine = null;
+  let flappyEnginePromise = null;
+  let flappyGateCounter = 0;
 
   if (!meteor.canvas || !flappy.canvas) return;
   meteor.ctx = meteor.canvas.getContext('2d');
-  flappy.ctx = flappy.canvas.getContext('2d');
 
   function meaningOf(word) {
     if (typeof vocabMeaning === 'function') return String(vocabMeaning(word) || '').trim();
@@ -419,16 +415,49 @@
     updateMeteorHud();
   }
 
+  async function ensureFlappyEngine() {
+    if (flappyEngine) return flappyEngine;
+    if (!window.KatLearnFlappyEngine) throw new Error('Chưa tải được Phaser Flappy Owl.');
+
+    if (!flappyEnginePromise) {
+      flappyEnginePromise = window.KatLearnFlappyEngine.mount({
+        parent: flappy.canvas,
+        onGatePass: function (id) {
+          if (!state.running || state.game !== 'flappy' || !flappy.pipe || flappy.pipe.id !== id || flappy.pipe.resolved) return;
+          void resolveFlappyPipe(flappy.pipe);
+        },
+        onGateExit: function (id) {
+          if (!state.running || state.game !== 'flappy' || !flappy.pipe || flappy.pipe.id !== id) return;
+          nextFlappyQuestion(flappy.pipe.item);
+        },
+        onHit: function (id, reason) {
+          if (!state.running || state.game !== 'flappy' || !flappy.pipe || flappy.pipe.id !== id) return;
+          failFlappyPipe(reason === 'bounds'
+            ? 'Chim chạm mép màn hình! Canh nhịp vỗ cánh nhé.'
+            : 'Ôi! Chim va vào ống rồi. Thử canh nhịp bay qua khe hở nhé.');
+        }
+      }).then(function (engine) {
+        flappyEngine = engine;
+        return engine;
+      }).catch(function (error) {
+        flappyEnginePromise = null;
+        throw error;
+      });
+    }
+    return flappyEnginePromise;
+  }
+
   function spawnFlappyPipe(previous) {
     const item = chooseWord(previous);
     if (!item) return;
     const gap = 148;
+    const gapY = random(132, 252);
+    const id = 'flappy-gate-' + (++flappyGateCounter);
     flappy.pipe = {
-      x: flappy.canvas.width + 12,
-      width: 86,
-      gapY: random(124, flappy.canvas.height - 124),
+      id: id,
+      gapY: gapY,
       gap: gap,
-      speed: 198 + Math.min(65, flappy.score * 1.1),
+      speed: 178 + Math.min(58, flappy.score * 1.1),
       item: item,
       answer: '',
       resolved: false,
@@ -439,111 +468,17 @@
     flappy.input.focus({ preventScroll: true });
     updateHud('flappyPrompt', item.meaning);
     updateHud('flappyTargetWord', 'GÕ TỪ RỒI BAY QUA!');
+    flappyEngine?.setGate({
+      id: id,
+      gapY: gapY,
+      gap: gap,
+      speed: flappy.pipe.speed
+    });
   }
 
   function flapBird() {
     if (!state.running || state.game !== 'flappy') return;
-    flappy.birdV = -350;
-    flappy.birdAngle = -0.35;
-    burstParticles(flappy, 160, flappy.birdY + 7, '#a4f3fa');
-    const canvas = flappy.canvas;
-    const rect = canvas.getBoundingClientRect();
-    const scale = canvas.width / Math.max(1, rect.width);
-    const y = flappy.birdY;
-    if (y < 16 || y > canvas.height - 16) flappy.birdV = -410;
-  }
-
-  function drawFlappyBird(ctx) {
-    ctx.save();
-    ctx.translate(170, flappy.birdY);
-    ctx.rotate(flappy.birdAngle);
-    ctx.shadowColor = '#79efff';
-    ctx.shadowBlur = 18;
-    const bird = ctx.createLinearGradient(-18, -18, 20, 18);
-    bird.addColorStop(0, '#fff0a9');
-    bird.addColorStop(1, '#ff9f9c');
-    ctx.fillStyle = bird;
-    ctx.strokeStyle = '#fff6d9';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 20, 16, 0, 0, Math.PI * 2);
-    ctx.fill(); ctx.stroke();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = '#f9ffff';
-    ctx.beginPath(); ctx.arc(8, -5, 6, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#18213e';
-    ctx.beginPath(); ctx.arc(10, -5, 2.5, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#f77b84';
-    ctx.beginPath(); ctx.moveTo(17, 1); ctx.lineTo(30, 5); ctx.lineTo(17, 8); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#f6b5ca';
-    ctx.beginPath(); ctx.ellipse(-7, 5, 8, 5 + Math.sin(performance.now() / 85) * 2, -0.3, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
-  }
-
-  function drawPipe(ctx, pipe) {
-    const width = flappy.canvas.width, height = flappy.canvas.height;
-    const top = pipe.gapY - pipe.gap / 2;
-    const bottom = pipe.gapY + pipe.gap / 2;
-    const gradient = ctx.createLinearGradient(pipe.x, 0, pipe.x + pipe.width, 0);
-    gradient.addColorStop(0, '#3ac2b2');
-    gradient.addColorStop(0.5, '#67e2c5');
-    gradient.addColorStop(1, '#328eaa');
-    ctx.fillStyle = gradient;
-    ctx.strokeStyle = '#a5fff1';
-    ctx.lineWidth = 2;
-    ctx.shadowColor = 'rgba(66, 231, 199, .25)';
-    ctx.shadowBlur = 12;
-    ctx.fillRect(pipe.x, 0, pipe.width, top);
-    ctx.strokeRect(pipe.x, 0, pipe.width, top);
-    ctx.fillRect(pipe.x - 7, top - 22, pipe.width + 14, 22);
-    ctx.strokeRect(pipe.x - 7, top - 22, pipe.width + 14, 22);
-    ctx.fillRect(pipe.x, bottom, pipe.width, height - bottom);
-    ctx.strokeRect(pipe.x, bottom, pipe.width, height - bottom);
-    ctx.fillRect(pipe.x - 7, bottom, pipe.width + 14, 22);
-    ctx.strokeRect(pipe.x - 7, bottom, pipe.width + 14, 22);
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(10, 26, 54, .82)';
-    ctx.fillRect(pipe.x - 16, pipe.gapY - 24, pipe.width + 32, 48);
-    ctx.strokeStyle = '#d7fff6';
-    ctx.strokeRect(pipe.x - 16, pipe.gapY - 24, pipe.width + 32, 48);
-    ctx.fillStyle = '#effffc';
-    ctx.font = '800 12px "Be Vietnam Pro", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('GATE', pipe.x + pipe.width / 2, pipe.gapY - 5);
-    ctx.font = '700 9px "Be Vietnam Pro", sans-serif';
-    ctx.fillStyle = '#8ee9dc';
-    ctx.fillText('NHỚ TỪ', pipe.x + pipe.width / 2, pipe.gapY + 10);
-  }
-
-  function drawFlappy(dt) {
-    const ctx = flappy.ctx, width = flappy.canvas.width, height = flappy.canvas.height;
-    drawStars(ctx, flappy.stars, width, height, dt, 16);
-    const floor = ctx.createLinearGradient(0, height - 24, 0, height);
-    floor.addColorStop(0, '#2b426b');
-    floor.addColorStop(1, '#131b3a');
-    ctx.fillStyle = floor;
-    ctx.fillRect(0, height - 19, width, 19);
-    ctx.strokeStyle = 'rgba(132, 184, 255, .18)';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < width; x += 42) {
-      ctx.beginPath(); ctx.moveTo(x, height - 19); ctx.lineTo(x - 14, height); ctx.stroke();
-    }
-    if (flappy.pipe) {
-      if (state.running && !flappy.pipe.resolved) flappy.pipe.x -= flappy.pipe.speed * dt;
-      drawPipe(ctx, flappy.pipe);
-    }
-    if (state.running) {
-      flappy.birdV += 760 * dt;
-      flappy.birdY += flappy.birdV * dt;
-      flappy.birdAngle = clamp(flappy.birdV / 700, -0.4, 0.9);
-    }
-    drawFlappyBird(ctx);
-    drawParticles(ctx, flappy, dt);
-    if (flappy.birdY < -5 || flappy.birdY > height - 19) {
-      if (state.running && flappy.pipe && !flappy.pipe.resolved) failFlappyPipe('Chim bay lệch đường! Giữ nhịp bấm ↑ hoặc chạm nút Flap nhé.');
-      else if (state.running) { flappy.birdY = height / 2; flappy.birdV = 0; }
-    }
+    flappyEngine?.jump();
   }
 
   function updateFlappyHud() {
@@ -597,34 +532,11 @@
     const pipe = flappy.pipe;
     if (!pipe || pipe.resolved) return;
     pipe.resolved = true;
+    pipe.hit = true;
     flappy.lives -= 1;
-    flappy.birdY = clamp(flappy.birdY, 45, flappy.canvas.height - 45);
-    flappy.birdV = -100;
+    flappyEngine?.recover();
     flashFeedback('flappy', '💫 ' + message, 'bad');
     if (flappy.lives <= 0) endGame('flappy', 'Hết lượt bay rồi! Thử lại để vượt thêm cổng nhé.');
-    updateFlappyHud();
-  }
-
-  function tickFlappy(dt) {
-    drawFlappy(dt);
-    if (flappy.pipe && !flappy.pipe.resolved) {
-      const pipe = flappy.pipe;
-      const birdX = 170, birdRadius = 16;
-      const top = pipe.gapY - pipe.gap / 2;
-      const bottom = pipe.gapY + pipe.gap / 2;
-      const overlaps = pipe.x < birdX + birdRadius && pipe.x + pipe.width > birdX - birdRadius;
-      if (overlaps && !pipe.hit) {
-        pipe.hit = true;
-        if (flappy.birdY < top + birdRadius || flappy.birdY > bottom - birdRadius) {
-          failFlappyPipe('Ôi! Va vào ống rồi. Bấm ↑ sớm hơn một chút nhé.');
-        }
-      }
-      if (!pipe.resolved && pipe.x + pipe.width < birdX - birdRadius) void resolveFlappyPipe(pipe);
-    }
-    if (flappy.pipe && flappy.pipe.resolved && flappy.pipe.x + flappy.pipe.width < -5) {
-      const previous = flappy.pipe.item;
-      nextFlappyQuestion(previous);
-    }
     updateFlappyHud();
   }
 
@@ -633,7 +545,6 @@
     const dt = Math.min(0.04, Math.max(0, (timestamp - (state.lastFrame || timestamp)) / 1000));
     state.lastFrame = timestamp;
     if (state.game === 'meteor') tickMeteor(dt);
-    if (state.game === 'flappy') tickFlappy(dt);
     if (state.running) state.raf = requestAnimationFrame(animate);
   }
 
@@ -641,6 +552,7 @@
     state.running = false;
     if (state.raf) cancelAnimationFrame(state.raf);
     state.raf = 0;
+    flappyEngine?.pause();
   }
 
   function showGame(gameName) {
@@ -688,31 +600,37 @@
     }
     stopAnimation();
     showGame('flappy');
-    flappy.time = 0; flappy.score = 0; flappy.lives = 3; flappy.question = 1; flappy.maxQuestions = 10; flappy.energy = Math.max(0, Math.floor(Number(window.katlearnAccount?.profile?.energy || 0))); flappy.birdY = flappy.canvas.height / 2; flappy.birdV = 0; flappy.birdAngle = 0; flappy.pipe = null; flappy.answer = ''; flappy.busy = false; flappy.particles = [];
-    seedStars(flappy, flappy.canvas.width, flappy.canvas.height, 82);
-    // The gate must be created after the game becomes active. Previously
-    // startNextFlappyPipe returned early here, leaving only the bird visible.
+    enterFlappyFullscreen();
+    flappy.time = 0; flappy.score = 0; flappy.lives = 3; flappy.question = 1; flappy.maxQuestions = 10;
+    flappy.energy = Math.max(0, Math.floor(Number(window.katlearnAccount?.profile?.energy || 0)));
+    flappy.pipe = null; flappy.answer = ''; flappy.busy = false;
     state.running = true;
     state.lastFrame = 0;
-    startNextFlappyPipe(null);
-    updateFlappyHud();
     $('#flappyRestart')?.removeAttribute('hidden');
     setMessage('#flappyMessage', 'Gõ từ tiếng Anh, khóa đáp án, rồi vỗ cánh bay qua khe hở giữa hai ống!', 'neutral');
-    state.raf = requestAnimationFrame(animate);
-    enterFlappyFullscreen();
-    flappy.input.focus({ preventScroll: true });
+
+    try {
+      await ensureFlappyEngine();
+      if (!state.running || state.game !== 'flappy') return;
+      flappyEngine.reset();
+      startNextFlappyPipe(null);
+      updateFlappyHud();
+      flappy.input.focus({ preventScroll: true });
+    } catch (error) {
+      state.running = false;
+      flashFeedback('flappy', 'Không thể khởi động Phaser Flappy Owl: ' + (error.message || 'Lỗi tải game.'), 'bad');
+    }
   }
 
-  function drawGameOver(gameName, message) {
-    const game = gameName === 'meteor' ? meteor : flappy;
-    const ctx = game.ctx, width = game.canvas.width, height = game.canvas.height;
+  function drawGameOver(message) {
+    const ctx = meteor.ctx, width = meteor.canvas.width, height = meteor.canvas.height;
     ctx.save();
     ctx.fillStyle = 'rgba(6, 8, 26, .72)';
     ctx.fillRect(0, 0, width, height);
     ctx.textAlign = 'center';
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 34px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(gameName === 'meteor' ? 'PHIÊN SĂN THIÊN THẠCH KẾT THÚC' : 'KẾT THÚC CHUYẾN BAY', width / 2, height / 2 - 16);
+    ctx.fillText('PHIÊN SĂN THIÊN THẠCH KẾT THÚC', width / 2, height / 2 - 16);
     ctx.font = '600 17px "Be Vietnam Pro", sans-serif';
     ctx.fillStyle = '#c9d1ff';
     ctx.fillText(message, width / 2, height / 2 + 22, width - 80);
@@ -724,11 +642,10 @@
     stopAnimation();
     if (gameName === 'meteor') {
       drawMeteor(0);
-      drawGameOver(gameName, message);
+      drawGameOver(message);
       flashFeedback(gameName, message + ' Điểm: ' + meteor.score + ' · Combo tốt nhất: ' + meteor.bestCombo + '×.', 'neutral');
     } else {
-      drawFlappy(0);
-      drawGameOver(gameName, message);
+      flappyEngine?.pause();
       flashFeedback(gameName, message + ' Điểm: ' + flappy.score + '.', 'neutral');
     }
   }
@@ -824,7 +741,6 @@
     stopCurrentGame();
   });
   $('#flappyFlap')?.addEventListener('click', flapBird);
-  flappy.canvas.addEventListener('pointerdown', flapBird);
 
   document.addEventListener('keydown', function (event) {
     if (!state.running || state.game !== 'flappy') return;
