@@ -68,13 +68,10 @@ for (const name of fs.readdirSync(root)) {
   });
 }
 
-const productionUrl = process.env.CONTEXT === "production"
-  ? process.env.URL
-  : (process.env.DEPLOY_PRIME_URL || process.env.URL);
-const lmsUrl = cleanUrl(
-  process.env.KATLEARN_LMS_SITE_URL || productionUrl,
-  "https://lms-katlearn.netlify.app"
-);
+// SSO must always return to the canonical LMS site, even when this
+// build is served from a Netlify Deploy Preview. DEPLOY_PRIME_URL is the
+// preview's temporary origin and must never become the LMS return address.
+const lmsUrl = "https://lms-katlearn.netlify.app";
 const teacherUrl = cleanUrl(
   process.env.KATLEARN_TEACHER_SITE_URL,
   "https://quanly-giaovien-katlearn.netlify.app"
