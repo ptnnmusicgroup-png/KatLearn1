@@ -63,14 +63,27 @@ jobs:
           NODE
       - name: Build Netlify static output
         env:
+          CONTEXT: production
           KATLEARN_LMS_SITE_URL: https://lms-katlearn.netlify.app
           KATLEARN_TEACHER_SITE_URL: https://quanly-giaovien-katlearn.netlify.app
           KATLEARN_ALLOWED_ORIGINS: https://lms-katlearn.netlify.app,https://quanly-giaovien-katlearn.netlify.app
-        run: node scripts/build-netlify.js
+        run: |
+          node scripts/build-netlify.js
+          grep -q '"teacherUrl":"https://quanly-giaovien-katlearn.netlify.app"' dist/deployment-config.js
+      - name: Verify LMS Teacher entry points use the shared deployment URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'id="teacherSignupLink"' signup.html
+          grep -q 'id="teacherAdminLink"' signup.html
+          grep -q "teacherSignupLink.*TEACHER" signup.html
+          grep -q 'id="teacherAdminEntry"' login.html
+          grep -q "teacherAdminEntry.*ADMIN_HOME" login.html
       - name: Ensure Deploy Previews still use the canonical LMS SSO return URL
         env:
           CONTEXT: deploy-preview
-          URL: https://deploy-preview-123--lms-katlearn.netlify.app
+          REVIEW_ID: 88
+          URL: https://deploy-preview-88--lms-katlearn.netlify.app
           DEPLOY_PRIME_URL: https://deploy-preview-123--lms-katlearn.netlify.app
           KATLEARN_TEACHER_SITE_URL: https://quanly-giaovien-katlearn.netlify.app
         run: |
@@ -79,13 +92,16 @@ jobs:
           node <<'NODE'
           const fs = require('node:fs');
           const config = fs.readFileSync('dist/deployment-config.js', 'utf8');
-          const canonical = '"lmsUrl":"https://lms-katlearn.netlify.app"';
-          if (!config.includes(canonical) || config.includes('deploy-preview')) {
-            console.error('::error::Deploy Preview must not become the SSO return URL.');
+          const canonicalLms = '"lmsUrl":"https://lms-katlearn.netlify.app"';
+          const teacherPreview = '"teacherUrl":"https://deploy-preview-41--quanly-giaovien-katlearn.netlify.app"';
+          const unrelatedPreviewFallback = 'https://quanly-giaovien-katlearn.netlify.app';
+
+          if (!config.includes(canonicalLms) || !config.includes(teacherPreview)) {
+            console.error('::error::Deploy Preview must keep canonical LMS SSO and route Teacher links to PR #41 preview.');
             console.error(config);
             process.exit(1);
           }
-          console.log('Verified SSO return URL remains https://lms-katlearn.netlify.app in Deploy Preview context.');
+          console.log('Verified canonical LMS SSO return URL and Teacher PR #41 preview routing for LMS PR #88.');
           NODE
       - name: Verify static publish excludes server files and settings
         shell: bash
