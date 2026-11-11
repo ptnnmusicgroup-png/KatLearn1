@@ -72,10 +72,15 @@ for (const name of fs.readdirSync(root)) {
 // build is served from a Netlify Deploy Preview. DEPLOY_PRIME_URL is the
 // preview's temporary origin and must never become the LMS return address.
 const lmsUrl = "https://lms-katlearn.netlify.app";
-const teacherUrl = cleanUrl(
-  process.env.KATLEARN_TEACHER_SITE_URL,
-  "https://quanly-giaovien-katlearn.netlify.app"
-);
+const teacherPreviewUrl = "https://deploy-preview-41--quanly-giaovien-katlearn.netlify.app";
+// During LMS Deploy Preview review, open the matching new Teacher UI preview.
+// Production and ordinary builds continue using the canonical Teacher hostname.
+const teacherUrl = process.env.CONTEXT === "deploy-preview"
+  ? teacherPreviewUrl
+  : cleanUrl(
+      process.env.KATLEARN_TEACHER_SITE_URL,
+      "https://quanly-giaovien-katlearn.netlify.app"
+    );
 
 fs.writeFileSync(
   path.join(output, "deployment-config.js"),
