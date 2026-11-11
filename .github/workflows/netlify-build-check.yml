@@ -67,6 +67,26 @@ jobs:
           KATLEARN_TEACHER_SITE_URL: https://quanly-giaovien-katlearn.netlify.app
           KATLEARN_ALLOWED_ORIGINS: https://lms-katlearn.netlify.app,https://quanly-giaovien-katlearn.netlify.app
         run: node scripts/build-netlify.js
+      - name: Ensure Deploy Previews still use the canonical LMS SSO return URL
+        env:
+          CONTEXT: deploy-preview
+          URL: https://deploy-preview-123--lms-katlearn.netlify.app
+          DEPLOY_PRIME_URL: https://deploy-preview-123--lms-katlearn.netlify.app
+          KATLEARN_TEACHER_SITE_URL: https://quanly-giaovien-katlearn.netlify.app
+        run: |
+          set -euo pipefail
+          node scripts/build-netlify.js
+          node <<'NODE'
+          const fs = require('node:fs');
+          const config = fs.readFileSync('dist/deployment-config.js', 'utf8');
+          const canonical = '"lmsUrl":"https://lms-katlearn.netlify.app"';
+          if (!config.includes(canonical) || config.includes('deploy-preview')) {
+            console.error('::error::Deploy Preview must not become the SSO return URL.');
+            console.error(config);
+            process.exit(1);
+          }
+          console.log('Verified SSO return URL remains https://lms-katlearn.netlify.app in Deploy Preview context.');
+          NODE
       - name: Verify static publish excludes server files and settings
         shell: bash
         run: |
