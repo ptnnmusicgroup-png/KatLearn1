@@ -554,16 +554,16 @@
     async publicPacks(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'publicPacks'),api.orderBy('createdAt','desc'),api.limit(50)));return snap.docs.map(d=>({id:d.id,...d.data()}))},
     async leaderboard(){if(!db)return[];const snap=await api.getDocs(api.query(api.collection(db,'leaderboard'),api.orderBy('xp','desc'),api.limit(20)));return snap.docs.map(d=>({id:d.id,...d.data()}))}
   };
-  const TEACHER_HOME=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://quanly-giaovien-katlearn.netlify.app').replace(/\/+$/,''),SSO_EXCHANGE=TEACHER_HOME+'/api/auth-exchange';
+  const TEACHER_HOME=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'').replace(/\/+$/,''),SSO_EXCHANGE=TEACHER_HOME?TEACHER_HOME+'/api/auth-exchange':'';
   const isMainLms=()=>{const p=location.pathname;return(p==='/'||p.endsWith('/index.html'))&&!/login\.html|signup\.html|sso-bridge\.html/.test(p)};
   let guardStarted=false;
   async function handleLmsSso(){
     if(!isMainLms()||guardStarted)return;guardStarted=true;
     const params=new URLSearchParams(location.search),hash=new URLSearchParams(location.hash.replace(/^#/,'')||''),incoming=hash.get('katlearn_id_token');
-    if(incoming){history.replaceState(null,document.title,location.pathname+location.search);try{const r=await fetch(SSO_EXCHANGE,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({idToken:incoming,target:'lms'})}),d=await r.json();if(r.ok&&d.customToken){await window.studyStore.signInCustomToken(d.customToken);if(d.role==='teacher')location.replace(TEACHER_HOME);return}}catch(e){console.warn('[KatLearn SSO] incoming session failed:',e)}}
+    if(incoming){history.replaceState(null,document.title,location.pathname+location.search);if(SSO_EXCHANGE){try{const r=await fetch(SSO_EXCHANGE,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({idToken:incoming,target:'lms'})}),d=await r.json();if(r.ok&&d.customToken){await window.studyStore.signInCustomToken(d.customToken);if(d.role==='teacher'&&TEACHER_HOME)location.replace(TEACHER_HOME);return}}catch(e){console.warn('[KatLearn SSO] incoming session failed:',e)}}}
     if(sessionStorage.getItem('katlearn-logged-out')==='1')return;
     const role=window.studyStore.user?await window.studyStore.getRole().catch(()=>null):null;
-    if(role==='teacher'){location.replace(TEACHER_HOME);return}
+    if(role==='teacher'&&TEACHER_HOME){location.replace(TEACHER_HOME);return}
     // Guests stay on Student Home; the Teacher SSO bridge is only entered
     // from an explicit Teacher-to-Student SSO flow.
     if(window.studyStore.user||params.has('sso'))return;

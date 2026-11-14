@@ -1,6 +1,6 @@
 /* KatLearn Home account UI: Firebase session is the source of truth. */
 (function(){
-  const LOGIN='/login.html', SIGNUP='/signup.html', ADMIN_EMAIL='katlearn.admin@gmail.com', ADMIN_HOME=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://quanly-giaovien-katlearn.netlify.app').replace(/\/+$/,'')+'/admin.html';
+  const LOGIN='/login.html', SIGNUP='/signup.html', ADMIN_EMAIL='katlearn.admin@gmail.com', TEACHER_HOME=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'').replace(/\/+$/,''), ADMIN_HOME=TEACHER_HOME?TEACHER_HOME+'/admin.html':'';
 
   function el(tag,attrs={},html=''){const x=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>{if(k==='class')x.className=v;else if(k==='text')x.textContent=v;else x.setAttribute(k,v)});if(html)x.innerHTML=html;return x}
   function render(){
@@ -54,7 +54,7 @@
       try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG)}catch(e){console.warn('[KatLearn] Firebase auto-connect failed:',e?.message||e)}
     }
     render();
-    if((window.studyStore?.user?.email||'').toLowerCase()===ADMIN_EMAIL){location.replace(ADMIN_HOME);return}
+    if((window.studyStore?.user?.email||'').toLowerCase()===ADMIN_EMAIL&&ADMIN_HOME){location.replace(ADMIN_HOME);return}
     // Profile data has one owner: auth-sync.js. Do not perform a second
     // Firestore read here, which can race the shared account-ready event.
     applyProfile(window.katlearnAccount?.profile||null);

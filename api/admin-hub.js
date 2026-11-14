@@ -6,8 +6,16 @@ function clean(value,max=200){
   return String(value??"").trim().slice(0,max);
 }
 function corsHeaders(origin){
+  const allowed=new Set([
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    ...(String(process.env.KATLEARN_ALLOWED_ORIGINS||"").split(",").map(value=>value.trim()).filter(Boolean)),
+    ...(process.env.KATLEARN_LMS_SITE_URL?[String(process.env.KATLEARN_LMS_SITE_URL).replace(/\/+$/,"")]:[]),
+    ...(process.env.KATLEARN_TEACHER_SITE_URL?[String(process.env.KATLEARN_TEACHER_SITE_URL).replace(/\/+$/,"")]:[])
+  ]);
   const h={"Content-Type":"application/json","Cache-Control":"no-store"};
-  if(["https://quanly-giaovien-katlearn.netlify.app","https://lms-katlearn.netlify.app","http://localhost:3000","http://localhost:5173"].includes(origin)){
+  if(allowed.has(origin)){
     h["Access-Control-Allow-Origin"]=origin;
     h["Access-Control-Allow-Methods"]="GET,POST,OPTIONS";
     h["Access-Control-Allow-Headers"]="authorization,content-type,accept";

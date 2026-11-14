@@ -12,9 +12,10 @@
 <div class="school-suggestion-backdrop" id="schoolSuggestionBackdrop" aria-hidden="true"><section class="school-suggestion" role="dialog" aria-modal="true" aria-labelledby="schoolSuggestionTitle"><h3 id="schoolSuggestionTitle">🏫 Góp ý thêm trường</h3><p>Trường của bạn chưa có trong danh sách? Hãy gửi thông tin để Admin KatLearn kiểm tra và bổ sung vào danh mục.</p><form id="schoolSuggestionForm"><label>Tên trường<input id="suggestSchoolName" maxlength="180" placeholder="Ví dụ: THCS Chu Văn An" required></label><label>Tỉnh/Thành phố<input id="suggestProvince" maxlength="180" placeholder="Quảng Ngãi" required></label><label>Xã/Phường<input id="suggestWard" maxlength="180" placeholder="Đăk Hà" required></label><label>Thông tin thêm (không bắt buộc)<textarea id="suggestNote" maxlength="500" placeholder="Ví dụ: Trường hiện có trong địa bàn nhưng chưa xuất hiện trong danh sách."></textarea></label><div class="school-suggestion-status" id="schoolSuggestionStatus" aria-live="polite"></div><div class="school-suggestion-actions"><button type="button" id="schoolSuggestionClose">Đóng</button><button class="send" type="submit" id="schoolSuggestionSend">Gửi góp ý →</button></div></form></section></div>
 <script>
 const FIREBASE_CONFIG={apiKey:'AIzaSyCgMDdCP0R5fW3QjhYrd3Ab8AJH3xYGiz8',authDomain:'elp---katlearn.firebaseapp.com',projectId:'elp---katlearn',storageBucket:'elp---katlearn.firebasestorage.app',messagingSenderId:'344478447672',appId:'1:344478447672:web:4ed109a40303d0b41b0ecd',measurementId:'G-KTW11GD97T'};
-const LMS='https://lms-katlearn.netlify.app',TEACHER=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://quanly-giaovien-katlearn.netlify.app').replace(/\/+$/,'');
-document.getElementById('teacherSignupLink')?.setAttribute('href',TEACHER+'/teacher-signup.html');
-document.getElementById('teacherAdminLink')?.setAttribute('href',TEACHER+'/admin.html');
+const LMS=String(window.KATLEARN_DEPLOYMENT_CONFIG?.lmsUrl||location.origin).replace(/\/+$/,''),TEACHER=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'').replace(/\/+$/,'');
+const teacherSignupLink=document.getElementById('teacherSignupLink'),teacherAdminLink=document.getElementById('teacherAdminLink');
+if(TEACHER){teacherSignupLink?.setAttribute('href',TEACHER+'/teacher-signup.html');teacherAdminLink?.setAttribute('href',TEACHER+'/admin.html')}
+else{if(teacherSignupLink)teacherSignupLink.hidden=true;if(teacherAdminLink)teacherAdminLink.hidden=true}
 const $=s=>document.querySelector(s),status=$('#status'),submit=$('#submit');
 let fb=null,auth=null,api=null;
 const catalog={provinces:[],wardsByProvince:new Map(),schoolsByProvince:new Map(),schoolById:new Map()};
@@ -201,7 +202,7 @@ async function finish(u,p){
     await api.setDoc(ref,safe,{merge:true});
   }
   const finalRole=snap.exists()?String(snap.data()?.role||p.role||'student'):String(p.role||'student');
-  location.replace(finalRole==='teacher'?TEACHER:finalRole==='pending_teacher_verification'?TEACHER+'/teacher-pending.html':LMS)
+  location.replace(TEACHER&&finalRole==='teacher'?TEACHER:TEACHER&&finalRole==='pending_teacher_verification'?TEACHER+'/teacher-pending.html':LMS)
 }
 let providerBusy=false;
 async function provider(kind){

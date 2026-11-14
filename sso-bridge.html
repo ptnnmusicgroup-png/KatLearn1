@@ -1,8 +1,15 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KatLearn SSO</title><link rel="stylesheet" href="/katlearn-defaultdarkmode.css?v=20261024-glass2"></head><body class="sso-bridge"><div class="sso-box">🔐 Đang đồng bộ tài khoản KatLearn…<small>Vui lòng chờ một chút.</small></div><script src="firebase-service.js?v=20260930-10"></script><script>
-const TEACHER=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'https://quanly-giaovien-katlearn.netlify.app').replace(/\/+$/,'');
-const LMS=String(window.KATLEARN_DEPLOYMENT_CONFIG?.lmsUrl||'https://lms-katlearn.netlify.app').replace(/\/+$/,'');
+const TEACHER=String(window.KATLEARN_DEPLOYMENT_CONFIG?.teacherUrl||'').replace(/\/+$/,'');
+const LMS=String(window.KATLEARN_DEPLOYMENT_CONFIG?.lmsUrl||location.origin).replace(/\/+$/,'');
 const LOGIN=LMS+'/login.html';
 const qs=new URLSearchParams(location.search);const target=qs.get('return')||'teacher';const back=target==='teacher'?TEACHER:LMS;
-function go(path){location.replace(back+path)}
-(async()=>{try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG);await window.studyStore.waitForAuth();const u=window.studyStore.user;if(!u){location.replace(LOGIN+'?sso=none');return}const token=await u.getIdToken();location.replace(back+'/#katlearn_id_token='+encodeURIComponent(token)+'&from=lms')}catch(e){console.error(e);location.replace(LOGIN+'?sso=error')}})();
+(async()=>{
+  if(target==='teacher'&&!TEACHER){
+    const box=document.querySelector('.sso-box');
+    if(box)box.innerHTML='Cổng Teacher chưa được cấu hình trên máy chủ này.<small>Hãy quay lại KatLearn hoặc cấu hình KATLEARN_TEACHER_SITE_URL.</small><a href="'+LOGIN+'">Quay lại đăng nhập</a>';
+    return;
+  }
+  try{await window.studyStore.connect(window.KATLEARN_FIREBASE_CONFIG);await window.studyStore.waitForAuth();const u=window.studyStore.user;if(!u){location.replace(LOGIN+'?sso=none');return}const token=await u.getIdToken();location.replace(back+'/#katlearn_id_token='+encodeURIComponent(token)+'&from=lms')}
+  catch(e){console.error(e);location.replace(LOGIN+'?sso=error')}
+})();
 </script></body></html>
