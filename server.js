@@ -8,8 +8,8 @@ const PORT=Number.parseInt(process.env.PORT||"3000",10);
 const MAX_BODY_BYTES=10*1024*1024;
 const API_ENDPOINTS=new Set(["admin-hub","ai-pack","ai-regenerate-word","context-example","game-action","personal-pack-action","personal-pack","personal-packs","student-assigned-packs","student-school-request","study-coach","study-progress","vocab-assist"]);
 const MIME_TYPES=Object.freeze({".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".mjs":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".json":"application/json; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",".jpg":"image/jpeg",".jpeg":"image/jpeg",".webp":"image/webp",".gif":"image/gif",".ico":"image/x-icon",".woff":"font/woff",".woff2":"font/woff2",".ttf":"font/ttf",".otf":"font/otf",".txt":"text/plain; charset=utf-8",".xml":"application/xml; charset=utf-8",".webmanifest":"application/manifest+json; charset=utf-8",".map":"application/json; charset=utf-8"});
-const BLOCKED_SEGMENTS=new Set([".git",".github","api","node_modules","scripts"]);
-const BLOCKED_FILES=new Set(["server.js","package.json","package-lock.json","pnpm-lock.yaml","yarn.lock","firestore.rules"]);
+const BLOCKED_SEGMENTS=new Set([".git",".github","api","dist","node_modules","scripts"]);
+const BLOCKED_FILES=new Set(["server.js","dev-server.js","local-server.js","package.json","package-lock.json","pnpm-lock.yaml","yarn.lock","firestore.rules"]);
 
 function normaliseOrigin(value){try{const url=new URL(String(value||"").trim());return url.protocol==="http:"||url.protocol==="https:"?url.origin:""}catch(_){return""}}
 function allowedOrigins(){
@@ -125,7 +125,9 @@ async function serveStatic(req,res,url){
  if(pathname==="/favicon.ico")pathname="/favicon.svg";
  const relative=(pathname==="/"? "index.html":pathname).replace(/^[/\\]+/,"");
  const parts=relative.split(/[\\/]+/).filter(Boolean);
- if(!relative||parts.some(x=>x.startsWith(".")||BLOCKED_SEGMENTS.has(x.toLowerCase()))||BLOCKED_FILES.has((parts[parts.length-1]||"").toLowerCase())){
+ const leaf=(parts[parts.length-1]||"").toLowerCase();
+ const looksLikeServiceAccount=leaf.endsWith(".json")&&/(service.?account|firebase.*adminsdk|adminsdk)/i.test(leaf);
+ if(!relative||looksLikeServiceAccount||parts.some(x=>x.startsWith(".")||BLOCKED_SEGMENTS.has(x.toLowerCase()))||BLOCKED_FILES.has(leaf)){
   sendJson(res,404,{ok:false,error:"Not found."});return;
  }
  const file=path.resolve(ROOT,relative);
