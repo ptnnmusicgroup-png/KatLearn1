@@ -2,7 +2,8 @@
 (function(){
   const PROTECTION_ID='755dcf1e-2d8c-4315-8cd3-9f29b4ca890e';
   const BADGE_URL='https://images.dmca.com/Badges/dmca_protected_16_120.png?ID='+PROTECTION_ID;
-  const STATUS_URL='https://www.dmca.com/Protection/Status.aspx?ID='+PROTECTION_ID+'&refurl=https://lms-katlearn.netlify.app/';
+  const LMS_URL=String(window.KATLEARN_DEPLOYMENT_CONFIG?.lmsUrl||location.origin).replace(/\/+$/,'');
+  const STATUS_URL='https://www.dmca.com/Protection/Status.aspx?ID='+PROTECTION_ID+'&refurl='+encodeURIComponent(LMS_URL+'/');
 
   function mount(){
     const footer=document.getElementById('katlearnFooter');
