@@ -384,7 +384,7 @@ function markCurrentCard(knownValue){
     if(knownValue)knownWordKeys.add(key);else knownWordKeys.delete(key);
     saveKnownState();
     if(knownValue)playCorrectSparkles($('#knowBtn'));
-    void recordStudyActivity();
+    if(knownValue)void recordStudyActivity();
     if(activeVocabSource?.kind==='personal'&&personalLearningSnapshot.uid===String(window.studyStore?.user?.uid||'')){
       void syncPersonalProgressFromLocal().then(()=>renderProgressDashboard()).catch(()=>renderProgressDashboard());
     }else{
