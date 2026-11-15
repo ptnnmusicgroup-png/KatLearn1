@@ -47,6 +47,8 @@ async function main(){
  assert.ok(gameAction.includes('const streakState=correct?nextStreak(profile,currentStudyDay)'));
  assert.ok(gameAction.includes('...(correct?{streak:streakState.streak,lastStudyDay:currentStudyDay}:{})'));
  assert.ok(gameAction.includes('dailyQuestionsDay:currentStudyDay'));
+ const firebaseDaily=fs.readFileSync(require.resolve('../firebase-service.js'),'utf8');
+ assert.ok(firebaseDaily.includes("'dailyQuestionsDay'"),'Daily attempt day must remain server-authoritative.');
  const topicPaths=[...coreVocabulary.matchAll(/path:'([^']+)'/g)].map(match=>match[1]).filter(file=>file.endsWith('.json')).map(file=>require('node:path').join(__dirname,'..','data','vocabulary',file));
  assert.ok(topicPaths.length>0,'Core vocabulary registry should not be empty');
  for(const file of topicPaths)assert.ok(fs.existsSync(file),'Missing core vocabulary file: '+file);
