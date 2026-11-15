@@ -45,20 +45,18 @@ module.exports=async(req,res)=>{
         }
         return existing;
       }
-      const stripVietnamese=value=>String(value||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"");
+      const stripVietnamese=value=>String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"");
       const part=(value,fallback)=>stripVietnamese(value).trim().replace(/[^a-zA-Z0-9.@_-]+/g,"")||fallback;
       const displayPart=(value,fallback)=>stripVietnamese(value).trim().replace(/[^a-zA-Z0-9]+/g,"")||fallback;
       const login=part(String(user.email||"").split("@")[0],"katlearn");
       const display=displayPart(user.displayName||String(user.email||"").split("@")[0]||"student","Student");
       const sequenceRef=profileDb.collection("system").doc("accountSequence");
+      const accountsRef=profileDb.collection("accounts");
       const code=await profileDb.runTransaction(async tx=>{
-        // Re-read the user profile inside the transaction. If two pack-save
-        // requests run together, the loser observes the winner's accountCode
-        // instead of allocating a second account namespace for the same UID.
         const currentProfile=await tx.get(profileRef);
         const currentCode=String(currentProfile.data()?.accountCode||"").trim();
         if(currentCode){
-          const currentAccountSnap=await tx.get(profileDb.collection("accounts").doc(currentCode));
+          const currentAccountSnap=await tx.get(accountsRef.doc(currentCode));
           const currentAccount=currentAccountSnap.exists?currentAccountSnap.data()||{}:{};
           if(!currentAccountSnap.exists||String(currentAccount.uid||"")!==String(user.uid)||String(currentAccount.accountCode||"")!==currentCode){
             throw Object.assign(new Error("Mã namespace của tài khoản không khớp hồ sơ. Hãy liên hệ Admin để đồng bộ lại an toàn."),{status:409,code:"account_namespace_mismatch"});
@@ -66,16 +64,42 @@ module.exports=async(req,res)=>{
           return currentCode;
         }
 
+        // Recover an older namespace by UID before allocating a new one.
+        const legacyQuery=accountsRef.where("uid","==",String(user.uid)).limit(1);
+        const legacySnap=await tx.get(legacyQuery);
+        if(!legacySnap.empty){
+          const legacyDoc=legacySnap.docs[0];
+          const legacy=legacyDoc.data()||{};
+          const legacyCode=String(legacy.accountCode||legacyDoc.id||"").trim();
+          if(legacyCode!==legacyDoc.id||String(legacy.uid||"")!==String(user.uid)){
+            throw Object.assign(new Error("Namespace cũ của tài khoản không hợp lệ. Hãy liên hệ Admin để kiểm tra."),{status:409,code:"account_namespace_mismatch"});
+          }
+          const now=new Date();
+          const metaRef=legacyDoc.ref.collection("memory").doc("meta");
+          const metaSnap=await tx.get(metaRef);
+          tx.set(profileRef,{accountCode:legacyCode,updatedAt:now},{merge:true});
+          if(!metaSnap.exists)tx.set(metaRef,{accountCode:legacyCode,uid:user.uid,createdAt:now,updatedAt:now},{merge:true});
+          return legacyCode;
+        }
+
         const seqSnap=await tx.get(sequenceRef);
-        const next=Number(seqSnap.exists?seqSnap.data()?.lastIssued:0)+1;
-        const nextCode=login+"_"+display+"_"+String(next).padStart(3,"0");
+        let next=Number(seqSnap.exists?seqSnap.data()?.lastIssued:0)+1;
+        let nextCode="",nextAccountRef=null;
+        for(let attempts=0;attempts<1000;attempts++,next++){
+          const candidate=login+"_"+display+"_"+String(next).padStart(3,"0");
+          const candidateRef=accountsRef.doc(candidate);
+          const candidateSnap=await tx.get(candidateRef);
+          if(!candidateSnap.exists){nextCode=candidate;nextAccountRef=candidateRef;break;}
+        }
+        if(!nextAccountRef)throw Object.assign(new Error("Không thể cấp mã namespace mới. Hãy thử lại sau."),{status:503,code:"account_namespace_exhausted"});
+
         const now=new Date();
         tx.set(sequenceRef,{lastIssued:next,updatedAt:now},{merge:true});
-        tx.set(profileDb.collection("accounts").doc(nextCode),{
+        tx.create(nextAccountRef,{
           accountCode:nextCode,uid:user.uid,email:user.email||"",displayName:user.displayName||"",
           loginName:login,createdAt:now,updatedAt:now
-        },{merge:false});
-        tx.set(profileDb.collection("accounts").doc(nextCode).collection("memory").doc("meta"),{
+        });
+        tx.set(nextAccountRef.collection("memory").doc("meta"),{
           accountCode:nextCode,uid:user.uid,createdAt:now,updatedAt:now
         },{merge:true});
         tx.set(profileRef,{accountCode:nextCode,updatedAt:now},{merge:true});
