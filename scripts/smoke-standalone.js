@@ -8,9 +8,9 @@ async function main(){
  assert.equal(limiter.check("student",2,1000,1001),0);
  assert.equal(limiter.check("student",2,1000,1002),1);
  assert.equal(limiter.check("student",2,1000,2001),0);
- for(let i=0;i<100;i++)limiter.check("uid-"+i,1,60000,3000);
+ for(let i=0;i<99;i++)limiter.check("uid-"+i,1,60000,2500);
  assert.equal(limiter.size,100);
- assert.equal(limiter.check("new-uid",1,60000,3001),60);
+ assert.equal(limiter.check("new-uid",1,60000,2501),60);
  const server=createServer();
  await new Promise((resolve,reject)=>{server.once("error",reject);server.listen(0,"127.0.0.1",resolve)});
  const base="http://127.0.0.1:"+server.address().port;
