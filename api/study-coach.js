@@ -25,7 +25,7 @@ module.exports=async(req,res)=>{
   if(!MODES.has(mode))throw Object.assign(new Error("Chế độ học không hợp lệ."),{status:400,code:"study_mode_invalid"});
   const level=cap(body.level,60)||"THCS · A2-B1",focus=cap(body.focus,1200),material=cap(body.material,12000);
   const targetDate=cap(body.targetDate,10),minutes=Math.max(10,Math.min(180,Number(body.minutes)||30)),goal=cap(body.goal,100),answer=cap(body.answer,6000);
-  if(!focus&&!material&&!body.image)throw Object.assign(new Error("Hãy nhập chủ đề/danh sách từ tiếng Anh hoặc thêm ghi chú, ảnh từ vựng trước nhé."),{status:400,code:"study_input_empty"});
+  if(!focus&&!material&&!body.image&&!((mode==="grade-written"||mode==="grade-oral")&&answer))throw Object.assign(new Error("Hãy nhập chủ đề/danh sách từ tiếng Anh hoặc thêm ghi chú, ảnh từ vựng trước nhé."),{status:400,code:"study_input_empty"});
   if((mode==="grade-written"||mode==="grade-oral")&&!answer)throw Object.assign(new Error("Hãy nhập bài viết hoặc transcript tiếng Anh cần nhận xét từ vựng trước nhé."),{status:400,code:"study_answer_empty"});
   let image=null;
   if(body.image&&typeof body.image==="object"){
