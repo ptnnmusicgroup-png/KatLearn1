@@ -1,7 +1,8 @@
 const{GoogleGenAI}=require("@google/genai");
 const{init}=require("./_admin");
+const{createRateLimiter}=require("./_rate-limit");
 let geminiClient=null,geminiClientKey="",workingModel="",workingModelKey="",workingModelConfig="";
-const buckets=new Map();
+const requestLimiter=createRateLimiter();
 const DEFAULT_GEMINI_MODEL="gemini-3.5-flash-lite";
 const GEMINI_MODEL_FALLBACKS=["gemini-3.5-flash-lite","gemini-3.8-flash","gemini-2.5-flash-lite","gemini-2.5-flash"];
 function firebaseAuth(){return init().auth}
@@ -37,9 +38,8 @@ async function requireUser(req){
   }
 }
 function rateLimit(uid,bucket,limit,windowMs=60000){
-  const now=Date.now(),key=uid+":"+bucket,old=buckets.get(key)||[],fresh=old.filter(t=>now-t<windowMs);
-  if(fresh.length>=limit){const retryAfter=Math.max(1,Math.ceil((windowMs-(now-fresh[0]))/1000));throw Object.assign(new Error("Bạn dùng Kat AI hơi nhanh. Thử lại sau "+retryAfter+" giây nhé."),{status:429,code:"ai_rate_limited",retryAfter})}
-  fresh.push(now);buckets.set(key,fresh);
+  const retryAfter=requestLimiter.check(String(uid)+":"+String(bucket),limit,windowMs);
+  if(retryAfter)throw Object.assign(new Error("Bạn dùng Kat AI hơi nhanh. Thử lại sau "+retryAfter+" giây nhé."),{status:429,code:"ai_rate_limited",retryAfter});
 }
 function jsonHeaders(extra={}){return{"Content-Type":"application/json","Cache-Control":"no-store",...extra}}
 function send(res,status,body,extra={}){
