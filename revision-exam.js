@@ -1,7 +1,7 @@
 (function(){
   const $=s=>document.querySelector(s);
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-  let packs=[],questions=[],index=0,score=0,answered=false,selectedPack=null,questionCount=10;
+  let packs=[],questions=[],index=0,score=0,answered=false,selectedPack=null,questionCount=10,answerResults=[];
 
   function cleanWords(words){
     const seen=new Set();
@@ -95,7 +95,7 @@
     selectedPack=p;
     questionCount=Math.min(Number($('#revisionExamCount')?.value)||10,p.words.length);
     questions=buildQuestions(p.words,questionCount);
-    index=0;score=0;answered=false;
+    index=0;score=0;answered=false;answerResults=[];
     $('#revisionExamSetup')?.setAttribute('hidden','');
     $('#revisionExamResult')?.setAttribute('hidden','');
     $('#revisionExamPanel')?.removeAttribute('hidden');
@@ -125,6 +125,7 @@
     if(answered)return;
     answered=true;
     const q=questions[index],good=btn.dataset.answer===q.correct;
+    answerResults[index]=good;
     if(good)score++;
     document.querySelectorAll('.revision-exam-answer').forEach(b=>{
       b.disabled=true;
@@ -160,33 +161,15 @@
     $('#revisionExamCorrect').textContent=score;
     $('#revisionExamWrong').textContent=String(total-score);
     $('#revisionExamCountDone').textContent=total;
-    const wrong=questions.filter((q,i)=>{
-      const choices=document.querySelectorAll('[data-answer]');
-      return false;
-    });
     const list=$('#revisionExamWrongList');
-    const wrongItems=questions.filter((q,idx)=>{
-      const stored=localStorage.getItem('katlearn-revision-answer-'+String(idx));
-      return stored==='wrong';
-    });
+    const wrongItems=questions.filter((q,idx)=>answerResults[idx]===false);
     list.innerHTML=wrongItems.length
       ?wrongItems.map(q=>'<div class="revision-exam-wrong-item"><b>'+esc(q.item.word)+'</b> — '+esc(q.item.mean)+'</div>').join('')
       :'<div class="revision-exam-wrong-item">Không có câu sai. Quá tuyệt! 🎉</div>';
     localStorage.setItem('katlearn-last-revision-exam',JSON.stringify({
       packId:selectedPack?.id||'',packName:selectedPack?.name||'',score,total,pct,completedAt:Date.now()
     }));
-    // clean temporary per-question answer markers
-    questions.forEach((_,i)=>localStorage.removeItem('katlearn-revision-answer-'+String(i)));
   }
-
-  // Override finish markers cleanly by recording answer state in localStorage.
-  const originalAnswer=answer;
-  answer=function(btn){
-    const q=questions[index];
-    if(answered)return;
-    originalAnswer(btn);
-    localStorage.setItem('katlearn-revision-answer-'+String(index),btn.dataset.answer===q.correct?'correct':'wrong');
-  };
 
   function restart(){
     $('#revisionExamResult').setAttribute('hidden','');
