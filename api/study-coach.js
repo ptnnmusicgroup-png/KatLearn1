@@ -42,6 +42,20 @@ module.exports=async(req,res)=>{
   const raw=parseJson(modelText(response));
   const result={title:cap(raw?.title,180)||"Phiên học KatLearn",summary:cap(raw?.summary,1200),sections:(Array.isArray(raw?.sections)?raw.sections:[]).slice(0,16).map(x=>({heading:cap(x?.heading,180),body:cap(x?.body,3000)})).filter(x=>x.heading||x.body),items:(Array.isArray(raw?.items)?raw.items:[]).slice(0,20).map(x=>({front:cap(x?.front,1600),back:cap(x?.back,2000),explanation:cap(x?.explanation,1600),options:(Array.isArray(x?.options)?x.options:[]).slice(0,6).map(v=>cap(v,500)),answerIndex:Math.max(0,Math.min(5,Number(x?.answerIndex)||0)),level:cap(x?.level,40)})).filter(x=>x.front),nextSteps:(Array.isArray(raw?.nextSteps)?raw.nextSteps:[]).slice(0,8).map(v=>cap(v,350)).filter(Boolean)};
   if(!result.sections.length&&!result.items.length&&!result.summary)throw Object.assign(new Error("Kat AI chưa tạo được nội dung hoàn chỉnh. Hãy mô tả rõ hơn nhé."),{status:502,code:"study_empty_result"});
+  // Never render a broken interactive assessment: the client relies on a
+  // valid zero-based answerIndex and a complete, predictable option set.
+  if(mode==="quiz"||mode==="truefalse"){
+   const expectedOptions=mode==="quiz"?4:2;
+   if(result.items.length<4||result.items.some(item=>
+     item.options.length!==expectedOptions
+     ||!Number.isInteger(item.answerIndex)
+     ||item.answerIndex<0
+     ||item.answerIndex>=expectedOptions
+     ||new Set(item.options.map(option=>option.toLocaleLowerCase("vi-VN"))).size!==expectedOptions
+   )){
+    throw Object.assign(new Error("Kat AI tạo câu hỏi chưa đúng định dạng. Hãy bấm tạo lại phiên học nhé."),{status:502,code:"study_assessment_invalid"});
+   }
+  }
   return send(res,200,{ok:true,mode,result});
  }catch(error){return send(res,Number(error?.status)||500,{ok:false,code:error?.code||"study_coach_error",error:error?.message||"Kat AI chưa thể tạo nội dung. Hãy thử lại nhé."});}
 };
