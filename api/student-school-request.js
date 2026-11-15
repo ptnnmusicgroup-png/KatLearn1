@@ -1,13 +1,25 @@
+"use strict";
 const crypto=require("crypto");
-const{init,corsHeaders,send,clean}=require("./_admin");
+const net=require("node:net");
+const{init,send,clean}=require("./_admin");
 
 const MAX_NAME=180;
 const MAX_NOTE=500;
 const ALLOWED_METHODS=new Set(["POST","OPTIONS"]);
 
+function clientAddress(req){
+  const remote=String(req.socket?.remoteAddress||req.connection?.remoteAddress||req.ip||"").trim();
+  // Only trust Cloudflare's client-IP header when the operator explicitly
+  // enables it. Never trust caller-controlled X-Forwarded-For/X-Real-IP.
+  if(String(process.env.KATLEARN_TRUST_CF_CONNECTING_IP||"").toLowerCase()==="true"){
+    const forwarded=String(req.headers?.["cf-connecting-ip"]||"").trim();
+    if(net.isIP(forwarded))return forwarded;
+  }
+  return net.isIP(remote)?remote:"unknown";
+}
+
 function ipKey(req){
-  const raw=String(req.headers?.["x-forwarded-for"]||req.headers?.["x-real-ip"]||"unknown").split(",")[0].trim();
-  return crypto.createHash("sha256").update(raw||"unknown").digest("hex").slice(0,32);
+  return crypto.createHash("sha256").update(clientAddress(req)).digest("hex").slice(0,32);
 }
 
 function normalize(value){
@@ -16,8 +28,10 @@ function normalize(value){
 
 module.exports=async function handler(req,res){
   const origin=String(req.headers?.origin||"");
-  if(req.method==="OPTIONS")return send(res,204,{ok:true},origin);
-  if(!ALLOWED_METHODS.has(String(req.method||"").toUpperCase()))return send(res,405,{ok:false,error:"Method not allowed."},origin);
+  const method=String(req.method||"").toUpperCase();
+  if(method==="OPTIONS")return send(res,204,{ok:true},origin);
+  if(!ALLOWED_METHODS.has(method))return send(res,405,{ok:false,error:"Method not allowed."},origin);
+
   try{
     const body=typeof req.body==="string"?(JSON.parse(req.body||"{}")||{}):(req.body||{});
     const name=clean(body.schoolName,MAX_NAME);
@@ -32,39 +46,47 @@ module.exports=async function handler(req,res){
     if(ward.length<2)return send(res,400,{ok:false,error:"Vui lòng nhập xã/phường."},origin);
 
     const{db}=init();
-    const key=ipKey(req);
-    const rateRef=db.collection("studentSchoolRequestRate").doc(key);
-    const rateSnap=await rateRef.get();
-    const last=Number(rateSnap.exists?rateSnap.data()?.lastSubmittedAt||0:0);
-    if(Date.now()-last<60000)return send(res,429,{ok:false,error:"Bạn vừa gửi một góp ý. Hãy thử lại sau khoảng 1 phút nhé."},origin);
-
-    const duplicateQuery=await db.collection("studentSchoolRequests")
-      .where("normalizedKey","==",normalize(province)+"|"+normalize(ward)+"|"+normalize(name))
+    const now=Date.now();
+    const rateRef=db.collection("studentSchoolRequestRate").doc(ipKey(req));
+    const requestRef=db.collection("studentSchoolRequests").doc();
+    const normalizedKey=normalize(province)+"|"+normalize(ward)+"|"+normalize(name);
+    const duplicateQuery=db.collection("studentSchoolRequests")
+      .where("normalizedKey","==",normalizedKey)
       .where("status","==","pending")
-      .limit(1).get();
-    if(!duplicateQuery.empty){
-      await rateRef.set({lastSubmittedAt:Date.now()},{merge:true});
-      return send(res,200,{ok:true,duplicate:true,message:"Trường này đã có một góp ý đang chờ Admin kiểm tra rồi."},origin);
-    }
+      .limit(1);
 
-    const ref=db.collection("studentSchoolRequests").doc();
-    await ref.set({
-      schoolName:name,
-      province,
-      ward,
-      note,
-      studentName,
-      studentEmail,
-      normalizedKey:normalize(province)+"|"+normalize(ward)+"|"+normalize(name),
-      source:"student_signup",
-      status:"pending",
-      createdAt:Date.now(),
-      updatedAt:Date.now()
+    // Rate check, duplicate check, request creation and timestamp update are
+    // one transaction so concurrent requests cannot bypass the 60-second cap.
+    const outcome=await db.runTransaction(async transaction=>{
+      const rateSnap=await transaction.get(rateRef);
+      const last=Number(rateSnap.exists?rateSnap.data()?.lastSubmittedAt||0:0);
+      if(now-last<60000)return{limited:true};
+
+      const duplicateSnap=await transaction.get(duplicateQuery);
+      transaction.set(rateRef,{lastSubmittedAt:now},{merge:true});
+      if(!duplicateSnap.empty)return{duplicate:true};
+
+      transaction.create(requestRef,{
+        schoolName:name,
+        province,
+        ward,
+        note,
+        studentName,
+        studentEmail,
+        normalizedKey,
+        source:"student_signup",
+        status:"pending",
+        createdAt:now,
+        updatedAt:now
+      });
+      return{created:true};
     });
-    await rateRef.set({lastSubmittedAt:Date.now()},{merge:true});
-    return send(res,201,{ok:true,requestId:ref.id,message:"Đã gửi góp ý thêm trường cho Admin."},origin);
+
+    if(outcome.limited)return send(res,429,{ok:false,error:"Bạn vừa gửi một góp ý. Hãy thử lại sau khoảng 1 phút nhé."},origin);
+    if(outcome.duplicate)return send(res,200,{ok:true,duplicate:true,message:"Trường này đã có một góp ý đang chờ Admin kiểm tra rồi."},origin);
+    return send(res,201,{ok:true,requestId:requestRef.id,message:"Đã gửi góp ý thêm trường cho Admin."},origin);
   }catch(error){
-    console.error("[student-school-request]",error);
+    console.error("[student-school-request]",error?.code||"request_failed");
     return send(res,500,{ok:false,error:"Không thể gửi góp ý lúc này."},origin);
   }
 };
