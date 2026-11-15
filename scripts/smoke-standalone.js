@@ -12,6 +12,8 @@ async function main(){
  const app=fs.readFileSync(require.resolve('../app.js'),'utf8');
  const firebaseService=fs.readFileSync(require.resolve('../firebase-service.js'),'utf8');
  const coreVocabulary=fs.readFileSync(require.resolve('../core-vocabulary.js'),'utf8');
+ const arcade=fs.readFileSync(require.resolve('../arcade-games.js'),'utf8');
+ const gameAction=fs.readFileSync(require.resolve('../api/game-action.js'),'utf8');
  assert.ok(studyCoach.includes('&&answer))throw'));
  assert.ok(studyCoach.includes('new Set([\"chat\",\"plan\"'));
  assert.ok(studyCoach.includes('mode===\"chat\"?5000:1200'));
@@ -29,6 +31,22 @@ async function main(){
  assert.ok(app.includes('if(knownValue)void recordStudyActivity()'));
  assert.ok(!app.includes('\n    void recordStudyActivity();'));
  assert.ok(!firebaseService.includes("key.startsWith('katlearn-known:')"));
+ // Arcade regressions: resolved Flappy gates keep moving and cannot advance
+ // until their server result has settled; each gate accepts one locked answer.
+ assert.ok(arcade.includes('if (state.running) flappy.pipe.x -= flappy.pipe.speed * dt;'));
+ assert.ok(arcade.includes('pipe.resolved && flappy.pipe.settled && flappy.pipe.x + flappy.pipe.width < -5'));
+ assert.ok(arcade.includes('if (flappy.pipe.answerLocked) return;'));
+ assert.ok(arcade.includes('pipe.settled = true;'));
+ assert.ok(arcade.includes('requestId !== state.startRequest'));
+ // Reflex rounds clear pending advances and reset every session statistic.
+ assert.ok(app.includes('function resetReflexSession()'));
+ assert.ok(app.includes('clearReflexAdvance();reflexSessionVersion++'));
+ assert.ok(app.includes('scheduleReflexAdvance(750,sessionVersion)'));
+ assert.ok(app.includes('scheduleReflexAdvance(650)'));
+ // Wrong answers are attempts, not streak activity.
+ assert.ok(gameAction.includes('const streakState=correct?nextStreak(profile,currentStudyDay)'));
+ assert.ok(gameAction.includes('...(correct?{streak:streakState.streak,lastStudyDay:currentStudyDay}:{})'));
+ assert.ok(gameAction.includes('dailyQuestionsDay:currentStudyDay'));
  const topicPaths=[...coreVocabulary.matchAll(/path:'([^']+)'/g)].map(match=>match[1]).filter(file=>file.endsWith('.json')).map(file=>require('node:path').join(__dirname,'..','data','vocabulary',file));
  assert.ok(topicPaths.length>0,'Core vocabulary registry should not be empty');
  for(const file of topicPaths)assert.ok(fs.existsSync(file),'Missing core vocabulary file: '+file);
