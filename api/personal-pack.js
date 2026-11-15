@@ -65,8 +65,9 @@ module.exports=async(req,res)=>{
         }
 
         // Recover an older namespace by UID before allocating a new one.
-        const legacyQuery=accountsRef.where("uid","==",String(user.uid)).limit(1);
+        const legacyQuery=accountsRef.where("uid","==",String(user.uid)).limit(2);
         const legacySnap=await tx.get(legacyQuery);
+        if(legacySnap.docs.length>1)throw Object.assign(new Error("Tài khoản đang có nhiều namespace cũ. Hãy liên hệ Admin để đồng bộ dữ liệu an toàn."),{status:409,code:"account_namespace_ambiguous"});
         if(!legacySnap.empty){
           const legacyDoc=legacySnap.docs[0];
           const legacy=legacyDoc.data()||{};
