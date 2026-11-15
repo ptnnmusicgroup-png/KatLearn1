@@ -22,12 +22,15 @@
     ctx: null,
     time: 0,
     score: 0,
+    bestScore: 0,
     lives: 3,
     question: 1,
     maxQuestions: 10,
     energy: 0,
     combo: 0,
     bestCombo: 0,
+    laser: null,
+    shake: 0,
     target: null,
     asteroids: [],
     particles: [],
@@ -222,6 +225,49 @@
     }
   }
 
+  function getMeteorBestScore() {
+    try { return Math.max(0, Number(localStorage.getItem('katlearn.meteor.best.v1')) || 0); }
+    catch (_) { return 0; }
+  }
+
+  function saveMeteorBestScore() {
+    if (meteor.score <= meteor.bestScore) return;
+    meteor.bestScore = meteor.score;
+    try { localStorage.setItem('katlearn.meteor.best.v1', String(meteor.bestScore)); } catch (_) {}
+  }
+
+  function drawMeteorShip(ctx, width, height) {
+    const x = width * .5, y = height - 52;
+    const pulse = .65 + Math.sin(meteor.time * 19) * .2;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.shadowColor = '#69e8ff'; ctx.shadowBlur = 20;
+    ctx.fillStyle = 'rgba(90,220,255,' + pulse + ')';
+    ctx.beginPath(); ctx.moveTo(-7, 17); ctx.lineTo(0, 34 + pulse * 8); ctx.lineTo(7, 17); ctx.closePath(); ctx.fill();
+    const body = ctx.createLinearGradient(-20, -20, 20, 20);
+    body.addColorStop(0, '#f4fbff'); body.addColorStop(.5, '#8da7ff'); body.addColorStop(1, '#5961b8');
+    ctx.fillStyle = body; ctx.strokeStyle = '#c9f7ff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, -25); ctx.lineTo(19, 17); ctx.lineTo(8, 12); ctx.lineTo(0, 18); ctx.lineTo(-8, 12); ctx.lineTo(-19, 17); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#79efff'; ctx.beginPath(); ctx.ellipse(0, -5, 6, 10, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawMeteorLaser(ctx, width, height, dt) {
+    if (!meteor.laser) return;
+    meteor.laser.life -= dt;
+    const target = meteor.laser;
+    const alpha = clamp(target.life / .24, 0, 1);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.shadowColor = '#8af7ff'; ctx.shadowBlur = 22;
+    ctx.strokeStyle = '#d9ffff'; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(width * .5, height - 77); ctx.lineTo(target.x, target.y); ctx.stroke();
+    ctx.strokeStyle = '#69e8ff'; ctx.lineWidth = 10; ctx.globalAlpha = alpha * .22;
+    ctx.beginPath(); ctx.moveTo(width * .5, height - 77); ctx.lineTo(target.x, target.y); ctx.stroke();
+    ctx.restore();
+    if (target.life <= 0) meteor.laser = null;
+  }
+
   function drawAsteroid(ctx, asteroid) {
     const r = asteroid.r;
     ctx.save();
@@ -278,7 +324,7 @@
         x: width * (index + 1) / (items.length + 1) + random(-25, 25),
         y: -random(25, 190) - index * 25,
         r: random(35, 45),
-        speed: random(36, 58) + Math.min(22, meteor.score * 0.15),
+        speed: random(42, 60) + Math.min(48, meteor.score * 0.42),
         rotation: random(0, Math.PI * 2),
         spin: random(-0.24, 0.24),
         label: entry.item.word,
@@ -321,6 +367,18 @@
   function drawMeteor(dt) {
     const ctx = meteor.ctx, width = meteor.canvas.width, height = meteor.canvas.height;
     drawStars(ctx, meteor.stars, width, height, dt, 8);
+    // A subtle nebula and distant planet give the playfield more depth.
+    const nebula = ctx.createRadialGradient(width * .78, height * .28, 5, width * .78, height * .28, height * .62);
+    nebula.addColorStop(0, 'rgba(74, 115, 207, .16)');
+    nebula.addColorStop(1, 'rgba(9, 11, 33, 0)');
+    ctx.fillStyle = nebula; ctx.fillRect(0, 0, width, height);
+    ctx.save();
+    ctx.globalAlpha = .24;
+    const planet = ctx.createRadialGradient(width * .84 - 18, height * .2 - 20, 2, width * .84, height * .2, 42);
+    planet.addColorStop(0, '#d7d7ff'); planet.addColorStop(.55, '#716bc4'); planet.addColorStop(1, '#292d68');
+    ctx.fillStyle = planet; ctx.beginPath(); ctx.arc(width * .84, height * .2, 42, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(174,193,255,.5)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.ellipse(width * .84, height * .2, 60, 14, -.3, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
     ctx.save();
     ctx.strokeStyle = 'rgba(106, 121, 222, .14)';
     ctx.lineWidth = 1;
@@ -339,6 +397,8 @@
       drawAsteroid(ctx, asteroid);
     });
     drawParticles(ctx, meteor, dt);
+    drawMeteorLaser(ctx, width, height, dt);
+    drawMeteorShip(ctx, width, height);
     ctx.fillStyle = 'rgba(7, 9, 27, .65)';
     ctx.fillRect(0, height - 34, width, 34);
     ctx.fillStyle = '#f4f5ff';
@@ -348,6 +408,10 @@
     ctx.textAlign = 'right';
     ctx.fillStyle = '#9ea8e9';
     ctx.fillText('LỆCH MỤC TIÊU = MẤT 1 MẠNG', width - 18, height - 13);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#b9dfff';
+    ctx.font = '800 11px "Be Vietnam Pro", sans-serif';
+    ctx.fillText('BEST ' + meteor.bestScore + '   ·   COMBO ' + meteor.combo + '×', width * .5, 24);
     ctx.restore();
   }
 
@@ -380,8 +444,12 @@
       const isLocallyCorrect = guess === normalize(target.word);
       if (isLocallyCorrect) {
         const targetAsteroid = meteor.asteroids.find(function (asteroid) { return asteroid.target; });
-        if (targetAsteroid) burstParticles(meteor, targetAsteroid.x, targetAsteroid.y, '#ffd29c');
+        if (targetAsteroid) {
+          meteor.laser = { x: targetAsteroid.x, y: targetAsteroid.y, life: .24 };
+          burstParticles(meteor, targetAsteroid.x, targetAsteroid.y, '#a8f8ff');
+        }
         meteor.score += 100 + Math.max(0, meteor.combo - 1) * 25;
+        saveMeteorBestScore();
         meteor.combo += 1;
         meteor.bestCombo = Math.max(meteor.bestCombo, meteor.combo);
         if (result.awarded) state.coins += 10 + (result.bonus || 0);
@@ -414,6 +482,7 @@
   }
 
   function tickMeteor(dt) {
+    meteor.time += dt;
     meteor.asteroids.forEach(function (asteroid) {
       if (asteroid.target && asteroid.y > meteor.canvas.height - 70 && !meteor.busy) asteroid.missed = true;
     });
@@ -749,7 +818,7 @@
     }
     stopAnimation();
     showGame('meteor');
-    meteor.time = 0; meteor.score = 0; meteor.lives = 3; meteor.question = 1; meteor.maxQuestions = 10; meteor.combo = 0; meteor.bestCombo = 0; meteor.busy = false; meteor.particles = [];
+    meteor.time = 0; meteor.score = 0; meteor.bestScore = getMeteorBestScore(); meteor.lives = 3; meteor.question = 1; meteor.maxQuestions = 10; meteor.combo = 0; meteor.bestCombo = 0; meteor.busy = false; meteor.particles = []; meteor.laser = null; meteor.shake = 0;
     meteor.energy = Math.max(0, Math.floor(Number(window.katlearnAccount?.profile?.energy || 0)));
     seedStars(meteor, meteor.canvas.width, meteor.canvas.height, 72);
     spawnMeteorWave(null);
@@ -808,7 +877,8 @@
     if (gameName === 'meteor') {
       drawMeteor(0);
       drawGameOver(gameName, message);
-      flashFeedback(gameName, message + ' Điểm: ' + meteor.score + ' · Combo tốt nhất: ' + meteor.bestCombo + '×.', 'neutral');
+      saveMeteorBestScore();
+      flashFeedback(gameName, message + ' Điểm: ' + meteor.score + ' · Kỷ lục: ' + meteor.bestScore + ' · Combo tốt nhất: ' + meteor.bestCombo + '×.', 'neutral');
     } else {
       drawFlappy(0);
       drawGameOver(gameName, message);
