@@ -10,6 +10,7 @@
     game: '',
     deck: [],
     running: false,
+    startRequest: 0,
     raf: 0,
     lastFrame: 0,
     elapsed: 0,
@@ -432,10 +433,15 @@
       item: item,
       answer: '',
       resolved: false,
+      settled: false,
+      answerLocked: false,
       hit: false
     };
     flappy.answer = '';
     flappy.input.value = '';
+    flappy.input.disabled = false;
+    const submitButton = $('#flappyForm button[type="submit"]');
+    if (submitButton) submitButton.disabled = false;
     flappy.input.focus({ preventScroll: true });
     updateHud('flappyPrompt', item.meaning);
     updateHud('flappyTargetWord', 'GÕ TỪ RỒI BAY QUA!');
@@ -530,7 +536,9 @@
       ctx.beginPath(); ctx.moveTo(x, height - 19); ctx.lineTo(x - 14, height); ctx.stroke();
     }
     if (flappy.pipe) {
-      if (state.running && !flappy.pipe.resolved) flappy.pipe.x -= flappy.pipe.speed * dt;
+      // A resolved gate must keep travelling; otherwise the bird waits forever
+      // for an off-screen condition that can never become true.
+      if (state.running) flappy.pipe.x -= flappy.pipe.speed * dt;
       drawPipe(ctx, flappy.pipe);
     }
     if (state.running) {
@@ -576,7 +584,12 @@
     if (!correct) {
       flappy.lives -= 1;
       flashFeedback('flappy', '😵 Chưa nhập đúng từ cho cổng này. Từ cần nhớ: ' + pipe.item.word, 'bad');
-      if (flappy.lives <= 0) return endGame('flappy', 'Hết lượt bay rồi! Thử lại để vượt thêm cổng nhé.');
+      pipe.settled = true;
+      if (flappy.lives <= 0) {
+        endGame('flappy', 'Hết lượt bay rồi! Thử lại để vượt thêm cổng nhé.');
+        updateFlappyHud();
+        return;
+      }
     } else {
       flappy.score += 1;
       flashFeedback('flappy', '🐦 Qua cổng thành công! Đang lưu kết quả…', 'good');
@@ -585,9 +598,11 @@
         if (result.awarded) state.coins += 10 + (result.bonus || 0);
         else if (result.bonus) state.coins += result.bonus;
         if (Number.isFinite(Number(result.energy)) && Number(result.energy) >= 0) flappy.energy = Number(result.energy);
-        flashFeedback('flappy', '🐦 Cổng đã vượt! ' + result.message, result.awarded ? 'good' : 'neutral');
+        if (state.game === 'flappy') flashFeedback('flappy', '🐦 Cổng đã vượt! ' + result.message, result.awarded ? 'good' : 'neutral');
       } catch (error) {
-        flashFeedback('flappy', 'Cổng đã vượt, nhưng chưa đồng bộ KatCoin: ' + (error.message || 'Lỗi kết nối.'), 'bad');
+        if (state.game === 'flappy') flashFeedback('flappy', 'Cổng đã vượt, nhưng chưa đồng bộ KatCoin: ' + (error.message || 'Lỗi kết nối.'), 'bad');
+      } finally {
+        pipe.settled = true;
       }
     }
     updateFlappyHud();
@@ -597,6 +612,7 @@
     const pipe = flappy.pipe;
     if (!pipe || pipe.resolved) return;
     pipe.resolved = true;
+    pipe.settled = true;
     flappy.lives -= 1;
     flappy.birdY = clamp(flappy.birdY, 45, flappy.canvas.height - 45);
     flappy.birdV = -100;
@@ -621,7 +637,7 @@
       }
       if (!pipe.resolved && pipe.x + pipe.width < birdX - birdRadius) void resolveFlappyPipe(pipe);
     }
-    if (flappy.pipe && flappy.pipe.resolved && flappy.pipe.x + flappy.pipe.width < -5) {
+    if (flappy.pipe && flappy.pipe.resolved && flappy.pipe.settled && flappy.pipe.x + flappy.pipe.width < -5) {
       const previous = flappy.pipe.item;
       nextFlappyQuestion(previous);
     }
@@ -638,6 +654,7 @@
   }
 
   function stopAnimation() {
+    state.startRequest += 1;
     state.running = false;
     if (state.raf) cancelAnimationFrame(state.raf);
     state.raf = 0;
@@ -660,7 +677,9 @@
   }
 
   async function startMeteor() {
+    const requestId = ++state.startRequest;
     const deck = await waitForDeck();
+    if (requestId !== state.startRequest) return;
     if (!deck.length) {
       flashFeedback('meteor', 'Chưa có từ để chơi. Hãy chọn ít nhất một bộ từ ở mục “Chọn bộ từ để chơi” phía trên nhé.', 'bad');
       $('#reflexSourcePicker')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -680,7 +699,9 @@
   }
 
   async function startFlappy() {
+    const requestId = ++state.startRequest;
     const deck = await waitForDeck();
+    if (requestId !== state.startRequest) return;
     if (!deck.length) {
       flashFeedback('flappy', 'Chưa có từ để chơi. Chọn ít nhất một bộ từ ở phía trên rồi thử lại nhé.', 'bad');
       $('#reflexSourcePicker')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -805,11 +826,16 @@
   $('#flappyForm')?.addEventListener('submit', function (event) {
     event.preventDefault();
     if (!state.running || state.game !== 'flappy' || !flappy.pipe || flappy.pipe.resolved) return;
+    if (flappy.pipe.answerLocked) return;
     const answer = normalize(flappy.input.value);
     if (!answer) return;
     flappy.pipe.answer = answer;
+    flappy.pipe.answerLocked = true;
     flappy.answer = answer;
-    flashFeedback('flappy', 'Đã khóa đáp án cho cổng này. Giờ bay qua bằng ↑ / click / Flap!', answer === normalize(flappy.pipe.item.word) ? 'good' : 'neutral');
+    flappy.input.disabled = true;
+    const submitButton = $('#flappyForm button[type="submit"]');
+    if (submitButton) submitButton.disabled = true;
+    flashFeedback('flappy', 'Đã khóa đáp án cho cổng này. Giờ bay qua bằng ↑ / click / nút Flap!', answer === normalize(flappy.pipe.item.word) ? 'good' : 'neutral');
   });
 
   $('#arcadeMeteorStart')?.addEventListener('click', function () { void startMeteor(); });
