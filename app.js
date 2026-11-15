@@ -1,6 +1,6 @@
 let vocab=[];
 try{const savedVocab=JSON.parse(localStorage.getItem('katlearn-vocab')||'[]');if(Array.isArray(savedVocab))vocab=savedVocab}catch(e){}
-let coins=0,coinBalanceReady=false,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,cardMotionBusy=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
+let coins=0,coinBalanceReady=false,energy=0,cardIndex=0,known=0,question=1,sessionCoins=0,dailyCount=0,mode='engvi',answered=false,cardMotionBusy=false,knownWordKeys=new Set(),contextRequestId=0,reflexSessionLength=10,reflexTimeLimit=15,reflexTimerId=null,reflexAdvanceTimerId=null,reflexSessionVersion=0,reflexCorrect=0,reflexAnswered=0,reflexCombo=0,reflexMaxCombo=0,reflexScore=0;
 let activeVocabSource={kind:'legacy'};try{const raw=localStorage.getItem('katlearn-vocab-source');if(raw)activeVocabSource=JSON.parse(raw)||activeVocabSource}catch(_){}
 let personalLearningSnapshot={uid:'',packs:[],words:[],knownKeys:new Set(),totalWords:0,knownWords:0,personalPacksCount:0};
 let progressVisitRecordedUid='';
@@ -445,6 +445,20 @@ document.addEventListener('keydown',e=>{
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 async function loadAiContext(v,requestId){const fallback=`The word <b>${esc(v.word)}</b> is useful to learn in context.`;$('#questionWord').innerHTML=fallback;try{const res=await fetch(aiEndpoint('context-example'),{method:'POST',headers:await aiHeaders(),body:JSON.stringify({word:v.word,meaning:vocabMeaning(v)})});const data=await res.json();if(requestId!==contextRequestId)return;if(res.ok&&data.text)$('#questionWord').textContent=data.text;else $('#questionHint').textContent='AI chưa được cấu hình — dùng câu ví dụ mặc định:'}catch(e){if(requestId===contextRequestId)$('#questionHint').textContent='AI chỉ hoạt động khi chạy server — dùng câu ví dụ mặc định:'}}
 function clearReflexTimer(){if(reflexTimerId){clearInterval(reflexTimerId);reflexTimerId=null}}
+function clearReflexAdvance(){if(reflexAdvanceTimerId){clearTimeout(reflexAdvanceTimerId);reflexAdvanceTimerId=null}}
+function resetReflexSession(){
+  clearReflexTimer();clearReflexAdvance();reflexSessionVersion++;
+  question=1;answered=false;reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;sessionCoins=0;
+  if($('#sessionCoins'))$('#sessionCoins').textContent='0';
+  updateReflexHud(reflexTimeLimit);
+}
+function scheduleReflexAdvance(delay,version=reflexSessionVersion){
+  clearReflexAdvance();
+  reflexAdvanceTimerId=setTimeout(()=>{
+    reflexAdvanceTimerId=null;
+    if(version===reflexSessionVersion)advanceReflexRound();
+  },delay);
+}
 function updateReflexHud(timeLeft=reflexTimeLimit){
   const set=(id,value)=>{const el=$('#'+id);if(el)el.textContent=String(value)};
   set('reflexHudQuestion',question+' / '+reflexSessionLength);
@@ -471,10 +485,7 @@ function finishReflexSession(){
   const resultContent=$('#resultContent');
   if(resultContent)resultContent.innerHTML='<div class="reflex-result-card"><div class="reflex-result-score">'+acc+'%</div><h2>Phiên phản xạ hoàn tất! ⚡</h2><p>'+reflexCorrect+' / '+reflexAnswered+' câu đúng · Combo cao nhất '+reflexMaxCombo+'×</p><div class="reflex-result-grid"><div class="reflex-result-stat"><b>'+reflexScore+'</b><small>Điểm phiên</small></div><div class="reflex-result-stat"><b>'+reflexMaxCombo+'×</b><small>Best combo</small></div><div class="reflex-result-stat"><b>'+earned+'</b><small>KatCoin nhận</small></div><div class="reflex-result-stat"><b>'+reflexSessionLength+'</b><small>Số câu</small></div></div><p>'+(acc>=80?'🔥 Phản xạ rất tốt!':acc>=60?'✨ Đang vào nhịp rồi!':'🐾 Hãy chơi thêm một lượt để làm nóng phản xạ!')+'</p></div>';
   $('#resultModal')?.classList.add('show');
-  question=1;sessionCoins=0;
-  if($('#sessionCoins'))$('#sessionCoins').textContent='0';
-  if($('#reflexCombo'))$('#reflexCombo').textContent='0×';
-  updateReflexHud(reflexTimeLimit);
+  resetReflexSession();
 }
 function advanceReflexRound(){
   if(question>=reflexSessionLength){finishReflexSession();return}
@@ -489,7 +500,7 @@ function handleReflexTimeout(){
   $('#feedback').textContent='⏱ Hết giờ! Phản xạ cần nhanh hơn một chút.';
   $('#feedback').style.color='#b67d34';
   updateReflexHud(0);
-  setTimeout(advanceReflexRound,650);
+  scheduleReflexAdvance(650);
 }
 
 let reflexSourceMode=localStorage.getItem('katlearn-reflex-source-mode')||'personal';
@@ -626,8 +637,7 @@ async function refreshReflexPool(resetSession=true){
   }
   vocab=pool;
   if(resetSession){
-    cardIndex=0;question=1;reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;sessionCoins=0;
-    if($('#sessionCoins'))$('#sessionCoins').textContent='0';
+    cardIndex=0;resetReflexSession();
   }
   renderReflexSourcePicker();
   renderQuiz();
@@ -765,6 +775,7 @@ function renderQuiz(){clearReflexTimer();const contextId=++contextRequestId;answ
 }
 async function answer(btn,correct){
   if(answered)return;
+  const sessionVersion=reflexSessionVersion;
   answered=true;clearReflexTimer();
   const good=btn.dataset.right==='true',v=vocab[(question-1)%vocab.length];
   reflexAnswered++;
@@ -827,16 +838,17 @@ async function answer(btn,correct){
     rewardError=error?.message||'Không thể kết nối máy chủ kết quả.';
   }
 
+  if(sessionVersion!==reflexSessionVersion){void renderProgressDashboard();return}
   void renderProgressDashboard();
   // Never grant KatCoin only in localStorage. Rewards are authoritative on the
   // server so students cannot lose coins because Auth was still restoring.
   if(good&&!awarded&&!serverConfirmed)$('#feedback').textContent='Chính xác! KatCoin chưa được cộng: '+rewardError;
   updateReflexHud(0);
-  setTimeout(advanceReflexRound,750)
+  scheduleReflexAdvance(750,sessionVersion)
 }
-$$('.mode-card').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;$$('.mode-card').forEach(x=>x.classList.toggle('active-mode',x===b));question=1;reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;sessionCoins=0;if($('#sessionCoins'))$('#sessionCoins').textContent='0';renderQuiz()});
-$$('.reflex-length').forEach(b=>b.onclick=()=>{reflexSessionLength=Math.max(1,Number(b.dataset.reflexLength)||10);$$('.reflex-length').forEach(x=>x.classList.toggle('active',x===b));question=1;reflexCorrect=0;reflexAnswered=0;reflexCombo=0;reflexMaxCombo=0;reflexScore=0;sessionCoins=0;if($('#sessionCoins'))$('#sessionCoins').textContent='0';renderQuiz()});
-$('#reflexSkip')?.addEventListener('click',()=>{if(answered)return;answered=true;clearReflexTimer();reflexAnswered++;reflexCombo=0;$$('.answer').forEach(b=>b.disabled=true);$('#feedback').textContent='↷ Đã bỏ qua. Giữ nhịp và bắt câu tiếp theo!';updateReflexHud(0);setTimeout(advanceReflexRound,450)});
+$('.mode-card').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;$('.mode-card').forEach(x=>x.classList.toggle('active-mode',x===b));resetReflexSession();renderQuiz()});
+$('.reflex-length').forEach(b=>b.onclick=()=>{reflexSessionLength=Math.max(1,Number(b.dataset.reflexLength)||10);$('.reflex-length').forEach(x=>x.classList.toggle('active',x===b));resetReflexSession();renderQuiz()});
+$('#reflexSkip')?.addEventListener('click',()=>{if(answered)return;answered=true;clearReflexTimer();reflexAnswered++;reflexCombo=0;$('.answer').forEach(b=>b.disabled=true);$('#feedback').textContent='↷ Đã bỏ qua. Giữ nhịp và bắt câu tiếp theo!';updateReflexHud(0);scheduleReflexAdvance(450)});
 document.addEventListener('keydown',e=>{if(!$('#practice')?.classList.contains('active-page')||answered)return;if(['1','2','3','4'].includes(e.key)){const i=Number(e.key)-1;const btn=[...$$('#answers .answer')][i];btn?.click()}});
 $('#resultModal')?.querySelector('.modal-close')?.addEventListener('click',()=>{$('#resultModal')?.classList.remove('show');renderQuiz()});
 function requireSignedInPersonalService(){
