@@ -7,11 +7,18 @@ async function main(){
  const fs=require('node:fs');
  const studyCoach=fs.readFileSync(require.resolve('../api/study-coach.js'),'utf8');
  const studyStudio=fs.readFileSync(require.resolve('../study-studio.js'),'utf8');
+ const studyHtml=fs.readFileSync(require.resolve('../study-studio.html'),'utf8');
  const revisionExam=fs.readFileSync(require.resolve('../revision-exam.js'),'utf8');
  const app=fs.readFileSync(require.resolve('../app.js'),'utf8');
  const firebaseService=fs.readFileSync(require.resolve('../firebase-service.js'),'utf8');
  const coreVocabulary=fs.readFileSync(require.resolve('../core-vocabulary.js'),'utf8');
  assert.ok(studyCoach.includes('&&answer))throw'));
+ assert.ok(studyCoach.includes('new Set([\"chat\",\"plan\"'));
+ assert.ok(studyCoach.includes('mode===\"chat\"?5000:1200'));
+ assert.ok(studyCoach.includes('const chatPrompt='));
+ assert.ok(studyStudio.includes('Chat-first, multi-subject Kat AI.'));
+ assert.ok(studyHtml.includes('id=\"katChatMessages\"'));
+ assert.ok(studyHtml.includes('AI LEARNING ASSISTANT'));
  assert.ok(studyStudio.includes('&&String(answer||"").trim())){'));
  assert.ok(studyStudio.includes('!String(focusOverride||"").trim()'));
  assert.ok(revisionExam.includes('answerResults[index]=good'));
