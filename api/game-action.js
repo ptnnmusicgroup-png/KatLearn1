@@ -3,7 +3,8 @@ const fs=require("fs");
 const path=require("path");
 const{init}=require("./_admin");
 const{FieldValue}=require("firebase-admin/firestore");
-const buckets=new Map();
+const{createRateLimiter}=require("./_rate-limit");
+const requestLimiter=createRateLimiter();
 const CORE_PACK_PATHS={
   'daily-life':'TOPICs_KatLearn/Everyday Topics/daily-life.json',
   'family':'TOPICs_KatLearn/Everyday Topics/family.json',
@@ -70,9 +71,9 @@ async function user(req){
   try{return await init().auth.verifyIdToken(match[1])}catch(_){throw Object.assign(new Error("Phiên đăng nhập không hợp lệ."),{status:401})}
 }
 function limit(uid,key,count=60){
-  const now=Date.now(),id=uid+":"+key,items=(buckets.get(id)||[]).filter(time=>now-time<60000);
-  if(items.length>=count)throw Object.assign(new Error("Bạn thao tác quá nhanh, thử lại sau một chút nhé."),{status:429});
-  items.push(now);buckets.set(id,items);
+  if(requestLimiter.check(String(uid)+":"+String(key),count,60000)){
+    throw Object.assign(new Error("Bạn thao tác quá nhanh, thử lại sau một chút nhé."),{status:429});
+  }
 }
 function leaderboardId(uid){return crypto.createHash("sha256").update(String(uid)).digest("hex").slice(0,32)}
 function publicScore(displayName,coins,xp){return{displayName:String(displayName||"KatLearner").trim().slice(0,80)||"KatLearner",coins:Math.max(0,Number(coins)||0),xp:Math.max(0,Number(xp)||0),updatedAt:FieldValue.serverTimestamp()}}
