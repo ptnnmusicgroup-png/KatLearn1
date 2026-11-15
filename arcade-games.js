@@ -43,10 +43,12 @@
     ctx: null,
     time: 0,
     score: 0,
+    bestScore: 0,
     lives: 3,
     question: 1,
     maxQuestions: 10,
     energy: 0,
+    groundOffset: 0,
     birdY: 190,
     birdV: 0,
     birdAngle: 0,
@@ -420,16 +422,29 @@
     updateMeteorHud();
   }
 
+  function getFlappyBestScore() {
+    try { return Math.max(0, Number(localStorage.getItem('katlearn.flappy.best.v1')) || 0); }
+    catch (_) { return 0; }
+  }
+
+  function saveFlappyBestScore() {
+    if (flappy.score <= flappy.bestScore) return;
+    flappy.bestScore = flappy.score;
+    try { localStorage.setItem('katlearn.flappy.best.v1', String(flappy.bestScore)); } catch (_) {}
+  }
+
   function spawnFlappyPipe(previous) {
     const item = chooseWord(previous);
     if (!item) return;
-    const gap = 148;
+    // A gently tightening gate makes later questions more challenging,
+    // while retaining a safe minimum opening for touch and keyboard play.
+    const gap = Math.max(132, 154 - Math.floor(flappy.score / 3) * 4);
     flappy.pipe = {
       x: flappy.canvas.width + 12,
       width: 86,
       gapY: random(124, flappy.canvas.height - 124),
       gap: gap,
-      speed: 198 + Math.min(65, flappy.score * 1.1),
+      speed: 198 + Math.min(72, flappy.score * 1.35),
       item: item,
       answer: '',
       resolved: false,
@@ -481,8 +496,10 @@
     ctx.beginPath(); ctx.arc(10, -5, 2.5, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#f77b84';
     ctx.beginPath(); ctx.moveTo(17, 1); ctx.lineTo(30, 5); ctx.lineTo(17, 8); ctx.closePath(); ctx.fill();
+    // Two-frame wing animation follows the game clock, not wall-clock time.
+    const wingLift = Math.sin(flappy.time * 17) * 3;
     ctx.fillStyle = '#f6b5ca';
-    ctx.beginPath(); ctx.ellipse(-7, 5, 8, 5 + Math.sin(performance.now() / 85) * 2, -0.3, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-7, 5 + wingLift, 8, 5, -0.3, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
   }
 
@@ -508,6 +525,7 @@
     ctx.fillRect(pipe.x - 7, bottom, pipe.width + 14, 22);
     ctx.strokeRect(pipe.x - 7, bottom, pipe.width + 14, 22);
     ctx.shadowBlur = 0;
+    // Soft pulsing gate marker makes the safe passage easier to read.
     ctx.fillStyle = 'rgba(10, 26, 54, .82)';
     ctx.fillRect(pipe.x - 16, pipe.gapY - 24, pipe.width + 32, 48);
     ctx.strokeStyle = '#d7fff6';
@@ -522,9 +540,45 @@
     ctx.fillText('NHỚ TỪ', pipe.x + pipe.width / 2, pipe.gapY + 10);
   }
 
+  function drawFlappyScenery(ctx, width, height, dt) {
+    // Layered hills and drifting clouds add depth without external image assets.
+    const hillBase = height - 18;
+    ctx.save();
+    ctx.fillStyle = 'rgba(57, 91, 139, .20)';
+    ctx.beginPath(); ctx.moveTo(0, hillBase);
+    for (let x = 0; x <= width + 30; x += 30) {
+      const y = height * .72 + Math.sin((x + flappy.time * 13) / 105) * 13 + Math.sin(x / 47) * 7;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(width, hillBase); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(87, 126, 165, .13)';
+    ctx.beginPath(); ctx.moveTo(0, hillBase);
+    for (let x = 0; x <= width + 30; x += 30) {
+      const y = height * .82 + Math.sin((x - flappy.time * 8) / 145) * 10 + Math.cos(x / 63) * 5;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(width, hillBase); ctx.closePath(); ctx.fill();
+    for (let i = 0; i < 5; i += 1) {
+      const span = width + 180;
+      const x = ((i * 211 - flappy.time * (12 + i * 2)) % span + span) % span - 70;
+      const y = 55 + (i % 3) * 53;
+      const scale = .65 + (i % 3) * .18;
+      ctx.globalAlpha = .14 + (i % 2) * .05;
+      ctx.fillStyle = '#b9eaff';
+      ctx.beginPath();
+      ctx.ellipse(x, y, 27 * scale, 8 * scale, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + 18 * scale, y - 5 * scale, 18 * scale, 11 * scale, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + 34 * scale, y, 24 * scale, 8 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
   function drawFlappy(dt) {
     const ctx = flappy.ctx, width = flappy.canvas.width, height = flappy.canvas.height;
     drawStars(ctx, flappy.stars, width, height, dt, 16);
+    drawFlappyScenery(ctx, width, height, dt);
     const floor = ctx.createLinearGradient(0, height - 24, 0, height);
     floor.addColorStop(0, '#2b426b');
     floor.addColorStop(1, '#131b3a');
@@ -532,9 +586,15 @@
     ctx.fillRect(0, height - 19, width, 19);
     ctx.strokeStyle = 'rgba(132, 184, 255, .18)';
     ctx.lineWidth = 1;
-    for (let x = 0; x < width; x += 42) {
-      ctx.beginPath(); ctx.moveTo(x, height - 19); ctx.lineTo(x - 14, height); ctx.stroke();
+    flappy.groundOffset = (flappy.groundOffset + 92 * dt) % 42;
+    for (let x = -42; x < width + 42; x += 42) {
+      const gx = x - flappy.groundOffset;
+      ctx.beginPath(); ctx.moveTo(gx, height - 19); ctx.lineTo(gx - 14, height); ctx.stroke();
     }
+    ctx.fillStyle = 'rgba(225,245,255,.82)';
+    ctx.font = '700 11px "Be Vietnam Pro", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('BEST ' + flappy.bestScore, 16, 24);
     if (flappy.pipe) {
       // A resolved gate must keep travelling; otherwise the bird waits forever
       // for an off-screen condition that can never become true.
@@ -592,6 +652,7 @@
       }
     } else {
       flappy.score += 1;
+      saveFlappyBestScore();
       flashFeedback('flappy', '🐦 Qua cổng thành công! Đang lưu kết quả…', 'good');
       try {
         const result = await submitResult(pipe.item, pipe.answer, 'flappy');
@@ -622,6 +683,7 @@
   }
 
   function tickFlappy(dt) {
+    flappy.time += dt;
     drawFlappy(dt);
     if (flappy.pipe && !flappy.pipe.resolved) {
       const pipe = flappy.pipe;
@@ -709,7 +771,7 @@
     }
     stopAnimation();
     showGame('flappy');
-    flappy.time = 0; flappy.score = 0; flappy.lives = 3; flappy.question = 1; flappy.maxQuestions = 10; flappy.energy = Math.max(0, Math.floor(Number(window.katlearnAccount?.profile?.energy || 0))); flappy.birdY = flappy.canvas.height / 2; flappy.birdV = 0; flappy.birdAngle = 0; flappy.pipe = null; flappy.answer = ''; flappy.busy = false; flappy.particles = [];
+    flappy.time = 0; flappy.score = 0; flappy.bestScore = getFlappyBestScore(); flappy.groundOffset = 0; flappy.lives = 3; flappy.question = 1; flappy.maxQuestions = 10; flappy.energy = Math.max(0, Math.floor(Number(window.katlearnAccount?.profile?.energy || 0))); flappy.birdY = flappy.canvas.height / 2; flappy.birdV = 0; flappy.birdAngle = 0; flappy.pipe = null; flappy.answer = ''; flappy.busy = false; flappy.particles = [];
     seedStars(flappy, flappy.canvas.width, flappy.canvas.height, 82);
     // The gate must be created after the game becomes active. Previously
     // startNextFlappyPipe returned early here, leaving only the bird visible.
@@ -750,7 +812,8 @@
     } else {
       drawFlappy(0);
       drawGameOver(gameName, message);
-      flashFeedback(gameName, message + ' Điểm: ' + flappy.score + '.', 'neutral');
+      saveFlappyBestScore();
+      flashFeedback(gameName, message + ' Điểm: ' + flappy.score + ' · Kỷ lục: ' + flappy.bestScore + '.', 'neutral');
     }
   }
 
