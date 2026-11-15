@@ -217,18 +217,25 @@ module.exports=async(req,res)=>{
         const profile=snap.data()||{};
         const now=Date.now();
         const attemptRef=db.collection("users").doc(token.uid).collection("attempts").doc();
-        const sameStudyDay=String(profile.lastStudyDay||"")===currentStudyDay;
-        const streakState=nextStreak(profile,currentStudyDay);
-        const streak=streakState.streak;
-        const dailyQuestions=sameStudyDay?Math.max(0,Number(profile.dailyQuestions||0))+1:1;
-        const dailyCorrect=sameStudyDay?Math.max(0,Number(profile.dailyCorrect||0))+(correct?1:0):(correct?1:0);
+        const dailyDay=String(profile.dailyQuestionsDay||profile.lastStudyDay||"");
+        const sameDailyDay=dailyDay===currentStudyDay;
+        const dailyQuestions=sameDailyDay?Math.max(0,Number(profile.dailyQuestions||0))+1:1;
+        const dailyCorrect=sameDailyDay?Math.max(0,Number(profile.dailyCorrect||0))+(correct?1:0):(correct?1:0);
+        // Wrong answers count as attempts, but they must never start, extend,
+        // or revive a learning streak. Only a validated correct answer does.
+        const streakState=correct?nextStreak(profile,currentStudyDay):{
+          streak:Math.max(0,Number(profile.streak||0)),
+          freezeStreak:Math.max(0,Math.floor(Number(profile.freezeStreak||0))),
+          freezeUsed:0,
+          revived:false
+        };
         const updates={
           questionsAnswered:FieldValue.increment(1),
           lastStudyAt:FieldValue.serverTimestamp(),
-          streak,
-          lastStudyDay:currentStudyDay,
           dailyQuestions,
+          dailyQuestionsDay:currentStudyDay,
           dailyCorrect,
+          ...(correct?{streak:streakState.streak,lastStudyDay:currentStudyDay}:{}),
           ...(streakState.freezeUsed?{freezeStreak:streakState.freezeStreak}: {})
         };
         let coins=Math.max(0,Math.floor(Number(profile.coins||0))),xp=Math.max(0,Math.floor(Number(profile.energy||0)));
