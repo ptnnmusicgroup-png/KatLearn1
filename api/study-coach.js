@@ -40,7 +40,7 @@ module.exports=async(req,res)=>{
   const contents=image?[{role:"user",parts:[{text:prompt},{inlineData:{mimeType:image.mimeType,data:image.data}}]}]:prompt;
   const response=await generateGemini({maxOutputTokens:Math.max(2200,Math.min(6800,["plan","mock-written","grade-written"].includes(mode)?6200:4800)),temperature:(mode==="quiz"||mode==="truefalse")?0.25:0.35,systemInstruction:"Kat AI · KatLearn Study Studio",contents,responseSchema:SCHEMA});
   const raw=parseJson(modelText(response));
-  const result={title:cap(raw?.title,180)||"Phiên học KatLearn",summary:cap(raw?.summary,1200),sections:(Array.isArray(raw?.sections)?raw.sections:[]).slice(0,16).map(x=>({heading:cap(x?.heading,180),body:cap(x?.body,3000)})).filter(x=>x.heading||x.body),items:(Array.isArray(raw?.items)?raw.items:[]).slice(0,20).map(x=>({front:cap(x?.front,1600),back:cap(x?.back,2000),explanation:cap(x?.explanation,1600),options:(Array.isArray(x?.options)?x.options:[]).slice(0,6).map(v=>cap(v,500)),answerIndex:Math.max(0,Math.min(5,Number(x?.answerIndex)||0)),level:cap(x?.level,40)})).filter(x=>x.front),nextSteps:(Array.isArray(raw?.nextSteps)?raw.nextSteps:[]).slice(0,8).map(v=>cap(v,350)).filter(Boolean)};
+  const result={title:cap(raw?.title,180)||"Phiên học KatLearn",summary:cap(raw?.summary,1200),sections:(Array.isArray(raw?.sections)?raw.sections:[]).slice(0,16).map(x=>({heading:cap(x?.heading,180),body:cap(x?.body,3000)})).filter(x=>x.heading||x.body),items:(Array.isArray(raw?.items)?raw.items:[]).slice(0,20).map(x=>({front:cap(x?.front,1600),back:cap(x?.back,2000),explanation:cap(x?.explanation,1600),options:(Array.isArray(x?.options)?x.options:[]).slice(0,6).map(v=>cap(v,500)),answerIndex:Number.isInteger(x?.answerIndex)?x.answerIndex:-1,level:cap(x?.level,40)})).filter(x=>x.front),nextSteps:(Array.isArray(raw?.nextSteps)?raw.nextSteps:[]).slice(0,8).map(v=>cap(v,350)).filter(Boolean)};
   if(!result.sections.length&&!result.items.length&&!result.summary)throw Object.assign(new Error("Kat AI chưa tạo được nội dung hoàn chỉnh. Hãy mô tả rõ hơn nhé."),{status:502,code:"study_empty_result"});
   // Never render a broken interactive assessment: the client relies on a
   // valid zero-based answerIndex and a complete, predictable option set.
@@ -52,6 +52,7 @@ module.exports=async(req,res)=>{
      ||item.answerIndex<0
      ||item.answerIndex>=expectedOptions
      ||new Set(item.options.map(option=>option.toLocaleLowerCase("vi-VN"))).size!==expectedOptions
+     ||(mode==="truefalse"&&(item.options[0].toLocaleLowerCase("vi-VN")!=="đúng"||item.options[1].toLocaleLowerCase("vi-VN")!=="sai"))
    )){
     throw Object.assign(new Error("Kat AI tạo câu hỏi chưa đúng định dạng. Hãy bấm tạo lại phiên học nhé."),{status:502,code:"study_assessment_invalid"});
    }
