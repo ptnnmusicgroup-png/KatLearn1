@@ -1,6 +1,7 @@
 const{init}=require("./_admin");
 const{FieldValue}=require("firebase-admin/firestore");
-const buckets=new Map();
+const{createRateLimiter}=require("./_rate-limit");
+const requestLimiter=createRateLimiter();
 const VALID_GOALS=new Set([7,10,20,30,50]);
 
 function send(res,status,body){
@@ -17,9 +18,9 @@ async function verifyUser(req){
   catch(_){throw Object.assign(new Error("Phiên đăng nhập không hợp lệ."),{status:401})}
 }
 function limit(uid){
-  const now=Date.now(),id=String(uid)+":study",items=(buckets.get(id)||[]).filter(t=>now-t<60000);
-  if(items.length>=30)throw Object.assign(new Error("Bạn thao tác quá nhanh, thử lại sau một chút nhé."),{status:429});
-  items.push(now);buckets.set(id,items);
+  if(requestLimiter.check(String(uid)+":study",30,60000)){
+    throw Object.assign(new Error("Bạn thao tác quá nhanh, thử lại sau một chút nhé."),{status:429});
+  }
 }
 function studyDay(date=new Date()){
   return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Ho_Chi_Minh",year:"numeric",month:"2-digit",day:"2-digit"}).format(date);
