@@ -446,8 +446,7 @@
           if(accountCode){
             const memorySnap=await api.getDocs(api.query(
               api.collection(db,'accounts',accountCode,'memory'),
-              api.where('kind','==','personalPack'),
-              api.limit(100)
+              api.where('kind','==','personalPack')
             ));
             addPacks(normalizePacks(memorySnap.docs,'account-memory',accountCode));
           }
@@ -462,7 +461,7 @@
           const tb=Number(b.createdAt?.seconds||b.createdAt||0);
           return tb-ta;
         });
-        return merged.slice(0,100);
+        return merged;
       }
 
       // Last resort: protected server reader, when Firebase Admin is configured.
@@ -480,7 +479,7 @@
           ownerUid:String(pack.ownerUid||uid),
           accountCode:String(pack.ownerAccountCode||data.accountCode||''),
           source:String(pack.source||'users')
-        })).filter(pack=>String(pack.ownerUid||uid)===uid).slice(0,100);
+        })).filter(pack=>String(pack.ownerUid||uid)===uid);
       }catch(serverError){
         console.warn('[KatLearn] Personal packs load failed (UID + account + server):',directError,serverError);
         throw serverError;
