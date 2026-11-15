@@ -864,6 +864,13 @@
     }
   });
 
+  document.addEventListener('fullscreenchange', function () {
+    // Esc exits native fullscreen; remove the CSS fullscreen fallback too.
+    if (!document.fullscreenElement) {
+      $('#arcadeShell')?.classList.remove('meteor-fullscreen', 'flappy-fullscreen');
+    }
+  });
+
   window.addEventListener('blur', function () {
     if (!state.running) return;
     // Do not let a background tab silently consume the whole session timer.
