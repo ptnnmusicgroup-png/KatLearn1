@@ -220,7 +220,8 @@
       sessionStorage.setItem('katlearn-logged-out','1');
       sessionStorage.removeItem('katlearn-sso-lms-attempt');
       for(const key of ['katlearn-vocab','katlearn-vocab-source','katlearn-owned-themes','katlearn-stats','katlearn-personal-pack-name','katlearn-theme','katlearn-account-type'])localStorage.removeItem(key);
-      for(const key of Object.keys(localStorage))if(key.startsWith('katlearn-known:'))localStorage.removeItem(key);
+      // Known-word keys are UID-scoped; keep them so each account retains its local learning progress when signed out.
+
       if(auth)await api.auth.signOut(auth);
       currentUser=null;notifyAuth(null);
     },
