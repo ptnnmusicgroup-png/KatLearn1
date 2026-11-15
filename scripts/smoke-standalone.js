@@ -10,14 +10,14 @@ async function main(){
  const app=fs.readFileSync(require.resolve('../app.js'),'utf8');
  const firebaseService=fs.readFileSync(require.resolve('../firebase-service.js'),'utf8');
  const coreVocabulary=fs.readFileSync(require.resolve('../core-vocabulary.js'),'utf8');
- assert.ok(studyCoach.includes('&&answer),{status:400,code:"study_input_empty"')===false || studyCoach.includes('&&answer))throw'));
+ assert.ok(studyCoach.includes('&&answer))throw'));
  assert.ok(studyStudio.includes('&&String(answer||"").trim())){'));
  assert.ok(studyCoach.includes('answerIndex:Number.isInteger(x?.answerIndex)?x.answerIndex:-1'));
  assert.ok(studyCoach.includes('study_assessment_invalid'));
  assert.ok(app.includes('if(knownValue)void recordStudyActivity()'));
  assert.ok(!app.includes('\n    void recordStudyActivity();'));
  assert.ok(!firebaseService.includes("key.startsWith('katlearn-known:')"));
- const topicPaths=[...coreVocabulary.matchAll(/path:'([^']+\\.json)'/g)].map(match=>require('node:path').join(__dirname,'..','data','vocabulary',match[1]));
+ const topicPaths=[...coreVocabulary.matchAll(/path:'([^']+)'/g)].map(match=>match[1]).filter(file=>file.endsWith('.json')).map(file=>require('node:path').join(__dirname,'..','data','vocabulary',file));
  assert.ok(topicPaths.length>0,'Core vocabulary registry should not be empty');
  for(const file of topicPaths)assert.ok(fs.existsSync(file),'Missing core vocabulary file: '+file);
  const limiter=createRateLimiter({cleanupEvery:1,maxBuckets:100});
