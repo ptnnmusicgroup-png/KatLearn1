@@ -9,9 +9,9 @@ function createRateLimiter(options={}){
   let calls=0;
 
   function sweep(now){
-    for(const[key,timestamps]of buckets){
-      const fresh=timestamps.filter(time=>now-time<60000);
-      if(fresh.length)buckets.set(key,fresh);
+    for(const[key,entry]of buckets){
+      const fresh=entry.timestamps.filter(time=>now-time<entry.windowMs);
+      if(fresh.length)buckets.set(key,{timestamps:fresh,windowMs:entry.windowMs});
       else buckets.delete(key);
     }
   }
@@ -21,12 +21,12 @@ function createRateLimiter(options={}){
     const max=Math.max(1,Math.floor(Number(limit)||1));
     const window=Math.max(1,Number(windowMs)||60000);
     const current=Number(now)||Date.now();
-    let timestamps=buckets.get(id)||[];
-    timestamps=timestamps.filter(time=>current-time<window);
+    const entry=buckets.get(id)||{timestamps:[],windowMs:window};
+    const timestamps=entry.timestamps.filter(time=>current-time<window);
 
     if(timestamps.length>=max){
       const retryAfter=Math.max(1,Math.ceil((window-(current-timestamps[0]))/1000));
-      buckets.set(id,timestamps);
+      buckets.set(id,{timestamps,windowMs:window});
       calls++;
       if(calls%cleanupEvery===0)sweep(current);
       return retryAfter;
@@ -38,7 +38,7 @@ function createRateLimiter(options={}){
     }
 
     timestamps.push(current);
-    buckets.set(id,timestamps);
+    buckets.set(id,{timestamps,windowMs:window});
     calls++;
     if(calls%cleanupEvery===0)sweep(current);
     return 0;
