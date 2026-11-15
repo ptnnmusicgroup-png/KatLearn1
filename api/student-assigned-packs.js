@@ -9,15 +9,16 @@ module.exports=async(req,res)=>{
   if(!method(req,res,"GET"))return;
   try{
     const user=await requireUser(req);rateLimit(user.uid,"assigned",30);
-    const snap=await firestore().collection("packAssignments").where("studentUids","array-contains",user.uid).get();
+    const db=firestore();
+    const snap=await db.collection("packAssignments").where("studentUids","array-contains",user.uid).get();
     const ids=[...new Set(snap.docs.map(d=>String(d.data()?.packId||"")).filter(Boolean))];
+    const refs=ids.map(id=>db.collection("publicPacks").doc(id));
+    const packSnaps=refs.length?await db.getAll(...refs):[];
     const packs=[];
-    for(const id of ids){
-      const pack=await firestore().collection("publicPacks").doc(id).get();
-      if(pack.exists){
-        const data=pack.data()||{};
-        packs.push({id:pack.id,name:String(data.name||"Bộ từ"),words:Array.isArray(data.words)?data.words:[],assigned:true});
-      }
+    for(const pack of packSnaps){
+      if(!pack.exists)continue;
+      const data=pack.data()||{};
+      packs.push({id:pack.id,name:String(data.name||"Bộ từ"),words:Array.isArray(data.words)?data.words:[],assigned:true});
     }
     return send(res,200,{packs});
   }catch(error){
