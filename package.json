@@ -6,7 +6,8 @@
     "start": "node --env-file-if-exists=.env.local server.js",
     "test:local": "node scripts/smoke-standalone.js",
     "seed:public-vocab": "node scripts/seed-public-vocabulary.mjs",
-    "sync:account-ids": "node scripts/backfill-account-codes.js"
+    "sync:account-ids": "node scripts/backfill-account-codes.js",
+    "test:kat-ai-scope": "node scripts/test-kat-ai-scope-guard.js"
   },
   "dependencies": {
     "firebase-admin": "13.10.0",
