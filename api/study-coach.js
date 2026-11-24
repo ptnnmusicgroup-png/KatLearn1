@@ -1,3 +1,4 @@
+const{classifyKatAIRequest}=require("./_kat-ai-scope-guard");
 const{requireUser,rateLimit,generateGemini,parseJson,modelText,send,method}=require("./_kat-ai");
 const MODES=new Set(["chat","plan","lesson","flashcards","quiz","truefalse","review","podcast","gaps","mock-written","mock-oral","tutor","grade-written","grade-oral"]);
 const SCHEMA={type:"object",additionalProperties:false,properties:{title:{type:"string"},summary:{type:"string"},sections:{type:"array",items:{type:"object",additionalProperties:false,properties:{heading:{type:"string"},body:{type:"string"}},required:["heading","body"]}},items:{type:"array",items:{type:"object",additionalProperties:false,properties:{front:{type:"string"},back:{type:"string"},explanation:{type:"string"},options:{type:"array",items:{type:"string"}},answerIndex:{type:"integer"},level:{type:"string"}},required:["front","back","explanation","options","answerIndex","level"]}},nextSteps:{type:"array",items:{type:"string"}}},required:["title","summary","sections","items","nextSteps"]};
@@ -22,6 +23,8 @@ module.exports=async(req,res)=>{
  try{
   const user=await requireUser(req);rateLimit(user.uid,"study-coach",12,60000);
   const body=req.body||{},mode=cap(body.mode,32);
+  const scope=classifyKatAIRequest({focus:body.focus,material:body.material,answer:body.answer,history:body.history});
+  if(!scope.allowed)return send(res,scope.status,{ok:false,code:scope.code,error:scope.message});
   if(!MODES.has(mode))throw Object.assign(new Error("Chế độ học không hợp lệ."),{status:400,code:"study_mode_invalid"});
   const level=cap(body.level,60)||"THCS · A2-B1",focus=cap(body.focus,mode==="chat"?5000:1200),material=cap(body.material,12000);
   const history=Array.isArray(body.history)?body.history.slice(-10).map(m=>({role:m?.role==="assistant"?"model":"user",text:cap(m?.text,2500)})).filter(m=>m.text):[];
