@@ -6,7 +6,7 @@ const ROOT=path.resolve(__dirname);
 const HOST=String(process.env.HOST||"127.0.0.1").trim()||"127.0.0.1";
 const PORT=Number.parseInt(process.env.PORT||"3000",10);
 const MAX_BODY_BYTES=10*1024*1024;
-const API_ENDPOINTS=new Set(["admin-hub","ai-pack","ai-regenerate-word","context-example","game-action","personal-pack-action","personal-pack","personal-packs","student-assigned-packs","student-school-request","study-coach","study-progress","vocab-assist"]);
+const API_ENDPOINTS=new Set(["admin-hub","ai-pack","ai-regenerate-word","context-example","game-action","personal-pack-action","personal-pack","personal-packs","student-assigned-packs","student-school-request","study-coach","katai-chat","study-progress","vocab-assist"]);
 const MIME_TYPES=Object.freeze({".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".mjs":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".json":"application/json; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",".jpg":"image/jpeg",".jpeg":"image/jpeg",".webp":"image/webp",".gif":"image/gif",".ico":"image/x-icon",".woff":"font/woff",".woff2":"font/woff2",".ttf":"font/ttf",".otf":"font/otf",".txt":"text/plain; charset=utf-8",".xml":"application/xml; charset=utf-8",".webmanifest":"application/manifest+json; charset=utf-8",".map":"application/json; charset=utf-8"});
 const BLOCKED_SEGMENTS=new Set([".git",".github","api","dist","node_modules","scripts"]);
 const BLOCKED_FILES=new Set(["server.js","dev-server.js","local-server.js","package.json","package-lock.json","pnpm-lock.yaml","yarn.lock","firestore.rules"]);
