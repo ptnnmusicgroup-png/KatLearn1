@@ -30,7 +30,8 @@ const HARMFUL_INTENT_PATTERNS=[
 function classifyKatAIRequest(input={}){
   const fields=[input.focus,input.material,input.answer];
   if(Array.isArray(input.history)){
-    const recentUserMessages=input.history.filter(message=>message?.role!=="assistant"&&message?.role!=="model").slice(-2);\n    for(const message of recentUserMessages)fields.push(message?.text);
+    const recentUserMessages=input.history.filter(message=>message?.role!=="assistant"&&message?.role!=="model").slice(-2);
+    for(const message of recentUserMessages)fields.push(message?.text);
   }
   const text=fold(fields.filter(Boolean).join("\n")).slice(0,30000);
   if(!text.trim())return {allowed:true,category:"empty"};
