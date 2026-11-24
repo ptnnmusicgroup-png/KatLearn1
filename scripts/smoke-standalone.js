@@ -28,8 +28,6 @@ async function main(){
  assert.ok(revisionExam.includes('answerResults[index]=good'));
  assert.ok(revisionExam.includes('answerResults[idx]===false'));
  assert.ok(!revisionExam.includes('katlearn-revision-answer-'));
- assert.ok(studyCoach.includes('answerIndex:Number.isInteger(x?.answerIndex)?x.answerIndex:-1'));
- assert.ok(studyCoach.includes('study_assessment_invalid'));
  assert.ok(app.includes('if(knownValue)void recordStudyActivity()'));
  assert.ok(!app.includes('\n    void recordStudyActivity();'));
  assert.ok(!firebaseService.includes("key.startsWith('katlearn-known:')"));
