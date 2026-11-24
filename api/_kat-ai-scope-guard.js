@@ -13,8 +13,8 @@ function fold(value){
 }
 
 const OTHER_SUBJECT_PATTERNS=[
-  /\b(toan hoc|mon toan|giai phuong trinh|phuong trinh|bat phuong trinh|he phuong trinh|dao ham|tich phan|luong giac|hinh hoc|dai so|xac suat thong ke)\b/,
-  /\b(vat ly|mon ly|hoa hoc|mon hoa|sinh hoc|mon sinh|lich su|dia ly|ngu van|van hoc|tin hoc|cong nghe|gdcd)\b/,
+  /\b(toan hoc|mon toan|bai tap toan|bai toan|giai toan|giai phuong trinh|phuong trinh|bat phuong trinh|he phuong trinh|dao ham|tich phan|luong giac|hinh hoc|dai so|xac suat thong ke)\b/,
+  /\b(vat ly|mon ly|bai tap ly|bai tap hoa|bai tap sinh|hoa hoc|mon hoa|sinh hoc|mon sinh|lich su|dia ly|ngu van|van hoc|tin hoc|cong nghe|gdcd)\b/,
   /\b(math|mathematics|algebra|geometry|calculus|trigonometry|physics|chemistry|biology|history|geography|civics|photosynthesis|mitosis|gravity|chemical reaction|periodic table)\b/,
   /\b(solve|calculate|find the value of|simplify|factorize|differentiate|integrate)\b.{0,100}(?:[=<>]|\b(?:equation|expression|polynomial|derivative|integral|x\s*\^?\s*\d))/,
   /(?:\d\s*[xX]\s*[+\-]\s*\d\s*=\s*\d|\b[xy]\s*[+\-]\s*\d+\s*=\s*\d+)/,
